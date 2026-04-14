@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-14T22:26:09Z | Files: 116 | Described: 0/116
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-14T22:26:09Z","fingerprint":"107929f854c5b3ebc8e2558ddad917e40b3b5d7e","fileCount":116,"truncated":false} -->
+Generated: 2026-04-14T22:36:10Z | Files: 120 | Described: 0/120
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-14T22:36:10Z","fingerprint":"b9b32b78be0c41431ecd878f3088f2546ce79cf3","fileCount":120,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -128,6 +128,10 @@ Generated: 2026-04-14T22:26:09Z | Files: 116 | Described: 0/116
 ### apps/web/src/lib/access/
 - `apps/web/src/lib/access/contract.ts`
 
+### apps/web/src/lib/schedule/
+- `apps/web/src/lib/schedule/recurrence.ts`
+- `apps/web/src/lib/schedule/types.ts`
+
 ### apps/web/src/lib/server/
 - `apps/web/src/lib/server/app-shell.ts`
 - `apps/web/src/lib/server/auth-flow.ts`
@@ -179,6 +183,9 @@ Generated: 2026-04-14T22:26:09Z | Files: 116 | Described: 0/116
 ### apps/web/tests/routes/
 - `apps/web/tests/routes/protected-routes.unit.test.ts`
 
+### apps/web/tests/schedule/
+- `apps/web/tests/schedule/recurrence.unit.test.ts`
+
 ### packages/db/
 - `packages/db/package.json`
 
@@ -212,3 +219,4 @@ Generated: 2026-04-14T22:26:09Z | Files: 116 | Described: 0/116
 
 ### supabase/migrations/
 - `supabase/migrations/20260414_000001_auth_groups_access.sql`
+- `supabase/migrations/20260415_000002_schedule_shifts.sql`

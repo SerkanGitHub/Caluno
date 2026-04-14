@@ -57,7 +57,7 @@
   - Do: Add `rrule`, introduce `shift_series` plus concrete `shifts` tables with membership-derived RLS, extend the seed with stable Alpha-calendar same-day/overlapping/recurring fixtures, and add pure schedule typing/recurrence helpers with unit proof. Keep recurrence bounded by `repeat_until` or count; do not use day-only fields or virtual-only events.
   - Verify: `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec vitest run tests/schedule/recurrence.unit.test.ts`
   - Done when: Local reset succeeds, the schedule model supports multiple same-day rows, recurrence stays bounded/deterministic, and the recurrence unit test locks the contract.
-- [ ] **T02: Add page-scoped schedule loading and trusted server actions on the calendar route** `est:2h`
+- [x] **T02: Add page-scoped schedule loading and trusted server actions on the calendar route** `est:2h`
   - Why: The schedule must load and mutate through the S01 trusted route boundary rather than through client-authoritative ids or parent-layout overfetching.
   - Files: `apps/web/src/lib/server/schedule.ts`, `apps/web/src/routes/(app)/calendars/[calendarId]/+page.server.ts`, `apps/web/src/lib/access/contract.ts`, `apps/web/tests/routes/protected-routes.unit.test.ts`, `apps/web/tests/schedule/server-actions.unit.test.ts`
   - Do: Add a page-scoped schedule server layer, validate a bounded `?start=` visible week, wire create/edit/move/delete server actions on `/calendars/[calendarId]`, keep denied-route behavior fail-closed, and cover normalization plus failure paths in route/unit tests.

@@ -13,6 +13,43 @@ function createRequest(formData: FormData) {
   });
 }
 
+function createThenableBuilder<T>(
+  result: { data: T; error: { message: string } | null },
+  capture?: {
+    eq?: Array<[string, unknown]>;
+    lt?: Array<[string, unknown]>;
+    gt?: Array<[string, unknown]>;
+    order?: Array<[string, unknown]>;
+  }
+) {
+  const builder = {
+    select: vi.fn(() => builder),
+    insert: vi.fn(() => builder),
+    update: vi.fn(() => builder),
+    delete: vi.fn(() => builder),
+    eq: vi.fn((column: string, value: unknown) => {
+      capture?.eq?.push([column, value]);
+      return builder;
+    }),
+    lt: vi.fn((column: string, value: unknown) => {
+      capture?.lt?.push([column, value]);
+      return builder;
+    }),
+    gt: vi.fn((column: string, value: unknown) => {
+      capture?.gt?.push([column, value]);
+      return builder;
+    }),
+    order: vi.fn((column: string, value: unknown) => {
+      capture?.order?.push([column, value]);
+      return builder;
+    }),
+    then: (onFulfilled: (value: typeof result) => unknown, onRejected?: (reason: unknown) => unknown) =>
+      Promise.resolve(result).then(onFulfilled, onRejected)
+  };
+
+  return builder;
+}
+
 describe('auth-flow helpers', () => {
   it('keeps only internal redirect paths', () => {
     expect(normalizeInternalPath('/groups?tab=owned')).toBe('/groups?tab=owned');
@@ -115,8 +152,15 @@ describe('calendar route resolution', () => {
   });
 
   it('returns a named denied surface when a malformed route param reaches the page loader', async () => {
+    const shiftsFrom = vi.fn();
+
     const result = (await calendarPageLoad({
       params: { calendarId: 'not-a-uuid' },
+      locals: {
+        supabase: {
+          from: shiftsFrom
+        }
+      },
       parent: vi.fn().mockResolvedValue({
         user: { id: 'user-a' },
         appShell: {
@@ -135,6 +179,163 @@ describe('calendar route resolution', () => {
     expect(result.calendarView.kind).toBe('denied');
     expect(result.calendarView.reason).toBe('calendar-id-invalid');
     expect(result.calendarView.failurePhase).toBe('calendar-param');
+    expect(shiftsFrom).not.toHaveBeenCalled();
+  });
+
+  it('shapes one validated visible week for a permitted calendar route', async () => {
+    const capture = {
+      eq: [] as Array<[string, unknown]>,
+      lt: [] as Array<[string, unknown]>,
+      gt: [] as Array<[string, unknown]>,
+      order: [] as Array<[string, unknown]>
+    };
+
+    const shiftsBuilder = createThenableBuilder(
+      {
+        data: [
+          {
+            id: 'aaaaaaaa-9999-1111-1111-111111111111',
+            calendar_id: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+            series_id: 'aaaaaaaa-5555-1111-1111-111111111111',
+            title: 'Alpha opening sweep',
+            start_at: '2026-04-20T08:30:00.000Z',
+            end_at: '2026-04-20T09:00:00.000Z',
+            occurrence_index: 1,
+            source_kind: 'series' as const
+          },
+          {
+            id: 'aaaaaaaa-9999-1111-1111-222222222222',
+            calendar_id: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+            series_id: null,
+            title: 'Afternoon handoff',
+            start_at: '2026-04-22T13:00:00.000Z',
+            end_at: '2026-04-22T15:00:00.000Z',
+            occurrence_index: null,
+            source_kind: 'single' as const
+          }
+        ],
+        error: null
+      },
+      capture
+    );
+
+    const result = (await calendarPageLoad({
+      params: { calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111' },
+      locals: {
+        supabase: {
+          from: vi.fn((table: string) => {
+            expect(table).toBe('shifts');
+            return shiftsBuilder;
+          })
+        }
+      },
+      parent: vi.fn().mockResolvedValue({
+        user: { id: 'user-a' },
+        appShell: {
+          memberships: [{ groupId: 'group-a', userId: 'user-a', role: 'owner' }],
+          calendars: [{ id: 'aaaaaaaa-aaaa-1111-1111-111111111111', groupId: 'group-a', name: 'Alpha shared', isDefault: true }],
+          groups: [
+            {
+              id: 'group-a',
+              name: 'Alpha Group',
+              role: 'owner',
+              calendars: [
+                { id: 'aaaaaaaa-aaaa-1111-1111-111111111111', groupId: 'group-a', name: 'Alpha shared', isDefault: true }
+              ],
+              joinCode: null,
+              joinCodeStatus: 'unavailable'
+            }
+          ],
+          primaryCalendar: null
+        }
+      }),
+      url: new URL('http://localhost/calendars/aaaaaaaa-aaaa-1111-1111-111111111111?start=2026-04-20')
+    } as unknown as Parameters<typeof calendarPageLoad>[0])) as Exclude<
+      Awaited<ReturnType<typeof calendarPageLoad>>,
+      void
+    >;
+
+    expect(result.calendarView.kind).toBe('calendar');
+    expect(result.calendarView.visibleWeek.start).toBe('2026-04-20');
+    expect(result.calendarView.visibleWeek.endExclusive).toBe('2026-04-27');
+    expect(result.calendarView.schedule.totalShifts).toBe(2);
+    expect(
+      result.calendarView.schedule.days.find((day: { dayKey: string }) => day.dayKey === '2026-04-20')?.shifts
+    ).toHaveLength(1);
+    expect(
+      result.calendarView.schedule.days.find((day: { dayKey: string }) => day.dayKey === '2026-04-22')?.shifts
+    ).toHaveLength(1);
+    expect(capture.eq).toContainEqual(['calendar_id', 'aaaaaaaa-aaaa-1111-1111-111111111111']);
+    expect(capture.lt).toContainEqual(['start_at', '2026-04-27T00:00:00.000Z']);
+    expect(capture.gt).toContainEqual(['end_at', '2026-04-20T00:00:00.000Z']);
+  });
+
+  it('keeps the denied contract for out-of-scope calendar ids without loading schedule data', async () => {
+    const shiftsFrom = vi.fn();
+
+    const result = (await calendarPageLoad({
+      params: { calendarId: 'bbbbbbbb-bbbb-1111-1111-111111111111' },
+      locals: {
+        supabase: {
+          from: shiftsFrom
+        }
+      },
+      parent: vi.fn().mockResolvedValue({
+        user: { id: 'user-a' },
+        appShell: {
+          memberships: [{ groupId: 'group-a', userId: 'user-a', role: 'owner' }],
+          calendars: [{ id: 'aaaaaaaa-aaaa-1111-1111-111111111111', groupId: 'group-a', name: 'Alpha shared', isDefault: true }],
+          groups: [],
+          primaryCalendar: null
+        }
+      }),
+      url: new URL('http://localhost/calendars/bbbbbbbb-bbbb-1111-1111-111111111111?start=2026-04-20')
+    } as unknown as Parameters<typeof calendarPageLoad>[0])) as Exclude<
+      Awaited<ReturnType<typeof calendarPageLoad>>,
+      void
+    >;
+
+    expect(result.calendarView.kind).toBe('denied');
+    expect(result.calendarView.reason).toBe('calendar-missing');
+    expect(result.calendarView.failurePhase).toBe('calendar-lookup');
+    expect(shiftsFrom).not.toHaveBeenCalled();
+  });
+
+  it('surfaces invalid week params as typed visible-week metadata while staying on a bounded fallback week', async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-04-15T12:00:00.000Z'));
+
+    const shiftsBuilder = createThenableBuilder({ data: [], error: null });
+
+    const result = (await calendarPageLoad({
+      params: { calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111' },
+      locals: {
+        supabase: {
+          from: vi.fn(() => shiftsBuilder)
+        }
+      },
+      parent: vi.fn().mockResolvedValue({
+        user: { id: 'user-a' },
+        appShell: {
+          memberships: [{ groupId: 'group-a', userId: 'user-a', role: 'owner' }],
+          calendars: [{ id: 'aaaaaaaa-aaaa-1111-1111-111111111111', groupId: 'group-a', name: 'Alpha shared', isDefault: true }],
+          groups: [],
+          primaryCalendar: null
+        }
+      }),
+      url: new URL('http://localhost/calendars/aaaaaaaa-aaaa-1111-1111-111111111111?start=not-a-date')
+    } as unknown as Parameters<typeof calendarPageLoad>[0])) as Exclude<
+      Awaited<ReturnType<typeof calendarPageLoad>>,
+      void
+    >;
+
+    expect(result.calendarView.kind).toBe('calendar');
+    expect(result.calendarView.visibleWeek.source).toBe('fallback-invalid');
+    expect(result.calendarView.visibleWeek.reason).toBe('VISIBLE_WEEK_START_INVALID');
+    expect(result.calendarView.visibleWeek.start).toBe('2026-04-13');
+    expect(result.calendarView.schedule.reason).toBe('VISIBLE_WEEK_START_INVALID');
+
+    vi.useRealTimers();
   });
 });
 

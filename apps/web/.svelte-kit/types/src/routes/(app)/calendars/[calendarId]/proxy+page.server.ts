@@ -1,37 +1,185 @@
 // @ts-nocheck
-import type { PageServerLoad } from './$types';
-import { describeDeniedCalendarReason, resolveCalendarPageState } from '$lib/server/app-shell';
+import { fail } from '@sveltejs/kit';
+import type { Actions, PageServerLoad } from './$types';
+import { describeDeniedCalendarReason } from '$lib/server/app-shell';
+import {
+  createScheduleShift,
+  deleteScheduleShift,
+  editScheduleShift,
+  loadCalendarScheduleView,
+  moveScheduleShift,
+  resolveTrustedCalendarFromAppShell,
+  resolveVisibleWeek,
+  type ScheduleActionKind,
+  type ScheduleActionResult,
+  type ScheduleActionState
+} from '$lib/server/schedule';
 
-export const load = async ({ params, parent, url }: Parameters<PageServerLoad>[0]) => {
-  const { appShell, user } = await parent();
-  const calendarState = resolveCalendarPageState({
-    calendarId: params.calendarId,
-    userId: user?.id ?? null,
-    memberships: appShell.memberships,
-    calendars: appShell.calendars
-  });
+function buildDeniedCalendarView(params: {
+  calendarId: string;
+  reason: 'calendar-id-invalid' | 'calendar-missing' | 'group-membership-missing' | 'anonymous';
+  failurePhase: 'calendar-param' | 'calendar-lookup' | 'calendar-authorization';
+  welcome: string | null;
+}) {
+  return {
+    calendarView: {
+      kind: 'denied' as const,
+      attemptedCalendarId: params.calendarId,
+      failurePhase: params.failurePhase,
+      reason: params.reason,
+      detail: describeDeniedCalendarReason(params.reason),
+      welcome: params.welcome
+    }
+  };
+}
 
-  if (calendarState.kind === 'denied') {
-    return {
-      calendarView: {
-        kind: 'denied' as const,
-        attemptedCalendarId: params.calendarId,
-        failurePhase: calendarState.failurePhase,
-        reason: calendarState.reason,
-        detail: describeDeniedCalendarReason(calendarState.reason),
-        welcome: url.searchParams.get('welcome')
-      }
-    };
+async function requireAuthenticatedUser(locals: App.Locals) {
+  const authState = await locals.safeGetSession();
+  return authState.authStatus === 'authenticated' && authState.user ? authState.user : null;
+}
+
+function buildAuthRequiredActionState(action: ScheduleActionKind, url: URL): ScheduleActionState {
+  const visibleWeek = resolveVisibleWeek(url.searchParams);
+
+  return {
+    action,
+    status: 'forbidden',
+    reason: 'AUTH_REQUIRED',
+    message: 'Your trusted session expired before the schedule write could be authorized.',
+    visibleWeekStart: visibleWeek.start,
+    shiftId: null,
+    seriesId: null,
+    affectedShiftIds: [],
+    fields: {}
+  };
+}
+
+function respondWithActionResult(key: 'createShift' | 'editShift' | 'moveShift' | 'deleteShift', result: ScheduleActionResult) {
+  if (result.status >= 400) {
+    return fail(result.status, {
+      [key]: result.state
+    });
   }
 
-  const group = appShell.groups.find((candidate) => candidate.id === calendarState.calendar.groupId) ?? null;
+  return {
+    [key]: result.state
+  };
+}
+
+export const load = async ({ params, parent, url, locals }: Parameters<PageServerLoad>[0]) => {
+  const { appShell, user } = await parent();
+  const calendarState = resolveTrustedCalendarFromAppShell({
+    calendarId: params.calendarId,
+    userId: user?.id ?? null,
+    memberships: appShell?.memberships,
+    calendars: appShell?.calendars
+  });
+
+  if (!calendarState.ok) {
+    return buildDeniedCalendarView({
+      calendarId: params.calendarId,
+      reason: calendarState.reason,
+      failurePhase: calendarState.failurePhase,
+      welcome: url.searchParams.get('welcome')
+    });
+  }
+
+  const group = Array.isArray(appShell?.groups)
+    ? appShell.groups.find((candidate) => candidate.id === calendarState.calendar.groupId) ?? null
+    : null;
+
+  const schedule = await loadCalendarScheduleView({
+    supabase: locals.supabase,
+    calendarId: calendarState.calendar.id,
+    searchParams: url.searchParams
+  });
 
   return {
     calendarView: {
       kind: 'calendar' as const,
       calendar: calendarState.calendar,
       group,
-      welcome: url.searchParams.get('welcome')
+      welcome: url.searchParams.get('welcome'),
+      visibleWeek: schedule.visibleWeek,
+      schedule
     }
   };
 };
+
+export const actions = {
+  createShift: async ({ request, locals, params, url }) => {
+    const user = await requireAuthenticatedUser(locals);
+    if (!user) {
+      return fail(401, {
+        createShift: buildAuthRequiredActionState('create', url)
+      });
+    }
+
+    const result = await createScheduleShift({
+      supabase: locals.supabase,
+      calendarId: params.calendarId,
+      userId: user.id,
+      searchParams: url.searchParams,
+      formData: await request.formData()
+    });
+
+    return respondWithActionResult('createShift', result);
+  },
+
+  editShift: async ({ request, locals, params, url }) => {
+    const user = await requireAuthenticatedUser(locals);
+    if (!user) {
+      return fail(401, {
+        editShift: buildAuthRequiredActionState('edit', url)
+      });
+    }
+
+    const result = await editScheduleShift({
+      supabase: locals.supabase,
+      calendarId: params.calendarId,
+      userId: user.id,
+      searchParams: url.searchParams,
+      formData: await request.formData()
+    });
+
+    return respondWithActionResult('editShift', result);
+  },
+
+  moveShift: async ({ request, locals, params, url }) => {
+    const user = await requireAuthenticatedUser(locals);
+    if (!user) {
+      return fail(401, {
+        moveShift: buildAuthRequiredActionState('move', url)
+      });
+    }
+
+    const result = await moveScheduleShift({
+      supabase: locals.supabase,
+      calendarId: params.calendarId,
+      userId: user.id,
+      searchParams: url.searchParams,
+      formData: await request.formData()
+    });
+
+    return respondWithActionResult('moveShift', result);
+  },
+
+  deleteShift: async ({ request, locals, params, url }) => {
+    const user = await requireAuthenticatedUser(locals);
+    if (!user) {
+      return fail(401, {
+        deleteShift: buildAuthRequiredActionState('delete', url)
+      });
+    }
+
+    const result = await deleteScheduleShift({
+      supabase: locals.supabase,
+      calendarId: params.calendarId,
+      userId: user.id,
+      searchParams: url.searchParams,
+      formData: await request.formData()
+    });
+
+    return respondWithActionResult('deleteShift', result);
+  }
+} satisfies Actions;
