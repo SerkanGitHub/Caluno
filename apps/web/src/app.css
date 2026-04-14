@@ -1,0 +1,30 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  background: #f5f1e8;
+  color: #1c1a17;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(201, 122, 67, 0.18), transparent 30%),
+    linear-gradient(180deg, #f8f5ef 0%, #efe7da 100%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+main {
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+}

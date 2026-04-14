@@ -1,0 +1,30 @@
+{
+  "supervisor": {
+    "model": "claude-opus-4-6",
+    "role": "Coordinates slices, delegates across specialist agents, and merges only after QA sign-off"
+  },
+  "architect": {
+    "model": "claude-opus-4-6",
+    "role": "Owns pnpm/Turbo monorepo architecture, package boundaries, interfaces, and delivery sequencing"
+  },
+  "mobile_dev": {
+    "model": "claude-sonnet-4-6",
+    "role": "Builds the SvelteKit + Capacitor mobile app, native integrations, auth, booking, and resilient client flows"
+  },
+  "web_dev": {
+    "model": "claude-sonnet-4-6",
+    "role": "Builds the SvelteKit web UI, admin workflows, dashboard surfaces, and server-rendered experiences"
+  },
+  "backend_dev": {
+    "model": "claude-sonnet-4-6",
+    "role": "Implements SvelteKit server routes, Drizzle/Postgres data access, payments, webhooks, and background workflows"
+  },
+  "qa": {
+    "model": "claude-sonnet-4-6",
+    "role": "Runs monorepo validation, unit/integration/E2E checks, linting, and release readiness verification"
+  },
+  "ux_ui": {
+    "model": "claude-sonnet-4-6",
+    "role": "Owns the shared design system, UI component quality, responsive behavior, and product polish"
+  }
+}

@@ -1,27 +1,20 @@
 # GSD State
 
-**Project:** Caluno  
-**Type:** Cross-platform mobile app  
-**Status:** Initialized
+**Active Milestone:** None
+**Active Slice:** None
+**Phase:** pre-planning
+**Requirements Status:** 3 active · 0 validated · 0 deferred · 0 out of scope
 
-## Current Milestone
+## Milestone Registry
 
-*(No active milestone)*
+## Recent Decisions
+- Keep Caluno as a pnpm + Turborepo monorepo with separate mobile and web apps.
+- Use SvelteKit for both app surfaces, with Capacitor available for native mobile packaging.
+- Keep Caluno intentionally slim instead of copying CUTTIME feature code.
+- Use `/Users/serkanyeniay/dev/references` only as external reference material.
 
-## Current Slice
+## Blockers
+- Validation still required after shrinking the workspace to the starter scaffold.
 
-*(No active slice)*
-
-## Current Task
-
-*(No active task)*
-
-## Last Updated
-
-2026-04-13 22:26 - Project initialized
-
-## Quick Stats
-
-- Milestones: 0 completed, 0 active
-- Slices: 0 completed, 0 active  
-- Tasks: 0 completed, 0 active
+## Next Action
+Validate the slim starter workspace, confirm reduced file count, and define the first real Caluno slices.
