@@ -263,7 +263,7 @@ begin
 
   insert into public.group_memberships (group_id, user_id, role, joined_via)
   values (matched_code.group_id, actor, 'member', 'join_code')
-  on conflict (group_id, user_id) do nothing;
+  on conflict on constraint group_memberships_pkey do nothing;
 
   get diagnostics membership_insert_count = row_count;
 

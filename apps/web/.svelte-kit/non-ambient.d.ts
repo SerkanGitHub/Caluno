@@ -29,15 +29,23 @@ declare module "$app/types" {
 	type MatcherParam<M> = M extends (param : string) => param is (infer U extends string) ? U : string;
 
 	export interface AppTypes {
-		RouteId(): "/";
+		RouteId(): "/(auth)" | "/(app)" | "/" | "/(app)/calendars" | "/(app)/calendars/[calendarId]" | "/(auth)/callback" | "/(app)/groups" | "/(auth)/logout" | "/(auth)/signin";
 		RouteParams(): {
-			
+			"/(app)/calendars/[calendarId]": { calendarId: string }
 		};
 		LayoutParams(): {
-			"/": Record<string, never>
+			"/(auth)": Record<string, never>;
+			"/(app)": { calendarId?: string };
+			"/": { calendarId?: string };
+			"/(app)/calendars": { calendarId?: string };
+			"/(app)/calendars/[calendarId]": { calendarId: string };
+			"/(auth)/callback": Record<string, never>;
+			"/(app)/groups": Record<string, never>;
+			"/(auth)/logout": Record<string, never>;
+			"/(auth)/signin": Record<string, never>
 		};
-		Pathname(): "/";
+		Pathname(): "/" | `/calendars/${string}` & {} | "/callback" | "/groups" | "/logout" | "/signin";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
-		Asset(): string & {};
+		Asset(): "/favicon.svg" | string & {};
 	}
 }

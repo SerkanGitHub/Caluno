@@ -1,0 +1,38 @@
+- main:
+  - complementary:
+    - paragraph: Trusted calendar scope
+    - heading "T03 Browser User" [level=1]
+    - paragraph: This calendar route rendered only after checking the id against the server-resolved membership scope.
+    - article:
+      - text: Route state
+      - strong: access-denied
+      - paragraph: "Failure phase: calendar-lookup"
+    - navigation:
+      - link "Back to groups":
+        - /url: /groups
+      - link "Sign out":
+        - /url: /logout
+  - paragraph: Lookup denied
+  - heading "That calendar does not exist in your permitted scope." [level=2]
+  - paragraph: Caluno failed closed instead of rendering an empty calendar for a guessed or stale id.
+  - text: Failure phase
+  - strong: calendar-lookup
+  - text: Reason code
+  - strong: calendar-missing
+  - text: Attempted id
+  - code: bbbbbbbb-bbbb-2222-2222-222222222222
+  - link "Return to permitted groups":
+    - /url: /groups
+  - link "Open a permitted calendar":
+    - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111
+  - paragraph: Visible calendar inventory
+  - heading "Only trusted calendars appear in navigation." [level=3]
+  - text: 2 visible
+  - link "Alpha shared Default calendar":
+    - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111
+    - strong: Alpha shared
+    - text: Default calendar
+  - link "Alpha backlog Secondary calendar":
+    - /url: /calendars/aaaaaaaa-aaaa-1111-1111-222222222222
+    - strong: Alpha backlog
+    - text: Secondary calendar

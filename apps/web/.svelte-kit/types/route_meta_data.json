@@ -1,6 +1,30 @@
 {
+	"/(app)": [
+		"src/routes/(app)/+layout.server.ts",
+		"src/routes/+layout.server.ts"
+	],
 	"/": [
 		"src/routes/+layout.server.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/(app)/calendars/[calendarId]": [
+		"src/routes/(app)/calendars/[calendarId]/+page.server.ts",
+		"src/routes/(app)/+layout.server.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/(auth)/callback": [
+		"src/routes/(auth)/callback/+server.ts"
+	],
+	"/(app)/groups": [
+		"src/routes/(app)/groups/+page.server.ts",
+		"src/routes/(app)/+layout.server.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/(auth)/logout": [
+		"src/routes/(auth)/logout/+server.ts"
+	],
+	"/(auth)/signin": [
+		"src/routes/(auth)/signin/+page.server.ts",
 		"src/routes/+layout.server.ts"
 	]
 }

@@ -182,6 +182,7 @@ describe('supabase sql contract', () => {
     expect(migrationSql).toContain("raise exception 'JOIN_CODE_EXPIRED';");
     expect(migrationSql).toContain("raise exception 'JOIN_CODE_REVOKED';");
     expect(migrationSql).toContain('get diagnostics membership_insert_count = row_count;');
+    expect(migrationSql).toContain('on conflict on constraint group_memberships_pkey do nothing;');
   });
 });
 

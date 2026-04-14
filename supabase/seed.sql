@@ -88,6 +88,22 @@ set email = excluded.email,
     raw_user_meta_data = excluded.raw_user_meta_data,
     updated_at = excluded.updated_at;
 
+update auth.users
+set confirmation_token = coalesce(confirmation_token, ''),
+    recovery_token = coalesce(recovery_token, ''),
+    email_change = coalesce(email_change, ''),
+    email_change_token_new = coalesce(email_change_token_new, ''),
+    email_change_token_current = coalesce(email_change_token_current, ''),
+    reauthentication_token = coalesce(reauthentication_token, ''),
+    phone_change_token = coalesce(phone_change_token, '')
+where email in (
+  'alice@example.com',
+  'bob@example.com',
+  'casey@example.com',
+  'dana@example.com',
+  'erin@example.com'
+);
+
 insert into auth.identities (
   id,
   provider_id,

@@ -64,7 +64,7 @@
   - Do: Create the first Supabase config/migration/seed artifacts for profiles, groups, memberships, calendars, and join codes; enforce access through RLS/helper SQL; and reduce `packages/db` to compile-safe helpers so it no longer blocks future slices.
   - Verify: `pnpm exec tsc --pretty false --noEmit packages/db/src/tenant.ts && pnpm -C apps/web vitest run tests/access/policy-contract.unit.test.ts`
   - Done when: Schema authority is explicit in `supabase/`, unauthorized calendar access is denied by contract, and `packages/db` type-checks cleanly.
-- [ ] **T03: Build the protected auth, group onboarding, and permitted-calendar routes** `est:2h30m`
+- [x] **T03: Build the protected auth, group onboarding, and permitted-calendar routes** `est:2h30m`
   - Why: This task turns the auth and access contracts into the visible roadmap demo users will actually exercise in the browser.
   - Files: `apps/web/src/routes/+page.svelte`, `apps/web/src/routes/(auth)/signin/+page.svelte`, `apps/web/src/routes/(auth)/callback/+server.ts`, `apps/web/src/routes/(auth)/logout/+server.ts`, `apps/web/src/routes/(app)/+layout.server.ts`, `apps/web/src/routes/(app)/groups/+page.server.ts`, `apps/web/src/routes/(app)/groups/+page.svelte`, `apps/web/src/routes/(app)/calendars/[calendarId]/+page.server.ts`, `apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte`
   - Do: Replace the starter landing page with a session-aware entrypoint, add auth callback/logout routes, build protected onboarding and calendar routes around trusted server data, and use `frontend-design` for the auth/onboarding/access-denied surfaces without weakening server-side checks.
