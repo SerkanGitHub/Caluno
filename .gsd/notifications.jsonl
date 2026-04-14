@@ -2,3 +2,9 @@
 {"id":"a50667c0-2320-4bfb-847c-598066cc954c","ts":"2026-04-13T22:16:38.565Z","severity":"success","message":"✓ Analyzed codebase","source":"notify","read":false}
 {"id":"63370823-3ad2-4325-a375-ac61220bef52","ts":"2026-04-13T22:16:38.565Z","severity":"info","message":"Reviewing prior context...","source":"notify","read":false}
 {"id":"a66b2401-e971-4adb-92d0-596c70c84a4d","ts":"2026-04-13T22:16:38.566Z","severity":"success","message":"✓ Reviewed prior context","source":"notify","read":false}
+{"id":"79c16f8f-96ae-4892-bfea-912705be3174","ts":"2026-04-14T19:08:44.283Z","severity":"warning","message":"Web search: Set BRAVE_API_KEY or use an Anthropic model for built-in search","source":"notify","read":false}
+{"id":"35a887b5-d4f9-4339-950b-28e9f1b1117e","ts":"2026-04-14T19:09:44.418Z","severity":"warning","message":"Web search: Set BRAVE_API_KEY or use an Anthropic model for built-in search","source":"notify","read":false}
+{"id":"b5d2409f-77db-4ab3-873a-97302ef967ec","ts":"2026-04-14T19:13:56.567Z","severity":"info","message":"Analyzing codebase...","source":"notify","read":false}
+{"id":"6d5e2ba1-6ee0-469a-a2f8-1eec8d09e756","ts":"2026-04-14T19:13:56.570Z","severity":"success","message":"✓ Analyzed codebase","source":"notify","read":false}
+{"id":"571aee2f-651e-4a3a-a5a8-487e6707f5ac","ts":"2026-04-14T19:13:56.570Z","severity":"info","message":"Reviewing prior context...","source":"notify","read":false}
+{"id":"90ff8bad-c7bb-4b13-8b42-af6bb0d0e110","ts":"2026-04-14T19:13:56.572Z","severity":"success","message":"✓ Reviewed prior context","source":"notify","read":false}
