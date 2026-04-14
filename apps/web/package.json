@@ -11,13 +11,16 @@
     "prepare": "svelte-kit sync || echo ''",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "playwright test tests/e2e/auth-groups-access.spec.ts",
+    "test:e2e:headed": "playwright test tests/e2e/auth-groups-access.spec.ts --headed"
   },
   "dependencies": {
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.58.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@sveltejs/adapter-node": "^5.5.1",
     "@sveltejs/kit": "^2.49.1",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",

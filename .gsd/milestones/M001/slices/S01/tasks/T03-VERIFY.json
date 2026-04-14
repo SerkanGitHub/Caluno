@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T03",
+  "unitId": "M001/S01/T03",
+  "timestamp": 1776203415966,
+  "passed": false,
+  "discoverySource": "package-json",
+  "checks": [
+    {
+      "command": "npm run lint",
+      "exitCode": 0,
+      "durationMs": 428,
+      "verdict": "pass"
+    },
+    {
+      "command": "npm run test",
+      "exitCode": 0,
+      "durationMs": 1763,
+      "verdict": "pass"
+    }
+  ],
+  "retryAttempt": 1,
+  "maxRetries": 2,
+  "postExecutionChecks": [
+    {
+      "category": "import",
+      "target": "apps/web/src/routes/(auth)/signin/+page.server.ts:2",
+      "passed": false,
+      "message": "Import './$types' in apps/web/src/routes/(auth)/signin/+page.server.ts:2 does not resolve to an existing file",
+      "blocking": true
+    },
+    {
+      "category": "import",
+      "target": "apps/web/src/routes/(auth)/callback/+server.ts:2",
+      "passed": false,
+      "message": "Import './$types' in apps/web/src/routes/(auth)/callback/+server.ts:2 does not resolve to an existing file",
+      "blocking": true
+    },
+    {
+      "category": "import",
+      "target": "apps/web/src/routes/(auth)/logout/+server.ts:2",
+      "passed": false,
+      "message": "Import './$types' in apps/web/src/routes/(auth)/logout/+server.ts:2 does not resolve to an existing file",
+      "blocking": true
+    },
+    {
+      "category": "import",
+      "target": "apps/web/src/routes/(app)/+layout.server.ts:2",
+      "passed": false,
+      "message": "Import './$types' in apps/web/src/routes/(app)/+layout.server.ts:2 does not resolve to an existing file",
+      "blocking": true
+    },
+    {
+      "category": "import",
+      "target": "apps/web/src/routes/(app)/groups/+page.server.ts:2",
+      "passed": false,
+      "message": "Import './$types' in apps/web/src/routes/(app)/groups/+page.server.ts:2 does not resolve to an existing file",
+      "blocking": true
+    },
+    {
+      "category": "import",
+      "target": "apps/web/src/routes/(app)/calendars/[calendarId]/+page.server.ts:1",
+      "passed": false,
+      "message": "Import './$types' in apps/web/src/routes/(app)/calendars/[calendarId]/+page.server.ts:1 does not resolve to an existing file",
+      "blocking": true
+    }
+  ]
+}

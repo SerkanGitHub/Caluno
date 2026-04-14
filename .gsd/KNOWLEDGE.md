@@ -12,6 +12,12 @@
 
 ## Lessons Learned
 
+## 2026-04-14: Let a freshly started Vite auth page settle before Playwright sign-in input on cold runs
+
+**Context:** The first Playwright scenario hit `/signin` immediately after the Playwright `webServer` started a fresh `vite dev` instance.
+**Rule/Pattern:** On cold E2E runs against the web dev server, wait briefly after the sign-in shell becomes visible before filling and submitting credentials, or the hydrated page can reset the email field and trip native form validation before the POST is sent.
+**Rationale:** The issue reproduces only on cold-start browser proof, not on a warmed local session, and the retained trace makes it look like an auth failure when the actual break is a pre-submit input reset.
+
 ## 2026-04-14: Normalize direct SQL-seeded `auth.users` token fields for local GoTrue password login
 
 **Context:** Local Supabase browser/auth verification after inserting dev users directly in `supabase/seed.sql`.

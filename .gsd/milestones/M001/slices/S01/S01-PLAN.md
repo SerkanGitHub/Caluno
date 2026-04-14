@@ -70,7 +70,7 @@
   - Do: Replace the starter landing page with a session-aware entrypoint, add auth callback/logout routes, build protected onboarding and calendar routes around trusted server data, and use `frontend-design` for the auth/onboarding/access-denied surfaces without weakening server-side checks.
   - Verify: `pnpm -C apps/web check && pnpm -C apps/web vitest run tests/auth/session.unit.test.ts tests/access/policy-contract.unit.test.ts`
   - Done when: Anonymous users are redirected into auth, members can create or join a group, permitted calendars render in the protected app shell, and unauthorized calendar IDs show an explicit denied surface.
-- [ ] **T04: Prove the end-to-end auth and secure-access flow with browser tests** `est:1h30m`
+- [x] **T04: Prove the end-to-end auth and secure-access flow with browser tests** `est:1h30m`
   - Why: The slice is not complete until the real browser entrypoint, local Supabase runtime, and secure-access boundary are proven together under a repeatable test.
   - Files: `apps/web/playwright.config.ts`, `apps/web/tests/e2e/auth-groups-access.spec.ts`, `apps/web/tests/e2e/fixtures.ts`, `apps/web/package.json`
   - Do: Add Playwright config and fixtures for the local Supabase runtime, script the sign-in/create-or-join/permitted-calendar flow, assert the unauthorized calendar denial path, and capture trace-friendly diagnostics that localize auth vs onboarding vs RLS failures.
