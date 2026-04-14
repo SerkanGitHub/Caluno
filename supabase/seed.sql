@@ -250,4 +250,155 @@ set group_id = excluded.group_id,
     revoked_at = excluded.revoked_at,
     updated_at = timezone('utc', now());
 
+insert into public.shift_series (
+  id,
+  calendar_id,
+  title,
+  starts_at,
+  ends_at,
+  recurrence_cadence,
+  recurrence_interval,
+  repeat_count,
+  repeat_until,
+  timezone_name,
+  created_by
+)
+values
+  (
+    'aaaaaaaa-5555-1111-1111-111111111111',
+    'aaaaaaaa-aaaa-1111-1111-111111111111',
+    'Alpha opening sweep',
+    '2026-04-13T08:30:00Z',
+    '2026-04-13T09:00:00Z',
+    'daily',
+    1,
+    4,
+    '2026-04-16T09:00:00Z',
+    'UTC',
+    '11111111-1111-1111-1111-111111111111'
+  )
+on conflict (id) do update
+set calendar_id = excluded.calendar_id,
+    title = excluded.title,
+    starts_at = excluded.starts_at,
+    ends_at = excluded.ends_at,
+    recurrence_cadence = excluded.recurrence_cadence,
+    recurrence_interval = excluded.recurrence_interval,
+    repeat_count = excluded.repeat_count,
+    repeat_until = excluded.repeat_until,
+    timezone_name = excluded.timezone_name,
+    created_by = excluded.created_by,
+    updated_at = timezone('utc', now());
+
+insert into public.shifts (
+  id,
+  calendar_id,
+  series_id,
+  title,
+  start_at,
+  end_at,
+  occurrence_index,
+  source_kind,
+  created_by
+)
+values
+  (
+    'aaaaaaaa-6666-1111-1111-111111111111',
+    'aaaaaaaa-aaaa-1111-1111-111111111111',
+    null,
+    'Morning intake',
+    '2026-04-15T09:00:00Z',
+    '2026-04-15T11:00:00Z',
+    null,
+    'single',
+    '11111111-1111-1111-1111-111111111111'
+  ),
+  (
+    'aaaaaaaa-6666-1111-1111-222222222222',
+    'aaaaaaaa-aaaa-1111-1111-111111111111',
+    null,
+    'Afternoon handoff',
+    '2026-04-15T13:00:00Z',
+    '2026-04-15T15:00:00Z',
+    null,
+    'single',
+    '11111111-1111-1111-1111-111111111111'
+  ),
+  (
+    'aaaaaaaa-7777-1111-1111-111111111111',
+    'aaaaaaaa-aaaa-1111-1111-111111111111',
+    null,
+    'Kitchen prep',
+    '2026-04-16T12:00:00Z',
+    '2026-04-16T14:00:00Z',
+    null,
+    'single',
+    '11111111-1111-1111-1111-111111111111'
+  ),
+  (
+    'aaaaaaaa-7777-1111-1111-222222222222',
+    'aaaaaaaa-aaaa-1111-1111-111111111111',
+    null,
+    'Supplier call',
+    '2026-04-16T13:00:00Z',
+    '2026-04-16T15:00:00Z',
+    null,
+    'single',
+    '11111111-1111-1111-1111-111111111111'
+  ),
+  (
+    'aaaaaaaa-8888-1111-1111-111111111111',
+    'aaaaaaaa-aaaa-1111-1111-111111111111',
+    'aaaaaaaa-5555-1111-1111-111111111111',
+    'Alpha opening sweep',
+    '2026-04-13T08:30:00Z',
+    '2026-04-13T09:00:00Z',
+    1,
+    'series',
+    '11111111-1111-1111-1111-111111111111'
+  ),
+  (
+    'aaaaaaaa-8888-1111-1111-222222222222',
+    'aaaaaaaa-aaaa-1111-1111-111111111111',
+    'aaaaaaaa-5555-1111-1111-111111111111',
+    'Alpha opening sweep',
+    '2026-04-14T08:30:00Z',
+    '2026-04-14T09:00:00Z',
+    2,
+    'series',
+    '11111111-1111-1111-1111-111111111111'
+  ),
+  (
+    'aaaaaaaa-8888-1111-1111-333333333333',
+    'aaaaaaaa-aaaa-1111-1111-111111111111',
+    'aaaaaaaa-5555-1111-1111-111111111111',
+    'Alpha opening sweep',
+    '2026-04-15T08:30:00Z',
+    '2026-04-15T09:00:00Z',
+    3,
+    'series',
+    '11111111-1111-1111-1111-111111111111'
+  ),
+  (
+    'aaaaaaaa-8888-1111-1111-444444444444',
+    'aaaaaaaa-aaaa-1111-1111-111111111111',
+    'aaaaaaaa-5555-1111-1111-111111111111',
+    'Alpha opening sweep',
+    '2026-04-16T08:30:00Z',
+    '2026-04-16T09:00:00Z',
+    4,
+    'series',
+    '11111111-1111-1111-1111-111111111111'
+  )
+on conflict (id) do update
+set calendar_id = excluded.calendar_id,
+    series_id = excluded.series_id,
+    title = excluded.title,
+    start_at = excluded.start_at,
+    end_at = excluded.end_at,
+    occurrence_index = excluded.occurrence_index,
+    source_kind = excluded.source_kind,
+    created_by = excluded.created_by,
+    updated_at = timezone('utc', now());
+
 commit;

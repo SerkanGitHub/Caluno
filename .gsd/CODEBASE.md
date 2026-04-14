@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-14T21:23:50Z | Files: 79 | Described: 0/79
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-14T21:23:50Z","fingerprint":"f61f00ed1e070ce6f3b6a388436ebfe68a9181c9","fileCount":79,"truncated":false} -->
+Generated: 2026-04-14T22:26:09Z | Files: 116 | Described: 0/116
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-14T22:26:09Z","fingerprint":"107929f854c5b3ebc8e2558ddad917e40b3b5d7e","fileCount":116,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -22,6 +22,15 @@ Generated: 2026-04-14T21:23:50Z | Files: 79 | Described: 0/79
 - `README.md`
 - `setup-agent-env.sh`
 - `turbo.json`
+
+### .artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/
+- `.artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/accessibility.md`
+- `.artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/console.json`
+- `.artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/dialog.json`
+- `.artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/network.json`
+- `.artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/pages.json`
+- `.artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/summary.json`
+- `.artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/timeline.json`
 
 ### apps/mobile/
 - `apps/mobile/capacitor.config.ts`
@@ -51,6 +60,7 @@ Generated: 2026-04-14T21:23:50Z | Files: 79 | Described: 0/79
 
 ### apps/web/
 - `apps/web/package.json`
+- `apps/web/playwright.config.ts`
 - `apps/web/svelte.config.js`
 - `apps/web/tsconfig.json`
 - `apps/web/vite.config.ts`
@@ -72,6 +82,10 @@ Generated: 2026-04-14T21:23:50Z | Files: 79 | Described: 0/79
 - `apps/web/.svelte-kit/generated/client/nodes/0.js`
 - `apps/web/.svelte-kit/generated/client/nodes/1.js`
 - `apps/web/.svelte-kit/generated/client/nodes/2.js`
+- `apps/web/.svelte-kit/generated/client/nodes/3.js`
+- `apps/web/.svelte-kit/generated/client/nodes/4.js`
+- `apps/web/.svelte-kit/generated/client/nodes/5.js`
+- `apps/web/.svelte-kit/generated/client/nodes/6.js`
 
 ### apps/web/.svelte-kit/generated/server/
 - `apps/web/.svelte-kit/generated/server/internal.js`
@@ -83,6 +97,28 @@ Generated: 2026-04-14T21:23:50Z | Files: 79 | Described: 0/79
 - `apps/web/.svelte-kit/types/src/routes/$types.d.ts`
 - `apps/web/.svelte-kit/types/src/routes/proxy+layout.server.ts`
 
+### apps/web/.svelte-kit/types/src/routes/(app)/
+- `apps/web/.svelte-kit/types/src/routes/(app)/$types.d.ts`
+- `apps/web/.svelte-kit/types/src/routes/(app)/proxy+layout.server.ts`
+
+### apps/web/.svelte-kit/types/src/routes/(app)/calendars/[calendarId]/
+- `apps/web/.svelte-kit/types/src/routes/(app)/calendars/[calendarId]/$types.d.ts`
+- `apps/web/.svelte-kit/types/src/routes/(app)/calendars/[calendarId]/proxy+page.server.ts`
+
+### apps/web/.svelte-kit/types/src/routes/(app)/groups/
+- `apps/web/.svelte-kit/types/src/routes/(app)/groups/$types.d.ts`
+- `apps/web/.svelte-kit/types/src/routes/(app)/groups/proxy+page.server.ts`
+
+### apps/web/.svelte-kit/types/src/routes/(auth)/callback/
+- `apps/web/.svelte-kit/types/src/routes/(auth)/callback/$types.d.ts`
+
+### apps/web/.svelte-kit/types/src/routes/(auth)/logout/
+- `apps/web/.svelte-kit/types/src/routes/(auth)/logout/$types.d.ts`
+
+### apps/web/.svelte-kit/types/src/routes/(auth)/signin/
+- `apps/web/.svelte-kit/types/src/routes/(auth)/signin/$types.d.ts`
+- `apps/web/.svelte-kit/types/src/routes/(auth)/signin/proxy+page.server.ts`
+
 ### apps/web/src/
 - `apps/web/src/app.css`
 - `apps/web/src/app.d.ts`
@@ -91,6 +127,10 @@ Generated: 2026-04-14T21:23:50Z | Files: 79 | Described: 0/79
 
 ### apps/web/src/lib/access/
 - `apps/web/src/lib/access/contract.ts`
+
+### apps/web/src/lib/server/
+- `apps/web/src/lib/server/app-shell.ts`
+- `apps/web/src/lib/server/auth-flow.ts`
 
 ### apps/web/src/lib/supabase/
 - `apps/web/src/lib/supabase/client.ts`
@@ -102,11 +142,42 @@ Generated: 2026-04-14T21:23:50Z | Files: 79 | Described: 0/79
 - `apps/web/src/routes/+layout.svelte`
 - `apps/web/src/routes/+page.svelte`
 
+### apps/web/src/routes/(app)/
+- `apps/web/src/routes/(app)/+layout.server.ts`
+
+### apps/web/src/routes/(app)/calendars/[calendarId]/
+- `apps/web/src/routes/(app)/calendars/[calendarId]/+page.server.ts`
+- `apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte`
+
+### apps/web/src/routes/(app)/groups/
+- `apps/web/src/routes/(app)/groups/+page.server.ts`
+- `apps/web/src/routes/(app)/groups/+page.svelte`
+
+### apps/web/src/routes/(auth)/callback/
+- `apps/web/src/routes/(auth)/callback/+server.ts`
+
+### apps/web/src/routes/(auth)/logout/
+- `apps/web/src/routes/(auth)/logout/+server.ts`
+
+### apps/web/src/routes/(auth)/signin/
+- `apps/web/src/routes/(auth)/signin/+page.server.ts`
+- `apps/web/src/routes/(auth)/signin/+page.svelte`
+
+### apps/web/test-results/e2e/
+- `apps/web/test-results/e2e/.last-run.json`
+
 ### apps/web/tests/access/
 - `apps/web/tests/access/policy-contract.unit.test.ts`
 
 ### apps/web/tests/auth/
 - `apps/web/tests/auth/session.unit.test.ts`
+
+### apps/web/tests/e2e/
+- `apps/web/tests/e2e/auth-groups-access.spec.ts`
+- `apps/web/tests/e2e/fixtures.ts`
+
+### apps/web/tests/routes/
+- `apps/web/tests/routes/protected-routes.unit.test.ts`
 
 ### packages/db/
 - `packages/db/package.json`
