@@ -10,7 +10,6 @@
     type CalendarControllerState
   } from '$lib/offline/calendar-controller';
   import { createOfflineMutationQueue } from '$lib/offline/mutation-queue';
-  import { createBrowserScheduleRepository } from '$lib/offline/repository';
   import { buildCalendarWeekBoard } from '$lib/schedule/board';
   import type { ScheduleActionState } from '$lib/server/schedule';
   import type { PageData } from './$types';
@@ -75,48 +74,69 @@
       return;
     }
 
-    const repository = createBrowserScheduleRepository();
-    const queue = createOfflineMutationQueue({ repository });
-    const nextController = createCalendarController({
-      scope: {
-        userId: appShell.viewer.id,
-        calendarId: readyView.calendar.id,
-        weekStart: readyView.schedule.visibleWeek.start
-      },
-      initialSchedule: readyView.schedule,
-      routeMode: calendarState.mode as App.ProtectedRouteMode,
-      repository,
-      queue,
-      isOnline: () => navigator.onLine
-    });
-
-    controller = nextController;
     controllerState = createInitialCalendarControllerState({
       initialSchedule: readyView.schedule,
       routeMode: calendarState.mode as App.ProtectedRouteMode,
       isOnline: navigator.onLine
     });
 
-    const unsubscribe = nextController.subscribe((value) => {
-      controllerState = value;
-    });
+    let disposed = false;
+    let cleanup = () => {};
 
-    const syncNetwork = () => {
-      nextController.setNetwork(navigator.onLine);
-    };
+    void (async () => {
+      const { createBrowserScheduleRepository } = await import('$lib/offline/repository');
+      if (disposed) {
+        return;
+      }
 
-    window.addEventListener('online', syncNetwork);
-    window.addEventListener('offline', syncNetwork);
-    void nextController.initialize();
+      const repository = createBrowserScheduleRepository();
+      const queue = createOfflineMutationQueue({ repository });
+      const nextController = createCalendarController({
+        scope: {
+          userId: appShell.viewer.id,
+          calendarId: readyView.calendar.id,
+          weekStart: readyView.schedule.visibleWeek.start
+        },
+        initialSchedule: readyView.schedule,
+        routeMode: calendarState.mode as App.ProtectedRouteMode,
+        repository,
+        queue,
+        isOnline: () => navigator.onLine
+      });
+
+      if (disposed) {
+        void nextController.destroy();
+        return;
+      }
+
+      controller = nextController;
+
+      const unsubscribe = nextController.subscribe((value) => {
+        controllerState = value;
+      });
+
+      const syncNetwork = () => {
+        nextController.setNetwork(navigator.onLine);
+      };
+
+      window.addEventListener('online', syncNetwork);
+      window.addEventListener('offline', syncNetwork);
+      void nextController.initialize();
+
+      cleanup = () => {
+        window.removeEventListener('online', syncNetwork);
+        window.removeEventListener('offline', syncNetwork);
+        unsubscribe();
+        if (controller === nextController) {
+          controller = null;
+        }
+        void nextController.destroy();
+      };
+    })();
 
     return () => {
-      window.removeEventListener('online', syncNetwork);
-      window.removeEventListener('offline', syncNetwork);
-      unsubscribe();
-      if (controller === nextController) {
-        controller = null;
-      }
-      void nextController.destroy();
+      disposed = true;
+      cleanup();
     };
   });
 

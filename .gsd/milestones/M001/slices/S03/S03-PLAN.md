@@ -76,7 +76,7 @@
   - Do: Hydrate the board from the local repository, route offline create/edit/move/delete through a mutation queue with persistence across reload, keep the current server action path as the online canonical flow, and surface pending/local-only/offline state using the existing calm board/status language instead of noisy debug UI.
   - Verify: `pnpm --dir apps/web exec vitest run tests/schedule/offline-queue.unit.test.ts tests/schedule/board.unit.test.ts`
   - Done when: offline mutations update the board immediately, survive reload from local state, reuse existing recurrence validation, and visibly distinguish local-only work from server-confirmed state.
-- [ ] **T05: Prove offline reopen, local persistence, and online-regression safety in Playwright** `est:1h30m`
+- [x] **T05: Prove offline reopen, local persistence, and online-regression safety in Playwright** `est:1h30m`
   - Why: S03 is only finished when the real browser proves the continuity claim end to end and S02's online scheduling proof still passes after the route becomes local-first.
   - Files: `apps/web/tests/e2e/fixtures.ts`, `apps/web/tests/e2e/calendar-shifts.spec.ts`, `apps/web/tests/e2e/calendar-offline.spec.ts`
   - Do: Extend diagnostics to capture online seed, offline transition, cached reopen, and pending-local phases; keep the existing online schedule spec green; and add a dedicated offline spec that proves cache warm-up, offline reopen, local edits across reload, and offline denial for unsynced calendar ids.

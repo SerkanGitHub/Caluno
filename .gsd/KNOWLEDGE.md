@@ -65,3 +65,9 @@
 **Context:** Local-first and server-backed shift create forms both post recurrence fields through the shared `normalizeShiftDraft()` recurrence validator.
 **Rule/Pattern:** Default `recurrenceInterval` to an empty string for one-off shift forms, and only send an interval value once a recurrence cadence has actually been selected.
 **Rationale:** The shared validator treats any supplied interval as recurrence input; posting `interval=1` with an empty cadence turns a normal one-off create into `RECURRENCE_CADENCE_REQUIRED` even though the user did not ask for recurrence.
+
+## 2026-04-15: Exclude `@sqlite.org/sqlite-wasm` from Vite optimizeDeps and prefer the library's wrapped worker bootstrap
+
+**Context:** S03 offline repository startup under Vite/Playwright hit export-shape mismatches and repeated `sqlite3.wasm` 404s while trying to use a project-owned worker bootstrap.
+**Rule/Pattern:** In this repo, add `@sqlite.org/sqlite-wasm` to `optimizeDeps.exclude` and prefer the package-supported wrapped worker promiser path for browser SQLite startup before reaching for custom worker wiring.
+**Rationale:** Vite prebundling and custom worker bootstrapping can hide the package's real browser export/asset behavior; the library-supported path avoids missing wasm asset resolution and is more stable across dev and preview proof surfaces.

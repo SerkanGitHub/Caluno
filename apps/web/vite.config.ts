@@ -11,6 +11,9 @@ export default defineConfig({
   preview: {
     headers: WORKER_ISOLATION_HEADERS
   },
+  optimizeDeps: {
+    exclude: ['@sqlite.org/sqlite-wasm']
+  },
   test: {
     environment: 'node',
     include: ['tests/**/*.test.ts'],

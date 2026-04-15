@@ -18,7 +18,7 @@ test('seeded member can open a permitted calendar and gets an explicit denial fo
   await test.step('phase: sign in as the seeded Alpha member', async () => {
     flow.mark('login', seededUsers.alphaMember.email);
     await signInThroughUi(page, seededUsers.alphaMember);
-    await expect(page.getByTestId('groups-shell')).toContainText('workspace-ready');
+    await expect(page.getByTestId('groups-shell')).toContainText('trusted-online');
     await expect(page.getByRole('heading', { name: seededUsers.alphaMember.expectedGroups[0] })).toBeVisible();
   });
 

@@ -81,6 +81,53 @@ function createInitialSchedule(): CalendarScheduleView {
   };
 }
 
+function cloneSchedule<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T;
+}
+
+function createTrustedSchedule(options: {
+  includeAlpha?: boolean;
+  includeGamma?: boolean;
+} = {}): CalendarScheduleView {
+  const schedule = cloneSchedule(createInitialSchedule());
+  const includeAlpha = options.includeAlpha ?? true;
+  const includeGamma = options.includeGamma ?? false;
+
+  schedule.days = schedule.days.map((day) => ({ ...day, shifts: [] }));
+
+  if (includeAlpha) {
+    schedule.days[0]?.shifts.push({
+      id: 'shift-alpha',
+      calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+      seriesId: null,
+      title: 'Alpha opening sweep',
+      startAt: '2026-04-20T08:30:00.000Z',
+      endAt: '2026-04-20T09:00:00.000Z',
+      occurrenceIndex: null,
+      sourceKind: 'single'
+    });
+  }
+
+  if (includeGamma) {
+    schedule.days[3]?.shifts.push({
+      id: 'shift-gamma',
+      calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+      seriesId: null,
+      title: 'Gamma inventory handoff',
+      startAt: '2026-04-23T14:00:00.000Z',
+      endAt: '2026-04-23T15:00:00.000Z',
+      occurrenceIndex: null,
+      sourceKind: 'single'
+    });
+  }
+
+  const shifts = schedule.days.flatMap((day) => day.shifts);
+  schedule.totalShifts = shifts.length;
+  schedule.shiftIds = shifts.map((shift) => shift.id);
+  schedule.message = 'The trusted visible week refreshed successfully.';
+  return schedule;
+}
+
 function createCreateFormData(): FormData {
   const formData = new FormData();
   formData.set('title', 'Offline prep');
@@ -322,5 +369,116 @@ describe('offline mutation queue and calendar controller', () => {
       reason: 'SCHEDULE_MOVE_TIMEOUT'
     });
     expect(state.shiftDiagnostics['shift-alpha']).toEqual([{ label: 'Retry needed', tone: 'danger' }]);
+  });
+
+  it('replays queued local mutations onto a refreshed trusted week during initialize', async () => {
+    const storage = createStorage();
+    const scope = createScope();
+
+    const firstRepository = createMemoryScheduleRepository({ storage });
+    const firstQueue = createOfflineMutationQueue({ repository: firstRepository });
+    const firstController = createCalendarController({
+      scope,
+      initialSchedule: createInitialSchedule(),
+      routeMode: 'cached-offline',
+      repository: firstRepository,
+      queue: firstQueue,
+      isOnline: () => false
+    });
+
+    await firstController.initialize();
+    await firstController.beginMutation({
+      action: 'create',
+      formId: 'create:week',
+      formData: createCreateFormData()
+    });
+    await firstController.beginMutation({
+      action: 'move',
+      formId: 'move:shift-alpha',
+      formData: createMoveFormData()
+    });
+    await firstController.destroy();
+
+    const refreshedRepository = createMemoryScheduleRepository({ storage });
+    const refreshedQueue = createOfflineMutationQueue({ repository: refreshedRepository });
+    const refreshedController = createCalendarController({
+      scope,
+      initialSchedule: createTrustedSchedule({ includeAlpha: true, includeGamma: true }),
+      routeMode: 'trusted-online',
+      repository: refreshedRepository,
+      queue: refreshedQueue,
+      isOnline: () => true
+    });
+
+    await refreshedController.initialize();
+    const state = refreshedController.getState();
+    const inspection = refreshedController.inspectQueue();
+
+    expect(state.boardSource).toBe('cached-local');
+    expect(state.queueLength).toBe(2);
+    expect(state.schedule.shiftIds).toHaveLength(3);
+    expect(state.schedule.shiftIds[0]).toBe('shift-alpha');
+    expect(state.schedule.shiftIds[1]).toMatch(/^local-/);
+    expect(state.schedule.shiftIds[2]).toBe('shift-gamma');
+    expect(state.schedule.days[0]?.shifts[0]).toMatchObject({
+      id: 'shift-alpha',
+      startAt: '2026-04-20T10:00:00.000Z',
+      endAt: '2026-04-20T11:00:00.000Z'
+    });
+    expect(state.schedule.days[3]?.shifts[0]?.id).toBe('shift-gamma');
+    expect(state.schedule.message).toContain('pending browser-local changes replayed');
+    expect(inspection.queueState).toBe('ready');
+    expect(inspection.entries).toHaveLength(2);
+  });
+
+  it('surfaces replay failures and keeps the existing local board intact', async () => {
+    const storage = createStorage();
+    const scope = createScope();
+
+    const firstRepository = createMemoryScheduleRepository({ storage });
+    const firstQueue = createOfflineMutationQueue({ repository: firstRepository });
+    const firstController = createCalendarController({
+      scope,
+      initialSchedule: createInitialSchedule(),
+      routeMode: 'cached-offline',
+      repository: firstRepository,
+      queue: firstQueue,
+      isOnline: () => false
+    });
+
+    await firstController.initialize();
+    await firstController.beginMutation({
+      action: 'move',
+      formId: 'move:shift-alpha',
+      formData: createMoveFormData()
+    });
+    await firstController.destroy();
+
+    const refreshedRepository = createMemoryScheduleRepository({ storage });
+    const refreshedQueue = createOfflineMutationQueue({ repository: refreshedRepository });
+    const refreshedController = createCalendarController({
+      scope,
+      initialSchedule: createTrustedSchedule({ includeAlpha: false, includeGamma: true }),
+      routeMode: 'trusted-online',
+      repository: refreshedRepository,
+      queue: refreshedQueue,
+      isOnline: () => true
+    });
+
+    await refreshedController.initialize();
+    const state = refreshedController.getState();
+
+    expect(state.lastFailure).toEqual({
+      reason: 'REPLAY_MOVE_TARGET_MISSING',
+      detail:
+        'The trusted refreshed week no longer contained a shift needed for a queued local move, so the existing local board stayed authoritative.'
+    });
+    expect(state.queueLength).toBe(1);
+    expect(state.schedule.shiftIds).toEqual(['shift-alpha']);
+    expect(state.schedule.days[0]?.shifts[0]).toMatchObject({
+      id: 'shift-alpha',
+      startAt: '2026-04-20T10:00:00.000Z',
+      endAt: '2026-04-20T11:00:00.000Z'
+    });
   });
 });

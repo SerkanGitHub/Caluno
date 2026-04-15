@@ -402,21 +402,21 @@ function createSqliteWorkerRepositoryDriver(options: { openTimeoutMs: number }):
       }
 
       try {
-        worker = new Worker(new URL('./sqlite.worker.ts', import.meta.url), { type: 'module' });
-        promiser = await withTimeout(
-          sqlite3Worker1Promiser.v2({ worker }),
+        const workerPromiser = await withTimeout(
+          Promise.resolve(sqlite3Worker1Promiser()),
           options.openTimeoutMs,
           'Timed out while waiting for the SQLite worker bootstrap to become ready.'
         );
+        promiser = workerPromiser;
 
         const configResult = await withTimeout(
-          promiser('config-get', {}),
+          workerPromiser('config-get', {}),
           options.openTimeoutMs,
           'Timed out while reading the SQLite worker configuration.'
         );
 
         const openResult = await withTimeout(
-          promiser('open', { filename: SQLITE_DATABASE_FILENAME }),
+          workerPromiser('open', { filename: SQLITE_DATABASE_FILENAME }),
           options.openTimeoutMs,
           'Timed out while opening the persistent browser-local SQLite database.'
         );
@@ -433,7 +433,7 @@ function createSqliteWorkerRepositoryDriver(options: { openTimeoutMs: number }):
         }
 
         await execSql(
-          promiser,
+          workerPromiser,
           `
             CREATE TABLE IF NOT EXISTS week_snapshots (
               user_id TEXT NOT NULL,

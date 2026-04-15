@@ -1,8 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import rrulePkg from 'rrule';
-
-const { RRule } = rrulePkg;
+import * as rrulePkg from 'rrule';
 import { resolveCalendarAccess, type GroupMembership } from '$lib/access/contract';
 import { normalizeShiftDraft, normalizeVisibleRange } from '$lib/schedule/recurrence';
 import type {
@@ -12,6 +10,15 @@ import type {
   ScheduleValidationResult
 } from '$lib/schedule/types';
 import type { AppCalendar, AppMembership } from '$lib/server/app-shell';
+
+const rruleModule = rrulePkg as unknown as {
+  RRule?: typeof import('rrule').RRule;
+  default?: {
+    RRule?: typeof import('rrule').RRule;
+  };
+};
+
+const RRule = (rruleModule.RRule ?? rruleModule.default?.RRule) as typeof import('rrule').RRule;
 
 export type VisibleWeekSource = 'query' | 'default' | 'fallback-invalid';
 export type ScheduleLoadStatus = 'ready' | 'query-error' | 'timeout' | 'malformed-response';

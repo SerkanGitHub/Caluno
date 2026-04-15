@@ -18,6 +18,10 @@ export type OfflineMutationFields = {
   repeatUntil?: string;
 };
 
+export type OfflineShiftMutationFields = OfflineMutationFields & {
+  shiftId: string;
+};
+
 export type OfflineCreateMutationPayload = {
   kind: 'create';
   fields: OfflineMutationFields;
@@ -26,21 +30,21 @@ export type OfflineCreateMutationPayload = {
 
 export type OfflineEditMutationPayload = {
   kind: 'edit';
-  fields: OfflineMutationFields;
+  fields: OfflineShiftMutationFields;
   previousShift: CalendarShift;
   nextShift: CalendarShift;
 };
 
 export type OfflineMoveMutationPayload = {
   kind: 'move';
-  fields: OfflineMutationFields;
+  fields: OfflineShiftMutationFields;
   previousShift: CalendarShift;
   nextShift: CalendarShift;
 };
 
 export type OfflineDeleteMutationPayload = {
   kind: 'delete';
-  fields: OfflineMutationFields;
+  fields: OfflineShiftMutationFields;
   deletedShift: CalendarShift;
 };
 
@@ -282,18 +286,22 @@ function isOfflineMutationPayload(
   }
 
   const candidate = value as Record<string, unknown>;
-  if (candidate.kind !== action || !isOfflineMutationFields(candidate.fields)) {
+  if (candidate.kind !== action) {
     return false;
   }
 
   switch (action) {
     case 'create':
-      return Array.isArray(candidate.createdShifts) && candidate.createdShifts.every(isCalendarShift);
+      return isOfflineMutationFields(candidate.fields) && Array.isArray(candidate.createdShifts) && candidate.createdShifts.every(isCalendarShift);
     case 'edit':
     case 'move':
-      return isCalendarShift(candidate.previousShift) && isCalendarShift(candidate.nextShift);
+      return (
+        isOfflineShiftMutationFields(candidate.fields) &&
+        isCalendarShift(candidate.previousShift) &&
+        isCalendarShift(candidate.nextShift)
+      );
     case 'delete':
-      return isCalendarShift(candidate.deletedShift);
+      return isOfflineShiftMutationFields(candidate.fields) && isCalendarShift(candidate.deletedShift);
   }
 }
 
@@ -312,6 +320,15 @@ function isOfflineMutationFields(value: unknown): value is OfflineMutationFields
     (candidate.repeatCount === undefined || typeof candidate.repeatCount === 'string') &&
     (candidate.repeatUntil === undefined || typeof candidate.repeatUntil === 'string')
   );
+}
+
+function isOfflineShiftMutationFields(value: unknown): value is OfflineShiftMutationFields {
+  if (!isOfflineMutationFields(value)) {
+    return false;
+  }
+
+  const candidate = value as Partial<OfflineShiftMutationFields>;
+  return typeof candidate.shiftId === 'string' && candidate.shiftId.trim().length > 0;
 }
 
 function isOfflineScheduleScope(value: unknown): value is OfflineScheduleScope {

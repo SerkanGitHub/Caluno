@@ -1,6 +1,4 @@
-import rrulePkg from 'rrule';
-
-const { RRule } = rrulePkg;
+import * as rrulePkg from 'rrule';
 import {
   scheduleRecurrenceCadences,
   type ExpandedScheduleOccurrence,
@@ -12,6 +10,15 @@ import {
   type ScheduleValidationResult,
   type ScheduleVisibleRangeInput
 } from './types';
+
+const rruleModule = rrulePkg as unknown as {
+  RRule?: typeof import('rrule').RRule;
+  default?: {
+    RRule?: typeof import('rrule').RRule;
+  };
+};
+
+const RRule = (rruleModule.RRule ?? rruleModule.default?.RRule) as typeof import('rrule').RRule;
 
 const recurrenceFrequencyByCadence: Record<ScheduleRecurrenceCadence, number> = {
   daily: RRule.DAILY,

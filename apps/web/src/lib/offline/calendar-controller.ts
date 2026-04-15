@@ -23,6 +23,13 @@ import type {
   OfflineMutationQueueEntry,
   OfflineMutationQueueReadResult
 } from './mutation-queue';
+import {
+  compareQueueEntries,
+  createScheduleViewFromShifts,
+  flattenScheduleShifts,
+  rebaseTrustedScheduleWithLocalQueue,
+  sortScheduleShifts
+} from './sync-engine';
 
 export type CalendarControllerActionStatus =
   | 'pending-local'
@@ -84,10 +91,33 @@ export type CalendarControllerServerOutcome =
       detail: string;
     };
 
+export type CalendarControllerQueueInspection = {
+  queueState: CalendarControllerState['queueState'];
+  queueReason: string | null;
+  queueDetail: string | null;
+  entries: OfflineMutationQueueEntry[];
+};
+
+export type CalendarControllerTrustedScheduleResult =
+  | {
+      status: 'applied';
+      boardSource: CalendarControllerState['boardSource'];
+      snapshotOrigin: OfflineScheduleWeekSnapshot['origin'];
+      replayedQueueLength: number;
+      detail: string;
+    }
+  | {
+      status: 'failed';
+      reason: string;
+      detail: string;
+    };
+
 export type CalendarController = {
   subscribe: (listener: (state: CalendarControllerState) => void) => () => void;
   initialize: () => Promise<void>;
   setNetwork: (isOnline: boolean) => void;
+  inspectQueue: () => CalendarControllerQueueInspection;
+  ingestTrustedSchedule: (schedule: CalendarScheduleView) => Promise<CalendarControllerTrustedScheduleResult>;
   beginMutation: (params: {
     action: 'create' | 'edit' | 'move' | 'delete';
     formId: string;
@@ -198,7 +228,7 @@ export function createCalendarController(options: {
       pendingQueueLength: queueEntries.filter((entry) => entry.syncState === 'pending-server').length,
       retryableQueueLength: queueEntries.filter((entry) => entry.syncState === 'retryable').length,
       shiftDiagnostics: buildShiftDiagnostics(queueEntries, state.actionStates),
-      boardSource: queueEntries.length > 0 || state.boardSource === 'cached-local' ? 'cached-local' : 'server-sync'
+      boardSource: queueEntries.length > 0 ? 'cached-local' : state.boardSource
     };
   }
 
@@ -223,6 +253,48 @@ export function createCalendarController(options: {
     }
 
     return true;
+  }
+
+  async function applyTrustedSchedule(schedule: CalendarScheduleView): Promise<CalendarControllerTrustedScheduleResult> {
+    const replayResult = rebaseTrustedScheduleWithLocalQueue({
+      trustedSchedule: schedule,
+      queueEntries
+    });
+
+    if (!replayResult.ok) {
+      state = {
+        ...state,
+        lastFailure: {
+          reason: replayResult.reason,
+          detail: replayResult.detail
+        }
+      };
+      refreshDiagnostics();
+      emit();
+      return {
+        status: 'failed',
+        reason: replayResult.reason,
+        detail: replayResult.detail
+      };
+    }
+
+    state = {
+      ...state,
+      schedule: replayResult.schedule,
+      boardSource: replayResult.boardSource,
+      lastFailure: null
+    };
+    refreshDiagnostics();
+    await persistSnapshot(replayResult.schedule, replayResult.snapshotOrigin);
+    emit();
+
+    return {
+      status: 'applied',
+      boardSource: replayResult.boardSource,
+      snapshotOrigin: replayResult.snapshotOrigin,
+      replayedQueueLength: replayResult.replayedQueueLength,
+      detail: replayResult.detail
+    };
   }
 
   return {
@@ -281,6 +353,10 @@ export function createCalendarController(options: {
 
       refreshDiagnostics();
       emit();
+
+      if (options.routeMode === 'trusted-online' && loadedQueue.status === 'available' && options.initialSchedule.status === 'ready') {
+        await applyTrustedSchedule(options.initialSchedule);
+      }
     },
 
     setNetwork(isOnline) {
@@ -290,6 +366,19 @@ export function createCalendarController(options: {
       };
       refreshDiagnostics();
       emit();
+    },
+
+    inspectQueue() {
+      return {
+        queueState: state.queueState,
+        queueReason: state.queueReason,
+        queueDetail: state.queueDetail,
+        entries: queueEntries.map((entry) => structuredCloneLike(entry))
+      };
+    },
+
+    ingestTrustedSchedule(schedule) {
+      return applyTrustedSchedule(schedule);
     },
 
     async beginMutation({ action, formId, formData }) {
@@ -429,6 +518,7 @@ export function createCalendarController(options: {
         state = {
           ...state,
           schedule: nextSchedule,
+          boardSource: 'server-sync',
           lastFailure: null
         };
         const acknowledged = await options.queue.acknowledge(options.scope, queueEntry.id);
@@ -925,42 +1015,6 @@ function reconcileSuccessfulMutation(
   }
 }
 
-function createScheduleViewFromShifts(params: {
-  visibleWeek: VisibleWeek;
-  shifts: CalendarShift[];
-  fallback: CalendarScheduleView;
-  message: string;
-}): CalendarScheduleView {
-  const sortedShifts = sortScheduleShifts(params.shifts);
-  return {
-    status: 'ready',
-    reason: params.fallback.reason,
-    message: params.message,
-    visibleWeek: params.visibleWeek,
-    days: params.visibleWeek.dayKeys.map((dayKey) => ({
-      dayKey,
-      label: formatDayLabel(dayKey),
-      shifts: sortedShifts.filter((shift) => shift.startAt.slice(0, 10) === dayKey)
-    })),
-    totalShifts: sortedShifts.length,
-    shiftIds: sortedShifts.map((shift) => shift.id)
-  };
-}
-
-function flattenScheduleShifts(schedule: CalendarScheduleView): CalendarShift[] {
-  return schedule.days.flatMap((day) => day.shifts);
-}
-
-function sortScheduleShifts(shifts: CalendarShift[]): CalendarShift[] {
-  return [...shifts].sort(
-    (left, right) =>
-      left.startAt.localeCompare(right.startAt) ||
-      left.endAt.localeCompare(right.endAt) ||
-      left.title.localeCompare(right.title) ||
-      left.id.localeCompare(right.id)
-  );
-}
-
 function cloneSchedule(schedule: CalendarScheduleView): CalendarScheduleView {
   return {
     ...schedule,
@@ -1080,8 +1134,8 @@ function describeValidationReason(reason: ScheduleValidationFailureReason): stri
   }
 }
 
-function compareQueueEntries(left: OfflineMutationQueueEntry, right: OfflineMutationQueueEntry): number {
-  return left.createdAt.localeCompare(right.createdAt) || left.id.localeCompare(right.id);
+function structuredCloneLike<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T;
 }
 
 function createOperationId(): string {

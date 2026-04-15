@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-15T08:15:14Z | Files: 264 | Described: 0/264
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-15T08:15:14Z","fingerprint":"fad743f235156f50529ed2b05130e537913c47dd","fileCount":264,"truncated":false} -->
+Generated: 2026-04-15T14:50:44Z | Files: 271 | Described: 0/271
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-15T14:50:44Z","fingerprint":"e9678006141786bd50e43adbb21ec80f06b13379","fileCount":271,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -301,10 +301,12 @@ Generated: 2026-04-15T08:15:14Z | Files: 264 | Described: 0/264
 ### apps/web/.svelte-kit/types/src/routes/(app)/
 - `apps/web/.svelte-kit/types/src/routes/(app)/$types.d.ts`
 - `apps/web/.svelte-kit/types/src/routes/(app)/proxy+layout.server.ts`
+- `apps/web/.svelte-kit/types/src/routes/(app)/proxy+layout.ts`
 
 ### apps/web/.svelte-kit/types/src/routes/(app)/calendars/[calendarId]/
 - `apps/web/.svelte-kit/types/src/routes/(app)/calendars/[calendarId]/$types.d.ts`
 - `apps/web/.svelte-kit/types/src/routes/(app)/calendars/[calendarId]/proxy+page.server.ts`
+- `apps/web/.svelte-kit/types/src/routes/(app)/calendars/[calendarId]/proxy+page.ts`
 
 ### apps/web/.svelte-kit/types/src/routes/(app)/groups/
 - `apps/web/.svelte-kit/types/src/routes/(app)/groups/$types.d.ts`
@@ -338,6 +340,8 @@ Generated: 2026-04-15T08:15:14Z | Files: 264 | Described: 0/264
 
 ### apps/web/src/lib/offline/
 - `apps/web/src/lib/offline/app-shell-cache.ts`
+- `apps/web/src/lib/offline/calendar-controller.ts`
+- `apps/web/src/lib/offline/mutation-queue.ts`
 - `apps/web/src/lib/offline/repository.ts`
 - `apps/web/src/lib/offline/runtime.ts`
 - `apps/web/src/lib/offline/sqlite.worker.ts`
@@ -364,10 +368,12 @@ Generated: 2026-04-15T08:15:14Z | Files: 264 | Described: 0/264
 
 ### apps/web/src/routes/(app)/
 - `apps/web/src/routes/(app)/+layout.server.ts`
+- `apps/web/src/routes/(app)/+layout.ts`
 
 ### apps/web/src/routes/(app)/calendars/[calendarId]/
 - `apps/web/src/routes/(app)/calendars/[calendarId]/+page.server.ts`
 - `apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte`
+- `apps/web/src/routes/(app)/calendars/[calendarId]/+page.ts`
 
 ### apps/web/src/routes/(app)/groups/
 - `apps/web/src/routes/(app)/groups/+page.server.ts`
@@ -406,6 +412,7 @@ Generated: 2026-04-15T08:15:14Z | Files: 264 | Described: 0/264
 
 ### apps/web/tests/schedule/
 - `apps/web/tests/schedule/board.unit.test.ts`
+- `apps/web/tests/schedule/offline-queue.unit.test.ts`
 - `apps/web/tests/schedule/offline-store.unit.test.ts`
 - `apps/web/tests/schedule/recurrence.unit.test.ts`
 - `apps/web/tests/schedule/server-actions.unit.test.ts`

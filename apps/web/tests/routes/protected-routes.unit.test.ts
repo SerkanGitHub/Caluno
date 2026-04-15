@@ -11,8 +11,10 @@ import {
   createMemoryScheduleRepository,
   type OfflineScheduleWeekSnapshot
 } from '../../src/lib/offline/repository';
-import { resolveProtectedShellRouteData } from '../../src/routes/(app)/+layout';
-import { resolveCachedCalendarRouteData } from '../../src/routes/(app)/calendars/[calendarId]/+page';
+import {
+  resolveCachedCalendarRouteData,
+  resolveProtectedShellRouteData
+} from '../../src/lib/offline/protected-routes';
 import { load as appLayoutLoad } from '../../src/routes/(app)/+layout.server';
 import { actions as groupActions } from '../../src/routes/(app)/groups/+page.server';
 import { load as calendarPageLoad } from '../../src/routes/(app)/calendars/[calendarId]/+page.server';

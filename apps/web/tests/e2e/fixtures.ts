@@ -25,7 +25,45 @@ type FlowContext = {
   visibleWeekEndExclusive: string | null;
   focusShiftIds: string[];
   note: string | null;
+  navigatorOnline: boolean | null;
+  runtimeIsolationState: string | null;
+  serviceWorkerStatus: string | null;
+  serviceWorkerDetail: string | null;
+  calendarRouteMode: string | null;
+  calendarRouteReason: string | null;
+  calendarRouteDetail: string | null;
+  localNetwork: string | null;
+  localQueueSummary: string | null;
+  localStateDetail: string | null;
+  cachedSnapshotAt: string | null;
+  boardMetaBadges: string[];
+  actionReasons: string[];
+  actionSummaries: string[];
+  deniedReason: string | null;
+  deniedFailurePhase: string | null;
+  deniedAttemptedId: string | null;
 };
+
+type FlowSurfaceSnapshot = Pick<
+  FlowContext,
+  | 'navigatorOnline'
+  | 'runtimeIsolationState'
+  | 'serviceWorkerStatus'
+  | 'serviceWorkerDetail'
+  | 'calendarRouteMode'
+  | 'calendarRouteReason'
+  | 'calendarRouteDetail'
+  | 'localNetwork'
+  | 'localQueueSummary'
+  | 'localStateDetail'
+  | 'cachedSnapshotAt'
+  | 'boardMetaBadges'
+  | 'actionReasons'
+  | 'actionSummaries'
+  | 'deniedReason'
+  | 'deniedFailurePhase'
+  | 'deniedAttemptedId'
+>;
 
 type SeededShiftFixture = {
   id: string;
@@ -179,6 +217,36 @@ export const seededSchedule = {
   };
 };
 
+async function readFlowSurfaceSnapshot(page: Page): Promise<FlowSurfaceSnapshot> {
+  return page.evaluate(() => {
+    const text = (selector: string) => document.querySelector<HTMLElement>(selector)?.textContent?.trim() ?? null;
+    const texts = (selector: string) =>
+      Array.from(document.querySelectorAll<HTMLElement>(selector))
+        .map((element) => element.textContent?.trim() ?? '')
+        .filter(Boolean);
+
+    return {
+      navigatorOnline: typeof navigator !== 'undefined' ? navigator.onLine : null,
+      runtimeIsolationState: document.querySelector<HTMLElement>('[data-testid="offline-runtime-surface"]')?.dataset.crossOriginIsolated ?? null,
+      serviceWorkerStatus: document.querySelector<HTMLElement>('[data-testid="offline-runtime-surface"]')?.dataset.serviceWorkerStatus ?? null,
+      serviceWorkerDetail: document.querySelector<HTMLElement>('[data-testid="offline-runtime-surface"]')?.dataset.serviceWorkerDetail ?? null,
+      calendarRouteMode: text('[data-testid="calendar-route-state"] strong'),
+      calendarRouteReason: text('[data-testid="calendar-route-state"] code'),
+      calendarRouteDetail: text('[data-testid="calendar-route-state"] p'),
+      localNetwork: text('[data-testid="calendar-local-state"] strong'),
+      localQueueSummary: text('[data-testid="calendar-local-state"] code'),
+      localStateDetail: text('[data-testid="calendar-local-state"] p'),
+      cachedSnapshotAt: text('.status-stack article:nth-of-type(3) strong'),
+      boardMetaBadges: texts('[data-testid="calendar-week-board"] .calendar-week-board__meta .pill'),
+      actionReasons: texts('[data-testid="schedule-action-strip"] article strong'),
+      actionSummaries: texts('[data-testid="schedule-action-strip"] article p'),
+      deniedReason: text('[data-testid="access-denied-state"] .denied-meta div:nth-of-type(2) strong'),
+      deniedFailurePhase: text('[data-testid="access-denied-state"] .denied-meta div:nth-of-type(1) strong'),
+      deniedAttemptedId: text('[data-testid="access-denied-state"] .denied-meta div:nth-of-type(3) code')
+    } satisfies FlowSurfaceSnapshot;
+  });
+}
+
 class FlowDiagnostics {
   private readonly phases: FlowPhase[] = [];
   private readonly consoleErrors: string[] = [];
@@ -189,7 +257,24 @@ class FlowDiagnostics {
     visibleWeekStart: null,
     visibleWeekEndExclusive: null,
     focusShiftIds: [],
-    note: null
+    note: null,
+    navigatorOnline: null,
+    runtimeIsolationState: null,
+    serviceWorkerStatus: null,
+    serviceWorkerDetail: null,
+    calendarRouteMode: null,
+    calendarRouteReason: null,
+    calendarRouteDetail: null,
+    localNetwork: null,
+    localQueueSummary: null,
+    localStateDetail: null,
+    cachedSnapshotAt: null,
+    boardMetaBadges: [],
+    actionReasons: [],
+    actionSummaries: [],
+    deniedReason: null,
+    deniedFailurePhase: null,
+    deniedAttemptedId: null
   };
 
   constructor(
@@ -229,11 +314,15 @@ class FlowDiagnostics {
     this.context = {
       ...this.context,
       ...patch,
-      focusShiftIds: patch.focusShiftIds ?? this.context.focusShiftIds
+      focusShiftIds: patch.focusShiftIds ?? this.context.focusShiftIds,
+      boardMetaBadges: patch.boardMetaBadges ?? this.context.boardMetaBadges,
+      actionReasons: patch.actionReasons ?? this.context.actionReasons,
+      actionSummaries: patch.actionSummaries ?? this.context.actionSummaries
     };
   }
 
   async attach() {
+    const surfaceSnapshot = await readFlowSurfaceSnapshot(this.page).catch(() => null);
     const payload = {
       currentPhase: this.phases.at(-1)?.phase ?? 'not-started',
       currentDetail: this.phases.at(-1)?.detail ?? null,
@@ -246,6 +335,7 @@ class FlowDiagnostics {
         schedule: seededSchedule
       },
       context: this.context,
+      surfaceSnapshot,
       consoleErrors: this.consoleErrors,
       pageErrors: this.pageErrors,
       failedResponses: this.failedResponses
@@ -337,7 +427,16 @@ export async function openCalendarWeek(params: {
     note: `calendar route ${targetUrl}`
   });
 
-  await page.goto(targetUrl);
+  try {
+    await page.goto(targetUrl);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (!message.includes('net::ERR_ABORTED')) {
+      throw error;
+    }
+
+    await page.goto(targetUrl, { waitUntil: 'domcontentloaded' });
+  }
   await expect(page.getByTestId('calendar-shell')).toBeVisible();
   await expect(page.getByTestId('calendar-week-board')).toBeVisible();
 
@@ -345,11 +444,58 @@ export async function openCalendarWeek(params: {
   expect(boardWeek.visibleWeekStart).toBe(visibleWeekStart);
   expect(boardWeek.visibleWeekEndExclusive).toBe(seededSchedule.visibleWeek.endExclusive);
 
-  flow.setContext({
+  await syncCalendarFlowContext(page, flow, {
     calendarId,
     visibleWeekStart: boardWeek.visibleWeekStart,
     visibleWeekEndExclusive: boardWeek.visibleWeekEndExclusive,
     focusShiftIds,
     note: `calendar route ${targetUrl}`
+  });
+}
+
+export async function expectRuntimeSurfaceReady(page: Page) {
+  const runtimeSurface = page.getByTestId('offline-runtime-surface');
+
+  await expect(runtimeSurface).toBeVisible();
+  await expect(runtimeSurface).toHaveAttribute('data-offline-proof-surface', 'service-worker-preview');
+  await expect
+    .poll(
+      async () => runtimeSurface.getAttribute('data-service-worker-status'),
+      {
+        timeout: 15_000,
+        message: 'expected the service worker registration to reach an installable or ready state'
+      }
+    )
+    .toMatch(/installed|ready/);
+
+  return runtimeSurface;
+}
+
+export async function syncCalendarFlowContext(page: Page, flow: FlowDiagnostics, patch: Partial<FlowContext> = {}) {
+  const snapshot = await readFlowSurfaceSnapshot(page);
+  flow.setContext({
+    ...snapshot,
+    ...patch,
+    boardMetaBadges: patch.boardMetaBadges ?? snapshot.boardMetaBadges,
+    actionReasons: patch.actionReasons ?? snapshot.actionReasons,
+    actionSummaries: patch.actionSummaries ?? snapshot.actionSummaries
+  });
+  return snapshot;
+}
+
+export async function setBrowserOffline(page: Page, flow: FlowDiagnostics, offline: boolean, note?: string) {
+  flow.mark(offline ? 'offline-transition' : 'online-transition', note);
+  await page.context().setOffline(offline);
+  await expect
+    .poll(
+      async () => page.evaluate(() => navigator.onLine),
+      {
+        timeout: 10_000,
+        message: `expected navigator.onLine to become ${offline ? 'false' : 'true'}`
+      }
+    )
+    .toBe(!offline);
+  await syncCalendarFlowContext(page, flow, {
+    note: note ?? (offline ? 'browser context forced offline' : 'browser context restored online')
   });
 }
