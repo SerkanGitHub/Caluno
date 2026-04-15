@@ -97,7 +97,7 @@ Load the installed `debug-like-expert` skill before coding so timeout, malformed
   - Files: `apps/web/src/lib/offline/sync-engine.ts`, `apps/web/src/lib/offline/calendar-controller.ts`, `apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte`, `apps/web/src/lib/schedule/board.ts`, `apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte`, `apps/web/tests/schedule/sync-engine.unit.test.ts`
   - Verify: `pnpm --dir apps/web exec vitest run tests/schedule/offline-queue.unit.test.ts tests/schedule/sync-engine.unit.test.ts`
 
-- [ ] **T03: Subscribe to shared shift changes and refresh the visible week safely** `est:2h`
+- [x] **T03: Subscribe to shared shift changes and refresh the visible week safely** `est:2h`
   ## Description
 
 Deliver the live-update half of **R005** while keeping refreshes safe for pending local work. Online members should receive shared shift changes through Supabase Realtime change detection, then refresh the visible week from the trusted route/server path and replay any still-pending local mutations on top.

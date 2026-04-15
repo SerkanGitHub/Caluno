@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-15T14:50:44Z | Files: 271 | Described: 0/271
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-15T14:50:44Z","fingerprint":"e9678006141786bd50e43adbb21ec80f06b13379","fileCount":271,"truncated":false} -->
+Generated: 2026-04-15T16:19:16Z | Files: 278 | Described: 0/278
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-15T16:19:16Z","fingerprint":"60114b2b217ad7fe3cbd52df4a0c26e44c2435ae","fileCount":278,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -342,13 +342,16 @@ Generated: 2026-04-15T14:50:44Z | Files: 271 | Described: 0/271
 - `apps/web/src/lib/offline/app-shell-cache.ts`
 - `apps/web/src/lib/offline/calendar-controller.ts`
 - `apps/web/src/lib/offline/mutation-queue.ts`
+- `apps/web/src/lib/offline/protected-routes.ts`
 - `apps/web/src/lib/offline/repository.ts`
 - `apps/web/src/lib/offline/runtime.ts`
 - `apps/web/src/lib/offline/sqlite.worker.ts`
+- `apps/web/src/lib/offline/sync-engine.ts`
 
 ### apps/web/src/lib/schedule/
 - `apps/web/src/lib/schedule/board.ts`
 - `apps/web/src/lib/schedule/recurrence.ts`
+- `apps/web/src/lib/schedule/route-contract.ts`
 - `apps/web/src/lib/schedule/types.ts`
 
 ### apps/web/src/lib/server/
@@ -395,6 +398,11 @@ Generated: 2026-04-15T14:50:44Z | Files: 271 | Described: 0/271
 ### apps/web/test-results/e2e-offline/
 - `apps/web/test-results/e2e-offline/.last-run.json`
 
+### apps/web/test-results/e2e/calendar-shifts-seeded-mem-bcdc3-elete-and-reload-continuity/
+- `apps/web/test-results/e2e/calendar-shifts-seeded-mem-bcdc3-elete-and-reload-continuity/error-context.md`
+- `apps/web/test-results/e2e/calendar-shifts-seeded-mem-bcdc3-elete-and-reload-continuity/trace.zip`
+- `apps/web/test-results/e2e/calendar-shifts-seeded-mem-bcdc3-elete-and-reload-continuity/video.webm`
+
 ### apps/web/tests/access/
 - `apps/web/tests/access/policy-contract.unit.test.ts`
 
@@ -416,6 +424,7 @@ Generated: 2026-04-15T14:50:44Z | Files: 271 | Described: 0/271
 - `apps/web/tests/schedule/offline-store.unit.test.ts`
 - `apps/web/tests/schedule/recurrence.unit.test.ts`
 - `apps/web/tests/schedule/server-actions.unit.test.ts`
+- `apps/web/tests/schedule/sync-engine.unit.test.ts`
 
 ### packages/db/
 - `packages/db/package.json`

@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { SubmitFunction } from '@sveltejs/kit';
   import type { CalendarControllerActionState } from '$lib/offline/calendar-controller';
+  import type { CalendarRealtimeDiagnostics } from '$lib/offline/sync-engine';
   import type { ScheduleLoadStatus } from '$lib/server/schedule';
   import { summarizeScheduleActions, type CalendarWeekBoardModel } from '$lib/schedule/board';
   import ShiftDayColumn from './ShiftDayColumn.svelte';
@@ -12,6 +13,7 @@
     scheduleReason: string | null;
     scheduleMessage: string;
     actionStates?: CalendarControllerActionState[];
+    realtimeDiagnostics?: CalendarRealtimeDiagnostics | null;
     pendingActionKey: string | null;
     enhanceMutation: (params: {
       action: 'create' | 'edit' | 'move' | 'delete';
@@ -25,6 +27,7 @@
     scheduleReason,
     scheduleMessage,
     actionStates = [],
+    realtimeDiagnostics = null,
     pendingActionKey,
     enhanceMutation
   }: Props = $props();
@@ -38,6 +41,15 @@
   });
   const canRenderSchedule = $derived(scheduleStatus !== 'malformed-response');
   const actionSummaries = $derived(summarizeScheduleActions(actionStates));
+  const realtimeTone = $derived(
+    !realtimeDiagnostics
+      ? 'tone-neutral'
+      : realtimeDiagnostics.channelState === 'retrying' || realtimeDiagnostics.remoteRefreshState === 'failed'
+        ? 'tone-danger'
+        : realtimeDiagnostics.channelState === 'subscribing' || realtimeDiagnostics.remoteRefreshState === 'refreshing'
+          ? 'tone-warning'
+          : 'tone-neutral'
+  );
 </script>
 
 <section class="calendar-week-board framed-panel" data-testid="calendar-week-board" data-visible-week-start={board.visibleWeekStart} data-visible-week-end={board.visibleWeekEndExclusive}>
@@ -124,6 +136,35 @@
       <code>{board.lastSyncError.reason}</code>
     {/if}
   </article>
+
+  {#if realtimeDiagnostics}
+    <article
+      class={`status-card ${realtimeTone}`}
+      data-testid="board-realtime-diagnostics"
+      data-channel-state={realtimeDiagnostics.channelState}
+      data-remote-refresh-state={realtimeDiagnostics.remoteRefreshState}
+    >
+      <span class="status-card__label">Board realtime diagnostics</span>
+      <strong>{realtimeDiagnostics.channelState}</strong>
+      <p>
+        {#if realtimeDiagnostics.lastSignalAt}
+          Last signal: {realtimeDiagnostics.lastSignalEvent ?? 'signal'} at <code>{realtimeDiagnostics.lastSignalAt}</code>
+        {:else}
+          No shared shift signal has touched this visible week yet.
+        {/if}
+      </p>
+      <p>{realtimeDiagnostics.channelDetail}</p>
+      {#if realtimeDiagnostics.channelReason}
+        <code>{realtimeDiagnostics.channelReason}</code>
+      {/if}
+      {#if realtimeDiagnostics.lastRemoteRefreshDetail}
+        <p>{realtimeDiagnostics.lastRemoteRefreshDetail}</p>
+      {/if}
+      {#if realtimeDiagnostics.lastRemoteRefreshReason}
+        <code>{realtimeDiagnostics.lastRemoteRefreshReason}</code>
+      {/if}
+    </article>
+  {/if}
 
   {#if actionSummaries.length > 0}
     <div class="calendar-action-strip" data-testid="schedule-action-strip">

@@ -2,9 +2,12 @@ import { describe, expect, it, vi } from 'vitest';
 import type { OfflineMutationQueueEntry, OfflineMutationQueueReadResult } from '../../src/lib/offline/mutation-queue';
 import type { OfflineWeekSnapshotReadResult, OfflineScheduleScope } from '../../src/lib/offline/repository';
 import {
+  createCalendarShiftRealtimeSubscription,
   decideTrustedRefreshSnapshotWrite,
   drainReconnectQueue,
-  rebaseTrustedScheduleWithLocalQueue
+  rebaseTrustedScheduleWithLocalQueue,
+  shouldRefreshTrustedWeekFromShiftRealtimeEvent,
+  type ShiftRealtimePayload
 } from '../../src/lib/offline/sync-engine';
 import type { CalendarScheduleView, CalendarShift } from '../../src/lib/server/schedule';
 
@@ -90,6 +93,76 @@ function createQueueRead(entries: OfflineMutationQueueEntry[]): OfflineMutationQ
     status: 'available',
     entries
   };
+}
+
+function createRealtimePayload(params: {
+  eventType: 'INSERT' | 'UPDATE' | 'DELETE';
+  row?: Partial<{ id: string; calendar_id: string; start_at: string; end_at: string }>;
+  oldRow?: Partial<{ id: string; calendar_id: string; start_at: string; end_at: string }>;
+}): ShiftRealtimePayload {
+  const toRow = (row?: Partial<{ id: string; calendar_id: string; start_at: string; end_at: string }> | null) =>
+    row
+      ? {
+          id: row.id ?? null,
+          calendar_id: row.calendar_id ?? null,
+          start_at: row.start_at ?? null,
+          end_at: row.end_at ?? null
+        }
+      : null;
+
+  return {
+    eventType: params.eventType,
+    new: params.eventType === 'DELETE' ? null : toRow(params.row),
+    old: params.eventType === 'DELETE' ? toRow(params.oldRow ?? params.row) : toRow(params.oldRow)
+  };
+}
+
+class FakeRealtimeChannel {
+  readonly name: string;
+  private payloadHandler: ((payload: ShiftRealtimePayload) => void) | null = null;
+  private statusHandler: ((status: string, error?: Error) => void) | null = null;
+
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  on(
+    _type: 'postgres_changes',
+    _filter: { event: '*'; schema: 'public'; table: 'shifts'; filter: string },
+    callback: (payload: ShiftRealtimePayload) => void
+  ) {
+    this.payloadHandler = callback;
+    return this;
+  }
+
+  subscribe(callback?: (status: string, error?: Error) => void) {
+    this.statusHandler = callback ?? null;
+    return this;
+  }
+
+  emitPayload(payload: ShiftRealtimePayload) {
+    this.payloadHandler?.(payload);
+  }
+
+  emitStatus(status: string, error?: Error) {
+    this.statusHandler?.(status, error);
+  }
+}
+
+class FakeRealtimeClient {
+  readonly channels: FakeRealtimeChannel[] = [];
+  readonly removedChannels: FakeRealtimeChannel[] = [];
+
+  channel(name: string) {
+    const channel = new FakeRealtimeChannel(name);
+    this.channels.push(channel);
+    return channel;
+  }
+
+  async removeChannel(channel: { emitStatus: (status: string, error?: Error) => void }) {
+    this.removedChannels.push(channel as FakeRealtimeChannel);
+    channel.emitStatus('CLOSED');
+  }
 }
 
 describe('sync engine', () => {
@@ -711,5 +784,203 @@ describe('sync engine', () => {
       reason: null,
       detail: 'No queued browser-local mutations were waiting for reconnect.'
     });
+  });
+
+  it('ignores delete signals without calendar scope so realtime deletes cannot mis-scope refreshes', () => {
+    const result = shouldRefreshTrustedWeekFromShiftRealtimeEvent({
+      calendarId: createScope().calendarId,
+      visibleWeek: createVisibleWeek(),
+      payload: createRealtimePayload({
+        eventType: 'DELETE',
+        oldRow: {
+          id: 'shift-alpha',
+          start_at: '2026-04-20T08:30:00.000Z',
+          end_at: '2026-04-20T09:00:00.000Z'
+        }
+      })
+    });
+
+    expect(result).toEqual({
+      shouldRefresh: false,
+      reason: 'REALTIME_DELETE_SCOPE_MISSING',
+      detail:
+        'The realtime delete payload did not include calendar scope, so it was ignored instead of refreshing the wrong shared calendar.'
+    });
+  });
+
+  it('refreshes when an update moves a shift into or out of the visible week', () => {
+    const movingIntoWeek = shouldRefreshTrustedWeekFromShiftRealtimeEvent({
+      calendarId: createScope().calendarId,
+      visibleWeek: createVisibleWeek(),
+      payload: createRealtimePayload({
+        eventType: 'UPDATE',
+        row: {
+          id: 'shift-alpha',
+          calendar_id: createScope().calendarId,
+          start_at: '2026-04-20T08:30:00.000Z',
+          end_at: '2026-04-20T09:00:00.000Z'
+        },
+        oldRow: {
+          id: 'shift-alpha',
+          calendar_id: createScope().calendarId,
+          start_at: '2026-04-28T08:30:00.000Z',
+          end_at: '2026-04-28T09:00:00.000Z'
+        }
+      })
+    });
+
+    const movingOutOfWeek = shouldRefreshTrustedWeekFromShiftRealtimeEvent({
+      calendarId: createScope().calendarId,
+      visibleWeek: createVisibleWeek(),
+      payload: createRealtimePayload({
+        eventType: 'UPDATE',
+        row: {
+          id: 'shift-alpha',
+          calendar_id: createScope().calendarId,
+          start_at: '2026-04-28T08:30:00.000Z',
+          end_at: '2026-04-28T09:00:00.000Z'
+        },
+        oldRow: {
+          id: 'shift-alpha',
+          calendar_id: createScope().calendarId,
+          start_at: '2026-04-20T08:30:00.000Z',
+          end_at: '2026-04-20T09:00:00.000Z'
+        }
+      })
+    });
+
+    expect(movingIntoWeek.shouldRefresh).toBe(true);
+    expect(movingOutOfWeek.shouldRefresh).toBe(true);
+  });
+
+  it('coalesces bursty realtime collaborator edits into serialized trusted refreshes', async () => {
+    vi.useFakeTimers();
+
+    try {
+      const client = new FakeRealtimeClient();
+      const refreshSignals: string[] = [];
+      const pendingRefreshResolvers: Array<() => void> = [];
+
+      const subscription = createCalendarShiftRealtimeSubscription({
+        calendarId: createScope().calendarId,
+        visibleWeek: createVisibleWeek(),
+        client: client as never,
+        debounceMs: 50,
+        subscribeTimeoutMs: 1_000,
+        requestTrustedRefresh: (signal) =>
+          new Promise((resolve) => {
+            refreshSignals.push(signal.shiftId ?? signal.eventType);
+            pendingRefreshResolvers.push(() =>
+              resolve({
+                status: 'applied',
+                boardSource: 'cached-local',
+                replayedQueueLength: 1,
+                detail: 'trusted refresh applied'
+              })
+            );
+          })
+      });
+
+      await Promise.resolve();
+      const channel = client.channels[0] as FakeRealtimeChannel;
+      channel.emitStatus('SUBSCRIBED');
+      channel.emitPayload(
+        createRealtimePayload({
+          eventType: 'INSERT',
+          row: {
+            id: 'shift-alpha',
+            calendar_id: createScope().calendarId,
+            start_at: '2026-04-20T08:30:00.000Z',
+            end_at: '2026-04-20T09:00:00.000Z'
+          }
+        })
+      );
+      channel.emitPayload(
+        createRealtimePayload({
+          eventType: 'UPDATE',
+          row: {
+            id: 'shift-beta',
+            calendar_id: createScope().calendarId,
+            start_at: '2026-04-21T08:30:00.000Z',
+            end_at: '2026-04-21T09:00:00.000Z'
+          }
+        })
+      );
+
+      await vi.advanceTimersByTimeAsync(50);
+      expect(refreshSignals).toHaveLength(1);
+
+      channel.emitPayload(
+        createRealtimePayload({
+          eventType: 'UPDATE',
+          row: {
+            id: 'shift-gamma',
+            calendar_id: createScope().calendarId,
+            start_at: '2026-04-22T08:30:00.000Z',
+            end_at: '2026-04-22T09:00:00.000Z'
+          }
+        })
+      );
+      await vi.advanceTimersByTimeAsync(50);
+      expect(refreshSignals).toHaveLength(1);
+
+      pendingRefreshResolvers.shift()?.();
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(refreshSignals).toHaveLength(2);
+
+      pendingRefreshResolvers.shift()?.();
+      await Promise.resolve();
+      await subscription.close();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('retries timed-out realtime subscriptions and tears them down cleanly', async () => {
+    vi.useFakeTimers();
+
+    try {
+      const client = new FakeRealtimeClient();
+      const seenDiagnostics: Array<{ channelState: string; channelReason: string | null }> = [];
+
+      const subscription = createCalendarShiftRealtimeSubscription({
+        calendarId: createScope().calendarId,
+        visibleWeek: createVisibleWeek(),
+        client: client as never,
+        subscribeTimeoutMs: 20,
+        retryDelayMs: 10,
+        requestTrustedRefresh: async () => ({
+          status: 'applied',
+          boardSource: 'server-sync',
+          replayedQueueLength: 0,
+          detail: 'trusted refresh applied'
+        }),
+        onDiagnostics: (diagnostics) => {
+          seenDiagnostics.push({
+            channelState: diagnostics.channelState,
+            channelReason: diagnostics.channelReason
+          });
+        }
+      });
+
+      await Promise.resolve();
+      expect(client.channels).toHaveLength(1);
+      await vi.advanceTimersByTimeAsync(20);
+      expect(seenDiagnostics).toContainEqual({
+        channelState: 'retrying',
+        channelReason: 'REALTIME_SUBSCRIBE_TIMEOUT'
+      });
+
+      await vi.advanceTimersByTimeAsync(10);
+      expect(client.channels).toHaveLength(2);
+      expect(client.removedChannels).toHaveLength(1);
+
+      await subscription.close();
+      expect(client.removedChannels).toHaveLength(2);
+      expect(subscription.getDiagnostics().channelState).toBe('closed');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

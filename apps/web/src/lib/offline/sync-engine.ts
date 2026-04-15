@@ -1,4 +1,5 @@
 import type { ActionResult } from '@sveltejs/kit';
+import { getSupabaseBrowserClient } from '$lib/supabase/client';
 import type { CalendarScheduleView, CalendarShift, ScheduleActionState, VisibleWeek } from '$lib/server/schedule';
 import type { OfflineMutationQueueEntry, OfflineMutationQueueReadResult } from './mutation-queue';
 import type { OfflineWeekSnapshotReadResult } from './repository';
@@ -87,6 +88,92 @@ export type ReconnectDrainResult =
       detail: string;
       outcome: CalendarControllerServerOutcome;
     };
+
+export type ShiftRealtimeEventType = 'INSERT' | 'UPDATE' | 'DELETE';
+
+export type ShiftRealtimeRow = {
+  id: string | null;
+  calendar_id: string | null;
+  start_at: string | null;
+  end_at: string | null;
+};
+
+export type ShiftRealtimePayload = {
+  eventType?: string | null;
+  new?: ShiftRealtimeRow | null;
+  old?: ShiftRealtimeRow | null;
+};
+
+export type ShiftRealtimeSignal = {
+  eventType: ShiftRealtimeEventType;
+  calendarId: string;
+  shiftId: string | null;
+  detail: string;
+};
+
+export type ShiftRealtimeDecision =
+  | {
+      shouldRefresh: true;
+      signal: ShiftRealtimeSignal;
+    }
+  | {
+      shouldRefresh: false;
+      reason: string;
+      detail: string;
+    };
+
+export type CalendarRealtimeChannelState = 'subscribing' | 'ready' | 'retrying' | 'closed';
+export type CalendarRemoteRefreshState = 'idle' | 'refreshing' | 'applied' | 'failed';
+
+export type CalendarRealtimeDiagnostics = {
+  channelState: CalendarRealtimeChannelState;
+  channelReason: string | null;
+  channelDetail: string | null;
+  lastSignalAt: string | null;
+  lastSignalEvent: ShiftRealtimeEventType | null;
+  lastSignalDetail: string | null;
+  remoteRefreshState: CalendarRemoteRefreshState;
+  lastRemoteRefreshAt: string | null;
+  lastRemoteRefreshReason: string | null;
+  lastRemoteRefreshDetail: string | null;
+};
+
+export type TrustedRemoteRefreshResult =
+  | {
+      status: 'applied';
+      boardSource: 'server-sync' | 'cached-local';
+      replayedQueueLength: number;
+      detail: string;
+    }
+  | {
+      status: 'failed';
+      reason: string;
+      detail: string;
+    };
+
+type ShiftRealtimeChannelLike = {
+  on: (
+    type: 'postgres_changes',
+    filter: {
+      event: '*';
+      schema: 'public';
+      table: 'shifts';
+      filter: string;
+    },
+    callback: (payload: ShiftRealtimePayload) => void
+  ) => ShiftRealtimeChannelLike;
+  subscribe: (callback?: (status: string, error?: Error) => void) => ShiftRealtimeChannelLike;
+};
+
+type ShiftRealtimeClientLike = {
+  channel: (name: string) => ShiftRealtimeChannelLike;
+  removeChannel: (channel: ShiftRealtimeChannelLike) => Promise<unknown> | unknown;
+};
+
+export type CalendarShiftRealtimeSubscription = {
+  getDiagnostics: () => CalendarRealtimeDiagnostics;
+  close: () => Promise<void>;
+};
 
 export function rebaseTrustedScheduleWithLocalQueue(params: {
   trustedSchedule: CalendarScheduleView;
@@ -388,6 +475,358 @@ export function describeServerOutcomeFailure(outcome: CalendarControllerServerOu
   };
 }
 
+export function shouldRefreshTrustedWeekFromShiftRealtimeEvent(params: {
+  calendarId: string;
+  visibleWeek: Pick<VisibleWeek, 'startAt' | 'endAt'>;
+  payload: ShiftRealtimePayload;
+}): ShiftRealtimeDecision {
+  const payload = params.payload;
+  const eventType = payload.eventType;
+
+  if (eventType !== 'INSERT' && eventType !== 'UPDATE' && eventType !== 'DELETE') {
+    return {
+      shouldRefresh: false,
+      reason: 'REALTIME_EVENT_INVALID',
+      detail: 'The realtime payload did not expose a supported shift event type, so it was ignored as untrusted change detection.'
+    };
+  }
+
+  if (eventType === 'DELETE') {
+    const deletedRow = normalizeRealtimeRow(payload.old);
+    if (!deletedRow || !deletedRow.calendar_id) {
+      return {
+        shouldRefresh: false,
+        reason: 'REALTIME_DELETE_SCOPE_MISSING',
+        detail:
+          'The realtime delete payload did not include calendar scope, so it was ignored instead of refreshing the wrong shared calendar.'
+      };
+    }
+
+    if (deletedRow.calendar_id !== params.calendarId) {
+      return {
+        shouldRefresh: false,
+        reason: 'REALTIME_DELETE_SCOPE_MISMATCH',
+        detail: 'The realtime delete payload belonged to a different calendar, so the visible week stayed unchanged.'
+      };
+    }
+
+    if (!rowOverlapsVisibleWeek(deletedRow, params.visibleWeek)) {
+      return {
+        shouldRefresh: false,
+        reason: 'REALTIME_DELETE_OUTSIDE_VISIBLE_WEEK',
+        detail: 'The deleted shift did not overlap the visible week, so the trusted refresh was skipped.'
+      };
+    }
+
+    return {
+      shouldRefresh: true,
+      signal: {
+        eventType,
+        calendarId: deletedRow.calendar_id,
+        shiftId: deletedRow.id,
+        detail: 'A visible-week shared shift was deleted, so the route will reload the trusted week and replay pending local work.'
+      }
+    };
+  }
+
+  const newRow = normalizeRealtimeRow(payload.new);
+  const oldRow = normalizeRealtimeRow(payload.old);
+  const newOverlaps = newRow && rowMatchesCalendar(newRow, params.calendarId) && rowOverlapsVisibleWeek(newRow, params.visibleWeek);
+  const oldOverlaps = oldRow && rowMatchesCalendar(oldRow, params.calendarId) && rowOverlapsVisibleWeek(oldRow, params.visibleWeek);
+
+  if (!newOverlaps && !oldOverlaps) {
+    return {
+      shouldRefresh: false,
+      reason: `REALTIME_${eventType}_OUTSIDE_VISIBLE_WEEK`,
+      detail: 'The realtime shift change did not overlap the visible week for this calendar, so the trusted refresh was skipped.'
+    };
+  }
+
+  const signalRow = (newOverlaps ? newRow : oldRow) as ShiftRealtimeRow;
+  return {
+    shouldRefresh: true,
+    signal: {
+      eventType,
+      calendarId: signalRow.calendar_id as string,
+      shiftId: signalRow.id ?? null,
+      detail:
+        eventType === 'INSERT'
+          ? 'A visible-week shared shift was inserted, so the route will reload the trusted week and replay pending local work.'
+          : 'A visible-week shared shift changed, so the route will reload the trusted week and replay pending local work.'
+    }
+  };
+}
+
+export function createCalendarShiftRealtimeSubscription(params: {
+  calendarId: string;
+  visibleWeek: Pick<VisibleWeek, 'start' | 'startAt' | 'endAt'>;
+  requestTrustedRefresh: (signal: ShiftRealtimeSignal) => Promise<TrustedRemoteRefreshResult>;
+  onDiagnostics?: (diagnostics: CalendarRealtimeDiagnostics) => void;
+  client?: ShiftRealtimeClientLike;
+  now?: () => Date;
+  debounceMs?: number;
+  retryDelayMs?: number;
+  subscribeTimeoutMs?: number;
+  setTimeoutFn?: typeof setTimeout;
+  clearTimeoutFn?: typeof clearTimeout;
+}): CalendarShiftRealtimeSubscription {
+  const client = params.client ?? ((getSupabaseBrowserClient as unknown as () => ShiftRealtimeClientLike)());
+  const now = params.now ?? (() => new Date());
+  const debounceMs = params.debounceMs ?? 250;
+  const retryDelayMs = params.retryDelayMs ?? 1_000;
+  const subscribeTimeoutMs = params.subscribeTimeoutMs ?? 10_000;
+  const setTimeoutFn = params.setTimeoutFn ?? setTimeout;
+  const clearTimeoutFn = params.clearTimeoutFn ?? clearTimeout;
+
+  let disposed = false;
+  let channel: ShiftRealtimeChannelLike | null = null;
+  let refreshTimer: ReturnType<typeof setTimeout> | null = null;
+  let retryTimer: ReturnType<typeof setTimeout> | null = null;
+  let subscribeTimer: ReturnType<typeof setTimeout> | null = null;
+  let refreshInFlight = false;
+  let queuedSignal: ShiftRealtimeSignal | null = null;
+  let ignoreClosedStatus = false;
+
+  let diagnostics: CalendarRealtimeDiagnostics = {
+    channelState: 'subscribing',
+    channelReason: null,
+    channelDetail: 'Connecting to shared shift change detection for this calendar week.',
+    lastSignalAt: null,
+    lastSignalEvent: null,
+    lastSignalDetail: null,
+    remoteRefreshState: 'idle',
+    lastRemoteRefreshAt: null,
+    lastRemoteRefreshReason: null,
+    lastRemoteRefreshDetail: null
+  };
+
+  const emitDiagnostics = () => {
+    params.onDiagnostics?.({ ...diagnostics });
+  };
+
+  const setChannelState = (state: CalendarRealtimeChannelState, reason: string | null, detail: string | null) => {
+    diagnostics = {
+      ...diagnostics,
+      channelState: state,
+      channelReason: reason,
+      channelDetail: detail
+    };
+    emitDiagnostics();
+  };
+
+  const setRemoteRefreshState = (state: CalendarRemoteRefreshState, reason: string | null, detail: string | null) => {
+    diagnostics = {
+      ...diagnostics,
+      remoteRefreshState: state,
+      lastRemoteRefreshAt: state === 'idle' ? diagnostics.lastRemoteRefreshAt : now().toISOString(),
+      lastRemoteRefreshReason: reason,
+      lastRemoteRefreshDetail: detail
+    };
+    emitDiagnostics();
+  };
+
+  const clearTimers = () => {
+    if (refreshTimer) {
+      clearTimeoutFn(refreshTimer);
+      refreshTimer = null;
+    }
+
+    if (retryTimer) {
+      clearTimeoutFn(retryTimer);
+      retryTimer = null;
+    }
+
+    if (subscribeTimer) {
+      clearTimeoutFn(subscribeTimer);
+      subscribeTimer = null;
+    }
+  };
+
+  const removeActiveChannel = async () => {
+    if (!channel) {
+      return;
+    }
+
+    const activeChannel = channel;
+    channel = null;
+    ignoreClosedStatus = true;
+    try {
+      await client.removeChannel(activeChannel);
+    } finally {
+      ignoreClosedStatus = false;
+    }
+  };
+
+  const flushRefreshQueue = async () => {
+    if (disposed || refreshInFlight || !queuedSignal) {
+      return;
+    }
+
+    refreshInFlight = true;
+
+    while (!disposed && queuedSignal) {
+      const nextSignal = queuedSignal;
+      queuedSignal = null;
+      setRemoteRefreshState('refreshing', null, 'Reloading the trusted week after a shared shift change signal.');
+
+      const outcome = await params.requestTrustedRefresh(nextSignal).catch((error) => ({
+        status: 'failed' as const,
+        reason: 'REMOTE_REFRESH_FAILED',
+        detail: error instanceof Error ? error.message : 'The trusted week refresh failed before it could confirm shared changes.'
+      }));
+
+      if (outcome.status === 'applied') {
+        setRemoteRefreshState(
+          'applied',
+          null,
+          outcome.replayedQueueLength > 0
+            ? `Trusted refresh applied after ${nextSignal.eventType.toLowerCase()} signal with ${outcome.replayedQueueLength} pending local ${outcome.replayedQueueLength === 1 ? 'write' : 'writes'} replayed.`
+            : `Trusted refresh applied after ${nextSignal.eventType.toLowerCase()} signal with no pending local writes to replay.`
+        );
+      } else {
+        setRemoteRefreshState('failed', outcome.reason, outcome.detail);
+      }
+    }
+
+    refreshInFlight = false;
+  };
+
+  const queueRefresh = (signal: ShiftRealtimeSignal) => {
+    diagnostics = {
+      ...diagnostics,
+      lastSignalAt: now().toISOString(),
+      lastSignalEvent: signal.eventType,
+      lastSignalDetail: signal.detail
+    };
+    emitDiagnostics();
+
+    queuedSignal = signal;
+    if (refreshTimer) {
+      return;
+    }
+
+    refreshTimer = setTimeoutFn(() => {
+      refreshTimer = null;
+      void flushRefreshQueue();
+    }, debounceMs);
+  };
+
+  const scheduleRestart = (reason: string, detail: string) => {
+    if (disposed || retryTimer) {
+      return;
+    }
+
+    clearTimers();
+    setChannelState('retrying', reason, detail);
+    retryTimer = setTimeoutFn(() => {
+      retryTimer = null;
+      void startChannel();
+    }, retryDelayMs);
+  };
+
+  const handlePayload = (payload: ShiftRealtimePayload) => {
+    const decision = shouldRefreshTrustedWeekFromShiftRealtimeEvent({
+      calendarId: params.calendarId,
+      visibleWeek: params.visibleWeek,
+      payload
+    });
+
+    if (!decision.shouldRefresh) {
+      return;
+    }
+
+    queueRefresh(decision.signal);
+  };
+
+  const handleSubscribeStatus = (status: string, error?: Error) => {
+    if (disposed) {
+      return;
+    }
+
+    if (status === 'SUBSCRIBED') {
+      if (subscribeTimer) {
+        clearTimeoutFn(subscribeTimer);
+        subscribeTimer = null;
+      }
+
+      setChannelState('ready', null, 'Listening for shared shift changes on this calendar week.');
+      return;
+    }
+
+    if (status === 'TIMED_OUT') {
+      scheduleRestart(
+        'REALTIME_SUBSCRIBE_TIMEOUT',
+        'The shared shift channel did not confirm readiness in time, so it is being recreated without changing the current board.'
+      );
+      return;
+    }
+
+    if (status === 'CHANNEL_ERROR') {
+      scheduleRestart(
+        'REALTIME_CHANNEL_ERROR',
+        error?.message?.trim() || 'The shared shift channel reported an error, so it is being recreated while the current board stays visible.'
+      );
+      return;
+    }
+
+    if (status === 'CLOSED') {
+      if (ignoreClosedStatus) {
+        return;
+      }
+
+      scheduleRestart(
+        'REALTIME_CHANNEL_CLOSED',
+        'The shared shift channel closed unexpectedly, so it is being recreated while the current board stays visible.'
+      );
+    }
+  };
+
+  const startChannel = async () => {
+    if (disposed) {
+      return;
+    }
+
+    await removeActiveChannel();
+    setChannelState('subscribing', null, 'Connecting to shared shift change detection for this calendar week.');
+
+    const nextChannel = client
+      .channel(`calendar-shifts:${params.calendarId}:${params.visibleWeek.start}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'shifts',
+          filter: `calendar_id=eq.${params.calendarId}`
+        },
+        handlePayload
+      )
+      .subscribe(handleSubscribeStatus);
+
+    channel = nextChannel;
+    subscribeTimer = setTimeoutFn(() => {
+      subscribeTimer = null;
+      handleSubscribeStatus('TIMED_OUT');
+    }, subscribeTimeoutMs);
+  };
+
+  void startChannel();
+  emitDiagnostics();
+
+  return {
+    getDiagnostics() {
+      return { ...diagnostics };
+    },
+
+    async close() {
+      disposed = true;
+      clearTimers();
+      await removeActiveChannel();
+      setChannelState('closed', null, 'Shared shift change detection stopped for this calendar route.');
+    }
+  };
+}
+
 export function isSuccessfulServerOutcome(outcome: CalendarControllerServerOutcome): boolean {
   return outcome.type === 'success' && outcome.state.status === 'success';
 }
@@ -604,6 +1043,41 @@ function hasRequiredReconnectFields(entry: OfflineMutationQueueEntry, fields: Re
 
 function hasNonEmptyField(fields: Record<string, string>, key: string): boolean {
   return typeof fields[key] === 'string' && fields[key].trim().length > 0;
+}
+
+function normalizeRealtimeRow(value: ShiftRealtimePayload['new'] | ShiftRealtimePayload['old']): ShiftRealtimeRow | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return null;
+  }
+
+  const candidate = value as Record<string, unknown>;
+  return {
+    id: typeof candidate.id === 'string' ? candidate.id : null,
+    calendar_id: typeof candidate.calendar_id === 'string' ? candidate.calendar_id : null,
+    start_at: typeof candidate.start_at === 'string' ? candidate.start_at : null,
+    end_at: typeof candidate.end_at === 'string' ? candidate.end_at : null
+  };
+}
+
+function rowMatchesCalendar(row: ShiftRealtimeRow, calendarId: string): boolean {
+  return typeof row.calendar_id === 'string' && row.calendar_id === calendarId;
+}
+
+function rowOverlapsVisibleWeek(row: ShiftRealtimeRow, visibleWeek: Pick<VisibleWeek, 'startAt' | 'endAt'>): boolean {
+  if (typeof row.start_at !== 'string' || typeof row.end_at !== 'string') {
+    return false;
+  }
+
+  const startAt = Date.parse(row.start_at);
+  const endAt = Date.parse(row.end_at);
+  const visibleStart = Date.parse(visibleWeek.startAt);
+  const visibleEnd = Date.parse(visibleWeek.endAt);
+
+  if ([startAt, endAt, visibleStart, visibleEnd].some((value) => Number.isNaN(value))) {
+    return false;
+  }
+
+  return startAt < visibleEnd && endAt > visibleStart;
 }
 
 function isCalendarShift(value: unknown): value is CalendarShift {

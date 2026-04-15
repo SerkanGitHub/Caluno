@@ -35,6 +35,14 @@ type FlowContext = {
   localNetwork: string | null;
   localQueueSummary: string | null;
   localStateDetail: string | null;
+  realtimeChannelState: string | null;
+  realtimeRefreshState: string | null;
+  realtimeDetail: string | null;
+  realtimeReason: string | null;
+  boardRealtimeChannelState: string | null;
+  boardRealtimeRefreshState: string | null;
+  boardRealtimeDetail: string | null;
+  boardRealtimeReason: string | null;
   cachedSnapshotAt: string | null;
   boardMetaBadges: string[];
   actionReasons: string[];
@@ -56,6 +64,14 @@ type FlowSurfaceSnapshot = Pick<
   | 'localNetwork'
   | 'localQueueSummary'
   | 'localStateDetail'
+  | 'realtimeChannelState'
+  | 'realtimeRefreshState'
+  | 'realtimeDetail'
+  | 'realtimeReason'
+  | 'boardRealtimeChannelState'
+  | 'boardRealtimeRefreshState'
+  | 'boardRealtimeDetail'
+  | 'boardRealtimeReason'
   | 'cachedSnapshotAt'
   | 'boardMetaBadges'
   | 'actionReasons'
@@ -236,7 +252,21 @@ async function readFlowSurfaceSnapshot(page: Page): Promise<FlowSurfaceSnapshot>
       localNetwork: text('[data-testid="calendar-local-state"] strong'),
       localQueueSummary: text('[data-testid="calendar-local-state"] code'),
       localStateDetail: text('[data-testid="calendar-local-state"] p'),
-      cachedSnapshotAt: text('.status-stack article:nth-of-type(3) strong'),
+      realtimeChannelState:
+        document.querySelector<HTMLElement>('[data-testid="calendar-realtime-state"]')?.dataset.channelState ??
+        text('[data-testid="calendar-realtime-state"] strong'),
+      realtimeRefreshState:
+        document.querySelector<HTMLElement>('[data-testid="calendar-realtime-state"]')?.dataset.remoteRefreshState ?? null,
+      realtimeDetail: text('[data-testid="calendar-realtime-state"] p:last-of-type'),
+      realtimeReason: text('[data-testid="calendar-realtime-state"] code:last-of-type'),
+      boardRealtimeChannelState:
+        document.querySelector<HTMLElement>('[data-testid="board-realtime-diagnostics"]')?.dataset.channelState ??
+        text('[data-testid="board-realtime-diagnostics"] strong'),
+      boardRealtimeRefreshState:
+        document.querySelector<HTMLElement>('[data-testid="board-realtime-diagnostics"]')?.dataset.remoteRefreshState ?? null,
+      boardRealtimeDetail: text('[data-testid="board-realtime-diagnostics"] p:last-of-type'),
+      boardRealtimeReason: text('[data-testid="board-realtime-diagnostics"] code:last-of-type'),
+      cachedSnapshotAt: text('.status-stack article:nth-of-type(5) strong') ?? text('.status-stack article:nth-of-type(4) strong'),
       boardMetaBadges: texts('[data-testid="calendar-week-board"] .calendar-week-board__meta .pill'),
       actionReasons: texts('[data-testid="schedule-action-strip"] article strong'),
       actionSummaries: texts('[data-testid="schedule-action-strip"] article p'),
@@ -268,6 +298,14 @@ class FlowDiagnostics {
     localNetwork: null,
     localQueueSummary: null,
     localStateDetail: null,
+    realtimeChannelState: null,
+    realtimeRefreshState: null,
+    realtimeDetail: null,
+    realtimeReason: null,
+    boardRealtimeChannelState: null,
+    boardRealtimeRefreshState: null,
+    boardRealtimeDetail: null,
+    boardRealtimeReason: null,
     cachedSnapshotAt: null,
     boardMetaBadges: [],
     actionReasons: [],
