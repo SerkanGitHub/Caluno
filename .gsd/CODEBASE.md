@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-14T22:36:10Z | Files: 120 | Described: 0/120
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-14T22:36:10Z","fingerprint":"b9b32b78be0c41431ecd878f3088f2546ce79cf3","fileCount":120,"truncated":false} -->
+Generated: 2026-04-15T07:47:59Z | Files: 129 | Described: 0/129
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-15T07:47:59Z","fingerprint":"b7d6656166a0b37339461a8c0b7501531efe3f12","fileCount":129,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -128,13 +128,21 @@ Generated: 2026-04-14T22:36:10Z | Files: 120 | Described: 0/120
 ### apps/web/src/lib/access/
 - `apps/web/src/lib/access/contract.ts`
 
+### apps/web/src/lib/components/calendar/
+- `apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte`
+- `apps/web/src/lib/components/calendar/ShiftCard.svelte`
+- `apps/web/src/lib/components/calendar/ShiftDayColumn.svelte`
+- `apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte`
+
 ### apps/web/src/lib/schedule/
+- `apps/web/src/lib/schedule/board.ts`
 - `apps/web/src/lib/schedule/recurrence.ts`
 - `apps/web/src/lib/schedule/types.ts`
 
 ### apps/web/src/lib/server/
 - `apps/web/src/lib/server/app-shell.ts`
 - `apps/web/src/lib/server/auth-flow.ts`
+- `apps/web/src/lib/server/schedule.ts`
 
 ### apps/web/src/lib/supabase/
 - `apps/web/src/lib/supabase/client.ts`
@@ -178,13 +186,16 @@ Generated: 2026-04-14T22:36:10Z | Files: 120 | Described: 0/120
 
 ### apps/web/tests/e2e/
 - `apps/web/tests/e2e/auth-groups-access.spec.ts`
+- `apps/web/tests/e2e/calendar-shifts.spec.ts`
 - `apps/web/tests/e2e/fixtures.ts`
 
 ### apps/web/tests/routes/
 - `apps/web/tests/routes/protected-routes.unit.test.ts`
 
 ### apps/web/tests/schedule/
+- `apps/web/tests/schedule/board.unit.test.ts`
 - `apps/web/tests/schedule/recurrence.unit.test.ts`
+- `apps/web/tests/schedule/server-actions.unit.test.ts`
 
 ### packages/db/
 - `packages/db/package.json`

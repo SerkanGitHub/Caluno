@@ -26,17 +26,6 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: mapped
 - Notes: Must support family/team style collaboration with role-based access.
 
-### R003 — Users can create, edit, move, and delete multiple shifts per day, including recurring patterns, through browser calendar views.
-- Class: core-capability
-- Status: active
-- Description: Users can create, edit, move, and delete multiple shifts per day, including recurring patterns, through browser calendar views.
-- Why it matters: The system has to model real shift work instead of forcing single-shift calendar assumptions.
-- Source: user
-- Primary owning slice: M001/S02
-- Supporting slices: M001/S05
-- Validation: mapped
-- Notes: M001 is web-first; scheduling interactions must be browser-verifiable.
-
 ### R004 — Previously synced schedule data can be read and edited locally in the browser while offline.
 - Class: continuity
 - Status: active
@@ -69,17 +58,6 @@ This file is the explicit capability and coverage contract for the project.
 - Supporting slices: M001/S02, M001/S04
 - Validation: mapped
 - Notes: M001 covers baseline conflicts only, not childcare-specific domain policies.
-
-### R007 — The browser scheduling experience is stress-friendly, clear, fast, and accessible enough for everyday coordination work.
-- Class: quality-attribute
-- Status: active
-- Description: The browser scheduling experience is stress-friendly, clear, fast, and accessible enough for everyday coordination work.
-- Why it matters: This product serves users under time pressure; a cluttered or brittle UI defeats the point of the tool.
-- Source: user
-- Primary owning slice: M001/S02
-- Supporting slices: M001/S03, M001/S05
-- Validation: mapped
-- Notes: Large targets, clean layout, strong contrast, and low-clutter interaction should shape implementation choices.
 
 ### R008 — Caluno computes shared free-time windows across two or more users and explains why a suggested window works.
 - Class: differentiator
@@ -135,6 +113,30 @@ This file is the explicit capability and coverage contract for the project.
 - Supporting slices: M001/S04
 - Validation: mapped
 - Notes: Supabase Auth and RLS are part of the chosen backend direction.
+
+## Validated
+
+### R003 — Users can create, edit, move, and delete multiple shifts per day, including recurring patterns, through browser calendar views.
+- Class: core-capability
+- Status: validated
+- Description: Users can create, edit, move, and delete multiple shifts per day, including recurring patterns, through browser calendar views.
+- Why it matters: The system has to model real shift work instead of forcing single-shift calendar assumptions.
+- Source: user
+- Primary owning slice: M001/S02
+- Supporting slices: M001/S05
+- Validation: Validated in M001/S02 by passing `pnpm --dir apps/web exec vitest run tests/routes/protected-routes.unit.test.ts tests/schedule/board.unit.test.ts tests/schedule/recurrence.unit.test.ts tests/schedule/server-actions.unit.test.ts` plus `npx --yes supabase db reset --local --yes` and `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts`, which proved same-day multi-shift rendering, bounded recurring creation, edit, move, delete, and reload continuity on the protected calendar route.
+- Notes: S02 delivered the web-first schedule editing proof surface for multiple same-day and recurring shifts.
+
+### R007 — The browser scheduling experience is stress-friendly, clear, fast, and accessible enough for everyday coordination work.
+- Class: quality-attribute
+- Status: validated
+- Description: The browser scheduling experience is stress-friendly, clear, fast, and accessible enough for everyday coordination work.
+- Why it matters: This product serves users under time pressure; a cluttered or brittle UI defeats the point of the tool.
+- Source: user
+- Primary owning slice: M001/S02
+- Supporting slices: M001/S03, M001/S05
+- Validation: Validated in M001/S02 by the custom week-board/browser proof and unit coverage: `pnpm --dir apps/web check`, `pnpm --dir apps/web exec vitest run tests/schedule/board.unit.test.ts tests/routes/protected-routes.unit.test.ts tests/schedule/server-actions.unit.test.ts`, and `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts` confirmed the stress-friendly week board, accessible create/edit/move/delete controls, clear denied state, and visible week/action diagnostics.
+- Notes: The current proof is web-desktop focused; later slices can extend the same calm interaction model to offline and conflict surfaces.
 
 ## Deferred
 
@@ -227,11 +229,11 @@ This file is the explicit capability and coverage contract for the project.
 |---|---|---|---|---|---|
 | R001 | primary-user-loop | active | M001/S01 | M001/S03 | mapped |
 | R002 | core-capability | active | M001/S01 | M001/S04 | mapped |
-| R003 | core-capability | active | M001/S02 | M001/S05 | mapped |
+| R003 | core-capability | validated | M001/S02 | M001/S05 | Validated in M001/S02 by passing `pnpm --dir apps/web exec vitest run tests/routes/protected-routes.unit.test.ts tests/schedule/board.unit.test.ts tests/schedule/recurrence.unit.test.ts tests/schedule/server-actions.unit.test.ts` plus `npx --yes supabase db reset --local --yes` and `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts`, which proved same-day multi-shift rendering, bounded recurring creation, edit, move, delete, and reload continuity on the protected calendar route. |
 | R004 | continuity | active | M001/S03 | M001/S04 | mapped |
 | R005 | integration | active | M001/S04 | M001/S03, M001/S05 | mapped |
 | R006 | failure-visibility | active | M001/S05 | M001/S02, M001/S04 | mapped |
-| R007 | quality-attribute | active | M001/S02 | M001/S03, M001/S05 | mapped |
+| R007 | quality-attribute | validated | M001/S02 | M001/S03, M001/S05 | Validated in M001/S02 by the custom week-board/browser proof and unit coverage: `pnpm --dir apps/web check`, `pnpm --dir apps/web exec vitest run tests/schedule/board.unit.test.ts tests/routes/protected-routes.unit.test.ts tests/schedule/server-actions.unit.test.ts`, and `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts` confirmed the stress-friendly week board, accessible create/edit/move/delete controls, clear denied state, and visible week/action diagnostics. |
 | R008 | differentiator | active | M002 (provisional) | none | unmapped |
 | R009 | launchability | active | M003 (provisional) | none | unmapped |
 | R010 | continuity | active | M003 (provisional) | none | unmapped |
@@ -249,7 +251,7 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Coverage Summary
 
-- Active requirements: 12
-- Mapped to slices: 12
-- Validated: 0
+- Active requirements: 10
+- Mapped to slices: 10
+- Validated: 2 (R003, R007)
 - Unmapped active requirements: 0

@@ -53,3 +53,9 @@
 **Context:** Slice verification for Vitest used `pnpm --dir apps/web exec vitest run tests/routes/protected-routes.unit.test.ts tests/schedule/*.unit.test.ts` from the repo root.
 **Rule/Pattern:** When running app-local commands through `pnpm --dir apps/web exec ...`, either quote the glob for the child CLI to resolve or pass explicit file paths instead of relying on shell expansion from the repo root.
 **Rationale:** The shell expands globs before `pnpm --dir` changes directories, so repo-root execution can silently skip intended `apps/web/tests/...` matches even though the command looks app-scoped.
+
+## 2026-04-15: Import `rrule` through the package default in Vite SSR paths
+
+**Context:** The schedule recurrence helpers run in SvelteKit/Vite SSR as well as tests, and direct named imports from `rrule` broke the calendar route during browser verification.
+**Rule/Pattern:** In this repo, import `rrule` as the package default (for example `import rrulePkg from 'rrule'; const { RRule } = rrulePkg;`) for server-rendered schedule code instead of relying on named ESM imports.
+**Rationale:** The dependency currently resolves through a CommonJS-compatible path in the web app's SSR environment; using the package default avoids runtime import shape mismatches that only surface once the protected calendar route renders for real.
