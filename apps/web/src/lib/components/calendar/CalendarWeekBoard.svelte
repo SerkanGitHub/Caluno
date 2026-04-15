@@ -1,8 +1,7 @@
 <script lang="ts">
-  import type {
-    ScheduleActionState,
-    ScheduleLoadStatus
-  } from '$lib/server/schedule';
+  import type { SubmitFunction } from '@sveltejs/kit';
+  import type { CalendarControllerActionState } from '$lib/offline/calendar-controller';
+  import type { ScheduleLoadStatus } from '$lib/server/schedule';
   import { summarizeScheduleActions, type CalendarWeekBoardModel } from '$lib/schedule/board';
   import ShiftDayColumn from './ShiftDayColumn.svelte';
   import ShiftEditorDialog from './ShiftEditorDialog.svelte';
@@ -12,12 +11,12 @@
     scheduleStatus: ScheduleLoadStatus;
     scheduleReason: string | null;
     scheduleMessage: string;
-    createState?: ScheduleActionState | null;
-    editState?: ScheduleActionState | null;
-    moveState?: ScheduleActionState | null;
-    deleteState?: ScheduleActionState | null;
+    actionStates?: CalendarControllerActionState[];
     pendingActionKey: string | null;
-    setPendingActionKey: (value: string | null) => void;
+    enhanceMutation: (params: {
+      action: 'create' | 'edit' | 'move' | 'delete';
+      formId: string;
+    }) => SubmitFunction;
   };
 
   let {
@@ -25,12 +24,9 @@
     scheduleStatus,
     scheduleReason,
     scheduleMessage,
-    createState = null,
-    editState = null,
-    moveState = null,
-    deleteState = null,
+    actionStates = [],
     pendingActionKey,
-    setPendingActionKey
+    enhanceMutation
   }: Props = $props();
 
   const boardTone = $derived.by(() => {
@@ -41,7 +37,7 @@
     return scheduleStatus === 'timeout' ? 'tone-warning' : 'tone-danger';
   });
   const canRenderSchedule = $derived(scheduleStatus !== 'malformed-response');
-  const actionSummaries = $derived(summarizeScheduleActions([createState, editState, moveState, deleteState]));
+  const actionSummaries = $derived(summarizeScheduleActions(actionStates));
 </script>
 
 <section class="calendar-week-board framed-panel" data-testid="calendar-week-board" data-visible-week-start={board.visibleWeekStart} data-visible-week-end={board.visibleWeekEndExclusive}>
@@ -57,6 +53,11 @@
         <span class={`pill pill-neutral ${board.sourceTone === 'warning' ? 'pill-expired' : ''}`}>{board.sourceLabel}</span>
         <span class="pill pill-active">{board.totalShifts} {board.totalShifts === 1 ? 'shift' : 'shifts'}</span>
         <span class="pill pill-neutral">UTC board</span>
+        {#each board.statusBadges as badge}
+          <span class={`pill ${badge.tone === 'danger' ? 'pill-danger' : badge.tone === 'warning' ? 'pill-expired' : badge.tone === 'success' ? 'pill-active' : 'pill-neutral'}`}>
+            {badge.label}
+          </span>
+        {/each}
       </div>
 
       <nav class="calendar-week-board__nav" aria-label="Visible week navigation">
@@ -68,18 +69,19 @@
 
   <section class="calendar-toolbar">
     <ShiftEditorDialog
+      action="create"
       mode="create"
       formId="create:week"
       visibleWeekStart={board.visibleWeekStart}
-      actionState={createState}
+      actionStates={actionStates}
       defaultDayKey={board.days[0]?.dayKey ?? board.visibleWeekStart}
       {pendingActionKey}
-      {setPendingActionKey}
+      {enhanceMutation}
     />
 
     <div class="calendar-toolbar__notes">
       <p class="panel-kicker">Board rhythm</p>
-      <p class="panel-copy">Same-day shifts stay stacked by time, recurring creates stay bounded, and every mutation reruns against server-resolved authority.</p>
+      <p class="panel-copy">Local writes update the visible week immediately, stay queued when the server is unavailable, and keep the trusted server action as the confirmation path.</p>
     </div>
   </section>
 
@@ -91,6 +93,14 @@
       {#if scheduleReason}
         <code>{scheduleReason}</code>
       {/if}
+    </article>
+  {/if}
+
+  {#if board.lastFailure}
+    <article class="status-card tone-danger" data-testid="local-write-failure">
+      <span class="status-card__label">Local-first failure</span>
+      <strong>{board.lastFailure.reason}</strong>
+      <p>{board.lastFailure.detail}</p>
     </article>
   {/if}
 
@@ -113,11 +123,9 @@
         <ShiftDayColumn
           {day}
           visibleWeekStart={board.visibleWeekStart}
-          {editState}
-          {moveState}
-          {deleteState}
+          {actionStates}
           {pendingActionKey}
-          {setPendingActionKey}
+          {enhanceMutation}
         />
       {/each}
     </div>

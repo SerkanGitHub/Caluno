@@ -102,6 +102,7 @@ export type OfflineScheduleRepository = {
   deleteWeekSnapshot: (scope: OfflineScheduleScope) => Promise<OfflineRepositoryWriteResult>;
   listLocalMutations: (scope: OfflineScheduleScope) => Promise<OfflineMutationReadResult>;
   putLocalMutation: (mutation: OfflineScheduleMutationRecord) => Promise<OfflineRepositoryWriteResult>;
+  deleteLocalMutation: (scope: OfflineScheduleScope, mutationId: string) => Promise<OfflineRepositoryWriteResult>;
   clearLocalMutations: (scope: OfflineScheduleScope) => Promise<OfflineRepositoryWriteResult>;
   close: () => Promise<void>;
 };
@@ -126,6 +127,7 @@ type RepositoryDriver = {
   deleteWeekRecord: (scope: OfflineScheduleScope) => Promise<void>;
   listMutationRecords: (scope: OfflineScheduleScope) => Promise<PersistedMutationRecord[]>;
   putMutationRecord: (record: PersistedMutationRecord) => Promise<void>;
+  deleteMutationRecord: (scope: OfflineScheduleScope, mutationId: string) => Promise<void>;
   clearMutationRecords: (scope: OfflineScheduleScope) => Promise<void>;
 };
 
@@ -334,6 +336,20 @@ export function createOfflineScheduleRepository(factory: () => RepositoryDriver)
         mutationJson: JSON.stringify(mutation)
       });
 
+      return { ok: true };
+    },
+
+    async deleteLocalMutation(scope, mutationId) {
+      if (!isOfflineScheduleScope(scope) || !isNonEmptyString(mutationId)) {
+        return invalidWrite('mutation-invalid', 'Refused to delete a malformed local mutation reference.');
+      }
+
+      const ready = await ensureReady();
+      if (!ready) {
+        return unavailableWriteResult(state);
+      }
+
+      await ready.driver.deleteMutationRecord(scope, mutationId);
       return { ok: true };
     },
 
@@ -565,6 +581,21 @@ function createSqliteWorkerRepositoryDriver(options: { openTimeoutMs: number }):
       );
     },
 
+    async deleteMutationRecord(scope, mutationId) {
+      const readyPromiser = requirePromiser(promiser);
+      await execSql(
+        readyPromiser,
+        `
+          DELETE FROM local_mutations
+          WHERE user_id = :userId AND calendar_id = :calendarId AND week_start = :weekStart AND id = :id
+        `,
+        {
+          ':id': mutationId,
+          ...toNamedScopeBind(scope)
+        }
+      );
+    },
+
     async clearMutationRecords(scope) {
       const readyPromiser = requirePromiser(promiser);
       await execSql(
@@ -639,6 +670,12 @@ function createMemoryRepositoryDriver(options: {
     async putMutationRecord(record) {
       const store = readMemoryStore(options.storage, options.storageKey);
       store.localMutations[mutationKey(record.scope, record.id)] = record.mutationJson;
+      writeMemoryStore(options.storage, options.storageKey, store);
+    },
+
+    async deleteMutationRecord(scope, mutationId) {
+      const store = readMemoryStore(options.storage, options.storageKey);
+      delete store.localMutations[mutationKey(scope, mutationId)];
       writeMemoryStore(options.storage, options.storageKey, store);
     },
 

@@ -44,7 +44,7 @@ describe('schedule board helpers', () => {
     expect(sorted.map((shift) => shift.id)).toEqual(['shift-b', 'shift-a', 'shift-c']);
   });
 
-  it('builds a calm week model with busy-day density, empty columns, and visible-week diagnostics', () => {
+  it('builds a calm week model with busy-day density, local status badges, and visible-week diagnostics', () => {
     const board = buildCalendarWeekBoard(
       {
         visibleWeek: {
@@ -135,7 +135,27 @@ describe('schedule board helpers', () => {
           }
         ]
       },
-      { now: new Date('2026-04-16T10:00:00.000Z') }
+      {
+        now: new Date('2026-04-16T10:00:00.000Z'),
+        runtime: {
+          boardSource: 'cached-local',
+          network: 'offline',
+          queueLength: 2,
+          pendingQueueLength: 2,
+          retryableQueueLength: 0,
+          shiftDiagnostics: {
+            'shift-a': [{ label: 'Pending sync', tone: 'warning' }],
+            'shift-c': [
+              { label: 'Local only', tone: 'warning' },
+              { label: 'Pending sync', tone: 'warning' }
+            ]
+          },
+          lastFailure: {
+            reason: 'LOCAL_QUEUE_PERSIST_FAILED',
+            detail: 'The queue could not persist.'
+          }
+        }
+      }
     );
 
     expect(board.rangeLabel).toBe('Apr 13 — Apr 19, 2026');
@@ -144,6 +164,12 @@ describe('schedule board helpers', () => {
     expect(board.sourceTone).toBe('warning');
     expect(board.previousWeekStart).toBe('2026-04-06');
     expect(board.nextWeekStart).toBe('2026-04-20');
+    expect(board.statusBadges.map((badge) => badge.label)).toEqual([
+      'Cached local board',
+      'Offline',
+      '2 pending local writes'
+    ]);
+    expect(board.lastFailure?.reason).toBe('LOCAL_QUEUE_PERSIST_FAILED');
 
     const busyDay = board.days.find((day) => day.dayKey === '2026-04-16');
     expect(busyDay?.density).toBe('busy');
@@ -154,6 +180,13 @@ describe('schedule board helpers', () => {
       occurrenceLabel: 'Occurrence 4',
       sourceLabel: 'Recurring series'
     });
+    expect(busyDay?.shifts.find((shift) => shift.id === 'shift-a')?.statusBadges).toEqual([
+      { label: 'Pending sync', tone: 'warning' }
+    ]);
+    expect(busyDay?.shifts.find((shift) => shift.id === 'shift-c')?.statusBadges).toEqual([
+      { label: 'Local only', tone: 'warning' },
+      { label: 'Pending sync', tone: 'warning' }
+    ]);
 
     expect(board.days.find((day) => day.dayKey === '2026-04-13')).toMatchObject({
       isEmpty: true,
@@ -161,29 +194,27 @@ describe('schedule board helpers', () => {
     });
   });
 
-  it('summarizes action states and converts ISO timestamps into datetime-local field values', () => {
+  it('summarizes local-first action states and converts ISO timestamps into datetime-local field values', () => {
     const summaries = summarizeScheduleActions([
       {
+        id: 'action-1',
+        formId: 'create:week',
         action: 'create',
         status: 'success',
         reason: 'SHIFT_CREATED',
         message: 'Created.',
-        visibleWeekStart: '2026-04-20',
         shiftId: 'shift-1',
-        seriesId: null,
-        affectedShiftIds: ['shift-1'],
-        fields: {}
+        createdAt: '2026-04-15T10:00:00.000Z'
       },
       {
+        id: 'action-2',
+        formId: 'move:shift-2',
         action: 'move',
         status: 'timeout',
         reason: 'SCHEDULE_MOVE_TIMEOUT',
         message: 'Timed out.',
-        visibleWeekStart: '2026-04-20',
         shiftId: 'shift-2',
-        seriesId: null,
-        affectedShiftIds: [],
-        fields: {}
+        createdAt: '2026-04-15T10:01:00.000Z'
       }
     ]);
 

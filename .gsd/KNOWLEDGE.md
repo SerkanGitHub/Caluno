@@ -59,3 +59,9 @@
 **Context:** The schedule recurrence helpers run in SvelteKit/Vite SSR as well as tests, and direct named imports from `rrule` broke the calendar route during browser verification.
 **Rule/Pattern:** In this repo, import `rrule` as the package default (for example `import rrulePkg from 'rrule'; const { RRule } = rrulePkg;`) for server-rendered schedule code instead of relying on named ESM imports.
 **Rationale:** The dependency currently resolves through a CommonJS-compatible path in the web app's SSR environment; using the package default avoids runtime import shape mismatches that only surface once the protected calendar route renders for real.
+
+## 2026-04-15: For one-off schedule creates, leave recurrence interval blank unless a cadence is selected
+
+**Context:** Local-first and server-backed shift create forms both post recurrence fields through the shared `normalizeShiftDraft()` recurrence validator.
+**Rule/Pattern:** Default `recurrenceInterval` to an empty string for one-off shift forms, and only send an interval value once a recurrence cadence has actually been selected.
+**Rationale:** The shared validator treats any supplied interval as recurrence input; posting `interval=1` with an empty cadence turns a normal one-off create into `RECURRENCE_CADENCE_REQUIRED` even though the user did not ask for recurrence.

@@ -1,9 +1,5 @@
-import type {
-  CalendarScheduleView,
-  CalendarShift,
-  ScheduleActionState,
-  VisibleWeek
-} from '$lib/server/schedule';
+import type { CalendarControllerActionState, CalendarControllerFailure, CalendarShiftDiagnostic } from '$lib/offline/calendar-controller';
+import type { CalendarScheduleView, CalendarShift, VisibleWeek } from '$lib/server/schedule';
 
 export type BoardTone = 'neutral' | 'success' | 'warning' | 'danger';
 
@@ -23,6 +19,7 @@ export type ShiftCardModel = {
   seriesId: string | null;
   occurrenceIndex: number | null;
   sourceKind: 'single' | 'series';
+  statusBadges: CalendarShiftDiagnostic[];
 };
 
 export type ShiftDayColumnModel = {
@@ -38,6 +35,12 @@ export type ShiftDayColumnModel = {
   shifts: ShiftCardModel[];
 };
 
+export type CalendarWeekBoardStatusBadge = {
+  id: string;
+  label: string;
+  tone: BoardTone;
+};
+
 export type CalendarWeekBoardModel = {
   visibleWeekStart: string;
   visibleWeekEndExclusive: string;
@@ -49,37 +52,53 @@ export type CalendarWeekBoardModel = {
   nextWeekStart: string;
   totalShifts: number;
   hasShifts: boolean;
+  statusBadges: CalendarWeekBoardStatusBadge[];
+  lastFailure: CalendarControllerFailure | null;
   days: ShiftDayColumnModel[];
 };
 
-export type ScheduleActionSummary = {
+export type CalendarActionSummary = {
   id: string;
   label: string;
   tone: BoardTone;
-  state: ScheduleActionState;
+  state: CalendarControllerActionState;
 };
 
 export function buildCalendarWeekBoard(
   schedule: Pick<CalendarScheduleView, 'visibleWeek' | 'days' | 'totalShifts'>,
-  options?: { now?: Date }
+  options?: {
+    now?: Date;
+    runtime?: {
+      boardSource: 'server-sync' | 'cached-local';
+      network: 'online' | 'offline';
+      queueLength: number;
+      pendingQueueLength: number;
+      retryableQueueLength: number;
+      shiftDiagnostics?: Record<string, CalendarShiftDiagnostic[]>;
+      lastFailure?: CalendarControllerFailure | null;
+    };
+  }
 ): CalendarWeekBoardModel {
   const visibleWeek = schedule.visibleWeek;
   const todayKey = toDayKey(options?.now ?? null);
   const startDate = parseUtcDate(visibleWeek.start);
   const endDate = parseUtcDate(addDayKey(visibleWeek.endExclusive, -1));
+  const runtime = options?.runtime;
 
   return {
     visibleWeekStart: visibleWeek.start,
     visibleWeekEndExclusive: visibleWeek.endExclusive,
     rangeLabel: `${formatMonthDay(startDate)} — ${formatMonthDay(endDate)}, ${startDate.getUTCFullYear()}`,
-    caption: buildVisibleWeekCaption(visibleWeek),
+    caption: buildVisibleWeekCaption(visibleWeek, runtime?.boardSource ?? 'server-sync'),
     sourceLabel: buildVisibleWeekSourceLabel(visibleWeek),
     sourceTone: visibleWeek.source === 'fallback-invalid' ? 'warning' : 'neutral',
     previousWeekStart: addDayKey(visibleWeek.start, -7),
     nextWeekStart: addDayKey(visibleWeek.start, 7),
     totalShifts: schedule.totalShifts,
     hasShifts: schedule.totalShifts > 0,
-    days: schedule.days.map((day) => buildDayColumn(day, todayKey))
+    statusBadges: buildBoardStatusBadges(runtime),
+    lastFailure: runtime?.lastFailure ?? null,
+    days: schedule.days.map((day) => buildDayColumn(day, todayKey, runtime?.shiftDiagnostics ?? {}))
   };
 }
 
@@ -94,11 +113,13 @@ export function sortShiftsForBoard(shifts: CalendarShift[]): CalendarShift[] {
   });
 }
 
-export function summarizeScheduleActions(states: Array<ScheduleActionState | null | undefined>): ScheduleActionSummary[] {
+export function summarizeScheduleActions(
+  states: Array<CalendarControllerActionState | null | undefined>
+): CalendarActionSummary[] {
   return states
-    .filter((state): state is ScheduleActionState => Boolean(state))
+    .filter((state): state is CalendarControllerActionState => Boolean(state))
     .map((state) => ({
-      id: `${state.action}:${state.shiftId ?? state.seriesId ?? state.visibleWeekStart}`,
+      id: state.id,
       label: formatActionLabel(state.action),
       tone: mapActionTone(state.status),
       state
@@ -135,10 +156,11 @@ export function buildDefaultCreateTimes(dayKey: string | null | undefined): { st
 
 function buildDayColumn(
   day: Pick<CalendarScheduleView['days'][number], 'dayKey' | 'label' | 'shifts'>,
-  todayKey: string | null
+  todayKey: string | null,
+  shiftDiagnostics: Record<string, CalendarShiftDiagnostic[]>
 ): ShiftDayColumnModel {
   const date = parseUtcDate(day.dayKey);
-  const shifts = sortShiftsForBoard(day.shifts).map((shift) => buildShiftCardModel(shift, day.shifts.length));
+  const shifts = sortShiftsForBoard(day.shifts).map((shift) => buildShiftCardModel(shift, day.shifts.length, shiftDiagnostics));
 
   return {
     dayKey: day.dayKey,
@@ -163,7 +185,11 @@ function buildDayColumn(
   };
 }
 
-function buildShiftCardModel(shift: CalendarShift, dayShiftCount: number): ShiftCardModel {
+function buildShiftCardModel(
+  shift: CalendarShift,
+  dayShiftCount: number,
+  shiftDiagnostics: Record<string, CalendarShiftDiagnostic[]>
+): ShiftCardModel {
   const start = new Date(shift.startAt);
   const end = new Date(shift.endAt);
   const durationMinutes = Math.max(1, Math.round((end.getTime() - start.getTime()) / 60000));
@@ -185,20 +211,79 @@ function buildShiftCardModel(shift: CalendarShift, dayShiftCount: number): Shift
     density: dayShiftCount >= 3 ? 'busy' : 'quiet',
     seriesId: shift.seriesId,
     occurrenceIndex: shift.occurrenceIndex,
-    sourceKind: shift.sourceKind
+    sourceKind: shift.sourceKind,
+    statusBadges: shiftDiagnostics[shift.id] ?? []
   };
 }
 
-function buildVisibleWeekCaption(visibleWeek: VisibleWeek): string {
+function buildBoardStatusBadges(
+  runtime:
+    | {
+        boardSource: 'server-sync' | 'cached-local';
+        network: 'online' | 'offline';
+        queueLength: number;
+        pendingQueueLength: number;
+        retryableQueueLength: number;
+      }
+    | undefined
+): CalendarWeekBoardStatusBadge[] {
+  if (!runtime) {
+    return [];
+  }
+
+  const badges: CalendarWeekBoardStatusBadge[] = [
+    {
+      id: 'board-source',
+      label: runtime.boardSource === 'cached-local' ? 'Cached local board' : 'Server-synced board',
+      tone: runtime.boardSource === 'cached-local' ? 'warning' : 'neutral'
+    },
+    {
+      id: 'network',
+      label: runtime.network === 'offline' ? 'Offline' : 'Online',
+      tone: runtime.network === 'offline' ? 'warning' : 'neutral'
+    }
+  ];
+
+  if (runtime.queueLength === 0) {
+    badges.push({
+      id: 'queue',
+      label: 'No pending local writes',
+      tone: 'neutral'
+    });
+    return badges;
+  }
+
+  if (runtime.retryableQueueLength > 0) {
+    badges.push({
+      id: 'queue',
+      label: `${runtime.retryableQueueLength} retryable local ${runtime.retryableQueueLength === 1 ? 'write' : 'writes'}`,
+      tone: 'danger'
+    });
+  } else {
+    badges.push({
+      id: 'queue',
+      label: `${runtime.pendingQueueLength} pending local ${runtime.pendingQueueLength === 1 ? 'write' : 'writes'}`,
+      tone: 'warning'
+    });
+  }
+
+  return badges;
+}
+
+function buildVisibleWeekCaption(visibleWeek: VisibleWeek, boardSource: 'server-sync' | 'cached-local'): string {
   if (visibleWeek.source === 'query') {
-    return 'Visible week chosen from the route query.';
+    return boardSource === 'cached-local'
+      ? 'Visible week chosen from the route query and reopened from browser-local continuity.'
+      : 'Visible week chosen from the route query.';
   }
 
   if (visibleWeek.source === 'fallback-invalid') {
     return 'The requested week was malformed, so the board fell back to the current trusted week.';
   }
 
-  return 'Showing the current trusted week.';
+  return boardSource === 'cached-local'
+    ? 'Showing the current week from browser-local continuity.'
+    : 'Showing the current trusted week.';
 }
 
 function buildVisibleWeekSourceLabel(visibleWeek: VisibleWeek): string {
@@ -213,7 +298,7 @@ function buildVisibleWeekSourceLabel(visibleWeek: VisibleWeek): string {
   return `Default visible week start: ${visibleWeek.start}`;
 }
 
-function formatActionLabel(action: ScheduleActionState['action']): string {
+function formatActionLabel(action: CalendarControllerActionState['action']): string {
   switch (action) {
     case 'create':
       return 'Create shift';
@@ -226,16 +311,19 @@ function formatActionLabel(action: ScheduleActionState['action']): string {
   }
 }
 
-function mapActionTone(status: ScheduleActionState['status']): BoardTone {
+function mapActionTone(status: CalendarControllerActionState['status']): BoardTone {
   switch (status) {
     case 'success':
       return 'success';
+    case 'pending-local':
     case 'timeout':
       return 'warning';
     case 'validation-error':
     case 'forbidden':
     case 'write-error':
     case 'malformed-response':
+    case 'local-write-failed':
+    case 'queue-persist-failed':
       return 'danger';
   }
 }

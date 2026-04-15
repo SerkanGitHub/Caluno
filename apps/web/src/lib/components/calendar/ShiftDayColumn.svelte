@@ -1,26 +1,26 @@
 <script lang="ts">
-  import type { ScheduleActionState } from '$lib/server/schedule';
+  import type { SubmitFunction } from '@sveltejs/kit';
+  import type { CalendarControllerActionState } from '$lib/offline/calendar-controller';
   import type { ShiftDayColumnModel } from '$lib/schedule/board';
   import ShiftCard from './ShiftCard.svelte';
 
   type Props = {
     day: ShiftDayColumnModel;
     visibleWeekStart: string;
-    editState?: ScheduleActionState | null;
-    moveState?: ScheduleActionState | null;
-    deleteState?: ScheduleActionState | null;
+    actionStates?: CalendarControllerActionState[];
     pendingActionKey: string | null;
-    setPendingActionKey: (value: string | null) => void;
+    enhanceMutation: (params: {
+      action: 'create' | 'edit' | 'move' | 'delete';
+      formId: string;
+    }) => SubmitFunction;
   };
 
   let {
     day,
     visibleWeekStart,
-    editState = null,
-    moveState = null,
-    deleteState = null,
+    actionStates = [],
     pendingActionKey,
-    setPendingActionKey
+    enhanceMutation
   }: Props = $props();
 </script>
 
@@ -50,11 +50,9 @@
         <ShiftCard
           {shift}
           {visibleWeekStart}
-          {editState}
-          {moveState}
-          {deleteState}
+          {actionStates}
           {pendingActionKey}
-          {setPendingActionKey}
+          {enhanceMutation}
         />
       {/each}
     </div>

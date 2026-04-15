@@ -1,34 +1,33 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import type { SubmitFunction } from '@sveltejs/kit';
-  import type { ScheduleActionState } from '$lib/server/schedule';
+  import type { CalendarControllerActionState } from '$lib/offline/calendar-controller';
   import type { ShiftCardModel } from '$lib/schedule/board';
   import ShiftEditorDialog from './ShiftEditorDialog.svelte';
 
   type Props = {
     shift: ShiftCardModel;
     visibleWeekStart: string;
-    editState?: ScheduleActionState | null;
-    moveState?: ScheduleActionState | null;
-    deleteState?: ScheduleActionState | null;
+    actionStates?: CalendarControllerActionState[];
     pendingActionKey: string | null;
-    setPendingActionKey: (value: string | null) => void;
+    enhanceMutation: (params: {
+      action: 'create' | 'edit' | 'move' | 'delete';
+      formId: string;
+    }) => SubmitFunction;
   };
 
   let {
     shift,
     visibleWeekStart,
-    editState = null,
-    moveState = null,
-    deleteState = null,
+    actionStates = [],
     pendingActionKey,
-    setPendingActionKey
+    enhanceMutation
   }: Props = $props();
 
   const deleteFormId = $derived(`delete:${shift.id}`);
   const deleteActionTarget = $derived(`?/deleteShift&start=${visibleWeekStart}`);
   const isDeleting = $derived(pendingActionKey === deleteFormId);
-  const scopedDeleteState = $derived(deleteState?.shiftId === shift.id ? deleteState : null);
+  const scopedDeleteState = $derived(actionStates.find((state) => state.formId === deleteFormId) ?? null);
   const deleteTone = $derived.by(() => {
     if (!scopedDeleteState) {
       return 'tone-neutral';
@@ -38,17 +37,8 @@
       return 'tone-neutral';
     }
 
-    return scopedDeleteState.status === 'timeout' ? 'tone-warning' : 'tone-danger';
+    return scopedDeleteState.status === 'pending-local' || scopedDeleteState.status === 'timeout' ? 'tone-warning' : 'tone-danger';
   });
-
-  const enhanceDelete: SubmitFunction = () => {
-    setPendingActionKey(deleteFormId);
-
-    return async ({ update }) => {
-      setPendingActionKey(null);
-      await update({ reset: false });
-    };
-  };
 </script>
 
 <article class={`shift-card shift-card--${shift.density}`} data-testid={`shift-card-${shift.id}`}>
@@ -62,6 +52,11 @@
       {#if shift.occurrenceLabel}
         <span class="pill pill-active">{shift.occurrenceLabel}</span>
       {/if}
+      {#each shift.statusBadges as badge}
+        <span class={`pill ${badge.tone === 'danger' ? 'pill-danger' : badge.tone === 'warning' ? 'pill-expired' : 'pill-neutral'}`}>
+          {badge.label}
+        </span>
+      {/each}
     </div>
   </div>
 
@@ -82,26 +77,28 @@
 
   <div class="shift-card__actions">
     <ShiftEditorDialog
+      action="edit"
       mode="edit"
       formId={`edit:${shift.id}`}
       {visibleWeekStart}
-      actionState={editState}
+      {actionStates}
       {shift}
       {pendingActionKey}
-      {setPendingActionKey}
+      {enhanceMutation}
     />
 
     <ShiftEditorDialog
+      action="move"
       mode="move"
       formId={`move:${shift.id}`}
       {visibleWeekStart}
-      actionState={moveState}
+      {actionStates}
       {shift}
       {pendingActionKey}
-      {setPendingActionKey}
+      {enhanceMutation}
     />
 
-    <form method="POST" action={deleteActionTarget} use:enhance={enhanceDelete} class="shift-delete-form">
+    <form method="POST" action={deleteActionTarget} use:enhance={enhanceMutation({ action: 'delete', formId: deleteFormId })} class="shift-delete-form">
       <input type="hidden" name="visibleWeekStart" value={visibleWeekStart} />
       <input type="hidden" name="shiftId" value={shift.id} />
       <input type="hidden" name="title" value={shift.title} />
