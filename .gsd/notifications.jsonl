@@ -288,3 +288,9 @@
 {"id":"3e9d1fda-f177-4a47-a55c-e006ddc93f6a","ts":"2026-04-15T08:02:10.541Z","severity":"warning","message":"[safety] file-change: apps/web/tests/e2e/calendar-offline.spec.ts — Modified but not in task plan's expected output","source":"workflow-logger","read":false}
 {"id":"099776c5-e686-4774-ab49-0f3f7e5eac4b","ts":"2026-04-15T08:02:10.541Z","severity":"warning","message":"Safety: 133 unexpected file change(s) outside task plan","source":"notify","read":false}
 {"id":"ad5f606a-1248-44ba-97e7-d85a2a0b2999","ts":"2026-04-15T08:02:13.438Z","severity":"info","message":"Verification gate: 2/2 checks passed","source":"notify","read":false}
+{"id":"62a8c5c5-d664-4643-98ef-c54c2e70c6e6","ts":"2026-04-15T08:15:12.571Z","severity":"info","message":"Committed: feat: Added the offline schedule repository and cached shell/session co…","source":"notify","read":false}
+{"id":"70b2a988-1a71-496f-a7d5-d3fbd450f8e8","ts":"2026-04-15T08:15:12.631Z","severity":"warning","message":"[safety] file-change: apps/web/.svelte-kit/ambient.d.ts — Modified but not in task plan's expected output","source":"workflow-logger","read":false}
+{"id":"38a1798f-bd62-4d46-b5af-a01b64c47e62","ts":"2026-04-15T08:15:12.632Z","severity":"warning","message":"[safety] file-change: apps/web/.svelte-kit/generated/server/internal.js — Modified but not in task plan's expected output","source":"workflow-logger","read":false}
+{"id":"67bcfddd-bef9-4739-8e48-0a77a88dc2a3","ts":"2026-04-15T08:15:12.632Z","severity":"warning","message":"Safety: 2 unexpected file change(s) outside task plan","source":"notify","read":false}
+{"id":"d7f2fcfb-d1bd-41ca-94ba-486fb01fd366","ts":"2026-04-15T08:15:14.837Z","severity":"info","message":"Verification gate: 2/2 checks passed","source":"notify","read":false}
+{"id":"010d26e9-8af7-4682-a7a4-e403e95c2cf2","ts":"2026-04-15T08:15:14.838Z","severity":"warning","message":"Post-execution checks passed with warnings","source":"notify","read":false}

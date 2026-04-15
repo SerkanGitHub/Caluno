@@ -11,6 +11,25 @@ declare global {
       }>;
     }
 
+    type ProtectedRouteMode = 'trusted-online' | 'cached-offline' | 'offline-denied';
+
+    interface ProtectedShellState {
+      mode: ProtectedRouteMode;
+      reason: string | null;
+      detail: string;
+      refreshedAt: string | null;
+      visibleCalendarIds: string[];
+    }
+
+    interface ProtectedCalendarState {
+      mode: ProtectedRouteMode;
+      reason: string | null;
+      detail: string;
+      cachedAt: string | null;
+      visibleWeekStart: string | null;
+      visibleWeekOrigin: 'server-sync' | 'cached-local' | null;
+    }
+
     interface PageData {
       session: Session | null;
       user: User | null;

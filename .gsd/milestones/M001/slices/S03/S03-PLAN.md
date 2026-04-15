@@ -64,7 +64,7 @@
   - Do: Add a worker-backed repository API for cached schedules, a minimal cached app-shell/session snapshot keyed to the previously trusted viewer/calendar scope, and browser auth helpers that refresh that snapshot only after successful online loads. Keep cached scope continuity-only: it may reopen previously synced calendars on this browser, but it may not mint authority for unsynced ids or changed memberships.
   - Verify: `pnpm --dir apps/web exec vitest run tests/auth/session.unit.test.ts tests/schedule/offline-store.unit.test.ts`
   - Done when: unit proof shows repository reopen persistence, cached permitted-calendar lookup, and fail-closed behavior for unsynced or malformed cached scope.
-- [ ] **T03: Add fail-closed cached-shell routing for offline protected pages** `est:2h`
+- [x] **T03: Add fail-closed cached-shell routing for offline protected pages** `est:2h`
   - Why: The protected shell and calendar route need a browser-side fallback path that can use cached scope offline while preserving the existing online SSR contract as the default path.
   - Files: `apps/web/src/app.d.ts`, `apps/web/src/routes/(app)/+layout.ts`, `apps/web/src/routes/(app)/calendars/[calendarId]/+page.ts`, `apps/web/src/routes/(app)/groups/+page.svelte`, `apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte`, `apps/web/tests/routes/protected-routes.unit.test.ts`
   - Do: Add typed browser-side load state for online, cached-offline, and offline-denied branches; keep groups/calendar navigation limited to previously synced permitted calendars; and make direct offline access to unsynced calendar ids render an explicit denied state instead of an empty board or guessed data.

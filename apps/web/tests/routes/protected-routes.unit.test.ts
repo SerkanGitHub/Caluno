@@ -1,6 +1,18 @@
 import { describe, expect, it, vi } from 'vitest';
 import { normalizeInternalPath, resolveAuthSurface } from '../../src/lib/server/auth-flow';
 import { resolveCalendarPageState } from '../../src/lib/server/app-shell';
+import {
+  readCachedAppShellSnapshot,
+  writeCachedAppShellSnapshot,
+  type StorageLike
+} from '../../src/lib/offline/app-shell-cache';
+import {
+  OFFLINE_REPOSITORY_MEMORY_STORAGE_KEY,
+  createMemoryScheduleRepository,
+  type OfflineScheduleWeekSnapshot
+} from '../../src/lib/offline/repository';
+import { resolveProtectedShellRouteData } from '../../src/routes/(app)/+layout';
+import { resolveCachedCalendarRouteData } from '../../src/routes/(app)/calendars/[calendarId]/+page';
 import { load as appLayoutLoad } from '../../src/routes/(app)/+layout.server';
 import { actions as groupActions } from '../../src/routes/(app)/groups/+page.server';
 import { load as calendarPageLoad } from '../../src/routes/(app)/calendars/[calendarId]/+page.server';
@@ -11,6 +23,109 @@ function createRequest(formData: FormData) {
     method: 'POST',
     body: formData
   });
+}
+
+function createStorage(): StorageLike {
+  const values = new Map<string, string>();
+
+  return {
+    getItem(key) {
+      return values.get(key) ?? null;
+    },
+    setItem(key, value) {
+      values.set(key, value);
+    },
+    removeItem(key) {
+      values.delete(key);
+    }
+  };
+}
+
+function writeTrustedShell(storage: StorageLike) {
+  writeCachedAppShellSnapshot(
+    {
+      viewer: {
+        id: 'user-a',
+        email: 'user@example.com',
+        displayName: 'User One'
+      },
+      session: {
+        userId: 'user-a',
+        email: 'user@example.com',
+        displayName: 'User One',
+        expiresAtMs: new Date('2026-04-15T12:00:00.000Z').getTime(),
+        refreshedAt: '2026-04-15T10:00:00.000Z'
+      },
+      groups: [
+        {
+          id: 'group-a',
+          name: 'Alpha Group',
+          role: 'owner',
+          calendars: [
+            {
+              id: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+              groupId: 'group-a',
+              name: 'Alpha shared',
+              isDefault: true
+            }
+          ],
+          joinCode: null,
+          joinCodeStatus: 'unavailable'
+        }
+      ],
+      calendars: [
+        {
+          id: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+          groupId: 'group-a',
+          name: 'Alpha shared',
+          isDefault: true
+        }
+      ],
+      primaryCalendar: {
+        id: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+        groupId: 'group-a',
+        name: 'Alpha shared',
+        isDefault: true
+      },
+      onboardingState: 'ready',
+      now: new Date('2026-04-15T10:00:00.000Z')
+    },
+    storage
+  );
+}
+
+function createOfflineWeekSnapshot(): OfflineScheduleWeekSnapshot {
+  return {
+    scope: {
+      userId: 'user-a',
+      calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+      weekStart: '2026-04-20'
+    },
+    visibleWeek: {
+      start: '2026-04-20',
+      endExclusive: '2026-04-27',
+      startAt: '2026-04-20T00:00:00.000Z',
+      endAt: '2026-04-27T00:00:00.000Z',
+      requestedStart: '2026-04-20',
+      source: 'query',
+      reason: null,
+      dayKeys: ['2026-04-20', '2026-04-21', '2026-04-22', '2026-04-23', '2026-04-24', '2026-04-25', '2026-04-26']
+    },
+    shifts: [
+      {
+        id: 'shift-alpha',
+        calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+        seriesId: null,
+        title: 'Alpha opening sweep',
+        startAt: '2026-04-20T08:30:00.000Z',
+        endAt: '2026-04-20T09:00:00.000Z',
+        occurrenceIndex: null,
+        sourceKind: 'single'
+      }
+    ],
+    cachedAt: '2026-04-15T10:05:00.000Z',
+    origin: 'server-sync'
+  };
 }
 
 function createThenableBuilder<T>(
@@ -84,6 +199,40 @@ describe('protected app layout', () => {
       location:
         '/signin?flow=auth-required&reason=AUTH_REQUIRED&returnTo=%2Fcalendars%2Faaaaaaaa-aaaa-1111-1111-111111111111'
     });
+  });
+
+  it('reopens the protected shell from cached scope offline', () => {
+    const storage = createStorage();
+    writeTrustedShell(storage);
+
+    const result = resolveProtectedShellRouteData({
+      isOnline: false,
+      cachedLookup: readCachedAppShellSnapshot({
+        storage,
+        now: new Date('2026-04-15T10:30:00.000Z')
+      })
+    });
+
+    expect(result.protectedShellState.mode).toBe('cached-offline');
+    expect(result.protectedShellState.visibleCalendarIds).toEqual(['aaaaaaaa-aaaa-1111-1111-111111111111']);
+    expect(result.appShell?.viewer.displayName).toBe('User One');
+    expect(result.appShell?.groups[0]?.name).toBe('Alpha Group');
+  });
+
+  it('fails closed offline when no trusted shell snapshot exists on this browser', () => {
+    const result = resolveProtectedShellRouteData({
+      isOnline: false,
+      cachedLookup: readCachedAppShellSnapshot({ storage: createStorage() })
+    });
+
+    expect(result.protectedShellState).toEqual({
+      mode: 'offline-denied',
+      reason: 'cache-missing',
+      detail: 'No trusted app-shell continuity snapshot has been stored on this browser yet.',
+      refreshedAt: null,
+      visibleCalendarIds: []
+    });
+    expect(result.appShell).toBeNull();
   });
 });
 
@@ -268,6 +417,118 @@ describe('calendar route resolution', () => {
     expect(capture.eq).toContainEqual(['calendar_id', 'aaaaaaaa-aaaa-1111-1111-111111111111']);
     expect(capture.lt).toContainEqual(['start_at', '2026-04-27T00:00:00.000Z']);
     expect(capture.gt).toContainEqual(['end_at', '2026-04-20T00:00:00.000Z']);
+  });
+
+  it('reopens a previously synced calendar week from cached scope offline', async () => {
+    const storage = createStorage();
+    writeTrustedShell(storage);
+
+    const shellResult = resolveProtectedShellRouteData({
+      isOnline: false,
+      cachedLookup: readCachedAppShellSnapshot({
+        storage,
+        now: new Date('2026-04-15T10:30:00.000Z')
+      })
+    });
+
+    const repository = createMemoryScheduleRepository({ storage });
+    const snapshot = createOfflineWeekSnapshot();
+    await repository.putWeekSnapshot(snapshot);
+
+    const routeResult = resolveCachedCalendarRouteData({
+      calendarId: snapshot.scope.calendarId,
+      searchParams: new URLSearchParams(`start=${snapshot.scope.weekStart}`),
+      appShell: shellResult.appShell,
+      shellState: shellResult.protectedShellState,
+      snapshotResult: await repository.getWeekSnapshot(snapshot.scope)
+    });
+
+    expect(routeResult.protectedCalendarState).toEqual({
+      mode: 'cached-offline',
+      reason: null,
+      detail: 'This calendar reopened from the last trusted week snapshot stored on this browser.',
+      cachedAt: '2026-04-15T10:05:00.000Z',
+      visibleWeekStart: '2026-04-20',
+      visibleWeekOrigin: 'cached-local'
+    });
+    expect(routeResult.calendarView.kind).toBe('calendar');
+    if (routeResult.calendarView.kind === 'calendar') {
+      expect(routeResult.calendarView.schedule.totalShifts).toBe(1);
+      expect(routeResult.calendarView.group?.name).toBe('Alpha Group');
+      expect(routeResult.calendarView.schedule.days[0]?.shifts[0]?.title).toBe('Alpha opening sweep');
+    }
+  });
+
+  it('fails closed for unsynced offline calendar ids instead of widening cached scope', () => {
+    const storage = createStorage();
+    writeTrustedShell(storage);
+
+    const shellResult = resolveProtectedShellRouteData({
+      isOnline: false,
+      cachedLookup: readCachedAppShellSnapshot({
+        storage,
+        now: new Date('2026-04-15T10:30:00.000Z')
+      })
+    });
+
+    const routeResult = resolveCachedCalendarRouteData({
+      calendarId: 'bbbbbbbb-bbbb-1111-1111-111111111111',
+      searchParams: new URLSearchParams('start=2026-04-20'),
+      appShell: shellResult.appShell,
+      shellState: shellResult.protectedShellState
+    });
+
+    expect(routeResult.protectedCalendarState.mode).toBe('offline-denied');
+    expect(routeResult.protectedCalendarState.reason).toBe('calendar-not-synced');
+    expect(routeResult.calendarView.kind).toBe('denied');
+    if (routeResult.calendarView.kind === 'denied') {
+      expect(routeResult.calendarView.reason).toBe('calendar-missing');
+      expect(routeResult.calendarView.failurePhase).toBe('calendar-lookup');
+      expect(routeResult.calendarView.detail.title).toBe('That calendar was never synced on this browser.');
+    }
+  });
+
+  it('fails closed when the cached week snapshot is malformed', async () => {
+    const storage = createStorage();
+    writeTrustedShell(storage);
+
+    const shellResult = resolveProtectedShellRouteData({
+      isOnline: false,
+      cachedLookup: readCachedAppShellSnapshot({
+        storage,
+        now: new Date('2026-04-15T10:30:00.000Z')
+      })
+    });
+
+    storage.setItem(
+      OFFLINE_REPOSITORY_MEMORY_STORAGE_KEY,
+      JSON.stringify({
+        weekSnapshots: {
+          'user-a::aaaaaaaa-aaaa-1111-1111-111111111111::2026-04-20': '{"scope":{"userId":"user-a"}}'
+        },
+        localMutations: {}
+      })
+    );
+
+    const repository = createMemoryScheduleRepository({ storage });
+    const routeResult = resolveCachedCalendarRouteData({
+      calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+      searchParams: new URLSearchParams('start=2026-04-20'),
+      appShell: shellResult.appShell,
+      shellState: shellResult.protectedShellState,
+      snapshotResult: await repository.getWeekSnapshot({
+        userId: 'user-a',
+        calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+        weekStart: '2026-04-20'
+      })
+    });
+
+    expect(routeResult.protectedCalendarState.mode).toBe('offline-denied');
+    expect(routeResult.protectedCalendarState.reason).toBe('snapshot-invalid');
+    expect(routeResult.calendarView.kind).toBe('denied');
+    if (routeResult.calendarView.kind === 'denied') {
+      expect(routeResult.calendarView.detail.title).toBe('The cached calendar snapshot could not be trusted.');
+    }
   });
 
   it('keeps the denied contract for out-of-scope calendar ids without loading schedule data', async () => {

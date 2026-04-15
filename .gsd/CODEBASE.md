@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-15T08:02:13Z | Files: 260 | Described: 0/260
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-15T08:02:13Z","fingerprint":"16d7e7809d5647913619cb648b273553cc8f07a7","fileCount":260,"truncated":false} -->
+Generated: 2026-04-15T08:15:14Z | Files: 264 | Described: 0/264
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-15T08:15:14Z","fingerprint":"fad743f235156f50529ed2b05130e537913c47dd","fileCount":264,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -337,7 +337,10 @@ Generated: 2026-04-15T08:02:13Z | Files: 260 | Described: 0/260
 - `apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte`
 
 ### apps/web/src/lib/offline/
+- `apps/web/src/lib/offline/app-shell-cache.ts`
+- `apps/web/src/lib/offline/repository.ts`
 - `apps/web/src/lib/offline/runtime.ts`
+- `apps/web/src/lib/offline/sqlite.worker.ts`
 
 ### apps/web/src/lib/schedule/
 - `apps/web/src/lib/schedule/board.ts`
@@ -403,6 +406,7 @@ Generated: 2026-04-15T08:02:13Z | Files: 260 | Described: 0/260
 
 ### apps/web/tests/schedule/
 - `apps/web/tests/schedule/board.unit.test.ts`
+- `apps/web/tests/schedule/offline-store.unit.test.ts`
 - `apps/web/tests/schedule/recurrence.unit.test.ts`
 - `apps/web/tests/schedule/server-actions.unit.test.ts`
 

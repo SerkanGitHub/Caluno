@@ -1,5 +1,6 @@
 {
 	"/(app)": [
+		"src/routes/(app)/+layout.ts",
 		"src/routes/(app)/+layout.server.ts",
 		"src/routes/+layout.server.ts"
 	],
@@ -8,7 +9,9 @@
 		"src/routes/+layout.server.ts"
 	],
 	"/(app)/calendars/[calendarId]": [
+		"src/routes/(app)/calendars/[calendarId]/+page.ts",
 		"src/routes/(app)/calendars/[calendarId]/+page.server.ts",
+		"src/routes/(app)/+layout.ts",
 		"src/routes/(app)/+layout.server.ts",
 		"src/routes/+layout.server.ts"
 	],
@@ -17,6 +20,7 @@
 	],
 	"/(app)/groups": [
 		"src/routes/(app)/groups/+page.server.ts",
+		"src/routes/(app)/+layout.ts",
 		"src/routes/(app)/+layout.server.ts",
 		"src/routes/+layout.server.ts"
 	],
