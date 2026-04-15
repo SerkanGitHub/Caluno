@@ -58,7 +58,7 @@
   - Do: Add the browser-local SQLite/WASM dependency, wire COOP/COEP headers for dev/preview/server responses, add a SvelteKit service worker that caches the protected shell and previously visited route assets without expanding authority, and create a preview-backed Playwright config for offline/browser-cache proof instead of relying on the default dev server.
   - Verify: `pnpm --dir apps/web check && pnpm --dir apps/web build`
   - Done when: the app builds with the offline runtime assets in place, headers are configured for SQLite/worker use, and there is a dedicated Playwright config ready to prove real offline reopen.
-- [ ] **T02: Build the browser-local schedule repository and cached-shell snapshot contract** `est:2h`
+- [x] **T02: Build the browser-local schedule repository and cached-shell snapshot contract** `est:2h`
   - Why: S03 needs a durable local data boundary for schedule rows plus a minimal cached app-shell/session snapshot before any route can truthfully reopen offline.
   - Files: `apps/web/src/lib/offline/sqlite.worker.ts`, `apps/web/src/lib/offline/repository.ts`, `apps/web/src/lib/offline/app-shell-cache.ts`, `apps/web/src/lib/supabase/client.ts`, `apps/web/tests/auth/session.unit.test.ts`, `apps/web/tests/schedule/offline-store.unit.test.ts`
   - Do: Add a worker-backed repository API for cached schedules, a minimal cached app-shell/session snapshot keyed to the previously trusted viewer/calendar scope, and browser auth helpers that refresh that snapshot only after successful online loads. Keep cached scope continuity-only: it may reopen previously synced calendars on this browser, but it may not mint authority for unsynced ids or changed memberships.

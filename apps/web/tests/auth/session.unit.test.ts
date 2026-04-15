@@ -1,7 +1,12 @@
 import type { Session, User } from '@supabase/supabase-js';
 import { describe, expect, it, vi } from 'vitest';
+import { writeCachedAppShellSnapshot, type StorageLike } from '../../src/lib/offline/app-shell-cache';
 import { load } from '../../src/routes/+layout.server';
 import { readSupabasePublicEnv } from '../../src/lib/supabase/config';
+import {
+  buildSupabaseSessionContinuity,
+  readSupabaseSessionContinuity
+} from '../../src/lib/supabase/client';
 import { safeGetSession } from '../../src/lib/supabase/server';
 
 function createSession(overrides: Partial<Session> = {}): Session {
@@ -26,6 +31,22 @@ function createUser(overrides: Partial<User> = {}): User {
     email: 'user@example.com',
     ...overrides
   } as User;
+}
+
+function createStorage(): StorageLike {
+  const values = new Map<string, string>();
+
+  return {
+    getItem(key) {
+      return values.get(key) ?? null;
+    },
+    setItem(key, value) {
+      values.set(key, value);
+    },
+    removeItem(key) {
+      values.delete(key);
+    }
+  };
 }
 
 describe('readSupabasePublicEnv', () => {
@@ -99,6 +120,99 @@ describe('safeGetSession', () => {
       session: null,
       user: null,
       authStatus: 'invalid'
+    });
+  });
+});
+
+describe('browser continuity session helpers', () => {
+  it('builds a minimal continuity session without persisting raw auth tokens', () => {
+    const session = createSession({
+      expires_at: 1_900_000_000,
+      user: createUser({
+        id: 'user-2',
+        email: 'signed-in@example.com',
+        user_metadata: { full_name: 'Taylor Agent' }
+      })
+    });
+
+    expect(
+      buildSupabaseSessionContinuity({
+        session,
+        now: new Date('2026-04-15T10:00:00.000Z')
+      })
+    ).toEqual({
+      userId: 'user-2',
+      email: 'signed-in@example.com',
+      displayName: 'Taylor Agent',
+      expiresAtMs: 1_900_000_000_000,
+      refreshedAt: '2026-04-15T10:00:00.000Z'
+    });
+  });
+
+  it('reads continuity from the cached shell and rejects stale cached sessions', () => {
+    const storage = createStorage();
+
+    writeCachedAppShellSnapshot(
+      {
+        viewer: {
+          id: 'user-1',
+          email: 'user@example.com',
+          displayName: 'User One'
+        },
+        session: {
+          userId: 'user-1',
+          email: 'user@example.com',
+          displayName: 'User One',
+          expiresAtMs: new Date('2026-04-15T09:59:59.000Z').getTime(),
+          refreshedAt: '2026-04-15T09:00:00.000Z'
+        },
+        groups: [
+          {
+            id: 'group-a',
+            name: 'Alpha Group',
+            role: 'owner',
+            calendars: [
+              {
+                id: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+                groupId: 'group-a',
+                name: 'Alpha shared',
+                isDefault: true
+              }
+            ],
+            joinCode: null,
+            joinCodeStatus: 'unavailable'
+          }
+        ],
+        calendars: [
+          {
+            id: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+            groupId: 'group-a',
+            name: 'Alpha shared',
+            isDefault: true
+          }
+        ],
+        primaryCalendar: {
+          id: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+          groupId: 'group-a',
+          name: 'Alpha shared',
+          isDefault: true
+        },
+        onboardingState: 'ready',
+        now: new Date('2026-04-15T09:00:00.000Z')
+      },
+      storage
+    );
+
+    expect(
+      readSupabaseSessionContinuity({
+        storage,
+        expectedUserId: 'user-1',
+        now: new Date('2026-04-15T10:00:00.000Z')
+      })
+    ).toEqual({
+      status: 'unavailable',
+      reason: 'session-stale',
+      detail: 'The cached continuity session expired, so offline continuity failed closed.'
     });
   });
 });

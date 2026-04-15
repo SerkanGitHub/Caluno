@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-15T07:47:59Z | Files: 129 | Described: 0/129
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-15T07:47:59Z","fingerprint":"b7d6656166a0b37339461a8c0b7501531efe3f12","fileCount":129,"truncated":false} -->
+Generated: 2026-04-15T08:02:13Z | Files: 260 | Described: 0/260
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-15T08:02:13Z","fingerprint":"16d7e7809d5647913619cb648b273553cc8f07a7","fileCount":260,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -61,6 +61,7 @@ Generated: 2026-04-15T07:47:59Z | Files: 129 | Described: 0/129
 ### apps/web/
 - `apps/web/package.json`
 - `apps/web/playwright.config.ts`
+- `apps/web/playwright.offline.config.ts`
 - `apps/web/svelte.config.js`
 - `apps/web/tsconfig.json`
 - `apps/web/vite.config.ts`
@@ -70,6 +71,80 @@ Generated: 2026-04-15T07:47:59Z | Files: 129 | Described: 0/129
 - `apps/web/.svelte-kit/non-ambient.d.ts`
 - `apps/web/.svelte-kit/tsconfig.json`
 
+### apps/web/.svelte-kit/adapter-node/
+- `apps/web/.svelte-kit/adapter-node/index.js`
+- `apps/web/.svelte-kit/adapter-node/internal.js`
+- `apps/web/.svelte-kit/adapter-node/manifest-full.js`
+- `apps/web/.svelte-kit/adapter-node/manifest.js`
+- `apps/web/.svelte-kit/adapter-node/remote-entry.js`
+
+### apps/web/.svelte-kit/adapter-node/.vite/
+- `apps/web/.svelte-kit/adapter-node/.vite/manifest.json`
+
+### apps/web/.svelte-kit/adapter-node/_app/immutable/assets/
+- `apps/web/.svelte-kit/adapter-node/_app/immutable/assets/_layout.BhkzxgrJ.css`
+
+### apps/web/.svelte-kit/adapter-node/chunks/
+- `apps/web/.svelte-kit/adapter-node/chunks/app-shell.js`
+- `apps/web/.svelte-kit/adapter-node/chunks/attributes.js`
+- `apps/web/.svelte-kit/adapter-node/chunks/auth-flow.js`
+- `apps/web/.svelte-kit/adapter-node/chunks/contract.js`
+- `apps/web/.svelte-kit/adapter-node/chunks/environment.js`
+- `apps/web/.svelte-kit/adapter-node/chunks/exports.js`
+- `apps/web/.svelte-kit/adapter-node/chunks/false.js`
+- `apps/web/.svelte-kit/adapter-node/chunks/index.js`
+- `apps/web/.svelte-kit/adapter-node/chunks/internal.js`
+- `apps/web/.svelte-kit/adapter-node/chunks/render-context.js`
+- `apps/web/.svelte-kit/adapter-node/chunks/renderer.js`
+- `apps/web/.svelte-kit/adapter-node/chunks/root.js`
+- `apps/web/.svelte-kit/adapter-node/chunks/runtime.js`
+- `apps/web/.svelte-kit/adapter-node/chunks/shared-server.js`
+- `apps/web/.svelte-kit/adapter-node/chunks/shared.js`
+- `apps/web/.svelte-kit/adapter-node/chunks/state.svelte.js`
+- `apps/web/.svelte-kit/adapter-node/chunks/utils.js`
+
+### apps/web/.svelte-kit/adapter-node/entries/
+- `apps/web/.svelte-kit/adapter-node/entries/hooks.server.js`
+
+### apps/web/.svelte-kit/adapter-node/entries/endpoints/(auth)/callback/
+- `apps/web/.svelte-kit/adapter-node/entries/endpoints/(auth)/callback/_server.ts.js`
+
+### apps/web/.svelte-kit/adapter-node/entries/endpoints/(auth)/logout/
+- `apps/web/.svelte-kit/adapter-node/entries/endpoints/(auth)/logout/_server.ts.js`
+
+### apps/web/.svelte-kit/adapter-node/entries/fallbacks/
+- `apps/web/.svelte-kit/adapter-node/entries/fallbacks/error.svelte.js`
+- `apps/web/.svelte-kit/adapter-node/entries/fallbacks/layout.svelte.js`
+
+### apps/web/.svelte-kit/adapter-node/entries/pages/
+- `apps/web/.svelte-kit/adapter-node/entries/pages/_layout.server.ts.js`
+- `apps/web/.svelte-kit/adapter-node/entries/pages/_layout.svelte.js`
+- `apps/web/.svelte-kit/adapter-node/entries/pages/_page.svelte.js`
+
+### apps/web/.svelte-kit/adapter-node/entries/pages/(app)/
+- `apps/web/.svelte-kit/adapter-node/entries/pages/(app)/_layout.server.ts.js`
+
+### apps/web/.svelte-kit/adapter-node/entries/pages/(app)/calendars/_calendarId_/
+- `apps/web/.svelte-kit/adapter-node/entries/pages/(app)/calendars/_calendarId_/_page.server.ts.js`
+- `apps/web/.svelte-kit/adapter-node/entries/pages/(app)/calendars/_calendarId_/_page.svelte.js`
+
+### apps/web/.svelte-kit/adapter-node/entries/pages/(app)/groups/
+- `apps/web/.svelte-kit/adapter-node/entries/pages/(app)/groups/_page.server.ts.js`
+- `apps/web/.svelte-kit/adapter-node/entries/pages/(app)/groups/_page.svelte.js`
+
+### apps/web/.svelte-kit/adapter-node/entries/pages/(auth)/signin/
+- `apps/web/.svelte-kit/adapter-node/entries/pages/(auth)/signin/_page.server.ts.js`
+- `apps/web/.svelte-kit/adapter-node/entries/pages/(auth)/signin/_page.svelte.js`
+
+### apps/web/.svelte-kit/adapter-node/nodes/
+- `apps/web/.svelte-kit/adapter-node/nodes/0.js`
+- `apps/web/.svelte-kit/adapter-node/nodes/1.js`
+- `apps/web/.svelte-kit/adapter-node/nodes/2.js`
+- `apps/web/.svelte-kit/adapter-node/nodes/3.js`
+- `apps/web/.svelte-kit/adapter-node/nodes/4.js`
+- `apps/web/.svelte-kit/adapter-node/nodes/5.js`
+- `apps/web/.svelte-kit/adapter-node/nodes/6.js`
+
 ### apps/web/.svelte-kit/generated/
 - `apps/web/.svelte-kit/generated/root.js`
 - `apps/web/.svelte-kit/generated/root.svelte`
@@ -77,6 +152,19 @@ Generated: 2026-04-15T07:47:59Z | Files: 129 | Described: 0/129
 ### apps/web/.svelte-kit/generated/client/
 - `apps/web/.svelte-kit/generated/client/app.js`
 - `apps/web/.svelte-kit/generated/client/matchers.js`
+
+### apps/web/.svelte-kit/generated/client-optimized/
+- `apps/web/.svelte-kit/generated/client-optimized/app.js`
+- `apps/web/.svelte-kit/generated/client-optimized/matchers.js`
+
+### apps/web/.svelte-kit/generated/client-optimized/nodes/
+- `apps/web/.svelte-kit/generated/client-optimized/nodes/0.js`
+- `apps/web/.svelte-kit/generated/client-optimized/nodes/1.js`
+- `apps/web/.svelte-kit/generated/client-optimized/nodes/2.js`
+- `apps/web/.svelte-kit/generated/client-optimized/nodes/3.js`
+- `apps/web/.svelte-kit/generated/client-optimized/nodes/4.js`
+- `apps/web/.svelte-kit/generated/client-optimized/nodes/5.js`
+- `apps/web/.svelte-kit/generated/client-optimized/nodes/6.js`
 
 ### apps/web/.svelte-kit/generated/client/nodes/
 - `apps/web/.svelte-kit/generated/client/nodes/0.js`
@@ -89,6 +177,119 @@ Generated: 2026-04-15T07:47:59Z | Files: 129 | Described: 0/129
 
 ### apps/web/.svelte-kit/generated/server/
 - `apps/web/.svelte-kit/generated/server/internal.js`
+
+### apps/web/.svelte-kit/output/client/
+- `apps/web/.svelte-kit/output/client/service-worker.js`
+
+### apps/web/.svelte-kit/output/client/.vite/
+- `apps/web/.svelte-kit/output/client/.vite/manifest.json`
+
+### apps/web/.svelte-kit/output/client/_app/
+- `apps/web/.svelte-kit/output/client/_app/version.json`
+
+### apps/web/.svelte-kit/output/client/_app/immutable/assets/
+- `apps/web/.svelte-kit/output/client/_app/immutable/assets/0.BhkzxgrJ.css`
+
+### apps/web/.svelte-kit/output/client/_app/immutable/chunks/
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BblT0OrB.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BG5Vx-Sp.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BHp_YHS0.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/C_Up9R7W.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/C1zP10-h.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/C3MEtIhj.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/CcxCXhwB.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Dqd_7uUk.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DsnmJJEf.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DyFfV0ck.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DywPX1lr.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/hOISEb1Q.js`
+
+### apps/web/.svelte-kit/output/client/_app/immutable/entry/
+- `apps/web/.svelte-kit/output/client/_app/immutable/entry/app.pRPBdpFz.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/entry/start.Md4x2UtY.js`
+
+### apps/web/.svelte-kit/output/client/_app/immutable/nodes/
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/0.BvDkFNZI.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/1.0DuyOYC0.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/2.CsFv6aH_.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/3.CguW2uwJ.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/4.Cb2aSKmQ.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/5._2UtJd4U.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/6.CY0t7Ms5.js`
+
+### apps/web/.svelte-kit/output/server/
+- `apps/web/.svelte-kit/output/server/index.js`
+- `apps/web/.svelte-kit/output/server/internal.js`
+- `apps/web/.svelte-kit/output/server/manifest-full.js`
+- `apps/web/.svelte-kit/output/server/manifest.js`
+- `apps/web/.svelte-kit/output/server/remote-entry.js`
+
+### apps/web/.svelte-kit/output/server/.vite/
+- `apps/web/.svelte-kit/output/server/.vite/manifest.json`
+
+### apps/web/.svelte-kit/output/server/_app/immutable/assets/
+- `apps/web/.svelte-kit/output/server/_app/immutable/assets/_layout.BhkzxgrJ.css`
+
+### apps/web/.svelte-kit/output/server/chunks/
+- `apps/web/.svelte-kit/output/server/chunks/app-shell.js`
+- `apps/web/.svelte-kit/output/server/chunks/attributes.js`
+- `apps/web/.svelte-kit/output/server/chunks/auth-flow.js`
+- `apps/web/.svelte-kit/output/server/chunks/contract.js`
+- `apps/web/.svelte-kit/output/server/chunks/environment.js`
+- `apps/web/.svelte-kit/output/server/chunks/exports.js`
+- `apps/web/.svelte-kit/output/server/chunks/false.js`
+- `apps/web/.svelte-kit/output/server/chunks/index.js`
+- `apps/web/.svelte-kit/output/server/chunks/internal.js`
+- `apps/web/.svelte-kit/output/server/chunks/render-context.js`
+- `apps/web/.svelte-kit/output/server/chunks/renderer.js`
+- `apps/web/.svelte-kit/output/server/chunks/root.js`
+- `apps/web/.svelte-kit/output/server/chunks/runtime.js`
+- `apps/web/.svelte-kit/output/server/chunks/shared-server.js`
+- `apps/web/.svelte-kit/output/server/chunks/shared.js`
+- `apps/web/.svelte-kit/output/server/chunks/state.svelte.js`
+- `apps/web/.svelte-kit/output/server/chunks/utils.js`
+
+### apps/web/.svelte-kit/output/server/entries/
+- `apps/web/.svelte-kit/output/server/entries/hooks.server.js`
+
+### apps/web/.svelte-kit/output/server/entries/endpoints/(auth)/callback/
+- `apps/web/.svelte-kit/output/server/entries/endpoints/(auth)/callback/_server.ts.js`
+
+### apps/web/.svelte-kit/output/server/entries/endpoints/(auth)/logout/
+- `apps/web/.svelte-kit/output/server/entries/endpoints/(auth)/logout/_server.ts.js`
+
+### apps/web/.svelte-kit/output/server/entries/fallbacks/
+- `apps/web/.svelte-kit/output/server/entries/fallbacks/error.svelte.js`
+- `apps/web/.svelte-kit/output/server/entries/fallbacks/layout.svelte.js`
+
+### apps/web/.svelte-kit/output/server/entries/pages/
+- `apps/web/.svelte-kit/output/server/entries/pages/_layout.server.ts.js`
+- `apps/web/.svelte-kit/output/server/entries/pages/_layout.svelte.js`
+- `apps/web/.svelte-kit/output/server/entries/pages/_page.svelte.js`
+
+### apps/web/.svelte-kit/output/server/entries/pages/(app)/
+- `apps/web/.svelte-kit/output/server/entries/pages/(app)/_layout.server.ts.js`
+
+### apps/web/.svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/
+- `apps/web/.svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/_page.server.ts.js`
+- `apps/web/.svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/_page.svelte.js`
+
+### apps/web/.svelte-kit/output/server/entries/pages/(app)/groups/
+- `apps/web/.svelte-kit/output/server/entries/pages/(app)/groups/_page.server.ts.js`
+- `apps/web/.svelte-kit/output/server/entries/pages/(app)/groups/_page.svelte.js`
+
+### apps/web/.svelte-kit/output/server/entries/pages/(auth)/signin/
+- `apps/web/.svelte-kit/output/server/entries/pages/(auth)/signin/_page.server.ts.js`
+- `apps/web/.svelte-kit/output/server/entries/pages/(auth)/signin/_page.svelte.js`
+
+### apps/web/.svelte-kit/output/server/nodes/
+- `apps/web/.svelte-kit/output/server/nodes/0.js`
+- `apps/web/.svelte-kit/output/server/nodes/1.js`
+- `apps/web/.svelte-kit/output/server/nodes/2.js`
+- `apps/web/.svelte-kit/output/server/nodes/3.js`
+- `apps/web/.svelte-kit/output/server/nodes/4.js`
+- `apps/web/.svelte-kit/output/server/nodes/5.js`
+- `apps/web/.svelte-kit/output/server/nodes/6.js`
 
 ### apps/web/.svelte-kit/types/
 - `apps/web/.svelte-kit/types/route_meta_data.json`
@@ -124,6 +325,7 @@ Generated: 2026-04-15T07:47:59Z | Files: 129 | Described: 0/129
 - `apps/web/src/app.d.ts`
 - `apps/web/src/app.html`
 - `apps/web/src/hooks.server.ts`
+- `apps/web/src/service-worker.ts`
 
 ### apps/web/src/lib/access/
 - `apps/web/src/lib/access/contract.ts`
@@ -133,6 +335,9 @@ Generated: 2026-04-15T07:47:59Z | Files: 129 | Described: 0/129
 - `apps/web/src/lib/components/calendar/ShiftCard.svelte`
 - `apps/web/src/lib/components/calendar/ShiftDayColumn.svelte`
 - `apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte`
+
+### apps/web/src/lib/offline/
+- `apps/web/src/lib/offline/runtime.ts`
 
 ### apps/web/src/lib/schedule/
 - `apps/web/src/lib/schedule/board.ts`
@@ -178,6 +383,9 @@ Generated: 2026-04-15T07:47:59Z | Files: 129 | Described: 0/129
 ### apps/web/test-results/e2e/
 - `apps/web/test-results/e2e/.last-run.json`
 
+### apps/web/test-results/e2e-offline/
+- `apps/web/test-results/e2e-offline/.last-run.json`
+
 ### apps/web/tests/access/
 - `apps/web/tests/access/policy-contract.unit.test.ts`
 
@@ -186,6 +394,7 @@ Generated: 2026-04-15T07:47:59Z | Files: 129 | Described: 0/129
 
 ### apps/web/tests/e2e/
 - `apps/web/tests/e2e/auth-groups-access.spec.ts`
+- `apps/web/tests/e2e/calendar-offline.spec.ts`
 - `apps/web/tests/e2e/calendar-shifts.spec.ts`
 - `apps/web/tests/e2e/fixtures.ts`
 
