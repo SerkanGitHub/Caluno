@@ -38,14 +38,17 @@
  * The above values will be the same _even if_ different values for `ENVIRONMENT` or `PUBLIC_BASE_URL` are set at runtime, as they are statically replaced in your code with their build time values.
  */
 declare module '$env/static/private' {
+	export const MANPATH: string;
 	export const TERM_PROGRAM: string;
 	export const SHELL: string;
 	export const TERM: string;
 	export const TMPDIR: string;
 	export const HOMEBREW_REPOSITORY: string;
+	export const LIBRARY_PATH: string;
 	export const TERM_PROGRAM_VERSION: string;
 	export const VSCODE_PYTHON_AUTOACTIVATE_GUARD: string;
 	export const NODE_OPTIONS: string;
+	export const SDKROOT: string;
 	export const MallocNanoZone: string;
 	export const ZDOTDIR: string;
 	export const VIPSHOME: string;
@@ -53,6 +56,7 @@ declare module '$env/static/private' {
 	export const USER: string;
 	export const COMMAND_MODE: string;
 	export const GSD_PROJECT_ROOT: string;
+	export const CPATH: string;
 	export const SSH_AUTH_SOCK: string;
 	export const __CF_USER_TEXT_ENCODING: string;
 	export const VSCODE_PROFILE_INITIALIZED: string;
@@ -187,14 +191,17 @@ declare module '$env/static/public' {
  */
 declare module '$env/dynamic/private' {
 	export const env: {
+		MANPATH: string;
 		TERM_PROGRAM: string;
 		SHELL: string;
 		TERM: string;
 		TMPDIR: string;
 		HOMEBREW_REPOSITORY: string;
+		LIBRARY_PATH: string;
 		TERM_PROGRAM_VERSION: string;
 		VSCODE_PYTHON_AUTOACTIVATE_GUARD: string;
 		NODE_OPTIONS: string;
+		SDKROOT: string;
 		MallocNanoZone: string;
 		ZDOTDIR: string;
 		VIPSHOME: string;
@@ -202,6 +209,7 @@ declare module '$env/dynamic/private' {
 		USER: string;
 		COMMAND_MODE: string;
 		GSD_PROJECT_ROOT: string;
+		CPATH: string;
 		SSH_AUTH_SOCK: string;
 		__CF_USER_TEXT_ENCODING: string;
 		VSCODE_PROFILE_INITIALIZED: string;

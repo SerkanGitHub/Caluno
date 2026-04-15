@@ -41,3 +41,15 @@
 **Rule/Pattern:** What to do/avoid
 **Rationale:** Why this matters
 ```
+
+## 2026-04-15: Supabase RLS can allow inserts while `insert().select()` still fails on newly created schedule rows
+
+**Context:** Trusted schedule create actions inserting into `public.shift_series` and `public.shifts` under authenticated local Supabase RLS.
+**Rule/Pattern:** For create paths that must return deterministic ids, generate ids in the trusted server action and insert without chaining `.select()` unless the policy has been proven to allow representation reads on fresh rows in the same request.
+**Rationale:** In this project's local Supabase setup, authenticated inserts succeeded, but the immediate `.select()` representation triggered `42501 new row violates row-level security policy`, which made otherwise valid creates look like write failures.
+
+## 2026-04-15: Quote or expand test globs before using `pnpm --dir apps/web exec ...`
+
+**Context:** Slice verification for Vitest used `pnpm --dir apps/web exec vitest run tests/routes/protected-routes.unit.test.ts tests/schedule/*.unit.test.ts` from the repo root.
+**Rule/Pattern:** When running app-local commands through `pnpm --dir apps/web exec ...`, either quote the glob for the child CLI to resolve or pass explicit file paths instead of relying on shell expansion from the repo root.
+**Rationale:** The shell expands globs before `pnpm --dir` changes directories, so repo-root execution can silently skip intended `apps/web/tests/...` matches even though the command looks app-scoped.

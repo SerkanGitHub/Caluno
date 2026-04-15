@@ -65,6 +65,17 @@ function respondWithActionResult(key: 'createShift' | 'editShift' | 'moveShift' 
   };
 }
 
+function resolveActionSearchParams(url: URL, formData: FormData) {
+  const searchParams = new URLSearchParams(url.searchParams);
+  const submittedWeekStart = formData.get('visibleWeekStart');
+
+  if (!searchParams.get('start') && typeof submittedWeekStart === 'string' && submittedWeekStart.trim()) {
+    searchParams.set('start', submittedWeekStart.trim());
+  }
+
+  return searchParams;
+}
+
 export const load: PageServerLoad = async ({ params, parent, url, locals }) => {
   const { appShell, user } = await parent();
   const calendarState = resolveTrustedCalendarFromAppShell({
@@ -107,10 +118,12 @@ export const load: PageServerLoad = async ({ params, parent, url, locals }) => {
 
 export const actions = {
   createShift: async ({ request, locals, params, url }) => {
+    const formData = await request.formData();
+    const actionSearchParams = resolveActionSearchParams(url, formData);
     const user = await requireAuthenticatedUser(locals);
     if (!user) {
       return fail(401, {
-        createShift: buildAuthRequiredActionState('create', url)
+        createShift: buildAuthRequiredActionState('create', new URL(`${url.origin}${url.pathname}?${actionSearchParams.toString()}`))
       });
     }
 
@@ -118,18 +131,20 @@ export const actions = {
       supabase: locals.supabase,
       calendarId: params.calendarId,
       userId: user.id,
-      searchParams: url.searchParams,
-      formData: await request.formData()
+      searchParams: actionSearchParams,
+      formData
     });
 
     return respondWithActionResult('createShift', result);
   },
 
   editShift: async ({ request, locals, params, url }) => {
+    const formData = await request.formData();
+    const actionSearchParams = resolveActionSearchParams(url, formData);
     const user = await requireAuthenticatedUser(locals);
     if (!user) {
       return fail(401, {
-        editShift: buildAuthRequiredActionState('edit', url)
+        editShift: buildAuthRequiredActionState('edit', new URL(`${url.origin}${url.pathname}?${actionSearchParams.toString()}`))
       });
     }
 
@@ -137,18 +152,20 @@ export const actions = {
       supabase: locals.supabase,
       calendarId: params.calendarId,
       userId: user.id,
-      searchParams: url.searchParams,
-      formData: await request.formData()
+      searchParams: actionSearchParams,
+      formData
     });
 
     return respondWithActionResult('editShift', result);
   },
 
   moveShift: async ({ request, locals, params, url }) => {
+    const formData = await request.formData();
+    const actionSearchParams = resolveActionSearchParams(url, formData);
     const user = await requireAuthenticatedUser(locals);
     if (!user) {
       return fail(401, {
-        moveShift: buildAuthRequiredActionState('move', url)
+        moveShift: buildAuthRequiredActionState('move', new URL(`${url.origin}${url.pathname}?${actionSearchParams.toString()}`))
       });
     }
 
@@ -156,18 +173,20 @@ export const actions = {
       supabase: locals.supabase,
       calendarId: params.calendarId,
       userId: user.id,
-      searchParams: url.searchParams,
-      formData: await request.formData()
+      searchParams: actionSearchParams,
+      formData
     });
 
     return respondWithActionResult('moveShift', result);
   },
 
   deleteShift: async ({ request, locals, params, url }) => {
+    const formData = await request.formData();
+    const actionSearchParams = resolveActionSearchParams(url, formData);
     const user = await requireAuthenticatedUser(locals);
     if (!user) {
       return fail(401, {
-        deleteShift: buildAuthRequiredActionState('delete', url)
+        deleteShift: buildAuthRequiredActionState('delete', new URL(`${url.origin}${url.pathname}?${actionSearchParams.toString()}`))
       });
     }
 
@@ -175,8 +194,8 @@ export const actions = {
       supabase: locals.supabase,
       calendarId: params.calendarId,
       userId: user.id,
-      searchParams: url.searchParams,
-      formData: await request.formData()
+      searchParams: actionSearchParams,
+      formData
     });
 
     return respondWithActionResult('deleteShift', result);

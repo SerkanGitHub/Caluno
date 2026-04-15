@@ -71,6 +71,7 @@ Caluno must automatically compute shared free time between two or more people.
 - Deterministic state management
 - Modular domain‑isolated code structure
 - Multi‑device support
+- Multi-language support (German, English, Turkish, Russian)
 
 ---
 

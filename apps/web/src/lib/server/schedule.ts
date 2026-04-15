@@ -1,5 +1,8 @@
+import { randomUUID } from 'node:crypto';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { RRule } from 'rrule';
+import rrulePkg from 'rrule';
+
+const { RRule } = rrulePkg;
 import { resolveCalendarAccess, type GroupMembership } from '$lib/access/contract';
 import { normalizeShiftDraft, normalizeVisibleRange } from '$lib/schedule/recurrence';
 import type {
@@ -380,19 +383,18 @@ export async function createScheduleShift(params: {
   }
 
   if (!normalized.value.recurrence) {
-    const insertResult = (await params.supabase
-      .from('shifts')
-      .insert({
-        calendar_id: params.calendarId,
-        series_id: null,
-        title: normalized.value.title,
-        start_at: normalized.value.startAt.toISOString(),
-        end_at: normalized.value.endAt.toISOString(),
-        occurrence_index: null,
-        source_kind: 'single',
-        created_by: params.userId
-      })
-      .select('id, calendar_id, series_id, title, start_at, end_at, occurrence_index, source_kind')) as SupabaseResult<ShiftRow[]>;
+    const generatedShiftId = randomUUID();
+    const insertResult = (await params.supabase.from('shifts').insert({
+      id: generatedShiftId,
+      calendar_id: params.calendarId,
+      series_id: null,
+      title: normalized.value.title,
+      start_at: normalized.value.startAt.toISOString(),
+      end_at: normalized.value.endAt.toISOString(),
+      occurrence_index: null,
+      source_kind: 'single',
+      created_by: params.userId
+    })) as SupabaseResult<null>;
 
     if (insertResult.error) {
       return actionFailure({
@@ -408,45 +410,31 @@ export async function createScheduleShift(params: {
       });
     }
 
-    const insertedShift = insertResult.data?.[0] ?? null;
-    if (!insertedShift || !isShiftRow(insertedShift)) {
-      return actionFailure({
-        action: 'create',
-        visibleWeek,
-        status: 502,
-        actionStatus: 'malformed-response',
-        reason: 'SCHEDULE_CREATE_RESPONSE_INVALID',
-        message: 'The shift create path returned malformed data, so the browser did not assume success.',
-        fields
-      });
-    }
-
     return actionSuccess({
       action: 'create',
       visibleWeek,
       reason: 'SHIFT_CREATED',
       message: 'The shift was created inside the current trusted calendar.',
       fields,
-      shiftId: insertedShift.id,
-      affectedShiftIds: [insertedShift.id]
+      shiftId: generatedShiftId,
+      affectedShiftIds: [generatedShiftId]
     });
   }
 
-  const seriesInsert = (await params.supabase
-    .from('shift_series')
-    .insert({
-      calendar_id: params.calendarId,
-      title: normalized.value.title,
-      starts_at: normalized.value.startAt.toISOString(),
-      ends_at: normalized.value.endAt.toISOString(),
-      recurrence_cadence: normalized.value.recurrence.cadence,
-      recurrence_interval: normalized.value.recurrence.interval,
-      repeat_count: normalized.value.recurrence.repeatCount,
-      repeat_until: normalized.value.recurrence.repeatUntil?.toISOString() ?? null,
-      timezone_name: 'UTC',
-      created_by: params.userId
-    })
-    .select('id, calendar_id')) as SupabaseResult<ShiftSeriesRow[]>;
+  const generatedSeriesId = randomUUID();
+  const seriesInsert = (await params.supabase.from('shift_series').insert({
+    id: generatedSeriesId,
+    calendar_id: params.calendarId,
+    title: normalized.value.title,
+    starts_at: normalized.value.startAt.toISOString(),
+    ends_at: normalized.value.endAt.toISOString(),
+    recurrence_cadence: normalized.value.recurrence.cadence,
+    recurrence_interval: normalized.value.recurrence.interval,
+    repeat_count: normalized.value.recurrence.repeatCount,
+    repeat_until: normalized.value.recurrence.repeatUntil?.toISOString() ?? null,
+    timezone_name: 'UTC',
+    created_by: params.userId
+  })) as SupabaseResult<null>;
 
   if (seriesInsert.error) {
     return actionFailure({
@@ -462,33 +450,17 @@ export async function createScheduleShift(params: {
     });
   }
 
-  const insertedSeries = seriesInsert.data?.[0] ?? null;
-  if (!insertedSeries?.id) {
-    return actionFailure({
-      action: 'create',
-      visibleWeek,
-      status: 502,
-      actionStatus: 'malformed-response',
-      reason: 'SCHEDULE_CREATE_RESPONSE_INVALID',
-      message: 'The recurring shift series create path returned malformed data, so no occurrences were assumed.',
-      fields
-    });
-  }
-
   const occurrenceRows = buildRecurringShiftInsertRows({
     calendarId: params.calendarId,
     userId: params.userId,
-    seriesId: insertedSeries.id,
+    seriesId: generatedSeriesId,
     normalizedShift: normalized.value
   });
 
-  const shiftsInsert = (await params.supabase
-    .from('shifts')
-    .insert(occurrenceRows)
-    .select('id, calendar_id, series_id, title, start_at, end_at, occurrence_index, source_kind')) as SupabaseResult<ShiftRow[]>;
+  const shiftsInsert = (await params.supabase.from('shifts').insert(occurrenceRows)) as SupabaseResult<null>;
 
   if (shiftsInsert.error) {
-    await params.supabase.from('shift_series').delete().eq('id', insertedSeries.id).eq('calendar_id', params.calendarId);
+    await params.supabase.from('shift_series').delete().eq('id', generatedSeriesId).eq('calendar_id', params.calendarId);
 
     return actionFailure({
       action: 'create',
@@ -500,28 +472,11 @@ export async function createScheduleShift(params: {
         ? 'The recurring occurrence write timed out, so the series was rolled back.'
         : 'The recurring occurrence write failed, so the series was rolled back and the board stayed unchanged.',
       fields,
-      seriesId: insertedSeries.id
+      seriesId: generatedSeriesId
     });
   }
 
-  if (!Array.isArray(shiftsInsert.data) || shiftsInsert.data.some((row) => !isShiftRow(row))) {
-    await params.supabase.from('shift_series').delete().eq('id', insertedSeries.id).eq('calendar_id', params.calendarId);
-
-    return actionFailure({
-      action: 'create',
-      visibleWeek,
-      status: 502,
-      actionStatus: 'malformed-response',
-      reason: 'SCHEDULE_CREATE_RESPONSE_INVALID',
-      message: 'The recurring occurrence write returned malformed data, so the temporary series was rolled back.',
-      fields,
-      seriesId: insertedSeries.id
-    });
-  }
-
-  const affectedShiftIds = [...shiftsInsert.data]
-    .sort((left, right) => compareShiftTimes(mapShiftRow(left), mapShiftRow(right)))
-    .map((row) => row.id);
+  const affectedShiftIds = occurrenceRows.map((row) => row.id);
 
   return actionSuccess({
     action: 'create',
@@ -529,7 +484,7 @@ export async function createScheduleShift(params: {
     reason: 'SHIFT_CREATED',
     message: 'The recurring shift series and its concrete occurrences were created inside the current trusted calendar.',
     fields,
-    seriesId: insertedSeries.id,
+    seriesId: generatedSeriesId,
     affectedShiftIds,
     shiftId: affectedShiftIds[0] ?? null
   });
@@ -721,8 +676,8 @@ export async function moveScheduleShift(params: {
   const updateResult = (await params.supabase
     .from('shifts')
     .update({
-      start_at: startAt,
-      end_at: endAt
+      start_at: visibleRangeResult.value.startAt.toISOString(),
+      end_at: visibleRangeResult.value.endAt.toISOString()
     })
     .eq('id', fields.shiftId)
     .eq('calendar_id', params.calendarId)
@@ -1096,6 +1051,7 @@ function buildRecurringShiftInsertRows(params: {
   const occurrences = expandRecurringOccurrences(params.normalizedShift);
 
   return occurrences.map((occurrence) => ({
+    id: randomUUID(),
     calendar_id: params.calendarId,
     series_id: params.seriesId,
     title: params.normalizedShift.title,

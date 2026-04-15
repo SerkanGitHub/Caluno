@@ -1,12 +1,27 @@
 <script lang="ts">
-  import type { PageData } from './$types';
+  import type { ActionData, PageData } from './$types';
+  import CalendarWeekBoard from '$lib/components/calendar/CalendarWeekBoard.svelte';
+  import { buildCalendarWeekBoard } from '$lib/schedule/board';
 
-  let { data }: { data: PageData } = $props();
+  let { data, form }: { data: PageData; form: ActionData | null } = $props();
+  let pendingActionKey = $state<string | null>(null);
 
   const calendarView = $derived(data.calendarView);
+  const createState = $derived(form?.createShift ?? null);
+  const editState = $derived(form?.editShift ?? null);
+  const moveState = $derived(form?.moveShift ?? null);
+  const deleteState = $derived(form?.deleteShift ?? null);
   const relatedCalendars = $derived.by(() =>
     calendarView.kind === 'calendar' ? (calendarView.group?.calendars ?? []) : data.appShell.calendars
   );
+  const board = $derived.by(() =>
+    calendarView.kind === 'calendar' ? buildCalendarWeekBoard(calendarView.schedule, { now: new Date() }) : null
+  );
+  const deniedView = $derived(calendarView.kind === 'denied' ? calendarView : null);
+
+  function setPendingActionKey(value: string | null) {
+    pendingActionKey = value;
+  }
 </script>
 
 <svelte:head>
@@ -20,7 +35,7 @@
     <p class="eyebrow">Trusted calendar scope</p>
     <h1>{data.appShell.viewer.displayName}</h1>
     <p class="rail-copy">
-      This calendar route rendered only after checking the id against the server-resolved membership scope.
+      This route still renders only after the server matches the calendar id against the protected membership inventory.
     </p>
 
     <div class="status-stack">
@@ -29,7 +44,7 @@
         <strong>{calendarView.kind === 'calendar' ? 'calendar-ready' : 'access-denied'}</strong>
         <p>
           {calendarView.kind === 'calendar'
-            ? 'The requested calendar was found inside the trusted app-shell inventory.'
+            ? 'Week data and shift writes stay scoped to the trusted calendar behind this route.'
             : `Failure phase: ${calendarView.failurePhase}`}
         </p>
       </article>
@@ -39,6 +54,14 @@
           <span class="status-card__label">Onboarding transition</span>
           <strong>{calendarView.welcome}</strong>
           <p>The create/join action redirected into this calendar after the protected shell reloaded.</p>
+        </article>
+      {/if}
+
+      {#if calendarView.kind === 'calendar'}
+        <article class={`status-card ${calendarView.schedule.status === 'ready' ? 'tone-neutral' : calendarView.schedule.status === 'timeout' ? 'tone-warning' : 'tone-danger'}`}>
+          <span class="status-card__label">Week scope</span>
+          <strong>{calendarView.schedule.visibleWeek.start}</strong>
+          <p>{calendarView.schedule.message}</p>
         </article>
       {/if}
     </div>
@@ -51,56 +74,52 @@
 
   <section class="workspace-main">
     {#if calendarView.kind === 'calendar'}
-      <header class="hero-panel compact" data-testid="calendar-shell">
-        <p class="eyebrow">{calendarView.group?.name ?? 'Permitted calendar'}</p>
-        <h2>{calendarView.calendar.name}</h2>
-        <p class="lede">
-          This shell is intentionally narrow: the route resolved from trusted membership data, not from a client-submitted group id.
-        </p>
-      </header>
+      {#if board}
+        <header class="hero-panel compact" data-testid="calendar-shell">
+          <p class="eyebrow">{calendarView.group?.name ?? 'Permitted calendar'}</p>
+          <h2>{calendarView.calendar.name}</h2>
+          <p class="lede">
+            A calm week board for multi-shift days: create, edit, move, and delete flows stay on this route and still re-derive calendar authority on the server.
+          </p>
 
-      <section class="calendar-board framed-panel">
-        <div class="calendar-board__meta">
-          <span class="pill pill-active">{calendarView.calendar.isDefault ? 'Default calendar' : 'Secondary calendar'}</span>
-          <span class="pill pill-neutral">{calendarView.group?.role ?? 'member'} access</span>
-        </div>
+          <div class="calendar-board__meta">
+            <span class="pill pill-active">{calendarView.calendar.isDefault ? 'Default calendar' : 'Secondary calendar'}</span>
+            <span class="pill pill-neutral">{calendarView.group?.role ?? 'member'} access</span>
+            <span class="pill pill-neutral">{calendarView.schedule.totalShifts} visible shifts</span>
+          </div>
+        </header>
 
-        <div class="timeline-grid">
-          <article>
-            <span>Guardrail</span>
-            <strong>Server-resolved</strong>
-            <p>Opened only after the route id matched the protected layout inventory.</p>
-          </article>
-          <article>
-            <span>Next slice</span>
-            <strong>Scheduling canvas</strong>
-            <p>Shift planning and event details layer onto this permitted shell in later milestone work.</p>
-          </article>
-          <article>
-            <span>Failure mode</span>
-            <strong>Fail closed</strong>
-            <p>Guessed or malformed ids render a named denial surface instead of empty calendar data.</p>
-          </article>
-        </div>
-      </section>
-    {:else}
+        <CalendarWeekBoard
+          {board}
+          scheduleStatus={calendarView.schedule.status}
+          scheduleReason={calendarView.schedule.reason}
+          scheduleMessage={calendarView.schedule.message}
+          {createState}
+          {editState}
+          {moveState}
+          {deleteState}
+          {pendingActionKey}
+          {setPendingActionKey}
+        />
+      {/if}
+    {:else if deniedView}
       <section class="denied-banner framed-panel" data-testid="access-denied-state">
-        <p class="eyebrow">{calendarView.detail.badge}</p>
-        <h2>{calendarView.detail.title}</h2>
-        <p class="lede">{calendarView.detail.detail}</p>
+        <p class="eyebrow">{deniedView.detail.badge}</p>
+        <h2>{deniedView.detail.title}</h2>
+        <p class="lede">{deniedView.detail.detail}</p>
 
         <div class="denied-meta">
           <div>
             <span>Failure phase</span>
-            <strong>{calendarView.failurePhase}</strong>
+            <strong>{deniedView.failurePhase}</strong>
           </div>
           <div>
             <span>Reason code</span>
-            <strong>{calendarView.reason}</strong>
+            <strong>{deniedView.reason}</strong>
           </div>
           <div>
             <span>Attempted id</span>
-            <code>{calendarView.attemptedCalendarId}</code>
+            <code>{deniedView.attemptedCalendarId}</code>
           </div>
         </div>
 

@@ -63,13 +63,13 @@
   - Do: Add a page-scoped schedule server layer, validate a bounded `?start=` visible week, wire create/edit/move/delete server actions on `/calendars/[calendarId]`, keep denied-route behavior fail-closed, and cover normalization plus failure paths in route/unit tests.
   - Verify: `pnpm --dir apps/web exec vitest run tests/routes/protected-routes.unit.test.ts tests/schedule/server-actions.unit.test.ts`
   - Done when: A permitted calendar route returns one validated visible week, all edits are server-mediated, malformed or unauthorized ids still deny cleanly, and loader/action tests pass.
-- [ ] **T03: Build the custom week-view board and browser editing flows** `est:2h30m`
+- [x] **T03: Build the custom week-view board and browser editing flows** `est:2h30m`
   - Why: This task turns the model and server contract into the actual browser demo for R003/R007.
   - Files: `apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte`, `apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte`, `apps/web/src/lib/components/calendar/ShiftDayColumn.svelte`, `apps/web/src/lib/components/calendar/ShiftCard.svelte`, `apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte`, `apps/web/src/lib/schedule/board.ts`, `apps/web/tests/schedule/board.unit.test.ts`, `apps/web/src/app.css`
   - Do: Replace the placeholder page with a custom week board, keep the denied branch intact, render multiple cards per day, add accessible create/edit/delete forms plus explicit move controls and week navigation, and use bounded recurring controls. Use `frontend-design` so the board stays calm, legible, and stress-friendly rather than generic calendar chrome. For M001, implement move via date/time editing and explicit controls instead of drag-and-drop.
   - Verify: `pnpm --dir apps/web check && pnpm --dir apps/web exec vitest run tests/schedule/board.unit.test.ts tests/routes/protected-routes.unit.test.ts tests/schedule/server-actions.unit.test.ts`
   - Done when: The calendar board shows multiple same-day shifts clearly, create/edit/move/delete work through server actions, recurring submissions rerender concrete visible occurrences, and the route still renders the explicit denied state for unauthorized calendars.
-- [ ] **T04: Prove multi-shift browser editing and denied access with Playwright diagnostics** `est:1h30m`
+- [x] **T04: Prove multi-shift browser editing and denied access with Playwright diagnostics** `est:1h30m`
   - Why: The slice is only done once the real browser, seeded Supabase runtime, and protected route all prove the editing flows together.
   - Files: `apps/web/tests/e2e/fixtures.ts`, `apps/web/tests/e2e/calendar-shifts.spec.ts`, `apps/web/playwright.config.ts`
   - Do: Extend the Playwright fixtures with seeded shift ids and visible-week helpers, add an end-to-end spec for same-day visibility plus create/edit/move/delete/recurring flows, keep the denied-route assertion from S01, and retain trace-friendly diagnostics including the current phase/calendar/week. Preserve the cold-start settle delay before typing into sign-in on fresh runs.

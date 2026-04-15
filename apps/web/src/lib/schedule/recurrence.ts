@@ -1,4 +1,6 @@
-import { RRule } from 'rrule';
+import rrulePkg from 'rrule';
+
+const { RRule } = rrulePkg;
 import {
   scheduleRecurrenceCadences,
   type ExpandedScheduleOccurrence,
@@ -314,7 +316,16 @@ function overlapsVisibleRange(
 }
 
 function parseIsoDate(value: string): Date | null {
-  const parsed = new Date(value);
+  const normalizedValue = value.trim();
+  if (!normalizedValue) {
+    return null;
+  }
+
+  const utcNormalized = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(normalizedValue)
+    ? `${normalizedValue}:00.000Z`
+    : normalizedValue;
+
+  const parsed = new Date(utcNormalized);
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
