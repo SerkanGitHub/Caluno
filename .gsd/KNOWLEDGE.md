@@ -71,3 +71,9 @@
 **Context:** S03 offline repository startup under Vite/Playwright hit export-shape mismatches and repeated `sqlite3.wasm` 404s while trying to use a project-owned worker bootstrap.
 **Rule/Pattern:** In this repo, add `@sqlite.org/sqlite-wasm` to `optimizeDeps.exclude` and prefer the package-supported wrapped worker promiser path for browser SQLite startup before reaching for custom worker wiring.
 **Rationale:** Vite prebundling and custom worker bootstrapping can hide the package's real browser export/asset behavior; the library-supported path avoids missing wasm asset resolution and is more stable across dev and preview proof surfaces.
+
+## 2026-04-15: Reconnect drain tests must inject a deterministic controller clock
+
+**Context:** S04 reconnect-drain proof relies on queue entries being processed in `createdAt` order, but multiple local mutations can otherwise share near-identical real timestamps during unit tests.
+**Rule/Pattern:** When a test needs to prove a specific offline queue drain order, pass a deterministic `now` function into `createCalendarController()` instead of relying on wall-clock timing.
+**Rationale:** The queue sorts by `createdAt` and then random operation id, so wall-clock-driven tests can accidentally assert against UUID tie-breaks rather than the intended replay sequence.

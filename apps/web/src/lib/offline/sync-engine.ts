@@ -1,4 +1,5 @@
-import type { CalendarScheduleView, CalendarShift, VisibleWeek } from '$lib/server/schedule';
+import type { ActionResult } from '@sveltejs/kit';
+import type { CalendarScheduleView, CalendarShift, ScheduleActionState, VisibleWeek } from '$lib/server/schedule';
 import type { OfflineMutationQueueEntry, OfflineMutationQueueReadResult } from './mutation-queue';
 import type { OfflineWeekSnapshotReadResult } from './repository';
 
@@ -40,6 +41,51 @@ export type TrustedRefreshWriteDecision =
         | 'local-write-queue-malformed'
         | 'local-write-queue-unavailable';
       detail: string;
+    };
+
+export type CalendarControllerServerOutcome =
+  | {
+      type: 'success' | 'failure';
+      state: ScheduleActionState;
+    }
+  | {
+      type: 'malformed-response';
+      reason: string;
+      detail: string;
+    };
+
+export type ReconnectDrainActionKey = 'createShift' | 'editShift' | 'moveShift' | 'deleteShift';
+
+export type ReconnectDrainActionRequest = {
+  entryId: string;
+  action: OfflineMutationQueueEntry['action'];
+  actionKey: ReconnectDrainActionKey;
+  url: string;
+  formData: FormData;
+  visibleWeekStart: string;
+  shiftId: string | null;
+  fields: Record<string, string>;
+};
+
+export type ReconnectDrainResult =
+  | {
+      status: 'drained';
+      attemptedCount: number;
+      succeededCount: number;
+      processedEntryIds: string[];
+      stoppedEntryId: null;
+      reason: null;
+      detail: string;
+    }
+  | {
+      status: 'stopped';
+      attemptedCount: number;
+      succeededCount: number;
+      processedEntryIds: string[];
+      stoppedEntryId: string;
+      reason: string;
+      detail: string;
+      outcome: CalendarControllerServerOutcome;
     };
 
 export function rebaseTrustedScheduleWithLocalQueue(params: {
@@ -143,6 +189,207 @@ export function decideTrustedRefreshSnapshotWrite(params: {
     detail: 'The local-write snapshot had no remaining queue work, so the trusted refresh may replace it.',
     origin: 'server-sync'
   };
+}
+
+export async function drainReconnectQueue(params: {
+  entries: OfflineMutationQueueEntry[];
+  visibleWeekStart: string;
+  submitAction: (request: ReconnectDrainActionRequest) => Promise<CalendarControllerServerOutcome>;
+  onOutcome?: (entry: OfflineMutationQueueEntry, outcome: CalendarControllerServerOutcome) => Promise<void> | void;
+}): Promise<ReconnectDrainResult> {
+  const orderedEntries = [...params.entries].sort(compareQueueEntries);
+  if (orderedEntries.length === 0) {
+    return {
+      status: 'drained',
+      attemptedCount: 0,
+      succeededCount: 0,
+      processedEntryIds: [],
+      stoppedEntryId: null,
+      reason: null,
+      detail: 'No queued browser-local mutations were waiting for reconnect.'
+    };
+  }
+
+  const processedEntryIds: string[] = [];
+
+  for (const entry of orderedEntries) {
+    const requestResult = buildReconnectActionRequest({
+      entry,
+      visibleWeekStart: params.visibleWeekStart
+    });
+
+    const outcome = requestResult.ok ? await params.submitAction(requestResult.request) : requestResult.outcome;
+    await params.onOutcome?.(entry, outcome);
+
+    if (!isSuccessfulServerOutcome(outcome)) {
+      const failure = describeServerOutcomeFailure(outcome);
+      return {
+        status: 'stopped',
+        attemptedCount: processedEntryIds.length + 1,
+        succeededCount: processedEntryIds.length,
+        processedEntryIds,
+        stoppedEntryId: entry.id,
+        reason: failure.reason,
+        detail: failure.detail,
+        outcome
+      };
+    }
+
+    processedEntryIds.push(entry.id);
+  }
+
+  return {
+    status: 'drained',
+    attemptedCount: orderedEntries.length,
+    succeededCount: processedEntryIds.length,
+    processedEntryIds,
+    stoppedEntryId: null,
+    reason: null,
+    detail:
+      processedEntryIds.length === 1
+        ? 'The queued browser-local mutation drained through the trusted route action and acknowledged successfully.'
+        : 'Queued browser-local mutations drained sequentially through the trusted route actions and acknowledged successfully.'
+  };
+}
+
+export function buildReconnectActionRequest(params: {
+  entry: OfflineMutationQueueEntry;
+  visibleWeekStart: string;
+}):
+  | {
+      ok: true;
+      request: ReconnectDrainActionRequest;
+    }
+  | {
+      ok: false;
+      outcome: CalendarControllerServerOutcome;
+    } {
+  if (params.entry.scope.weekStart !== params.visibleWeekStart) {
+    return {
+      ok: false,
+      outcome: {
+        type: 'malformed-response',
+        reason: 'QUEUE_SCOPE_MISMATCH',
+        detail:
+          'The queued browser-local mutation targets a different visible week than the current route, so reconnect replay stopped before widening scope.'
+      }
+    };
+  }
+
+  const actionKey = toReconnectDrainActionKey(params.entry.action as OfflineMutationQueueEntry['action']);
+  if (!actionKey) {
+    return {
+      ok: false,
+      outcome: {
+        type: 'malformed-response',
+        reason: 'QUEUE_ACTION_INVALID',
+        detail: 'A queued browser-local mutation used an unknown action key, so reconnect replay failed closed.'
+      }
+    };
+  }
+
+  const fields = fieldsForEntry(params.entry);
+  if (!hasRequiredReconnectFields(params.entry, fields)) {
+    return {
+      ok: false,
+      outcome: {
+        type: 'malformed-response',
+        reason: 'QUEUE_ENTRY_INVALID',
+        detail: 'A queued browser-local mutation was missing required form fields, so reconnect replay failed closed.'
+      }
+    };
+  }
+
+  const formData = new FormData();
+  formData.set('visibleWeekStart', params.visibleWeekStart);
+  for (const [key, value] of Object.entries(fields)) {
+    formData.set(key, value);
+  }
+
+  const searchParams = new URLSearchParams({ start: params.visibleWeekStart });
+  return {
+    ok: true,
+    request: {
+      entryId: params.entry.id,
+      action: params.entry.action,
+      actionKey,
+      url: `?/${actionKey}&${searchParams.toString()}`,
+      formData,
+      visibleWeekStart: params.visibleWeekStart,
+      shiftId: params.entry.shiftId,
+      fields
+    }
+  };
+}
+
+export function normalizeScheduleActionResult(
+  result: ActionResult,
+  actionKey: ReconnectDrainActionKey
+): CalendarControllerServerOutcome {
+  if ((result.type === 'success' || result.type === 'failure') && isPlainObject(result.data)) {
+    const candidate = result.data[actionKey];
+    if (isScheduleActionState(candidate)) {
+      return {
+        type: result.type,
+        state: candidate
+      };
+    }
+  }
+
+  return {
+    type: 'malformed-response',
+    reason: 'SCHEDULE_ACTION_RESULT_INVALID',
+    detail: 'The trusted server action returned an unexpected result shape, so the local change stayed pending.'
+  };
+}
+
+export function createReconnectTransportFailureOutcome(params: {
+  request: ReconnectDrainActionRequest;
+  kind: 'timeout' | 'network-error';
+  detail?: string;
+}): CalendarControllerServerOutcome {
+  return {
+    type: 'failure',
+    state: {
+      action: params.request.action,
+      status: params.kind === 'timeout' ? 'timeout' : 'write-error',
+      reason:
+        params.kind === 'timeout'
+          ? `SCHEDULE_${params.request.action.toUpperCase()}_TIMEOUT`
+          : `SCHEDULE_${params.request.action.toUpperCase()}_NETWORK_FAILED`,
+      message:
+        params.kind === 'timeout'
+          ? 'The reconnect drain timed out before the trusted server action could confirm the queued change.'
+          : params.detail?.trim() ||
+            'The reconnect drain could not reach the trusted server action, so the queued change stayed browser-local.',
+      visibleWeekStart: params.request.visibleWeekStart,
+      shiftId: params.request.shiftId,
+      seriesId: null,
+      affectedShiftIds: [],
+      fields: params.request.fields
+    }
+  };
+}
+
+export function describeServerOutcomeFailure(outcome: CalendarControllerServerOutcome): {
+  reason: string;
+  detail: string;
+} {
+  if (outcome.type === 'malformed-response') {
+    return {
+      reason: outcome.reason,
+      detail: outcome.detail
+    };
+  }
+
+  return {
+    reason: outcome.state.reason,
+    detail: outcome.state.message
+  };
+}
+
+export function isSuccessfulServerOutcome(outcome: CalendarControllerServerOutcome): boolean {
+  return outcome.type === 'success' && outcome.state.status === 'success';
 }
 
 export function createScheduleViewFromShifts(params: {
@@ -298,6 +545,67 @@ function formatDayLabel(dayKey: string): string {
   });
 }
 
+function toReconnectDrainActionKey(action: OfflineMutationQueueEntry['action']): ReconnectDrainActionKey | null {
+  switch (action) {
+    case 'create':
+      return 'createShift';
+    case 'edit':
+      return 'editShift';
+    case 'move':
+      return 'moveShift';
+    case 'delete':
+      return 'deleteShift';
+    default:
+      return null;
+  }
+}
+
+function fieldsForEntry(entry: OfflineMutationQueueEntry): Record<string, string> {
+  switch (entry.payload.kind) {
+    case 'create':
+      return {
+        title: entry.payload.fields.title,
+        startAt: entry.payload.fields.startAt,
+        endAt: entry.payload.fields.endAt,
+        recurrenceCadence: entry.payload.fields.recurrenceCadence ?? '',
+        recurrenceInterval: entry.payload.fields.recurrenceInterval ?? '',
+        repeatCount: entry.payload.fields.repeatCount ?? '',
+        repeatUntil: entry.payload.fields.repeatUntil ?? ''
+      };
+    case 'edit':
+    case 'move':
+      return {
+        shiftId: entry.payload.fields.shiftId,
+        title: entry.payload.fields.title,
+        startAt: entry.payload.fields.startAt,
+        endAt: entry.payload.fields.endAt
+      };
+    case 'delete':
+      return {
+        shiftId: entry.payload.fields.shiftId,
+        title: entry.payload.fields.title,
+        startAt: entry.payload.fields.startAt,
+        endAt: entry.payload.fields.endAt
+      };
+  }
+}
+
+function hasRequiredReconnectFields(entry: OfflineMutationQueueEntry, fields: Record<string, string>): boolean {
+  if (!hasNonEmptyField(fields, 'title') || !hasNonEmptyField(fields, 'startAt') || !hasNonEmptyField(fields, 'endAt')) {
+    return false;
+  }
+
+  if (entry.payload.kind === 'create') {
+    return true;
+  }
+
+  return hasNonEmptyField(fields, 'shiftId');
+}
+
+function hasNonEmptyField(fields: Record<string, string>, key: string): boolean {
+  return typeof fields[key] === 'string' && fields[key].trim().length > 0;
+}
+
 function isCalendarShift(value: unknown): value is CalendarShift {
   if (!value || typeof value !== 'object') {
     return false;
@@ -314,4 +622,35 @@ function isCalendarShift(value: unknown): value is CalendarShift {
     (candidate.occurrenceIndex === null || typeof candidate.occurrenceIndex === 'number') &&
     (candidate.sourceKind === 'single' || candidate.sourceKind === 'series')
   );
+}
+
+function isScheduleActionState(value: unknown): value is ScheduleActionState {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  const candidate = value as Partial<ScheduleActionState>;
+  return (
+    (candidate.action === 'create' ||
+      candidate.action === 'edit' ||
+      candidate.action === 'move' ||
+      candidate.action === 'delete') &&
+    typeof candidate.reason === 'string' &&
+    typeof candidate.message === 'string' &&
+    typeof candidate.visibleWeekStart === 'string' &&
+    (candidate.shiftId === null || typeof candidate.shiftId === 'string') &&
+    (candidate.seriesId === null || typeof candidate.seriesId === 'string') &&
+    Array.isArray(candidate.affectedShiftIds) &&
+    isPlainObject(candidate.fields) &&
+    (candidate.status === 'success' ||
+      candidate.status === 'validation-error' ||
+      candidate.status === 'forbidden' ||
+      candidate.status === 'write-error' ||
+      candidate.status === 'timeout' ||
+      candidate.status === 'malformed-response')
+  );
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return Boolean(value && typeof value === 'object' && !Array.isArray(value));
 }

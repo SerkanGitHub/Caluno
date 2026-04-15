@@ -1,4 +1,9 @@
-import type { CalendarControllerActionState, CalendarControllerFailure, CalendarShiftDiagnostic } from '$lib/offline/calendar-controller';
+import type {
+  CalendarControllerActionState,
+  CalendarControllerFailure,
+  CalendarControllerSyncPhase,
+  CalendarShiftDiagnostic
+} from '$lib/offline/calendar-controller';
 import type { CalendarScheduleView, CalendarShift, VisibleWeek } from '$lib/server/schedule';
 
 export type BoardTone = 'neutral' | 'success' | 'warning' | 'danger';
@@ -53,7 +58,10 @@ export type CalendarWeekBoardModel = {
   totalShifts: number;
   hasShifts: boolean;
   statusBadges: CalendarWeekBoardStatusBadge[];
+  syncPhaseLabel: string;
+  lastSyncAttemptLabel: string | null;
   lastFailure: CalendarControllerFailure | null;
+  lastSyncError: CalendarControllerFailure | null;
   days: ShiftDayColumnModel[];
 };
 
@@ -74,8 +82,11 @@ export function buildCalendarWeekBoard(
       queueLength: number;
       pendingQueueLength: number;
       retryableQueueLength: number;
+      syncPhase: CalendarControllerSyncPhase;
+      lastSyncAttemptAt: string | null;
       shiftDiagnostics?: Record<string, CalendarShiftDiagnostic[]>;
       lastFailure?: CalendarControllerFailure | null;
+      lastSyncError?: CalendarControllerFailure | null;
     };
   }
 ): CalendarWeekBoardModel {
@@ -97,7 +108,10 @@ export function buildCalendarWeekBoard(
     totalShifts: schedule.totalShifts,
     hasShifts: schedule.totalShifts > 0,
     statusBadges: buildBoardStatusBadges(runtime),
+    syncPhaseLabel: formatSyncPhaseLabel(runtime?.syncPhase ?? 'idle'),
+    lastSyncAttemptLabel: runtime?.lastSyncAttemptAt ?? null,
     lastFailure: runtime?.lastFailure ?? null,
+    lastSyncError: runtime?.lastSyncError ?? null,
     days: schedule.days.map((day) => buildDayColumn(day, todayKey, runtime?.shiftDiagnostics ?? {}))
   };
 }
@@ -224,6 +238,8 @@ function buildBoardStatusBadges(
         queueLength: number;
         pendingQueueLength: number;
         retryableQueueLength: number;
+        syncPhase: CalendarControllerSyncPhase;
+        lastSyncAttemptAt: string | null;
       }
     | undefined
 ): CalendarWeekBoardStatusBadge[] {
@@ -241,8 +257,21 @@ function buildBoardStatusBadges(
       id: 'network',
       label: runtime.network === 'offline' ? 'Offline' : 'Online',
       tone: runtime.network === 'offline' ? 'warning' : 'neutral'
+    },
+    {
+      id: 'sync-phase',
+      label: formatSyncPhaseLabel(runtime.syncPhase),
+      tone: runtime.syncPhase === 'paused-retryable' ? 'danger' : runtime.syncPhase === 'draining' ? 'warning' : 'neutral'
     }
   ];
+
+  if (runtime.lastSyncAttemptAt) {
+    badges.push({
+      id: 'sync-attempt',
+      label: 'Sync attempt recorded',
+      tone: 'neutral'
+    });
+  }
 
   if (runtime.queueLength === 0) {
     badges.push({
@@ -325,6 +354,17 @@ function mapActionTone(status: CalendarControllerActionState['status']): BoardTo
     case 'local-write-failed':
     case 'queue-persist-failed':
       return 'danger';
+  }
+}
+
+function formatSyncPhaseLabel(phase: CalendarControllerSyncPhase): string {
+  switch (phase) {
+    case 'idle':
+      return 'Sync idle';
+    case 'draining':
+      return 'Sync draining reconnect queue';
+    case 'paused-retryable':
+      return 'Sync paused with retryable work';
   }
 }
 

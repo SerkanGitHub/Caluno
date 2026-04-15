@@ -104,6 +104,27 @@
     </article>
   {/if}
 
+  <article
+    class={`status-card ${
+      board.lastSyncError ? 'tone-danger' : board.syncPhaseLabel === 'Sync draining reconnect queue' ? 'tone-warning' : 'tone-neutral'
+    }`}
+    data-testid="board-sync-diagnostics"
+  >
+    <span class="status-card__label">Board sync diagnostics</span>
+    <strong>{board.syncPhaseLabel}</strong>
+    <p>
+      {#if board.lastSyncAttemptLabel}
+        Last reconnect attempt: <code>{board.lastSyncAttemptLabel}</code>
+      {:else}
+        No reconnect attempt has been recorded on this route yet.
+      {/if}
+    </p>
+    {#if board.lastSyncError}
+      <p>{board.lastSyncError.detail}</p>
+      <code>{board.lastSyncError.reason}</code>
+    {/if}
+  </article>
+
   {#if actionSummaries.length > 0}
     <div class="calendar-action-strip" data-testid="schedule-action-strip">
       {#each actionSummaries as summary}

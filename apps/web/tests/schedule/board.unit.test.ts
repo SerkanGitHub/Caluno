@@ -143,6 +143,8 @@ describe('schedule board helpers', () => {
           queueLength: 2,
           pendingQueueLength: 2,
           retryableQueueLength: 0,
+          syncPhase: 'paused-retryable',
+          lastSyncAttemptAt: '2026-04-16T10:05:00.000Z',
           shiftDiagnostics: {
             'shift-a': [{ label: 'Pending sync', tone: 'warning' }],
             'shift-c': [
@@ -153,6 +155,10 @@ describe('schedule board helpers', () => {
           lastFailure: {
             reason: 'LOCAL_QUEUE_PERSIST_FAILED',
             detail: 'The queue could not persist.'
+          },
+          lastSyncError: {
+            reason: 'SCHEDULE_MOVE_TIMEOUT',
+            detail: 'The reconnect drain timed out before confirmation.'
           }
         }
       }
@@ -167,8 +173,13 @@ describe('schedule board helpers', () => {
     expect(board.statusBadges.map((badge) => badge.label)).toEqual([
       'Cached local board',
       'Offline',
+      'Sync paused with retryable work',
+      'Sync attempt recorded',
       '2 pending local writes'
     ]);
+    expect(board.syncPhaseLabel).toBe('Sync paused with retryable work');
+    expect(board.lastSyncAttemptLabel).toBe('2026-04-16T10:05:00.000Z');
+    expect(board.lastSyncError?.reason).toBe('SCHEDULE_MOVE_TIMEOUT');
     expect(board.lastFailure?.reason).toBe('LOCAL_QUEUE_PERSIST_FAILED');
 
     const busyDay = board.days.find((day) => day.dayKey === '2026-04-16');

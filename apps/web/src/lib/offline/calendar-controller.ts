@@ -4,12 +4,7 @@ import {
   normalizeVisibleRange
 } from '$lib/schedule/recurrence';
 import type { ScheduleValidationFailureReason } from '$lib/schedule/types';
-import type {
-  CalendarScheduleView,
-  CalendarShift,
-  ScheduleActionState,
-  VisibleWeek
-} from '$lib/server/schedule';
+import type { CalendarScheduleView, CalendarShift, ScheduleActionState, VisibleWeek } from '$lib/server/schedule';
 import type {
   OfflineScheduleRepository,
   OfflineScheduleScope,
@@ -28,7 +23,9 @@ import {
   createScheduleViewFromShifts,
   flattenScheduleShifts,
   rebaseTrustedScheduleWithLocalQueue,
-  sortScheduleShifts
+  sortScheduleShifts,
+  type CalendarControllerServerOutcome,
+  type ReconnectDrainResult
 } from './sync-engine';
 
 export type CalendarControllerActionStatus =
@@ -58,6 +55,8 @@ export type CalendarControllerFailure = {
   detail: string;
 };
 
+export type CalendarControllerSyncPhase = 'idle' | 'draining' | 'paused-retryable';
+
 export type CalendarShiftDiagnostic = {
   label: string;
   tone: 'neutral' | 'warning' | 'danger';
@@ -71,6 +70,9 @@ export type CalendarControllerState = {
   queueLength: number;
   pendingQueueLength: number;
   retryableQueueLength: number;
+  syncPhase: CalendarControllerSyncPhase;
+  lastSyncAttemptAt: string | null;
+  lastSyncError: CalendarControllerFailure | null;
   actionStates: CalendarControllerActionState[];
   shiftDiagnostics: Record<string, CalendarShiftDiagnostic[]>;
   lastFailure: CalendarControllerFailure | null;
@@ -79,17 +81,6 @@ export type CalendarControllerState = {
   queueReason: string | null;
   queueDetail: string | null;
 };
-
-export type CalendarControllerServerOutcome =
-  | {
-      type: 'success' | 'failure';
-      state: ScheduleActionState;
-    }
-  | {
-      type: 'malformed-response';
-      reason: string;
-      detail: string;
-    };
 
 export type CalendarControllerQueueInspection = {
   queueState: CalendarControllerState['queueState'];
@@ -118,6 +109,11 @@ export type CalendarController = {
   setNetwork: (isOnline: boolean) => void;
   inspectQueue: () => CalendarControllerQueueInspection;
   ingestTrustedSchedule: (schedule: CalendarScheduleView) => Promise<CalendarControllerTrustedScheduleResult>;
+  beginReconnectDrain: () => {
+    entries: OfflineMutationQueueEntry[];
+    attemptedAt: string;
+  };
+  completeReconnectDrain: (result: ReconnectDrainResult & { attemptedAt: string }) => void;
   beginMutation: (params: {
     action: 'create' | 'edit' | 'move' | 'delete';
     formId: string;
@@ -144,6 +140,9 @@ export function createInitialCalendarControllerState(params: {
     queueLength: 0,
     pendingQueueLength: 0,
     retryableQueueLength: 0,
+    syncPhase: 'idle',
+    lastSyncAttemptAt: null,
+    lastSyncError: null,
     actionStates: [],
     shiftDiagnostics: {},
     lastFailure: null,
@@ -381,6 +380,40 @@ export function createCalendarController(options: {
       return applyTrustedSchedule(schedule);
     },
 
+    beginReconnectDrain() {
+      const attemptedAt = now().toISOString();
+      state = {
+        ...state,
+        syncPhase: 'draining',
+        lastSyncAttemptAt: attemptedAt,
+        lastSyncError: null
+      };
+      refreshDiagnostics();
+      emit();
+
+      return {
+        entries: queueEntries.map((entry) => structuredCloneLike(entry)),
+        attemptedAt
+      };
+    },
+
+    completeReconnectDrain(result) {
+      state = {
+        ...state,
+        syncPhase: result.status === 'drained' ? 'idle' : 'paused-retryable',
+        lastSyncAttemptAt: result.attemptedAt,
+        lastSyncError:
+          result.status === 'drained'
+            ? null
+            : {
+                reason: result.reason,
+                detail: result.detail
+              }
+      };
+      refreshDiagnostics();
+      emit();
+    },
+
     async beginMutation({ action, formId, formData }) {
       const operationId = createOperationId();
       const staged = stageLocalMutation({
@@ -524,18 +557,41 @@ export function createCalendarController(options: {
         const acknowledged = await options.queue.acknowledge(options.scope, queueEntry.id);
         if (acknowledged.ok) {
           queueEntries = queueEntries.filter((entry) => entry.id !== queueEntry.id);
+          refreshDiagnostics();
+          await persistSnapshot(state.schedule, queueEntries.length > 0 ? 'local-write' : 'server-sync');
+          setActionState({
+            id: operationId,
+            formId,
+            action: queueEntry.action,
+            status: 'success',
+            reason: outcome.state.reason,
+            message: outcome.state.message,
+            shiftId: outcome.state.shiftId,
+            createdAt
+          });
+          emit();
+          return;
         }
 
+        state = {
+          ...state,
+          lastFailure: {
+            reason: 'QUEUE_ACKNOWLEDGE_FAILED',
+            detail:
+              'The trusted server action succeeded, but the browser-local queue entry could not be acknowledged, so reconnect stopped with the change still pending locally.'
+          }
+        };
         refreshDiagnostics();
-        await persistSnapshot(state.schedule, queueEntries.length > 0 ? 'local-write' : 'server-sync');
+        await persistSnapshot(state.schedule, 'local-write');
         setActionState({
           id: operationId,
           formId,
           action: queueEntry.action,
-          status: 'success',
-          reason: outcome.state.reason,
-          message: outcome.state.message,
-          shiftId: outcome.state.shiftId,
+          status: 'queue-persist-failed',
+          reason: 'QUEUE_ACKNOWLEDGE_FAILED',
+          message:
+            'The trusted server action succeeded, but the browser-local queue acknowledgement failed, so the change stayed pending locally.',
+          shiftId: queueEntry.shiftId,
           createdAt
         });
         emit();

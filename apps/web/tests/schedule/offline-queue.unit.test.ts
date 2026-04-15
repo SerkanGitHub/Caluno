@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
+import { createCalendarController } from '../../src/lib/offline/calendar-controller';
 import {
-  createCalendarController,
+  drainReconnectQueue,
   type CalendarControllerServerOutcome
-} from '../../src/lib/offline/calendar-controller';
+} from '../../src/lib/offline/sync-engine';
 import { createOfflineMutationQueue } from '../../src/lib/offline/mutation-queue';
 import {
   OFFLINE_REPOSITORY_MEMORY_STORAGE_KEY,
@@ -147,6 +148,67 @@ function createMoveFormData(): FormData {
   formData.set('startAt', '2026-04-20T10:00');
   formData.set('endAt', '2026-04-20T11:00');
   return formData;
+}
+
+function createDeleteFormData(): FormData {
+  const formData = new FormData();
+  formData.set('shiftId', 'shift-alpha');
+  formData.set('title', 'Alpha opening sweep');
+  formData.set('startAt', '2026-04-20T08:30:00.000Z');
+  formData.set('endAt', '2026-04-20T09:00:00.000Z');
+  return formData;
+}
+
+function createReconnectSuccessOutcome(params: {
+  action: 'create' | 'edit' | 'move' | 'delete';
+  visibleWeekStart: string;
+  shiftId: string | null;
+  fields: Record<string, string>;
+  affectedShiftIds: string[];
+}): CalendarControllerServerOutcome {
+  return {
+    type: 'success',
+    state: {
+      action: params.action,
+      status: 'success',
+      reason:
+        params.action === 'create'
+          ? 'SHIFT_CREATED'
+          : params.action === 'edit'
+            ? 'SHIFT_UPDATED'
+            : params.action === 'move'
+              ? 'SHIFT_MOVED'
+              : 'SHIFT_DELETED',
+      message: 'The trusted server action confirmed the queued reconnect change.',
+      visibleWeekStart: params.visibleWeekStart,
+      shiftId: params.shiftId,
+      seriesId: null,
+      affectedShiftIds: params.affectedShiftIds,
+      fields: params.fields
+    }
+  };
+}
+
+function createReconnectTimeoutOutcome(params: {
+  action: 'create' | 'edit' | 'move' | 'delete';
+  visibleWeekStart: string;
+  shiftId: string | null;
+  fields: Record<string, string>;
+}): CalendarControllerServerOutcome {
+  return {
+    type: 'failure',
+    state: {
+      action: params.action,
+      status: 'timeout',
+      reason: `SCHEDULE_${params.action.toUpperCase()}_TIMEOUT`,
+      message: 'The reconnect drain timed out before the trusted action confirmed the queued change.',
+      visibleWeekStart: params.visibleWeekStart,
+      shiftId: params.shiftId,
+      seriesId: null,
+      affectedShiftIds: [],
+      fields: params.fields
+    }
+  };
 }
 
 function createTimeoutOutcome(): CalendarControllerServerOutcome {
@@ -431,7 +493,7 @@ describe('offline mutation queue and calendar controller', () => {
     expect(inspection.entries).toHaveLength(2);
   });
 
-  it('surfaces replay failures and keeps the existing local board intact', async () => {
+  it('drains reconnect work to zero and returns the board to a server-synced state', async () => {
     const storage = createStorage();
     const scope = createScope();
 
@@ -458,7 +520,7 @@ describe('offline mutation queue and calendar controller', () => {
     const refreshedQueue = createOfflineMutationQueue({ repository: refreshedRepository });
     const refreshedController = createCalendarController({
       scope,
-      initialSchedule: createTrustedSchedule({ includeAlpha: false, includeGamma: true }),
+      initialSchedule: createTrustedSchedule({ includeAlpha: true, includeGamma: true }),
       routeMode: 'trusted-online',
       repository: refreshedRepository,
       queue: refreshedQueue,
@@ -466,19 +528,145 @@ describe('offline mutation queue and calendar controller', () => {
     });
 
     await refreshedController.initialize();
+    const drainStart = refreshedController.beginReconnectDrain();
+    const drainResult = await drainReconnectQueue({
+      entries: drainStart.entries,
+      visibleWeekStart: scope.weekStart,
+      submitAction: async (request) =>
+        createReconnectSuccessOutcome({
+          action: request.action,
+          visibleWeekStart: request.visibleWeekStart,
+          shiftId: request.shiftId,
+          fields: request.fields,
+          affectedShiftIds: [request.shiftId ?? 'shift-alpha']
+        }),
+      onOutcome: async (entry, outcome) => {
+        await refreshedController.finalizeMutation(entry.id, outcome);
+      }
+    });
+    refreshedController.completeReconnectDrain({
+      ...drainResult,
+      attemptedAt: drainStart.attemptedAt
+    });
+
     const state = refreshedController.getState();
 
-    expect(state.lastFailure).toEqual({
-      reason: 'REPLAY_MOVE_TARGET_MISSING',
-      detail:
-        'The trusted refreshed week no longer contained a shift needed for a queued local move, so the existing local board stayed authoritative.'
-    });
-    expect(state.queueLength).toBe(1);
-    expect(state.schedule.shiftIds).toEqual(['shift-alpha']);
+    expect(drainResult.status).toBe('drained');
+    expect(state.queueLength).toBe(0);
+    expect(state.pendingQueueLength).toBe(0);
+    expect(state.retryableQueueLength).toBe(0);
+    expect(state.boardSource).toBe('server-sync');
+    expect(state.syncPhase).toBe('idle');
+    expect(state.lastSyncAttemptAt).toBe(drainStart.attemptedAt);
+    expect(state.lastSyncError).toBeNull();
     expect(state.schedule.days[0]?.shifts[0]).toMatchObject({
       id: 'shift-alpha',
       startAt: '2026-04-20T10:00:00.000Z',
       endAt: '2026-04-20T11:00:00.000Z'
     });
+  });
+
+  it('stops reconnect drain on the first failure and preserves later queued work in order', async () => {
+    const storage = createStorage();
+    const scope = createScope();
+    let nowTick = 0;
+    const orderedNow = () => new Date(Date.parse('2026-04-15T10:00:00.000Z') + nowTick++ * 1000);
+
+    const firstRepository = createMemoryScheduleRepository({ storage });
+    const firstQueue = createOfflineMutationQueue({ repository: firstRepository });
+    const firstController = createCalendarController({
+      scope,
+      initialSchedule: createInitialSchedule(),
+      routeMode: 'cached-offline',
+      repository: firstRepository,
+      queue: firstQueue,
+      isOnline: () => false,
+      now: orderedNow
+    });
+
+    await firstController.initialize();
+    await firstController.beginMutation({
+      action: 'create',
+      formId: 'create:week',
+      formData: createCreateFormData()
+    });
+    await firstController.beginMutation({
+      action: 'move',
+      formId: 'move:shift-alpha',
+      formData: createMoveFormData()
+    });
+    await firstController.beginMutation({
+      action: 'delete',
+      formId: 'delete:shift-alpha',
+      formData: createDeleteFormData()
+    });
+    await firstController.destroy();
+
+    const refreshedRepository = createMemoryScheduleRepository({ storage });
+    const refreshedQueue = createOfflineMutationQueue({ repository: refreshedRepository });
+    const refreshedController = createCalendarController({
+      scope,
+      initialSchedule: createTrustedSchedule({ includeAlpha: true, includeGamma: true }),
+      routeMode: 'trusted-online',
+      repository: refreshedRepository,
+      queue: refreshedQueue,
+      isOnline: () => true
+    });
+
+    await refreshedController.initialize();
+    const drainStart = refreshedController.beginReconnectDrain();
+    const drainResult = await drainReconnectQueue({
+      entries: drainStart.entries,
+      visibleWeekStart: scope.weekStart,
+      submitAction: async (request) => {
+        if (request.action === 'move') {
+          return createReconnectTimeoutOutcome({
+            action: request.action,
+            visibleWeekStart: request.visibleWeekStart,
+            shiftId: request.shiftId,
+            fields: request.fields
+          });
+        }
+
+        return createReconnectSuccessOutcome({
+          action: request.action,
+          visibleWeekStart: request.visibleWeekStart,
+          shiftId: request.action === 'create' ? 'server-shift-1' : request.shiftId,
+          fields: request.fields,
+          affectedShiftIds: request.action === 'create' ? ['server-shift-1'] : [request.shiftId ?? 'shift-alpha']
+        });
+      },
+      onOutcome: async (entry, outcome) => {
+        await refreshedController.finalizeMutation(entry.id, outcome);
+      }
+    });
+    refreshedController.completeReconnectDrain({
+      ...drainResult,
+      attemptedAt: drainStart.attemptedAt
+    });
+
+    const state = refreshedController.getState();
+    const inspection = refreshedController.inspectQueue();
+
+    expect(drainResult).toMatchObject({
+      status: 'stopped',
+      attemptedCount: 2,
+      succeededCount: 1,
+      reason: 'SCHEDULE_MOVE_TIMEOUT'
+    });
+    expect(state.queueLength).toBe(2);
+    expect(state.pendingQueueLength).toBe(1);
+    expect(state.retryableQueueLength).toBe(1);
+    expect(state.boardSource).toBe('cached-local');
+    expect(state.syncPhase).toBe('paused-retryable');
+    expect(state.lastSyncAttemptAt).toBe(drainStart.attemptedAt);
+    expect(state.lastSyncError).toEqual({
+      reason: 'SCHEDULE_MOVE_TIMEOUT',
+      detail: 'The reconnect drain timed out before the trusted action confirmed the queued change.'
+    });
+    expect(inspection.entries.map((entry) => [entry.action, entry.syncState])).toEqual([
+      ['move', 'retryable'],
+      ['delete', 'pending-server']
+    ]);
   });
 });

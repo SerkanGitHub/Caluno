@@ -75,7 +75,7 @@ Load the installed `debug-like-expert` skill before coding so replay semantics a
   - Files: `apps/web/src/lib/offline/sync-engine.ts`, `apps/web/src/lib/offline/calendar-controller.ts`, `apps/web/src/routes/(app)/calendars/[calendarId]/+page.ts`, `apps/web/tests/schedule/offline-queue.unit.test.ts`, `apps/web/tests/schedule/sync-engine.unit.test.ts`
   - Verify: `pnpm --dir apps/web exec vitest run tests/schedule/offline-queue.unit.test.ts tests/schedule/sync-engine.unit.test.ts`
 
-- [ ] **T02: Drain reconnect work through trusted route actions and surface sync diagnostics** `est:2h30m`
+- [x] **T02: Drain reconnect work through trusted route actions and surface sync diagnostics** `est:2h30m`
   ## Description
 
 Close the reconnect half of **R005** without bypassing the S02 server-authority decisions. When connectivity returns, the browser must flush pending create/edit/move/delete work sequentially through the existing named route actions, preserve retryable failures, and leave the board/status surfaces clear about what happened.

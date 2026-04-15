@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { deserialize } from '$app/forms';
   import { browser } from '$app/environment';
   import type { ActionResult, SubmitFunction } from '@sveltejs/kit';
   import CalendarWeekBoard from '$lib/components/calendar/CalendarWeekBoard.svelte';
@@ -6,18 +7,25 @@
     createCalendarController,
     createInitialCalendarControllerState,
     type CalendarController,
-    type CalendarControllerServerOutcome,
     type CalendarControllerState
   } from '$lib/offline/calendar-controller';
   import { createOfflineMutationQueue } from '$lib/offline/mutation-queue';
   import { buildCalendarWeekBoard } from '$lib/schedule/board';
-  import type { ScheduleActionState } from '$lib/server/schedule';
+  import {
+    createReconnectTransportFailureOutcome,
+    drainReconnectQueue,
+    normalizeScheduleActionResult,
+    type CalendarControllerServerOutcome,
+    type ReconnectDrainActionKey,
+    type ReconnectDrainActionRequest
+  } from '$lib/offline/sync-engine';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
   let pendingActionKey = $state<string | null>(null);
   let controllerState = $state<CalendarControllerState | null>(null);
   let controller: CalendarController | null = null;
+  let reconnectDrainPromise: Promise<void> | null = null;
 
   const shellState = $derived(data.protectedShellState);
   const calendarState = $derived(data.protectedCalendarState);
@@ -38,8 +46,11 @@
                 queueLength: controllerState.queueLength,
                 pendingQueueLength: controllerState.pendingQueueLength,
                 retryableQueueLength: controllerState.retryableQueueLength,
+                syncPhase: controllerState.syncPhase,
+                lastSyncAttemptAt: controllerState.lastSyncAttemptAt,
                 shiftDiagnostics: controllerState.shiftDiagnostics,
-                lastFailure: controllerState.lastFailure
+                lastFailure: controllerState.lastFailure,
+                lastSyncError: controllerState.lastSyncError
               }
             : undefined
         })
@@ -60,6 +71,65 @@
         ? 'tone-danger'
         : 'tone-neutral'
   );
+
+  async function submitReconnectDrainAction(request: ReconnectDrainActionRequest): Promise<CalendarControllerServerOutcome> {
+    const abortController = new AbortController();
+    const timeout = window.setTimeout(() => abortController.abort(), 10_000);
+
+    try {
+      const response = await fetch(request.url, {
+        method: 'POST',
+        body: request.formData,
+        signal: abortController.signal
+      });
+      const result = deserialize(await response.text()) as ActionResult;
+      return normalizeScheduleActionResult(result, request.actionKey);
+    } catch (error) {
+      if (abortController.signal.aborted) {
+        return createReconnectTransportFailureOutcome({
+          request,
+          kind: 'timeout'
+        });
+      }
+
+      return createReconnectTransportFailureOutcome({
+        request,
+        kind: 'network-error',
+        detail: error instanceof Error ? error.message : 'The reconnect request failed before the trusted action responded.'
+      });
+    } finally {
+      window.clearTimeout(timeout);
+    }
+  }
+
+  async function runReconnectDrain(nextController: CalendarController) {
+    if (!browser || reconnectDrainPromise || !navigator.onLine) {
+      return reconnectDrainPromise ?? Promise.resolve();
+    }
+
+    reconnectDrainPromise = (async () => {
+      const drainStart = nextController.beginReconnectDrain();
+      const drainResult = await drainReconnectQueue({
+        entries: drainStart.entries,
+        visibleWeekStart: readyView?.schedule.visibleWeek.start ?? drainStart.entries[0]?.scope.weekStart ?? '',
+        submitAction: submitReconnectDrainAction,
+        onOutcome: async (entry, outcome) => {
+          await nextController.finalizeMutation(entry.id, outcome);
+        }
+      });
+
+      nextController.completeReconnectDrain({
+        ...drainResult,
+        attemptedAt: drainStart.attemptedAt
+      });
+    })();
+
+    try {
+      await reconnectDrainPromise;
+    } finally {
+      reconnectDrainPromise = null;
+    }
+  }
 
   $effect(() => {
     if (!browser || !readyView || !appShell) {
@@ -117,11 +187,17 @@
 
       const syncNetwork = () => {
         nextController.setNetwork(navigator.onLine);
+        if (navigator.onLine) {
+          void runReconnectDrain(nextController);
+        }
       };
 
       window.addEventListener('online', syncNetwork);
       window.addEventListener('offline', syncNetwork);
-      void nextController.initialize();
+      await nextController.initialize();
+      if (!disposed && navigator.onLine) {
+        void runReconnectDrain(nextController);
+      }
 
       cleanup = () => {
         window.removeEventListener('online', syncNetwork);
@@ -174,66 +250,11 @@
       }
 
       return async ({ result, update }) => {
-        await controller?.finalizeMutation(
-          beginResult.operationId as string,
-          toServerOutcome(result, actionKeyByAction[params.action])
-        );
+        await controller?.finalizeMutation(beginResult.operationId as string, normalizeScheduleActionResult(result, actionKeyByAction[params.action]));
         pendingActionKey = null;
         await update({ reset: false });
       };
     };
-  }
-
-  function toServerOutcome(
-    result: ActionResult,
-    actionKey: 'createShift' | 'editShift' | 'moveShift' | 'deleteShift'
-  ): CalendarControllerServerOutcome {
-    if ((result.type === 'success' || result.type === 'failure') && isPlainObject(result.data)) {
-      const candidate = result.data[actionKey];
-      if (isScheduleActionState(candidate)) {
-        return {
-          type: result.type,
-          state: candidate
-        };
-      }
-    }
-
-    return {
-      type: 'malformed-response',
-      reason: 'SCHEDULE_ACTION_RESULT_INVALID',
-      detail: 'The trusted server action returned an unexpected result shape, so the local change stayed pending.'
-    };
-  }
-
-  function isScheduleActionState(value: unknown): value is ScheduleActionState {
-    if (!value || typeof value !== 'object') {
-      return false;
-    }
-
-    const candidate = value as Partial<ScheduleActionState>;
-    return (
-      (candidate.action === 'create' ||
-        candidate.action === 'edit' ||
-        candidate.action === 'move' ||
-        candidate.action === 'delete') &&
-      typeof candidate.reason === 'string' &&
-      typeof candidate.message === 'string' &&
-      typeof candidate.visibleWeekStart === 'string' &&
-      (candidate.shiftId === null || typeof candidate.shiftId === 'string') &&
-      (candidate.seriesId === null || typeof candidate.seriesId === 'string') &&
-      Array.isArray(candidate.affectedShiftIds) &&
-      isPlainObject(candidate.fields) &&
-      (candidate.status === 'success' ||
-        candidate.status === 'validation-error' ||
-        candidate.status === 'forbidden' ||
-        candidate.status === 'write-error' ||
-        candidate.status === 'timeout' ||
-        candidate.status === 'malformed-response')
-    );
-  }
-
-  function isPlainObject(value: unknown): value is Record<string, unknown> {
-    return Boolean(value && typeof value === 'object' && !Array.isArray(value));
   }
 </script>
 
@@ -277,6 +298,34 @@
               : 'The visible week is rendering from the trusted server snapshot.'}
           </p>
           <code>{controllerState.pendingQueueLength} pending / {controllerState.retryableQueueLength} retryable</code>
+        </article>
+
+        <article
+          class={`status-card ${
+            controllerState.syncPhase === 'paused-retryable'
+              ? 'tone-danger'
+              : controllerState.syncPhase === 'draining'
+                ? 'tone-warning'
+                : 'tone-neutral'
+          }`}
+          data-testid="calendar-sync-state"
+        >
+          <span class="status-card__label">Sync diagnostics</span>
+          <strong>{controllerState.syncPhase}</strong>
+          <p>
+            {#if controllerState.syncPhase === 'draining'}
+              Reconnect is replaying queued browser-local mutations through the trusted route actions in sequence.
+            {:else if controllerState.syncPhase === 'paused-retryable'}
+              Reconnect stopped on the first retryable failure so later queued writes stayed in order.
+            {:else}
+              Reconnect is idle. Trusted route actions already confirmed all drained work or nothing was pending.
+            {/if}
+          </p>
+          <code>{controllerState.lastSyncAttemptAt ?? 'No reconnect attempt yet'}</code>
+          {#if controllerState.lastSyncError}
+            <p>{controllerState.lastSyncError.detail}</p>
+            <code>{controllerState.lastSyncError.reason}</code>
+          {/if}
         </article>
       {/if}
 
@@ -326,6 +375,17 @@
             <span class="pill pill-neutral">{effectiveSchedule.totalShifts} visible shifts</span>
             <span class={`pill ${controllerState?.boardSource === 'cached-local' ? 'pill-expired' : 'pill-neutral'}`}>
               {controllerState?.boardSource === 'cached-local' ? 'Cached local' : 'Trusted online'}
+            </span>
+            <span
+              class={`pill ${
+                controllerState?.syncPhase === 'paused-retryable'
+                  ? 'pill-danger'
+                  : controllerState?.syncPhase === 'draining'
+                    ? 'pill-expired'
+                    : 'pill-neutral'
+              }`}
+            >
+              {controllerState?.syncPhase ?? 'idle'}
             </span>
           </div>
         </header>
