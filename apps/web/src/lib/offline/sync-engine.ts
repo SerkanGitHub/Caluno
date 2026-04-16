@@ -151,6 +151,14 @@ export type TrustedRemoteRefreshResult =
       detail: string;
     };
 
+type ShiftRealtimeSessionLike = {
+  access_token?: string | null;
+};
+
+type ShiftRealtimeAuthSubscriptionLike = {
+  unsubscribe: () => void;
+};
+
 type ShiftRealtimeChannelLike = {
   on: (
     type: 'postgres_changes',
@@ -171,13 +179,19 @@ type ShiftRealtimeClientLike = {
   auth?: {
     getSession?: () => Promise<{
       data: {
-        session:
-          | {
-              access_token?: string | null;
-            }
-          | null;
+        session: ShiftRealtimeSessionLike | null;
       };
     }>;
+    onAuthStateChange?: (
+      callback: (event: string, session: ShiftRealtimeSessionLike | null) => void
+    ) =>
+      | {
+          data?: {
+            subscription?: ShiftRealtimeAuthSubscriptionLike;
+          };
+        }
+      | ShiftRealtimeAuthSubscriptionLike
+      | void;
   };
   realtime?: {
     setAuth?: (token?: string) => Promise<unknown> | unknown;
@@ -188,6 +202,27 @@ export type CalendarShiftRealtimeSubscription = {
   getDiagnostics: () => CalendarRealtimeDiagnostics;
   close: () => Promise<void>;
 };
+
+function readShiftRealtimeAuthSubscription(
+  result:
+    | {
+        data?: {
+          subscription?: ShiftRealtimeAuthSubscriptionLike;
+        };
+      }
+    | ShiftRealtimeAuthSubscriptionLike
+    | void
+): ShiftRealtimeAuthSubscriptionLike | null {
+  if (!result) {
+    return null;
+  }
+
+  if ('unsubscribe' in result && typeof result.unsubscribe === 'function') {
+    return result;
+  }
+
+  return result.data?.subscription ?? null;
+}
 
 export function rebaseTrustedScheduleWithLocalQueue(params: {
   trustedSchedule: CalendarScheduleView;
@@ -600,6 +635,7 @@ export function createCalendarShiftRealtimeSubscription(params: {
   let refreshInFlight = false;
   let queuedSignal: ShiftRealtimeSignal | null = null;
   let ignoreClosedStatus = false;
+  let authSubscription: ShiftRealtimeAuthSubscriptionLike | null = null;
 
   let diagnostics: CalendarRealtimeDiagnostics = {
     channelState: 'subscribing',
@@ -671,19 +707,30 @@ export function createCalendarShiftRealtimeSubscription(params: {
     }
   };
 
-  const primeRealtimeAuth = async () => {
+  const hasRealtimeAuthHooks = () => {
+    const getSession = client.auth?.getSession;
+    const setAuth = client.realtime?.setAuth;
+    return typeof getSession === 'function' && typeof setAuth === 'function';
+  };
+
+  const applyRealtimeAuth = async (sessionOverride?: ShiftRealtimeSessionLike | null) => {
     const getSession = client.auth?.getSession;
     const setAuth = client.realtime?.setAuth;
     if (typeof getSession !== 'function' || typeof setAuth !== 'function') {
-      return;
+      return 'unsupported' as const;
     }
 
     try {
-      const sessionResult = await getSession();
-      const accessToken = sessionResult.data.session?.access_token ?? undefined;
-      await setAuth(accessToken ?? undefined);
+      const session = sessionOverride ?? (await getSession()).data.session;
+      const accessToken = session?.access_token?.trim();
+      if (!accessToken) {
+        return 'missing-token' as const;
+      }
+
+      await setAuth(accessToken);
+      return 'ready' as const;
     } catch {
-      // best effort: leave the realtime client on its current auth token
+      return 'failed' as const;
     }
   };
 
@@ -811,13 +858,11 @@ export function createCalendarShiftRealtimeSubscription(params: {
     }
   };
 
-  const startChannel = async () => {
+  const launchChannel = () => {
     if (disposed) {
       return;
     }
 
-    await removeActiveChannel();
-    await primeRealtimeAuth();
     setChannelState('subscribing', null, 'Connecting to shared shift change detection for this calendar week.');
 
     const nextChannel = client
@@ -841,7 +886,57 @@ export function createCalendarShiftRealtimeSubscription(params: {
     }, subscribeTimeoutMs);
   };
 
-  void startChannel();
+  const startChannel = async (sessionOverride?: ShiftRealtimeSessionLike | null) => {
+    if (disposed) {
+      return;
+    }
+
+    const startFreshChannel = async () => {
+      if (hasRealtimeAuthHooks()) {
+        await applyRealtimeAuth(sessionOverride);
+        if (disposed) {
+          return;
+        }
+      }
+
+      launchChannel();
+    };
+
+    if (!channel) {
+      await startFreshChannel();
+      return;
+    }
+
+    await removeActiveChannel();
+    if (disposed) {
+      return;
+    }
+
+    await startFreshChannel();
+  };
+
+  authSubscription = readShiftRealtimeAuthSubscription(
+    client.auth?.onAuthStateChange?.((event, session) => {
+      if (disposed) {
+        return;
+      }
+
+      if (event === 'SIGNED_OUT') {
+        queuedSignal = null;
+        setRemoteRefreshState('idle', null, diagnostics.lastRemoteRefreshDetail);
+        clearTimers();
+        void removeActiveChannel();
+        setChannelState('closed', 'REALTIME_SIGNED_OUT', 'Shared shift change detection paused because the browser session signed out.');
+        return;
+      }
+
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        startChannel(session);
+      }
+    })
+  );
+
+  startChannel();
   emitDiagnostics();
 
   return {
@@ -852,6 +947,8 @@ export function createCalendarShiftRealtimeSubscription(params: {
     async close() {
       disposed = true;
       clearTimers();
+      authSubscription?.unsubscribe();
+      authSubscription = null;
       await removeActiveChannel();
       setChannelState('closed', null, 'Shared shift change detection stopped for this calendar route.');
     }

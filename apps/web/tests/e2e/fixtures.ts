@@ -1042,22 +1042,69 @@ export async function waitForSyncPhase(page: Page, expectedPhase: string | RegEx
     .toBe(expectedPhase);
 }
 
+export type RealtimeDiagnosticsState = {
+  channelState: string | null;
+  remoteRefreshState: string | null;
+  signalSummary: string | null;
+  detail: string | null;
+  reason: string | null;
+};
+
+export async function readRealtimeDiagnosticsState(page: Page): Promise<RealtimeDiagnosticsState> {
+  return {
+    channelState: await page.getByTestId('calendar-realtime-state').getAttribute('data-channel-state'),
+    remoteRefreshState: await page.getByTestId('calendar-realtime-state').getAttribute('data-remote-refresh-state'),
+    signalSummary: await readStateText(page, 'calendar-realtime-state', 'code'),
+    detail: await readStateText(page, 'calendar-realtime-state', 'p:last-of-type'),
+    reason: await readStateText(page, 'calendar-realtime-state', 'code:last-of-type')
+  };
+}
+
 export async function waitForRealtimeChannelReady(page: Page, timeout = 20_000) {
   await expect
-    .poll(async () => page.getByTestId('calendar-realtime-state').getAttribute('data-channel-state'), {
+    .poll(async () => (await readRealtimeDiagnosticsState(page)).channelState, {
       timeout,
       message: 'expected the realtime channel state to reach ready'
     })
     .toBe('ready');
 }
 
-export async function waitForRemoteRefreshApplied(page: Page, timeout = 20_000) {
+export async function waitForRealtimeSignal(page: Page, expectedSignal: string | RegExp = /(INSERT|UPDATE|DELETE) at /, timeout = 20_000) {
+  const message = `expected realtime diagnostics to record a shared shift signal matching ${String(expectedSignal)}`;
+
+  if (expectedSignal instanceof RegExp) {
+    await expect
+      .poll(async () => (await readRealtimeDiagnosticsState(page)).signalSummary ?? '', {
+        timeout,
+        message
+      })
+      .toMatch(expectedSignal);
+    return;
+  }
+
   await expect
-    .poll(async () => page.getByTestId('calendar-realtime-state').getAttribute('data-remote-refresh-state'), {
+    .poll(async () => (await readRealtimeDiagnosticsState(page)).signalSummary, {
       timeout,
-      message: 'expected realtime diagnostics to confirm a trusted refresh was applied'
+      message
     })
-    .toBe('applied');
+    .toBe(expectedSignal);
+}
+
+export async function waitForRemoteRefreshState(
+  page: Page,
+  expectedState: 'idle' | 'refreshing' | 'applied' | 'failed',
+  timeout = 20_000
+) {
+  await expect
+    .poll(async () => (await readRealtimeDiagnosticsState(page)).remoteRefreshState, {
+      timeout,
+      message: `expected realtime diagnostics to reach remote refresh state ${expectedState}`
+    })
+    .toBe(expectedState);
+}
+
+export async function waitForRemoteRefreshApplied(page: Page, timeout = 20_000) {
+  await waitForRemoteRefreshState(page, 'applied', timeout);
 }
 
 export async function createTrackedSession(params: {

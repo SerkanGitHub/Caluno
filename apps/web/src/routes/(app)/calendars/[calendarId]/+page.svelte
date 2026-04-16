@@ -170,11 +170,30 @@
     }
   }
 
+  function setRealtimeRemoteRefreshState(
+    state: CalendarRealtimeDiagnostics['remoteRefreshState'],
+    params: {
+      reason?: string | null;
+      detail?: string | null;
+    } = {}
+  ) {
+    realtimeDiagnostics = {
+      ...realtimeDiagnostics,
+      remoteRefreshState: state,
+      lastRemoteRefreshAt: state === 'idle' ? realtimeDiagnostics.lastRemoteRefreshAt : new Date().toISOString(),
+      lastRemoteRefreshReason: params.reason ?? null,
+      lastRemoteRefreshDetail: params.detail ?? null
+    };
+  }
+
   async function refreshTrustedWeekFromRoute(
     nextController: CalendarController,
     scopeKey: string,
     signal: ShiftRealtimeSignal
   ): Promise<TrustedRemoteRefreshResult> {
+    setRealtimeRemoteRefreshState('refreshing', {
+      detail: 'Reloading the trusted week after a shared shift change signal.'
+    });
     await invalidateAll();
 
     const currentScopeKey = untrack(() => controllerScopeKey);
@@ -182,15 +201,24 @@
     const activeController = controller === nextController ? nextController : controller;
 
     if (!activeController || !currentReadyView || currentScopeKey !== scopeKey) {
+      const detail = 'The visible calendar scope changed before the trusted refresh completed, so the old realtime signal was dropped.';
+      setRealtimeRemoteRefreshState('failed', {
+        reason: 'REMOTE_REFRESH_SCOPE_STALE',
+        detail
+      });
       return {
         status: 'failed',
         reason: 'REMOTE_REFRESH_SCOPE_STALE',
-        detail: 'The visible calendar scope changed before the trusted refresh completed, so the old realtime signal was dropped.'
+        detail
       };
     }
 
     const refreshResult = await activeController.ingestTrustedSchedule(currentReadyView.schedule);
     if (refreshResult.status === 'failed') {
+      setRealtimeRemoteRefreshState('failed', {
+        reason: refreshResult.reason,
+        detail: refreshResult.detail
+      });
       return {
         status: 'failed',
         reason: refreshResult.reason,
@@ -198,14 +226,19 @@
       };
     }
 
+    const detail =
+      refreshResult.replayedQueueLength > 0
+        ? `${signal.eventType} signal reloaded the trusted week and replayed pending local work on top.`
+        : `${signal.eventType} signal reloaded the trusted week with no pending local work to replay.`;
+    setRealtimeRemoteRefreshState('applied', {
+      detail
+    });
+
     return {
       status: 'applied',
       boardSource: refreshResult.boardSource,
       replayedQueueLength: refreshResult.replayedQueueLength,
-      detail:
-        refreshResult.replayedQueueLength > 0
-          ? `${signal.eventType} signal reloaded the trusted week and replayed pending local work on top.`
-          : `${signal.eventType} signal reloaded the trusted week with no pending local work to replay.`
+      detail
     };
   }
 

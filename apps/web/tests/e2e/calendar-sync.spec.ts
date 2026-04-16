@@ -7,6 +7,7 @@ import {
   readDayConflictSummary,
   readShiftConflictSummary,
   readVisibleWeekFromBoard,
+  resolveVisibleShiftCardIdentity,
   seededCalendars,
   seededSchedule,
   seededUsers,
@@ -19,6 +20,7 @@ import {
   waitForQueueSummary,
   waitForRealtimeChannelReady,
   waitForRemoteRefreshApplied,
+  waitForRemoteRefreshState,
   waitForShiftConflictOverlaps
 } from './fixtures';
 
@@ -32,15 +34,6 @@ function dayColumn(page: Page, dayKey: string) {
 
 function shiftCardsByTitle(page: Page, title: string) {
   return page.locator('[data-testid^="shift-card-"]').filter({ hasText: title });
-}
-
-async function readShiftIdFromCard(card: ReturnType<typeof shiftCardsByTitle>) {
-  const testId = await card.first().getAttribute('data-testid');
-  if (!testId) {
-    throw new Error('Expected the created realtime shift card to expose a data-testid.');
-  }
-
-  return testId.replace('shift-card-', '');
 }
 
 async function createOneOffShift(
@@ -116,6 +109,8 @@ test('online collaborators see shared shift changes propagate live within the sa
       await waitForQueueSummary(collaborator.page, '0 pending / 0 retryable');
       await waitForRealtimeChannelReady(page);
       await waitForRealtimeChannelReady(collaborator.page);
+      await waitForRemoteRefreshState(page, 'idle');
+      await waitForRemoteRefreshState(collaborator.page, 'idle');
 
       const primaryWeek = await readVisibleWeekFromBoard(page);
       const collaboratorWeek = await readVisibleWeekFromBoard(collaborator.page);
@@ -145,10 +140,15 @@ test('online collaborators see shared shift changes propagate live within the sa
       flow.mark('primary-create-shift', syncCreate.title);
       await createOneOffShift(page, syncCreate);
 
-      await expect(page.getByTestId('schedule-action-strip')).toContainText('SHIFT_CREATED');
       await waitForQueueSummary(page, '0 pending / 0 retryable');
-      await expect(dayColumn(page, syncCreate.dayKey)).toContainText(syncCreate.title);
-      syncCreateShiftId = await readShiftIdFromCard(shiftCardsByTitle(page, syncCreate.title));
+      const createdShift = await resolveVisibleShiftCardIdentity({
+        page,
+        title: syncCreate.title,
+        dayKey: syncCreate.dayKey,
+        idKind: 'server'
+      });
+      syncCreateShiftId = createdShift.shiftId;
+      await expect(createdShift.locator).toBeVisible();
       await waitForBoardConflictPairs(page, 3);
       await waitForDayConflictPairs(page, syncCreate.dayKey, 3);
       await waitForShiftConflictOverlaps(page, syncCreateShiftId, 2);
@@ -160,19 +160,27 @@ test('online collaborators see shared shift changes propagate live within the sa
 
     await test.step('phase: prove the collaborator page receives a realtime signal and refreshes the trusted week live with the new overlap warning', async () => {
       collaborator.flow.mark('await-realtime-refresh', syncCreate.title);
+      await collaborator.page.bringToFront();
       await waitForRemoteRefreshApplied(collaborator.page);
       await expect(collaborator.page.getByTestId('calendar-realtime-state')).toHaveAttribute('data-channel-state', 'ready');
-      await expect(collaborator.page.getByTestId('calendar-realtime-state')).toContainText('Last signal');
+      await expect(collaborator.page.getByTestId('calendar-realtime-state')).toContainText('trusted refresh applied');
       await waitForQueueSummary(collaborator.page, '0 pending / 0 retryable');
-      await expect(dayColumn(collaborator.page, syncCreate.dayKey)).toContainText(syncCreate.title);
-      await expect(shiftCardsByTitle(collaborator.page, syncCreate.title)).toHaveCount(1);
+
+      const collaboratorShift = await resolveVisibleShiftCardIdentity({
+        page: collaborator.page,
+        title: syncCreate.title,
+        dayKey: syncCreate.dayKey,
+        idKind: 'server'
+      });
+      await expect(collaboratorShift.locator).toBeVisible();
+      if (!syncCreateShiftId) {
+        syncCreateShiftId = collaboratorShift.shiftId;
+      }
+      expect(collaboratorShift.shiftId).toBe(syncCreateShiftId);
+
       await expect(collaborator.page.getByTestId('calendar-week-board')).toContainText('Server-synced board');
       await expect(collaborator.page.getByTestId('calendar-week-board')).toContainText('Online');
       await expect(collaborator.page).toHaveURL(`/calendars/${seededCalendars.alphaShared}?start=${seededSchedule.visibleWeek.start}`);
-
-      if (!syncCreateShiftId) {
-        syncCreateShiftId = await readShiftIdFromCard(shiftCardsByTitle(collaborator.page, syncCreate.title));
-      }
       await waitForBoardConflictPairs(collaborator.page, 3);
       await waitForDayConflictPairs(collaborator.page, syncCreate.dayKey, 3);
       await waitForShiftConflictOverlaps(collaborator.page, syncCreateShiftId, 2);
@@ -248,6 +256,8 @@ test('realtime refreshes stay scoped when a collaborator is viewing a different 
 
       await waitForRealtimeChannelReady(page);
       await waitForRealtimeChannelReady(collaborator.page);
+      await waitForRemoteRefreshState(page, 'idle');
+      await waitForRemoteRefreshState(collaborator.page, 'idle');
       await waitForBoardConflictPairs(page, 1);
       await waitForBoardConflictPairs(collaborator.page, null);
       await expect(collaborator.page).toHaveURL(`/calendars/${seededCalendars.alphaShared}?start=${nextWeekStart}`);
@@ -262,9 +272,14 @@ test('realtime refreshes stay scoped when a collaborator is viewing a different 
       flow.mark('primary-create-current-week', scopedCreate.title);
       await createOneOffShift(page, scopedCreate);
 
-      await expect(page.getByTestId('schedule-action-strip')).toContainText('SHIFT_CREATED');
       await waitForQueueSummary(page, '0 pending / 0 retryable');
-      await expect(dayColumn(page, scopedCreate.dayKey)).toContainText(scopedCreate.title);
+      const createdShift = await resolveVisibleShiftCardIdentity({
+        page,
+        title: scopedCreate.title,
+        dayKey: scopedCreate.dayKey,
+        idKind: 'server'
+      });
+      await expect(createdShift.locator).toBeVisible();
       await waitForBoardConflictPairs(page, 3);
       await waitForDayConflictPairs(page, scopedCreate.dayKey, 3);
 
@@ -274,12 +289,7 @@ test('realtime refreshes stay scoped when a collaborator is viewing a different 
           message: 'expected the next-week collaborator to keep ignoring a current-week write'
         })
         .toBe(0);
-      await expect
-        .poll(async () => collaborator.page.getByTestId('calendar-realtime-state').getAttribute('data-remote-refresh-state'), {
-          timeout: 8_000,
-          message: 'expected the next-week collaborator to avoid a remote refresh for an out-of-scope write'
-        })
-        .toBe('idle');
+      await waitForRemoteRefreshState(collaborator.page, 'idle', 8_000);
       await waitForBoardConflictPairs(collaborator.page, null);
       await expect(collaborator.page).toHaveURL(`/calendars/${seededCalendars.alphaShared}?start=${nextWeekStart}`);
 

@@ -100,7 +100,7 @@
   - Files: `apps/web/tests/e2e/calendar-offline.spec.ts`, `apps/web/tests/e2e/fixtures.ts`, `apps/web/src/lib/offline/calendar-controller.ts`
   - Verify: npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test -c playwright.offline.config.ts tests/e2e/calendar-offline.spec.ts
 
-- [ ] **T02: Harden realtime collaborator proof around stable board and refresh signals** `est:1h30m`
+- [x] **T02: Harden realtime collaborator proof around stable board and refresh signals** `est:1h30m`
   Use the installed `debug-like-expert` skill before coding. The clean-db sync rerun suggests the shared create itself lands, but the browser spec still over-asserts on transient action-strip timing. Replace timing-sensitive success checks with stronger board/queue/realtime assertions, keep next-week scope-guard proof intact, and only investigate runtime code if the collaborator page still fails to refresh after the stronger evidence surfaces are in place.
 
 ## Failure Modes

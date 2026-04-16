@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-16T12:41:58Z | Files: 279 | Described: 0/279
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T12:41:58Z","fingerprint":"7313319bb68707e88ec9ea5ba453cf074f60d9e1","fileCount":279,"truncated":false} -->
+Generated: 2026-04-16T13:08:47Z | Files: 295 | Described: 0/295
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T13:08:47Z","fingerprint":"c5dbcdb030ebe082dcf509129f5f971ee9fbaab8","fileCount":295,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -80,6 +80,9 @@ Generated: 2026-04-16T12:41:58Z | Files: 279 | Described: 0/279
 
 ### apps/web/.svelte-kit/adapter-node/.vite/
 - `apps/web/.svelte-kit/adapter-node/.vite/manifest.json`
+
+### apps/web/.svelte-kit/adapter-node/_app/immutable/assets/
+- `apps/web/.svelte-kit/adapter-node/_app/immutable/assets/_layout.B7uVVkJ2.css`
 
 ### apps/web/.svelte-kit/adapter-node/chunks/
 - `apps/web/.svelte-kit/adapter-node/chunks/app-shell.js`
@@ -188,11 +191,13 @@ Generated: 2026-04-16T12:41:58Z | Files: 279 | Described: 0/279
 - `apps/web/.svelte-kit/output/client/_app/version.json`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/assets/
+- `apps/web/.svelte-kit/output/client/_app/immutable/assets/0.B7uVVkJ2.css`
 - `apps/web/.svelte-kit/output/client/_app/immutable/assets/sqlite3.DGXXSD5r.wasm`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/chunks/
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BFVfXAuL.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Bpvak2mh.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BthUChXC.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/C0IRkBfy.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/CEVaURT-.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/CZ5TP99Q.js`
@@ -200,15 +205,26 @@ Generated: 2026-04-16T12:41:58Z | Files: 279 | Described: 0/279
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/D5EpjGQt.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DOMc5UJB.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DsnmJJEf.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DUc9KDkb.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DYBES7nT.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DYK4CpHh.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/vOItGLpa.js`
 
+### apps/web/.svelte-kit/output/client/_app/immutable/entry/
+- `apps/web/.svelte-kit/output/client/_app/immutable/entry/app.iCbcuhWN.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/entry/start.DUWvef0E.js`
+
 ### apps/web/.svelte-kit/output/client/_app/immutable/nodes/
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/0.DKts0e-T.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/1.BLAKGSJi.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/2.CdR3fD3a.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/3.D0-6ptpY.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/4.t_0zCXja.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/5.B1OrzvUL.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/6.Cjd7Twn1.js`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/workers/
+- `apps/web/.svelte-kit/output/client/_app/immutable/workers/sqlite.worker-CI6M-LP8.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/workers/sqlite3-opfs-async-proxy-BRz_lFSG.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/workers/sqlite3-worker1-PxFADYt0.js`
 
@@ -224,6 +240,9 @@ Generated: 2026-04-16T12:41:58Z | Files: 279 | Described: 0/279
 
 ### apps/web/.svelte-kit/output/server/.vite/
 - `apps/web/.svelte-kit/output/server/.vite/manifest.json`
+
+### apps/web/.svelte-kit/output/server/_app/immutable/assets/
+- `apps/web/.svelte-kit/output/server/_app/immutable/assets/_layout.B7uVVkJ2.css`
 
 ### apps/web/.svelte-kit/output/server/chunks/
 - `apps/web/.svelte-kit/output/server/chunks/app-shell.js`
@@ -396,6 +415,11 @@ Generated: 2026-04-16T12:41:58Z | Files: 279 | Described: 0/279
 
 ### apps/web/test-results/e2e-offline/
 - `apps/web/test-results/e2e-offline/.last-run.json`
+
+### apps/web/test-results/e2e-offline/calendar-sync-online-colla-d89ab--same-trusted-calendar-week/
+- `apps/web/test-results/e2e-offline/calendar-sync-online-colla-d89ab--same-trusted-calendar-week/error-context.md`
+- `apps/web/test-results/e2e-offline/calendar-sync-online-colla-d89ab--same-trusted-calendar-week/trace.zip`
+- `apps/web/test-results/e2e-offline/calendar-sync-online-colla-d89ab--same-trusted-calendar-week/video.webm`
 
 ### apps/web/tests/access/
 - `apps/web/tests/access/policy-contract.unit.test.ts`

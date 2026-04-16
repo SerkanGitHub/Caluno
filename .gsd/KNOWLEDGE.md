@@ -101,3 +101,9 @@
 **Context:** S05/T02 browser proof for cached-offline, reconnect, and realtime flows against `vite preview`.
 **Rule/Pattern:** In `apps/web`, keep the Vite dev/preview asset responses stamped with the worker isolation headers and bootstrap the offline repository through `src/lib/offline/sqlite.worker.ts` instead of relying on `sqlite3Worker1Promiser()`'s default worker.
 **Rationale:** The protected route HTML can have COEP/COOP while Vite-served worker assets still miss those headers, and the library default worker can resolve `sqlite3.wasm` to a preview-broken path. When that happens the SQLite worker never initializes, `controllerState` stays null, and every offline/realtime proof falsely looks like a route/test problem.
+
+## 2026-04-16: When multi-session realtime proof fails, extract both Playwright flow attachments before changing assertions
+
+**Context:** S06/T02 isolated `calendar-sync.spec.ts` reruns where the writer's create succeeds but the collaborator never reaches `data-remote-refresh-state="applied"`.
+**Rule/Pattern:** Before weakening or widening the collaborator assertions, inspect both `flow-diagnostics` attachments from the retained Playwright trace and compare primary vs collaborator `realtimeChannelState`, `realtimeRefreshState`, `realtimeReason`, conflict counts, and console warnings.
+**Rationale:** The retained trace can show whether the failure is assertion drift or a real delivery gap. In this repo the decisive evidence was that the collaborator stayed `ready + idle` on the original 1-pair baseline while the writer rendered the new 3-pair board, so the bug moved from test timing suspicion to the actual Supabase realtime delivery contract.

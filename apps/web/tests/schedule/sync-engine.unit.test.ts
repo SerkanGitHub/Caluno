@@ -165,6 +165,43 @@ class FakeRealtimeClient {
   }
 }
 
+class FakeRealtimeAuthClient extends FakeRealtimeClient {
+  readonly callOrder: string[] = [];
+
+  auth = {
+    getSession: vi.fn(async () => {
+      this.callOrder.push('getSession');
+      return {
+        data: {
+          session: {
+            access_token: 'token-123'
+          }
+        }
+      };
+    }),
+    onAuthStateChange: vi.fn(
+      (_callback: (event: string, session: { access_token?: string | null } | null) => void) => ({
+        data: {
+          subscription: {
+            unsubscribe: vi.fn()
+          }
+        }
+      })
+    )
+  };
+
+  realtime = {
+    setAuth: vi.fn(async (_token?: string) => {
+      this.callOrder.push('setAuth');
+    })
+  };
+
+  override channel(name: string) {
+    this.callOrder.push('channel');
+    return super.channel(name);
+  }
+}
+
 describe('sync engine', () => {
   it('replays create, edit, move, and delete entries in deterministic created-at order', () => {
     const trustedSchedule = createSchedule([
@@ -935,6 +972,34 @@ describe('sync engine', () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it('authenticates realtime before opening the shared shift channel when a session token is available', async () => {
+    const client = new FakeRealtimeAuthClient();
+
+    const subscription = createCalendarShiftRealtimeSubscription({
+      calendarId: createScope().calendarId,
+      visibleWeek: createVisibleWeek(),
+      client: client as never,
+      requestTrustedRefresh: async () => ({
+        status: 'applied',
+        boardSource: 'server-sync',
+        replayedQueueLength: 0,
+        detail: 'trusted refresh applied'
+      })
+    });
+
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(client.callOrder).toEqual(expect.arrayContaining(['getSession', 'setAuth', 'channel']));
+    expect(client.callOrder.indexOf('getSession')).toBeLessThan(client.callOrder.indexOf('setAuth'));
+    expect(client.callOrder.indexOf('setAuth')).toBeLessThan(client.callOrder.indexOf('channel'));
+    expect(client.channels).toHaveLength(1);
+
+    await subscription.close();
   });
 
   it('retries timed-out realtime subscriptions and tears them down cleanly', async () => {
