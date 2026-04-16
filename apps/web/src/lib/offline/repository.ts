@@ -135,7 +135,7 @@ export function createBrowserScheduleRepository(options: {
   openTimeoutMs?: number;
 } = {}): OfflineScheduleRepository {
   return createOfflineScheduleRepository(() =>
-    createSqliteWorkerRepositoryDriver({ openTimeoutMs: options.openTimeoutMs ?? 5_000 })
+    createSqliteWorkerRepositoryDriver({ openTimeoutMs: options.openTimeoutMs ?? 20_000 })
   );
 }
 

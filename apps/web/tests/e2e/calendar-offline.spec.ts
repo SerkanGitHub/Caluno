@@ -8,8 +8,12 @@ import {
   seededUsers,
   setBrowserOffline,
   signInThroughUi,
+  submitShiftEditorForm,
   syncCalendarFlowContext,
-  test
+  test,
+  waitForQueueSummary,
+  waitForSyncAttempt,
+  waitForSyncPhase
 } from './fixtures';
 
 test.describe.configure({ mode: 'serial' });
@@ -78,7 +82,7 @@ test('preview proof surface exposes isolation headers and a live service worker 
   });
 });
 
-test('previously synced calendar weeks reopen offline, keep local writes across reload, and deny unsynced ids fail closed', async ({
+test('previously synced calendar weeks reopen offline, keep local writes across reload, deny unsynced ids fail closed, and drain cleanly after reconnect', async ({
   page,
   flow
 }) => {
@@ -132,7 +136,7 @@ test('previously synced calendar weeks reopen offline, keep local writes across 
     await expect(deniedState).toContainText(seededCalendars.betaShared);
     await syncCalendarFlowContext(page, flow, {
       calendarId: seededCalendars.betaShared,
-      note: 'online denial route was rendered once so the offline direct navigation can still boot and fail closed'
+      note: 'online denial route rendered once so the offline direct navigation can still boot and fail closed'
     });
 
     await page.goto(alphaCalendarUrl);
@@ -177,11 +181,12 @@ test('previously synced calendar weeks reopen offline, keep local writes across 
     const createDialog = page.locator('details.shift-editor--create');
 
     await createDialog.locator('summary').click();
-    await createDialog.locator('input[name="title"]').fill(offlineCreate.title);
-    await createDialog.locator('input[name="startAt"]').fill(offlineCreate.startLocal);
-    await createDialog.locator('input[name="endAt"]').fill(offlineCreate.endLocal);
-    await createDialog.locator('input[name="recurrenceCadence"][value=""]').check({ force: true });
-    await createDialog.getByRole('button', { name: 'Save shift' }).click();
+    await submitShiftEditorForm(createDialog, {
+      title: offlineCreate.title,
+      startAt: offlineCreate.startLocal,
+      endAt: offlineCreate.endLocal,
+      recurrenceCadence: ''
+    });
 
     await expect(page.getByTestId('schedule-action-strip')).toContainText('LOCAL_PENDING_OFFLINE');
     await expect(page.getByTestId('calendar-local-state')).toContainText('1 pending / 0 retryable');
@@ -200,10 +205,11 @@ test('previously synced calendar weeks reopen offline, keep local writes across 
     const editDialog = morningCard.locator('details:has(summary:has-text("Edit details"))');
 
     await editDialog.locator('summary').click();
-    await editDialog.locator('input[name="title"]').fill(offlineEdit.nextTitle);
-    await editDialog.locator('input[name="startAt"]').fill(offlineEdit.nextStartLocal);
-    await editDialog.locator('input[name="endAt"]').fill(offlineEdit.nextEndLocal);
-    await editDialog.getByRole('button', { name: 'Save edits' }).click();
+    await submitShiftEditorForm(editDialog, {
+      title: offlineEdit.nextTitle,
+      startAt: offlineEdit.nextStartLocal,
+      endAt: offlineEdit.nextEndLocal
+    });
 
     await expect(page.getByTestId('calendar-local-state')).toContainText('2 pending / 0 retryable');
     await expect(shiftCardInDay(page, seededSchedule.shifts.morningIntake.dayKey, offlineEdit.shiftId)).toContainText(offlineEdit.nextTitle);
@@ -213,9 +219,10 @@ test('previously synced calendar weeks reopen offline, keep local writes across 
     const moveDialog = shiftCard(page, offlineMove.shiftId).locator('details:has(summary:has-text("Move timing"))');
 
     await moveDialog.locator('summary').click();
-    await moveDialog.locator('input[name="startAt"]').fill(offlineMove.nextStartLocal);
-    await moveDialog.locator('input[name="endAt"]').fill(offlineMove.nextEndLocal);
-    await moveDialog.getByRole('button', { name: 'Save new timing' }).click();
+    await submitShiftEditorForm(moveDialog, {
+      startAt: offlineMove.nextStartLocal,
+      endAt: offlineMove.nextEndLocal
+    });
 
     await expect(page.getByTestId('calendar-local-state')).toContainText('3 pending / 0 retryable');
     await expect(
@@ -277,6 +284,63 @@ test('previously synced calendar weeks reopen offline, keep local writes across 
       visibleWeekEndExclusive: seededSchedule.visibleWeek.endExclusive,
       focusShiftIds: [],
       note: 'direct offline navigation to the unsynced Beta id failed closed with typed denial metadata'
+    });
+  });
+
+  await test.step('phase: return to the cached Alpha route offline so reconnect can replay the queued writes in scope order', async () => {
+    flow.mark('offline-return-alpha', alphaCalendarUrl);
+    await page.goto(alphaCalendarUrl);
+
+    await expect(page.getByTestId('calendar-shell')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Alpha shared' })).toBeVisible();
+    await expect(page.getByTestId('calendar-route-state')).toContainText('cached-offline');
+    await waitForQueueSummary(page, '4 pending / 0 retryable');
+    await expect(dayColumn(page, offlineCreate.dayKey)).toContainText(offlineCreate.title);
+    await expect(shiftCardInDay(page, seededSchedule.shifts.morningIntake.dayKey, offlineEdit.shiftId)).toContainText(offlineEdit.nextTitle);
+    await expect(shiftCardInDay(page, offlineMove.toDayKey, offlineMove.shiftId)).toContainText(offlineMove.title);
+    await expect(shiftCard(page, seededSchedule.deleteExpectation.shiftId)).toHaveCount(0);
+    await syncCalendarFlowContext(page, flow, {
+      calendarId: seededCalendars.alphaShared,
+      visibleWeekStart: seededSchedule.visibleWeek.start,
+      visibleWeekEndExclusive: seededSchedule.visibleWeek.endExclusive,
+      focusShiftIds: [offlineEdit.shiftId, offlineMove.shiftId],
+      note: 'returned to the cached Alpha route offline with the full pending queue still intact before reconnect'
+    });
+  });
+
+  await test.step('phase: restore connectivity and prove the queued create, edit, move, and delete drain through trusted actions without losing board continuity', async () => {
+    await setBrowserOffline(page, flow, false, 'restoring browser connectivity so the queued local writes can drain through trusted route actions');
+
+    await expect(page.getByRole('heading', { name: 'Alpha shared' })).toBeVisible();
+    await waitForSyncAttempt(page);
+    await waitForQueueSummary(page, '0 pending / 0 retryable');
+    await waitForSyncPhase(page, 'idle');
+
+    await expect(page.getByTestId('calendar-local-state')).toContainText('online');
+    await expect(page.getByTestId('calendar-sync-state')).toContainText('idle');
+    await expect(page.getByTestId('board-sync-diagnostics')).toContainText('Last reconnect attempt:');
+    await expect(page.getByTestId('calendar-week-board')).toContainText('Server-synced board');
+    await expect(page.getByTestId('calendar-week-board')).toContainText('Online');
+    await expect(page.getByTestId('calendar-week-board')).toContainText('No pending local writes');
+    await expect(page).toHaveURL(alphaCalendarUrl);
+
+    const createdCard = shiftCardByTitle(page, offlineCreate.title);
+    await expect(createdCard).toBeVisible();
+    await expect(createdCard).not.toContainText('Local only');
+    await expect(createdCard).not.toContainText('Pending sync');
+    await expect(shiftCardInDay(page, seededSchedule.shifts.morningIntake.dayKey, offlineEdit.shiftId)).toContainText(offlineEdit.nextTitle);
+    await expect(shiftCardInDay(page, offlineMove.toDayKey, offlineMove.shiftId)).toContainText(offlineMove.title);
+    await expect(shiftCard(page, seededSchedule.deleteExpectation.shiftId)).toHaveCount(0);
+    await expect(page.getByTestId('schedule-action-strip')).toContainText('SHIFT_CREATED');
+    await expect(page.getByTestId('schedule-action-strip')).toContainText('SHIFT_UPDATED');
+    await expect(page.getByTestId('schedule-action-strip')).toContainText('SHIFT_MOVED');
+    await expect(page.getByTestId('schedule-action-strip')).toContainText('SHIFT_DELETED');
+    await syncCalendarFlowContext(page, flow, {
+      calendarId: seededCalendars.alphaShared,
+      visibleWeekStart: seededSchedule.visibleWeek.start,
+      visibleWeekEndExclusive: seededSchedule.visibleWeek.endExclusive,
+      focusShiftIds: [offlineEdit.shiftId, offlineMove.shiftId],
+      note: 'reconnect drained the full queued mutation stack and preserved the Alpha calendar route plus reconciled board state'
     });
   });
 });

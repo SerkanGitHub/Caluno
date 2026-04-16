@@ -44,7 +44,7 @@ describe('schedule board helpers', () => {
     expect(sorted.map((shift) => shift.id)).toEqual(['shift-b', 'shift-a', 'shift-c']);
   });
 
-  it('builds a calm week model with busy-day density, local status badges, and visible-week diagnostics', () => {
+  it('builds a calm week model with separate conflict, local-write, and sync diagnostics', () => {
     const board = buildCalendarWeekBoard(
       {
         visibleWeek: {
@@ -65,7 +65,7 @@ describe('schedule board helpers', () => {
             '2026-04-19'
           ]
         },
-        totalShifts: 3,
+        totalShifts: 6,
         days: [
           {
             dayKey: '2026-04-13',
@@ -80,7 +80,38 @@ describe('schedule board helpers', () => {
           {
             dayKey: '2026-04-15',
             label: 'Wed, Apr 15',
-            shifts: []
+            shifts: [
+              {
+                id: 'shift-d',
+                calendarId: 'calendar-alpha',
+                seriesId: 'series-alpha',
+                title: 'Alpha opening sweep',
+                startAt: '2026-04-15T08:30:00.000Z',
+                endAt: '2026-04-15T09:00:00.000Z',
+                occurrenceIndex: 3,
+                sourceKind: 'series' as const
+              },
+              {
+                id: 'shift-e',
+                calendarId: 'calendar-alpha',
+                seriesId: null,
+                title: 'Morning intake',
+                startAt: '2026-04-15T09:00:00.000Z',
+                endAt: '2026-04-15T11:00:00.000Z',
+                occurrenceIndex: null,
+                sourceKind: 'single' as const
+              },
+              {
+                id: 'shift-f',
+                calendarId: 'calendar-alpha',
+                seriesId: null,
+                title: 'Afternoon handoff',
+                startAt: '2026-04-15T13:00:00.000Z',
+                endAt: '2026-04-15T15:00:00.000Z',
+                occurrenceIndex: null,
+                sourceKind: 'single' as const
+              }
+            ]
           },
           {
             dayKey: '2026-04-16',
@@ -112,7 +143,7 @@ describe('schedule board helpers', () => {
                 seriesId: null,
                 title: 'Supplier call',
                 startAt: '2026-04-16T13:00:00.000Z',
-                endAt: '2026-04-16T13:30:00.000Z',
+                endAt: '2026-04-16T15:00:00.000Z',
                 occurrenceIndex: null,
                 sourceKind: 'single' as const
               }
@@ -177,31 +208,65 @@ describe('schedule board helpers', () => {
       'Sync attempt recorded',
       '2 pending local writes'
     ]);
+    expect(board.conflict).toMatchObject({
+      overlapCount: 1,
+      dayCount: 1,
+      shiftCount: 2,
+      conflictDayKeys: ['2026-04-16']
+    });
+    expect(board.conflict?.detail).toContain('Thu, Apr 16');
     expect(board.syncPhaseLabel).toBe('Sync paused with retryable work');
     expect(board.lastSyncAttemptLabel).toBe('2026-04-16T10:05:00.000Z');
     expect(board.lastSyncError?.reason).toBe('SCHEDULE_MOVE_TIMEOUT');
     expect(board.lastFailure?.reason).toBe('LOCAL_QUEUE_PERSIST_FAILED');
 
-    const busyDay = board.days.find((day) => day.dayKey === '2026-04-16');
-    expect(busyDay?.density).toBe('busy');
-    expect(busyDay?.isToday).toBe(true);
-    expect(busyDay?.shifts.map((shift) => shift.id)).toEqual(['shift-b', 'shift-a', 'shift-c']);
-    expect(busyDay?.shifts[0]).toMatchObject({
+    const wednesday = board.days.find((day) => day.dayKey === '2026-04-15');
+    expect(wednesday?.density).toBe('busy');
+    expect(wednesday?.conflict).toBeNull();
+
+    const thursday = board.days.find((day) => day.dayKey === '2026-04-16');
+    expect(thursday?.density).toBe('busy');
+    expect(thursday?.isToday).toBe(true);
+    expect(thursday?.conflict).toMatchObject({
+      overlapCount: 1,
+      label: '1 overlap pair',
+      conflictingShiftIds: ['shift-a', 'shift-c']
+    });
+    expect(thursday?.conflict?.detail).toContain('Kitchen prep');
+    expect(thursday?.conflict?.detail).toContain('Supplier call');
+    expect(thursday?.shifts.map((shift) => shift.id)).toEqual(['shift-b', 'shift-a', 'shift-c']);
+    expect(thursday?.shifts[0]).toMatchObject({
       rangeLabel: '08:30 → 09:00',
       occurrenceLabel: 'Occurrence 4',
-      sourceLabel: 'Recurring series'
+      sourceLabel: 'Recurring series',
+      conflict: null
     });
-    expect(busyDay?.shifts.find((shift) => shift.id === 'shift-a')?.statusBadges).toEqual([
-      { label: 'Pending sync', tone: 'warning' }
-    ]);
-    expect(busyDay?.shifts.find((shift) => shift.id === 'shift-c')?.statusBadges).toEqual([
-      { label: 'Local only', tone: 'warning' },
-      { label: 'Pending sync', tone: 'warning' }
-    ]);
+    expect(thursday?.shifts.find((shift) => shift.id === 'shift-a')).toMatchObject({
+      statusBadges: [{ label: 'Pending sync', tone: 'warning' }],
+      conflict: {
+        overlapCount: 1,
+        label: 'Overlaps 1 visible shift',
+        conflictingShiftIds: ['shift-c']
+      }
+    });
+    expect(thursday?.shifts.find((shift) => shift.id === 'shift-a')?.conflict?.detail).toContain('Supplier call');
+    expect(thursday?.shifts.find((shift) => shift.id === 'shift-c')).toMatchObject({
+      statusBadges: [
+        { label: 'Local only', tone: 'warning' },
+        { label: 'Pending sync', tone: 'warning' }
+      ],
+      conflict: {
+        overlapCount: 1,
+        label: 'Overlaps 1 visible shift',
+        conflictingShiftIds: ['shift-a']
+      }
+    });
+    expect(thursday?.shifts.find((shift) => shift.id === 'shift-c')?.conflict?.detail).toContain('Kitchen prep');
 
     expect(board.days.find((day) => day.dayKey === '2026-04-13')).toMatchObject({
       isEmpty: true,
-      density: 'empty'
+      density: 'empty',
+      conflict: null
     });
   });
 

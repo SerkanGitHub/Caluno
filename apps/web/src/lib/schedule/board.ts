@@ -5,8 +5,25 @@ import type {
   CalendarShiftDiagnostic
 } from '$lib/offline/calendar-controller';
 import type { CalendarScheduleView, CalendarShift, VisibleWeek } from '$lib/server/schedule';
+import { deriveVisibleWeekConflicts } from './conflicts';
 
 export type BoardTone = 'neutral' | 'success' | 'warning' | 'danger';
+
+export type ConflictSurfaceModel = {
+  overlapCount: number;
+  label: string;
+  detail: string;
+  conflictingShiftIds: string[];
+};
+
+export type BoardConflictSummaryModel = {
+  overlapCount: number;
+  dayCount: number;
+  shiftCount: number;
+  label: string;
+  detail: string;
+  conflictDayKeys: string[];
+};
 
 export type ShiftCardModel = {
   id: string;
@@ -25,6 +42,7 @@ export type ShiftCardModel = {
   occurrenceIndex: number | null;
   sourceKind: 'single' | 'series';
   statusBadges: CalendarShiftDiagnostic[];
+  conflict: ConflictSurfaceModel | null;
 };
 
 export type ShiftDayColumnModel = {
@@ -38,6 +56,7 @@ export type ShiftDayColumnModel = {
   density: 'empty' | 'quiet' | 'busy';
   shiftCount: number;
   shifts: ShiftCardModel[];
+  conflict: ConflictSurfaceModel | null;
 };
 
 export type CalendarWeekBoardStatusBadge = {
@@ -58,6 +77,7 @@ export type CalendarWeekBoardModel = {
   totalShifts: number;
   hasShifts: boolean;
   statusBadges: CalendarWeekBoardStatusBadge[];
+  conflict: BoardConflictSummaryModel | null;
   syncPhaseLabel: string;
   lastSyncAttemptLabel: string | null;
   lastFailure: CalendarControllerFailure | null;
@@ -95,6 +115,7 @@ export function buildCalendarWeekBoard(
   const startDate = parseUtcDate(visibleWeek.start);
   const endDate = parseUtcDate(addDayKey(visibleWeek.endExclusive, -1));
   const runtime = options?.runtime;
+  const conflicts = deriveVisibleWeekConflicts(schedule);
 
   return {
     visibleWeekStart: visibleWeek.start,
@@ -108,11 +129,12 @@ export function buildCalendarWeekBoard(
     totalShifts: schedule.totalShifts,
     hasShifts: schedule.totalShifts > 0,
     statusBadges: buildBoardStatusBadges(runtime),
+    conflict: buildBoardConflictModel(schedule, conflicts),
     syncPhaseLabel: formatSyncPhaseLabel(runtime?.syncPhase ?? 'idle'),
     lastSyncAttemptLabel: runtime?.lastSyncAttemptAt ?? null,
     lastFailure: runtime?.lastFailure ?? null,
     lastSyncError: runtime?.lastSyncError ?? null,
-    days: schedule.days.map((day) => buildDayColumn(day, todayKey, runtime?.shiftDiagnostics ?? {}))
+    days: schedule.days.map((day) => buildDayColumn(day, todayKey, runtime?.shiftDiagnostics ?? {}, conflicts))
   };
 }
 
@@ -171,10 +193,14 @@ export function buildDefaultCreateTimes(dayKey: string | null | undefined): { st
 function buildDayColumn(
   day: Pick<CalendarScheduleView['days'][number], 'dayKey' | 'label' | 'shifts'>,
   todayKey: string | null,
-  shiftDiagnostics: Record<string, CalendarShiftDiagnostic[]>
+  shiftDiagnostics: Record<string, CalendarShiftDiagnostic[]>,
+  conflicts: ReturnType<typeof deriveVisibleWeekConflicts>
 ): ShiftDayColumnModel {
   const date = parseUtcDate(day.dayKey);
-  const shifts = sortShiftsForBoard(day.shifts).map((shift) => buildShiftCardModel(shift, day.shifts.length, shiftDiagnostics));
+  const dayConflict = buildDayConflictModel(day, conflicts.days[day.dayKey] ?? null);
+  const shifts = sortShiftsForBoard(day.shifts).map((shift) =>
+    buildShiftCardModel(shift, day.shifts.length, shiftDiagnostics, conflicts.shifts[shift.id] ?? null)
+  );
 
   return {
     dayKey: day.dayKey,
@@ -195,14 +221,16 @@ function buildDayColumn(
     isEmpty: shifts.length === 0,
     density: shifts.length === 0 ? 'empty' : shifts.length >= 3 ? 'busy' : 'quiet',
     shiftCount: shifts.length,
-    shifts
+    shifts,
+    conflict: dayConflict
   };
 }
 
 function buildShiftCardModel(
   shift: CalendarShift,
   dayShiftCount: number,
-  shiftDiagnostics: Record<string, CalendarShiftDiagnostic[]>
+  shiftDiagnostics: Record<string, CalendarShiftDiagnostic[]>,
+  shiftConflict: ReturnType<typeof deriveVisibleWeekConflicts>['shifts'][string] | null
 ): ShiftCardModel {
   const start = new Date(shift.startAt);
   const end = new Date(shift.endAt);
@@ -226,8 +254,102 @@ function buildShiftCardModel(
     seriesId: shift.seriesId,
     occurrenceIndex: shift.occurrenceIndex,
     sourceKind: shift.sourceKind,
-    statusBadges: shiftDiagnostics[shift.id] ?? []
+    statusBadges: shiftDiagnostics[shift.id] ?? [],
+    conflict: buildShiftConflictModel(shiftConflict)
   };
+}
+
+function buildBoardConflictModel(
+  schedule: Pick<CalendarScheduleView, 'days'>,
+  conflicts: ReturnType<typeof deriveVisibleWeekConflicts>
+): BoardConflictSummaryModel | null {
+  if (!conflicts.board) {
+    return null;
+  }
+
+  const conflictedDayLabels = schedule.days
+    .filter((day) => conflicts.board?.conflictDayKeys.includes(day.dayKey))
+    .map((day) => day.label);
+
+  return {
+    overlapCount: conflicts.board.overlapCount,
+    dayCount: conflicts.board.conflictDayCount,
+    shiftCount: conflicts.board.conflictingShiftCount,
+    conflictDayKeys: conflicts.board.conflictDayKeys,
+    label: `${conflicts.board.overlapCount} overlap ${conflicts.board.overlapCount === 1 ? 'pair' : 'pairs'} in view`,
+    detail:
+      conflictedDayLabels.length === 1
+        ? `${conflictedDayLabels[0]} contains ${conflicts.board.conflictingShiftCount} conflicting visible ${conflicts.board.conflictingShiftCount === 1 ? 'shift' : 'shifts'}.`
+        : `${conflictedDayLabels.length} visible days contain ${conflicts.board.conflictingShiftCount} conflicting shifts: ${formatInlineList(conflictedDayLabels)}.`
+  };
+}
+
+function buildDayConflictModel(
+  day: Pick<CalendarScheduleView['days'][number], 'shifts'>,
+  dayConflict: ReturnType<typeof deriveVisibleWeekConflicts>['days'][string] | null
+): ConflictSurfaceModel | null {
+  if (!dayConflict) {
+    return null;
+  }
+
+  const conflictingShifts = sortShiftsForBoard(day.shifts).filter((shift) => dayConflict.conflictingShiftIds.includes(shift.id));
+
+  return {
+    overlapCount: dayConflict.overlapCount,
+    conflictingShiftIds: dayConflict.conflictingShiftIds,
+    label: `${dayConflict.overlapCount} overlap ${dayConflict.overlapCount === 1 ? 'pair' : 'pairs'}`,
+    detail: formatConflictShiftList(conflictingShifts)
+  };
+}
+
+function buildShiftConflictModel(
+  shiftConflict: ReturnType<typeof deriveVisibleWeekConflicts>['shifts'][string] | null
+): ConflictSurfaceModel | null {
+  if (!shiftConflict) {
+    return null;
+  }
+
+  return {
+    overlapCount: shiftConflict.overlapCount,
+    conflictingShiftIds: shiftConflict.conflictingShiftIds,
+    label: `Overlaps ${shiftConflict.overlapCount} visible ${shiftConflict.overlapCount === 1 ? 'shift' : 'shifts'}`,
+    detail: formatConflictShiftList(shiftConflict.conflictingShifts)
+  };
+}
+
+function formatConflictShiftList(
+  shifts: Array<Pick<CalendarShift, 'id' | 'title' | 'startAt' | 'endAt'>>
+): string {
+  const items = [...shifts]
+    .sort((left, right) => {
+      return (
+        left.startAt.localeCompare(right.startAt) ||
+        left.endAt.localeCompare(right.endAt) ||
+        left.title.localeCompare(right.title) ||
+        left.id.localeCompare(right.id)
+      );
+    })
+    .map((shift) => {
+      return `${shift.title} (${formatTime(new Date(shift.startAt))} → ${formatTime(new Date(shift.endAt))})`;
+    });
+
+  if (items.length <= 2) {
+    return items.join(' · ');
+  }
+
+  return `${items.slice(0, 2).join(' · ')} +${items.length - 2} more`;
+}
+
+function formatInlineList(items: string[]): string {
+  if (items.length <= 1) {
+    return items[0] ?? '';
+  }
+
+  if (items.length === 2) {
+    return `${items[0]} and ${items[1]}`;
+  }
+
+  return `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}`;
 }
 
 function buildBoardStatusBadges(

@@ -2,7 +2,7 @@ import { get_request_store, with_request_store } from "@sveltejs/kit/internal/se
 import { error, json } from "@sveltejs/kit";
 import { y as stringify_remote_arg, k as create_remote_key, z as unfriendly_hydratable, f as noop, A as parse, o as stringify, M as MUTATIVE_METHODS, B as create_field_proxy, C as normalize_issue, D as set_nested_value, F as flatten_issues, G as deep_set, h as handle_error_and_jsonify, p as parse_remote_arg } from "./chunks/shared.js";
 import { ValidationError, HttpError, SvelteKitError } from "@sveltejs/kit/internal";
-import { D as DEV } from "./chunks/false.js";
+import { b as browser } from "./chunks/false.js";
 import { b as base, c as app_dir, p as prerendering } from "./chunks/environment.js";
 function create_validator(validate_or_fn, maybe_fn) {
   if (!maybe_fn) {
@@ -351,7 +351,7 @@ function prerender(validate_or_fn, fn_or_options, maybe_options) {
       const payload = stringify_remote_arg(arg, state.transport);
       const id = __.id;
       const url = `${base}/${app_dir}/remote/${id}${payload ? `/${payload}` : ""}`;
-      if (!state.prerendering && !DEV && !event.isRemoteRequest) {
+      if (!state.prerendering && !browser && !event.isRemoteRequest) {
         try {
           return await get_response(__, arg, state, async () => {
             const key = stringify_remote_arg(arg, state.transport);

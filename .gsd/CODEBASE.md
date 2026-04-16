@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-15T16:19:16Z | Files: 278 | Described: 0/278
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-15T16:19:16Z","fingerprint":"60114b2b217ad7fe3cbd52df4a0c26e44c2435ae","fileCount":278,"truncated":false} -->
+Generated: 2026-04-16T10:09:56Z | Files: 256 | Described: 0/256
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T10:09:56Z","fingerprint":"0793e9cfae6931527b62a06c30092b4e5dc34dd8","fileCount":256,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -191,31 +191,7 @@ Generated: 2026-04-15T16:19:16Z | Files: 278 | Described: 0/278
 - `apps/web/.svelte-kit/output/client/_app/immutable/assets/0.BhkzxgrJ.css`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/chunks/
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BblT0OrB.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BG5Vx-Sp.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BHp_YHS0.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/C_Up9R7W.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/C1zP10-h.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/C3MEtIhj.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/CcxCXhwB.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Dqd_7uUk.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DsnmJJEf.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DyFfV0ck.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DywPX1lr.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/hOISEb1Q.js`
-
-### apps/web/.svelte-kit/output/client/_app/immutable/entry/
-- `apps/web/.svelte-kit/output/client/_app/immutable/entry/app.pRPBdpFz.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/entry/start.Md4x2UtY.js`
-
-### apps/web/.svelte-kit/output/client/_app/immutable/nodes/
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/0.BvDkFNZI.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/1.0DuyOYC0.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/2.CsFv6aH_.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/3.CguW2uwJ.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/4.Cb2aSKmQ.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/5._2UtJd4U.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/6.CY0t7Ms5.js`
 
 ### apps/web/.svelte-kit/output/server/
 - `apps/web/.svelte-kit/output/server/index.js`
@@ -398,11 +374,6 @@ Generated: 2026-04-15T16:19:16Z | Files: 278 | Described: 0/278
 ### apps/web/test-results/e2e-offline/
 - `apps/web/test-results/e2e-offline/.last-run.json`
 
-### apps/web/test-results/e2e/calendar-shifts-seeded-mem-bcdc3-elete-and-reload-continuity/
-- `apps/web/test-results/e2e/calendar-shifts-seeded-mem-bcdc3-elete-and-reload-continuity/error-context.md`
-- `apps/web/test-results/e2e/calendar-shifts-seeded-mem-bcdc3-elete-and-reload-continuity/trace.zip`
-- `apps/web/test-results/e2e/calendar-shifts-seeded-mem-bcdc3-elete-and-reload-continuity/video.webm`
-
 ### apps/web/tests/access/
 - `apps/web/tests/access/policy-contract.unit.test.ts`
 
@@ -460,3 +431,4 @@ Generated: 2026-04-15T16:19:16Z | Files: 278 | Described: 0/278
 ### supabase/migrations/
 - `supabase/migrations/20260414_000001_auth_groups_access.sql`
 - `supabase/migrations/20260415_000002_schedule_shifts.sql`
+- `supabase/migrations/20260416_000001_schedule_realtime.sql`

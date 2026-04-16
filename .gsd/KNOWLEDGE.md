@@ -83,3 +83,15 @@
 **Context:** Adding a second `20260415_...` migration for schedule realtime caused `supabase db reset --local` to fail with a duplicate `schema_migrations` primary key, and renaming to another `20260415...` variant changed ordering unexpectedly.
 **Rule/Pattern:** In this repo's local Supabase workflow, give every migration a unique leading numeric version that also preserves dependency order (for example move the next migration to `20260416_...` rather than relying on a later `_000003` suffix under the same date prefix).
 **Rationale:** The local Supabase migration ledger keys on the leading numeric version, so same-date prefixes can collide or sort differently than expected even when the suffixes look unique.
+
+## 2026-04-15: Browser-proof shift editors here can reset uncontrolled fields between interactions, so E2E form helpers should submit the full payload atomically
+
+**Context:** Playwright browser proof for the shared calendar create/edit dialogs in S04/T04.
+**Rule/Pattern:** For these calendar shift editor dialogs, prefer a test helper that writes the complete form payload and then calls `form.requestSubmit()` in one step instead of relying on long click/fill sequences across title, time, and recurrence controls.
+**Rationale:** The current dialog markup uses uncontrolled inputs with static defaults; route or layout rerenders during automation can silently reset title/time/radio state between user-like interactions, which makes browser proof look flaky even when the underlying route action is the real surface under test.
+
+## 2026-04-16: Local browser proof for `apps/web` needs public Supabase env before any route can render
+
+**Context:** Manual browser verification against `pnpm --dir apps/web dev` during S05/T01.
+**Rule/Pattern:** Before using the local web dev server for browser proof in this repo, ensure `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_PUBLISHABLE_KEY` are present in the web app environment.
+**Rationale:** The SvelteKit server hook constructs the Supabase server client on every request; when those public env vars are missing, even `/` fails with a 500 before the app shell or protected calendar route can render.

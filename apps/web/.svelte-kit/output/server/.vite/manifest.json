@@ -108,6 +108,10 @@
       "src/hooks.server.ts"
     ]
   },
+  "_recurrence.js": {
+    "file": "chunks/recurrence.js",
+    "name": "recurrence"
+  },
   "_render-context.js": {
     "file": "chunks/render-context.js",
     "name": "render-context"
@@ -179,6 +183,12 @@
       "_auth-flow.js"
     ]
   },
+  "src/routes/(app)/+layout.ts": {
+    "file": "entries/pages/(app)/_layout.ts.js",
+    "name": "entries/pages/(app)/_layout.ts",
+    "src": "src/routes/(app)/+layout.ts",
+    "isEntry": true
+  },
   "src/routes/(app)/calendars/[calendarId]/+page.server.ts": {
     "file": "entries/pages/(app)/calendars/_calendarId_/_page.server.ts.js",
     "name": "entries/pages/(app)/calendars/_calendarId_/_page.server.ts",
@@ -186,7 +196,8 @@
     "isEntry": true,
     "imports": [
       "_app-shell.js",
-      "_contract.js"
+      "_contract.js",
+      "_recurrence.js"
     ]
   },
   "src/routes/(app)/calendars/[calendarId]/+page.svelte": {
@@ -200,8 +211,15 @@
       "_exports.js",
       "_utils.js",
       "_root.js",
-      "_state.svelte.js"
+      "_state.svelte.js",
+      "_recurrence.js"
     ]
+  },
+  "src/routes/(app)/calendars/[calendarId]/+page.ts": {
+    "file": "entries/pages/(app)/calendars/_calendarId_/_page.ts.js",
+    "name": "entries/pages/(app)/calendars/_calendarId_/_page.ts",
+    "src": "src/routes/(app)/calendars/[calendarId]/+page.ts",
+    "isEntry": true
   },
   "src/routes/(app)/groups/+page.server.ts": {
     "file": "entries/pages/(app)/groups/_page.server.ts.js",

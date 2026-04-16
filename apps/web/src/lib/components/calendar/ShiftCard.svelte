@@ -41,7 +41,11 @@
   });
 </script>
 
-<article class={`shift-card shift-card--${shift.density}`} data-testid={`shift-card-${shift.id}`}>
+<article
+  class={`shift-card shift-card--${shift.density} ${shift.conflict ? 'shift-card--conflict' : ''}`}
+  data-testid={`shift-card-${shift.id}`}
+  data-conflict-overlaps={shift.conflict?.overlapCount ?? 0}
+>
   <div class="shift-card__header">
     <div>
       <p class="panel-kicker">{shift.sourceLabel}</p>
@@ -52,6 +56,15 @@
       {#if shift.occurrenceLabel}
         <span class="pill pill-active">{shift.occurrenceLabel}</span>
       {/if}
+      {#if shift.conflict}
+        <span
+          class="pill pill-conflict"
+          data-testid={`shift-conflict-pill-${shift.id}`}
+          data-conflict-overlaps={shift.conflict.overlapCount}
+        >
+          {shift.conflict.label}
+        </span>
+      {/if}
       {#each shift.statusBadges as badge}
         <span class={`pill ${badge.tone === 'danger' ? 'pill-danger' : badge.tone === 'warning' ? 'pill-expired' : 'pill-neutral'}`}>
           {badge.label}
@@ -59,6 +72,17 @@
       {/each}
     </div>
   </div>
+
+  {#if shift.conflict}
+    <article
+      class="inline-state tone-warning shift-card__conflict"
+      data-testid={`shift-conflict-summary-${shift.id}`}
+      data-conflict-overlaps={shift.conflict.overlapCount}
+    >
+      <strong>{shift.conflict.label}</strong>
+      <p>{shift.conflict.detail}</p>
+    </article>
+  {/if}
 
   <div class="shift-card__stats">
     <div>

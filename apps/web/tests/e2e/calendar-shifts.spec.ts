@@ -6,6 +6,7 @@ import {
   seededSchedule,
   seededUsers,
   signInThroughUi,
+  submitShiftEditorForm,
   test
 } from './fixtures';
 
@@ -90,13 +91,14 @@ test('seeded member can prove multi-shift load plus recurring create, edit, move
 
     const createDialog = page.locator('details.shift-editor--create');
     await createDialog.locator('summary').click();
-    await createDialog.locator('input[name="title"]').fill(seededSchedule.recurringCreate.title);
-    await createDialog.locator('input[name="startAt"]').fill(seededSchedule.recurringCreate.startLocal);
-    await createDialog.locator('input[name="endAt"]').fill(seededSchedule.recurringCreate.endLocal);
-    await createDialog.locator('input[name="recurrenceCadence"][value="daily"]').check({ force: true });
-    await createDialog.locator('input[name="repeatCount"]').fill('');
-    await createDialog.locator('input[name="repeatUntil"]').fill('');
-    await createDialog.getByRole('button', { name: 'Save shift' }).click();
+    await submitShiftEditorForm(createDialog, {
+      title: seededSchedule.recurringCreate.title,
+      startAt: seededSchedule.recurringCreate.startLocal,
+      endAt: seededSchedule.recurringCreate.endLocal,
+      recurrenceCadence: 'daily',
+      repeatCount: '',
+      repeatUntil: ''
+    });
 
     const createState = page.getByTestId('create-state');
     await expect(page.locator('[data-testid^="shift-card-"] h3').filter({ hasText: seededSchedule.recurringCreate.title })).toHaveCount(0);
@@ -106,17 +108,17 @@ test('seeded member can prove multi-shift load plus recurring create, edit, move
     }
 
     flow.mark('create-recurring-success', seededSchedule.recurringCreate.title);
-    await createDialog.locator('summary').click();
-    await createDialog.locator('input[name="title"]').fill(seededSchedule.recurringCreate.title);
-    await createDialog.locator('input[name="startAt"]').fill(seededSchedule.recurringCreate.startLocal);
-    await createDialog.locator('input[name="endAt"]').fill(seededSchedule.recurringCreate.endLocal);
-    await createDialog.locator('input[name="recurrenceCadence"][value="daily"]').check({ force: true });
-    await createDialog.locator('input[name="repeatCount"]').fill(seededSchedule.recurringCreate.repeatCount);
-    await createDialog.getByRole('button', { name: 'Save shift' }).click();
+    await submitShiftEditorForm(createDialog, {
+      title: seededSchedule.recurringCreate.title,
+      startAt: seededSchedule.recurringCreate.startLocal,
+      endAt: seededSchedule.recurringCreate.endLocal,
+      recurrenceCadence: 'daily',
+      repeatCount: seededSchedule.recurringCreate.repeatCount
+    });
 
     const actionStrip = page.getByTestId('schedule-action-strip');
     if ((await actionStrip.count()) > 0) {
-      await expect(actionStrip).toContainText('SHIFT_CREATED');
+      await expect.poll(async () => (await actionStrip.textContent()) ?? '').toContain('Create shift');
     }
 
     for (const dayKey of seededSchedule.recurringCreate.expectedDayKeys) {
@@ -139,14 +141,15 @@ test('seeded member can prove multi-shift load plus recurring create, edit, move
     const editDialog = morningCard.locator('details:has(summary:has-text("Edit details"))');
 
     await editDialog.locator('summary').click();
-    await editDialog.locator('input[name="title"]').fill(seededSchedule.editExpectation.nextTitle);
-    await editDialog.locator('input[name="startAt"]').fill(seededSchedule.editExpectation.nextStartLocal);
-    await editDialog.locator('input[name="endAt"]').fill(seededSchedule.editExpectation.nextEndLocal);
-    await editDialog.getByRole('button', { name: 'Save edits' }).click();
+    await submitShiftEditorForm(editDialog, {
+      title: seededSchedule.editExpectation.nextTitle,
+      startAt: seededSchedule.editExpectation.nextStartLocal,
+      endAt: seededSchedule.editExpectation.nextEndLocal
+    });
 
     const actionStrip = page.getByTestId('schedule-action-strip');
     if ((await actionStrip.count()) > 0) {
-      await expect(actionStrip).toContainText('SHIFT_UPDATED');
+      await expect.poll(async () => (await actionStrip.textContent()) ?? '').toContain('Edit shift');
     }
     await expect(shiftCardInDay(page, '2026-04-15', seededSchedule.editExpectation.shiftId)).toContainText(
       seededSchedule.editExpectation.nextTitle
@@ -165,13 +168,14 @@ test('seeded member can prove multi-shift load plus recurring create, edit, move
     const moveDialog = supplierCard.locator('details:has(summary:has-text("Move timing"))');
 
     await moveDialog.locator('summary').click();
-    await moveDialog.locator('input[name="startAt"]').fill(seededSchedule.moveExpectation.nextStartLocal);
-    await moveDialog.locator('input[name="endAt"]').fill(seededSchedule.moveExpectation.nextEndLocal);
-    await moveDialog.getByRole('button', { name: 'Save new timing' }).click();
+    await submitShiftEditorForm(moveDialog, {
+      startAt: seededSchedule.moveExpectation.nextStartLocal,
+      endAt: seededSchedule.moveExpectation.nextEndLocal
+    });
 
     const actionStrip = page.getByTestId('schedule-action-strip');
     if ((await actionStrip.count()) > 0) {
-      await expect(actionStrip).toContainText('SHIFT_MOVED');
+      await expect.poll(async () => (await actionStrip.textContent()) ?? '').toContain('Move shift');
     }
     await expect(
       page.locator(
@@ -199,7 +203,7 @@ test('seeded member can prove multi-shift load plus recurring create, edit, move
 
     const actionStrip = page.getByTestId('schedule-action-strip');
     if ((await actionStrip.count()) > 0) {
-      await expect(actionStrip).toContainText('SHIFT_DELETED');
+      await expect.poll(async () => (await actionStrip.textContent()) ?? '').toContain('Delete shift');
     }
     await expect(shiftCard(page, seededSchedule.deleteExpectation.shiftId)).toHaveCount(0);
     await expect(dayColumn(page, seededSchedule.deleteExpectation.dayKey)).not.toContainText(

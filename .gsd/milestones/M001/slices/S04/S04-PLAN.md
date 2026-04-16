@@ -119,7 +119,7 @@ Load the installed `debug-like-expert` skill before coding so delete-event cavea
   - Files: `apps/web/src/lib/offline/sync-engine.ts`, `apps/web/src/lib/supabase/client.ts`, `apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte`, `apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte`, `supabase/migrations/20260415_000003_schedule_realtime.sql`, `apps/web/tests/schedule/sync-engine.unit.test.ts`
   - Verify: `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec vitest run tests/schedule/sync-engine.unit.test.ts`
 
-- [ ] **T04: Prove reconnect reconciliation and multi-user live propagation in Playwright** `est:1h30m`
+- [x] **T04: Prove reconnect reconciliation and multi-user live propagation in Playwright** `est:1h30m`
   ## Description
 
 Turn the sync design into durable browser proof. This task retires the known S03 browser-proof fragility while adding explicit reconnect and multi-user live-update evidence for **R005**.

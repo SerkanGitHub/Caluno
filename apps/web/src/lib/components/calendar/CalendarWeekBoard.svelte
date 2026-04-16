@@ -65,6 +65,17 @@
         <span class={`pill pill-neutral ${board.sourceTone === 'warning' ? 'pill-expired' : ''}`}>{board.sourceLabel}</span>
         <span class="pill pill-active">{board.totalShifts} {board.totalShifts === 1 ? 'shift' : 'shifts'}</span>
         <span class="pill pill-neutral">UTC board</span>
+        {#if board.conflict}
+          <span
+            class="pill pill-conflict"
+            data-testid="board-conflict-pill"
+            data-conflict-days={board.conflict.dayCount}
+            data-conflict-shifts={board.conflict.shiftCount}
+            data-conflict-pairs={board.conflict.overlapCount}
+          >
+            {board.conflict.label}
+          </span>
+        {/if}
         {#each board.statusBadges as badge}
           <span class={`pill ${badge.tone === 'danger' ? 'pill-danger' : badge.tone === 'warning' ? 'pill-expired' : badge.tone === 'success' ? 'pill-active' : 'pill-neutral'}`}>
             {badge.label}
@@ -113,6 +124,20 @@
       <span class="status-card__label">Local-first failure</span>
       <strong>{board.lastFailure.reason}</strong>
       <p>{board.lastFailure.detail}</p>
+    </article>
+  {/if}
+
+  {#if board.conflict}
+    <article
+      class="status-card tone-warning"
+      data-testid="board-conflict-summary"
+      data-conflict-days={board.conflict.dayCount}
+      data-conflict-shifts={board.conflict.shiftCount}
+      data-conflict-pairs={board.conflict.overlapCount}
+    >
+      <span class="status-card__label">Visible-week conflict watch</span>
+      <strong>{board.conflict.label}</strong>
+      <p>{board.conflict.detail}</p>
     </article>
   {/if}
 
