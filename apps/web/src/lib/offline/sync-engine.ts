@@ -151,6 +151,43 @@ export type TrustedRemoteRefreshResult =
       detail: string;
     };
 
+export function mergeRealtimeDiagnosticsForScopeReload(params: {
+  previous: CalendarRealtimeDiagnostics | null;
+  next: CalendarRealtimeDiagnostics;
+}): CalendarRealtimeDiagnostics {
+  const previous = params.previous;
+  if (!previous) {
+    return params.next;
+  }
+
+  const next = params.next;
+  const nextLooksLikeFreshReset =
+    next.remoteRefreshState === 'idle' &&
+    next.lastSignalAt === null &&
+    next.lastSignalEvent === null &&
+    next.lastSignalDetail === null &&
+    next.lastRemoteRefreshAt === null &&
+    next.lastRemoteRefreshReason === null &&
+    next.lastRemoteRefreshDetail === null;
+  const previousHasRetainableHistory =
+    previous.lastSignalAt !== null || previous.remoteRefreshState !== 'idle' || previous.lastRemoteRefreshAt !== null;
+
+  if (!nextLooksLikeFreshReset || !previousHasRetainableHistory) {
+    return next;
+  }
+
+  return {
+    ...next,
+    lastSignalAt: previous.lastSignalAt,
+    lastSignalEvent: previous.lastSignalEvent,
+    lastSignalDetail: previous.lastSignalDetail,
+    remoteRefreshState: previous.remoteRefreshState,
+    lastRemoteRefreshAt: previous.lastRemoteRefreshAt,
+    lastRemoteRefreshReason: previous.lastRemoteRefreshReason,
+    lastRemoteRefreshDetail: previous.lastRemoteRefreshDetail
+  };
+}
+
 type ShiftRealtimeSessionLike = {
   access_token?: string | null;
 };
@@ -217,11 +254,17 @@ function readShiftRealtimeAuthSubscription(
     return null;
   }
 
-  if ('unsubscribe' in result && typeof result.unsubscribe === 'function') {
-    return result;
+  const directSubscription = result as ShiftRealtimeAuthSubscriptionLike;
+  if (typeof directSubscription.unsubscribe === 'function') {
+    return directSubscription;
   }
 
-  return result.data?.subscription ?? null;
+  const wrappedSubscription = result as {
+    data?: {
+      subscription?: ShiftRealtimeAuthSubscriptionLike;
+    };
+  };
+  return wrappedSubscription.data?.subscription ?? null;
 }
 
 export function rebaseTrustedScheduleWithLocalQueue(params: {
@@ -863,6 +906,11 @@ export function createCalendarShiftRealtimeSubscription(params: {
       return;
     }
 
+    if (subscribeTimer) {
+      clearTimeoutFn(subscribeTimer);
+      subscribeTimer = null;
+    }
+
     setChannelState('subscribing', null, 'Connecting to shared shift change detection for this calendar week.');
 
     const nextChannel = client
@@ -893,8 +941,25 @@ export function createCalendarShiftRealtimeSubscription(params: {
 
     const startFreshChannel = async () => {
       if (hasRealtimeAuthHooks()) {
-        await applyRealtimeAuth(sessionOverride);
+        const authStatus = await applyRealtimeAuth(sessionOverride);
         if (disposed) {
+          return;
+        }
+
+        if (authStatus === 'missing-token') {
+          setChannelState(
+            'subscribing',
+            'REALTIME_AUTH_SESSION_PENDING',
+            'Waiting for the browser auth session before opening shared shift change detection for this calendar week.'
+          );
+          return;
+        }
+
+        if (authStatus === 'failed') {
+          scheduleRestart(
+            'REALTIME_AUTH_APPLY_FAILED',
+            'The browser session could not be applied to shared shift change detection yet, so the channel will retry without widening the current board scope.'
+          );
           return;
         }
       }
@@ -930,7 +995,7 @@ export function createCalendarShiftRealtimeSubscription(params: {
         return;
       }
 
-      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+      if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
         startChannel(session);
       }
     })

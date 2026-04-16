@@ -18,6 +18,7 @@
     createReconnectTransportFailureOutcome,
     decideTrustedRefreshSnapshotWrite,
     drainReconnectQueue,
+    mergeRealtimeDiagnosticsForScopeReload,
     normalizeScheduleActionResult,
     type CalendarControllerServerOutcome,
     type CalendarRealtimeDiagnostics,
@@ -36,6 +37,8 @@
   let reconnectDrainPromise: Promise<void> | null = null;
   let realtimeSubscription: CalendarShiftRealtimeSubscription | null = null;
   let realtimeDiagnostics = $state<CalendarRealtimeDiagnostics>(createInitialRealtimeDiagnostics());
+  let retainedRealtimeScopeKey: string | null = null;
+  let retainedRealtimeDiagnostics: CalendarRealtimeDiagnostics | null = null;
 
   const shellState = $derived(data.protectedShellState);
   const calendarState = $derived(data.protectedCalendarState);
@@ -177,13 +180,16 @@
       detail?: string | null;
     } = {}
   ) {
-    realtimeDiagnostics = {
+    const nextDiagnostics = {
       ...realtimeDiagnostics,
       remoteRefreshState: state,
       lastRemoteRefreshAt: state === 'idle' ? realtimeDiagnostics.lastRemoteRefreshAt : new Date().toISOString(),
       lastRemoteRefreshReason: params.reason ?? null,
       lastRemoteRefreshDetail: params.detail ?? null
     };
+
+    realtimeDiagnostics = nextDiagnostics;
+    retainedRealtimeDiagnostics = nextDiagnostics;
   }
 
   async function refreshTrustedWeekFromRoute(
@@ -196,11 +202,11 @@
     });
     await invalidateAll();
 
-    const currentScopeKey = untrack(() => controllerScopeKey);
+    const currentScopeKey = untrack(() => realtimeScopeKey);
     const currentReadyView = untrack(() => readyView);
     const activeController = controller === nextController ? nextController : controller;
 
-    if (!activeController || !currentReadyView || currentScopeKey !== scopeKey) {
+    if (!currentReadyView || currentScopeKey !== scopeKey) {
       const detail = 'The visible calendar scope changed before the trusted refresh completed, so the old realtime signal was dropped.';
       setRealtimeRemoteRefreshState('failed', {
         reason: 'REMOTE_REFRESH_SCOPE_STALE',
@@ -209,6 +215,19 @@
       return {
         status: 'failed',
         reason: 'REMOTE_REFRESH_SCOPE_STALE',
+        detail
+      };
+    }
+
+    if (!activeController) {
+      const detail = `${signal.eventType} signal reloaded the trusted week and rebuilt the same-scope controller before replay metrics could be retained.`;
+      setRealtimeRemoteRefreshState('applied', {
+        detail
+      });
+      return {
+        status: 'applied',
+        boardSource: 'server-sync',
+        replayedQueueLength: 0,
         detail
       };
     }
@@ -304,11 +323,14 @@
   });
 
   $effect(() => {
-    if (!browser || !readyView) {
+    const scopeKey = controllerScopeKey;
+
+    if (!browser || !scopeKey) {
+      const currentReadyView = untrack(() => readyView);
       controller = null;
-      controllerState = readyView
+      controllerState = currentReadyView
         ? createInitialCalendarControllerState({
-            initialSchedule: readyView.schedule,
+            initialSchedule: currentReadyView.schedule,
             routeMode: calendarState.mode as App.ProtectedRouteMode,
             isOnline: false
           })
@@ -316,15 +338,12 @@
       return;
     }
 
-    const scopeKey = controllerScopeKey;
-    if (!scopeKey) {
-      return;
-    }
-
     const initialSchedule = untrack(() => readyView?.schedule ?? null);
     const currentAppShell = untrack(() => appShell);
     const currentReadyView = untrack(() => readyView);
     if (!initialSchedule || !currentAppShell || !currentReadyView) {
+      controller = null;
+      controllerState = null;
       return;
     }
 
@@ -401,30 +420,45 @@
   });
 
   $effect(() => {
-    if (!browser) {
-      realtimeDiagnostics = createInitialRealtimeDiagnostics();
-      realtimeSubscription = null;
-      return;
-    }
-
     const scopeKey = realtimeScopeKey;
-    if (!scopeKey || !controller || !readyView) {
-      realtimeDiagnostics = createInitialRealtimeDiagnostics();
-      realtimeSubscription = null;
-      return;
-    }
-
-    realtimeDiagnostics = {
-      ...createInitialRealtimeDiagnostics(),
-      channelDetail: 'Connecting to shared shift change detection for this calendar week.'
-    };
-
-    let disposed = false;
     const nextController = controller;
     const currentReadyView = untrack(() => readyView);
-    if (!currentReadyView) {
+
+    if (!browser) {
+      retainedRealtimeScopeKey = null;
+      retainedRealtimeDiagnostics = null;
+      realtimeDiagnostics = createInitialRealtimeDiagnostics();
+      realtimeSubscription = null;
       return;
     }
+
+    if (!scopeKey) {
+      if (calendarState.mode !== 'trusted-online') {
+        retainedRealtimeScopeKey = null;
+        retainedRealtimeDiagnostics = null;
+        realtimeDiagnostics = createInitialRealtimeDiagnostics();
+      }
+      realtimeSubscription = null;
+      return;
+    }
+
+    if (!nextController || !currentReadyView) {
+      return;
+    }
+
+    const previousRetainedScopeKey = untrack(() => retainedRealtimeScopeKey);
+    const previousRetainedDiagnostics = untrack(() => retainedRealtimeDiagnostics);
+    const reusingScope = previousRetainedScopeKey === scopeKey && previousRetainedDiagnostics !== null;
+    retainedRealtimeScopeKey = scopeKey;
+    realtimeDiagnostics = reusingScope && previousRetainedDiagnostics
+      ? previousRetainedDiagnostics
+      : {
+          ...createInitialRealtimeDiagnostics(),
+          channelDetail: 'Connecting to shared shift change detection for this calendar week.'
+        };
+    retainedRealtimeDiagnostics = realtimeDiagnostics;
+
+    let disposed = false;
 
     const subscription = createCalendarShiftRealtimeSubscription({
       calendarId: currentReadyView.calendar.id,
@@ -432,7 +466,14 @@
       requestTrustedRefresh: (signal) => refreshTrustedWeekFromRoute(nextController, scopeKey, signal),
       onDiagnostics: (diagnostics) => {
         if (!disposed) {
-          realtimeDiagnostics = diagnostics;
+          const nextDiagnostics = reusingScope
+            ? mergeRealtimeDiagnosticsForScopeReload({
+                previous: retainedRealtimeDiagnostics,
+                next: diagnostics
+              })
+            : diagnostics;
+          realtimeDiagnostics = nextDiagnostics;
+          retainedRealtimeDiagnostics = nextDiagnostics;
         }
       }
     });

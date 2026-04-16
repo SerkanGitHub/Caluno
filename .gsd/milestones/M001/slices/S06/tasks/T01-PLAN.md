@@ -1,11 +1,10 @@
 ---
 estimated_steps: 30
 estimated_files: 3
-skills_used:
-  - debug-like-expert
+skills_used: []
 ---
 
-# T01: Repair offline reconnect proof around server-confirmed shift ids
+# T01: Reworked the offline Playwright proof to re-resolve the created shift’s rendered id across reload and reconnect so post-drain conflict assertions follow the server-confirmed shift id.
 
 Use the installed `debug-like-expert` skill before coding. The current offline spec is red because it keeps asserting conflict state against the pre-reconnect local create id even though `reconcileSuccessfulMutation()` is designed to remap that id to the trusted server id after acknowledgement. Keep this task tightly scoped to the offline preview proof: stabilize the helper/spec so cached-offline reopen, reload continuity, reconnect drain, and post-reconnect conflict assertions all follow the remapped shift identity. Only touch runtime code if an isolated clean-db rerun proves the remap contract itself is not surfacing in the rendered board after the queue drains.
 
@@ -54,16 +53,16 @@ Use the installed `debug-like-expert` skill before coding. The current offline s
 
 ## Inputs
 
-- `apps/web/tests/e2e/calendar-offline.spec.ts`
-- `apps/web/tests/e2e/fixtures.ts`
-- `apps/web/src/lib/offline/calendar-controller.ts`
-- `apps/web/src/lib/offline/sync-engine.ts`
+- ``apps/web/tests/e2e/calendar-offline.spec.ts``
+- ``apps/web/tests/e2e/fixtures.ts``
+- ``apps/web/src/lib/offline/calendar-controller.ts``
+- ``apps/web/src/lib/offline/sync-engine.ts``
 
 ## Expected Output
 
-- `apps/web/tests/e2e/calendar-offline.spec.ts`
-- `apps/web/tests/e2e/fixtures.ts`
-- `apps/web/src/lib/offline/calendar-controller.ts`
+- ``apps/web/tests/e2e/calendar-offline.spec.ts``
+- ``apps/web/tests/e2e/fixtures.ts``
+- ``apps/web/src/lib/offline/calendar-controller.ts``
 
 ## Verification
 

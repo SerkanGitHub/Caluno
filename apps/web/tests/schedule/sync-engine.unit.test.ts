@@ -5,6 +5,7 @@ import {
   createCalendarShiftRealtimeSubscription,
   decideTrustedRefreshSnapshotWrite,
   drainReconnectQueue,
+  mergeRealtimeDiagnosticsForScopeReload,
   rebaseTrustedScheduleWithLocalQueue,
   shouldRefreshTrustedWeekFromShiftRealtimeEvent,
   type ShiftRealtimePayload
@@ -167,26 +168,31 @@ class FakeRealtimeClient {
 
 class FakeRealtimeAuthClient extends FakeRealtimeClient {
   readonly callOrder: string[] = [];
+  session: { access_token?: string | null } | null = {
+    access_token: 'token-123'
+  };
+  authStateChangeCallback: ((event: string, session: { access_token?: string | null } | null) => void) | null = null;
 
   auth = {
     getSession: vi.fn(async () => {
       this.callOrder.push('getSession');
       return {
         data: {
-          session: {
-            access_token: 'token-123'
-          }
+          session: this.session
         }
       };
     }),
     onAuthStateChange: vi.fn(
-      (_callback: (event: string, session: { access_token?: string | null } | null) => void) => ({
-        data: {
-          subscription: {
-            unsubscribe: vi.fn()
+      (callback: (event: string, session: { access_token?: string | null } | null) => void) => {
+        this.authStateChangeCallback = callback;
+        return {
+          data: {
+            subscription: {
+              unsubscribe: vi.fn()
+            }
           }
-        }
-      })
+        };
+      }
     )
   };
 
@@ -1000,6 +1006,106 @@ describe('sync engine', () => {
     expect(client.channels).toHaveLength(1);
 
     await subscription.close();
+  });
+
+  it('waits for the initial browser session before opening the shared shift channel when auth hydration lags behind route mount', async () => {
+    const client = new FakeRealtimeAuthClient();
+    client.session = null;
+
+    const subscription = createCalendarShiftRealtimeSubscription({
+      calendarId: createScope().calendarId,
+      visibleWeek: createVisibleWeek(),
+      client: client as never,
+      requestTrustedRefresh: async () => ({
+        status: 'applied',
+        boardSource: 'server-sync',
+        replayedQueueLength: 0,
+        detail: 'trusted refresh applied'
+      })
+    });
+
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(client.channels).toHaveLength(0);
+    expect(subscription.getDiagnostics()).toMatchObject({
+      channelState: 'subscribing',
+      channelReason: 'REALTIME_AUTH_SESSION_PENDING',
+      channelDetail: 'Waiting for the browser auth session before opening shared shift change detection for this calendar week.'
+    });
+
+    client.session = { access_token: 'token-123' };
+    client.authStateChangeCallback?.('INITIAL_SESSION', client.session);
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(client.channels).toHaveLength(1);
+    client.channels[0]?.emitStatus('SUBSCRIBED');
+    expect(subscription.getDiagnostics()).toMatchObject({
+      channelState: 'ready',
+      channelReason: null
+    });
+
+    await subscription.close();
+  });
+
+  it('retains the last signal and applied refresh outcome when a same-scope subscription rebuild emits a fresh idle snapshot', () => {
+    const merged = mergeRealtimeDiagnosticsForScopeReload({
+      previous: {
+        channelState: 'ready',
+        channelReason: null,
+        channelDetail: 'Listening for shared shift changes on this calendar week.',
+        lastSignalAt: '2026-04-16T14:22:19.071Z',
+        lastSignalEvent: 'INSERT',
+        lastSignalDetail: 'A visible-week shared shift was inserted, so the route will reload the trusted week and replay pending local work.',
+        remoteRefreshState: 'applied',
+        lastRemoteRefreshAt: '2026-04-16T14:22:19.512Z',
+        lastRemoteRefreshReason: null,
+        lastRemoteRefreshDetail: 'INSERT signal reloaded the trusted week with no pending local work to replay.'
+      },
+      next: {
+        channelState: 'subscribing',
+        channelReason: null,
+        channelDetail: 'Connecting to shared shift change detection for this calendar week.',
+        lastSignalAt: null,
+        lastSignalEvent: null,
+        lastSignalDetail: null,
+        remoteRefreshState: 'idle',
+        lastRemoteRefreshAt: null,
+        lastRemoteRefreshReason: null,
+        lastRemoteRefreshDetail: null
+      }
+    });
+
+    expect(merged).toMatchObject({
+      channelState: 'subscribing',
+      channelDetail: 'Connecting to shared shift change detection for this calendar week.',
+      lastSignalEvent: 'INSERT',
+      remoteRefreshState: 'applied',
+      lastRemoteRefreshDetail: 'INSERT signal reloaded the trusted week with no pending local work to replay.'
+    });
+  });
+
+  it('accepts a genuinely new idle diagnostic snapshot when there is no retained realtime history', () => {
+    const next = {
+      channelState: 'subscribing',
+      channelReason: null,
+      channelDetail: 'Connecting to shared shift change detection for this calendar week.',
+      lastSignalAt: null,
+      lastSignalEvent: null,
+      lastSignalDetail: null,
+      remoteRefreshState: 'idle',
+      lastRemoteRefreshAt: null,
+      lastRemoteRefreshReason: null,
+      lastRemoteRefreshDetail: null
+    } as const;
+
+    expect(
+      mergeRealtimeDiagnosticsForScopeReload({
+        previous: null,
+        next
+      })
+    ).toEqual(next);
   });
 
   it('retries timed-out realtime subscriptions and tears them down cleanly', async () => {

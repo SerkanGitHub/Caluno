@@ -107,3 +107,9 @@
 **Context:** S06/T02 isolated `calendar-sync.spec.ts` reruns where the writer's create succeeds but the collaborator never reaches `data-remote-refresh-state="applied"`.
 **Rule/Pattern:** Before weakening or widening the collaborator assertions, inspect both `flow-diagnostics` attachments from the retained Playwright trace and compare primary vs collaborator `realtimeChannelState`, `realtimeRefreshState`, `realtimeReason`, conflict counts, and console warnings.
 **Rationale:** The retained trace can show whether the failure is assertion drift or a real delivery gap. In this repo the decisive evidence was that the collaborator stayed `ready + idle` on the original 1-pair baseline while the writer rendered the new 3-pair board, so the bug moved from test timing suspicion to the actual Supabase realtime delivery contract.
+
+## 2026-04-16: A calendar realtime channel stuck at `subscribing` can be caused by a Svelte effect loop before any subscribe callback fires
+
+**Context:** S06/T03 browser investigation of `calendar-sync.spec.ts` after the collaborator channel never reached `ready` on the trusted shared-week route.
+**Rule/Pattern:** When the route-level realtime diagnostics stay at `subscribing` with no timeout/error reason, check browser console/page errors for `effect_update_depth_exceeded` and audit the calendar route's `$effect` blocks for retained-state writes that re-trigger mount logic.
+**Rationale:** In this repo, the browser proof could look like a Supabase realtime transport failure even though the page was also hitting a reactive update loop during calendar mount; without checking the console, the investigation stays trapped on backend hypotheses while the subscription is being recreated before it can acknowledge.

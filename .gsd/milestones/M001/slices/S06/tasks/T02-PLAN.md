@@ -1,11 +1,10 @@
 ---
 estimated_steps: 30
 estimated_files: 4
-skills_used:
-  - debug-like-expert
+skills_used: []
 ---
 
-# T02: Harden realtime collaborator proof around stable board and refresh signals
+# T02: Hardened the sync proof around remote-refresh diagnostics, added realtime auth ordering coverage, and captured a blocker: collaborator sessions still never receive the shared shift refresh signal in preview proof.
 
 Use the installed `debug-like-expert` skill before coding. The clean-db sync rerun suggests the shared create itself lands, but the browser spec still over-asserts on transient action-strip timing. Replace timing-sensitive success checks with stronger board/queue/realtime assertions, keep next-week scope-guard proof intact, and only investigate runtime code if the collaborator page still fails to refresh after the stronger evidence surfaces are in place.
 
@@ -54,18 +53,18 @@ Use the installed `debug-like-expert` skill before coding. The clean-db sync rer
 
 ## Inputs
 
-- `apps/web/tests/e2e/calendar-sync.spec.ts`
-- `apps/web/tests/e2e/fixtures.ts`
-- `apps/web/src/lib/offline/sync-engine.ts`
-- `apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte`
-- `apps/web/tests/e2e/calendar-offline.spec.ts`
+- ``apps/web/tests/e2e/calendar-sync.spec.ts``
+- ``apps/web/tests/e2e/fixtures.ts``
+- ``apps/web/src/lib/offline/sync-engine.ts``
+- ``apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte``
+- ``apps/web/tests/e2e/calendar-offline.spec.ts``
 
 ## Expected Output
 
-- `apps/web/tests/e2e/calendar-sync.spec.ts`
-- `apps/web/tests/e2e/fixtures.ts`
-- `apps/web/src/lib/offline/sync-engine.ts`
-- `apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte`
+- ``apps/web/tests/e2e/calendar-sync.spec.ts``
+- ``apps/web/tests/e2e/fixtures.ts``
+- ``apps/web/src/lib/offline/sync-engine.ts``
+- ``apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte``
 
 ## Verification
 

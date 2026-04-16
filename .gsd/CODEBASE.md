@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-16T13:08:47Z | Files: 295 | Described: 0/295
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T13:08:47Z","fingerprint":"c5dbcdb030ebe082dcf509129f5f971ee9fbaab8","fileCount":295,"truncated":false} -->
+Generated: 2026-04-16T14:08:14Z | Files: 295 | Described: 0/295
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T14:08:14Z","fingerprint":"da560d8e38e5e3013c7ec2a29bd8069c4fee6bb6","fileCount":295,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -195,9 +195,9 @@ Generated: 2026-04-16T13:08:47Z | Files: 295 | Described: 0/295
 - `apps/web/.svelte-kit/output/client/_app/immutable/assets/sqlite3.DGXXSD5r.wasm`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/chunks/
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/2dadQpJb.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BFVfXAuL.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Bpvak2mh.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BthUChXC.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/C0IRkBfy.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/CEVaURT-.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/CZ5TP99Q.js`
@@ -205,21 +205,21 @@ Generated: 2026-04-16T13:08:47Z | Files: 295 | Described: 0/295
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/D5EpjGQt.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DOMc5UJB.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DsnmJJEf.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DUc9KDkb.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DUIbugbJ.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DYBES7nT.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DYK4CpHh.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/vOItGLpa.js`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/entry/
-- `apps/web/.svelte-kit/output/client/_app/immutable/entry/app.iCbcuhWN.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/entry/start.DUWvef0E.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/entry/app.BXb9Qd6X.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/entry/start.DP3EeKcr.js`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/nodes/
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/0.DKts0e-T.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/1.BLAKGSJi.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/2.CdR3fD3a.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/1.oEfi6fWD.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/2.D5md2tkk.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/3.D0-6ptpY.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/4.t_0zCXja.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/4.CknsKwEA.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/5.B1OrzvUL.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/6.Cjd7Twn1.js`
 

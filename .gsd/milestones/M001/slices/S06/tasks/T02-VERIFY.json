@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T02",
+  "unitId": "M001/S06/T02",
+  "timestamp": 1776348229243,
+  "passed": false,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "npx --yes supabase db reset --local --yes",
+      "exitCode": 0,
+      "durationMs": 25454,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/web exec playwright test -c playwright.offline.config.ts tests/e2e/calendar-sync.spec.ts",
+      "exitCode": 1,
+      "durationMs": 33613,
+      "verdict": "fail"
+    }
+  ],
+  "retryAttempt": 1,
+  "maxRetries": 2
+}
