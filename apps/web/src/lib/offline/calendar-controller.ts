@@ -80,6 +80,9 @@ export type CalendarControllerState = {
   queueState: 'idle' | 'ready' | 'malformed' | 'unavailable';
   queueReason: string | null;
   queueDetail: string | null;
+  snapshotStatus: 'idle' | 'ready' | 'failed';
+  snapshotAt: string | null;
+  snapshotOrigin: OfflineScheduleWeekSnapshot['origin'] | null;
 };
 
 export type CalendarControllerQueueInspection = {
@@ -149,7 +152,10 @@ export function createInitialCalendarControllerState(params: {
     repositoryState: null,
     queueState: 'idle',
     queueReason: null,
-    queueDetail: null
+    queueDetail: null,
+    snapshotStatus: 'idle',
+    snapshotAt: null,
+    snapshotOrigin: null
   };
 }
 
@@ -232,17 +238,19 @@ export function createCalendarController(options: {
   }
 
   async function persistSnapshot(schedule: CalendarScheduleView, origin: OfflineScheduleWeekSnapshot['origin']) {
+    const cachedAt = now().toISOString();
     const result = await options.repository.putWeekSnapshot({
       scope: options.scope,
       visibleWeek: schedule.visibleWeek,
       shifts: flattenScheduleShifts(schedule),
-      cachedAt: now().toISOString(),
+      cachedAt,
       origin
     });
 
     if (!result.ok) {
       state = {
         ...state,
+        snapshotStatus: 'failed',
         lastFailure: {
           reason: result.reason.toUpperCase().replace(/-/g, '_'),
           detail: result.detail
@@ -250,6 +258,13 @@ export function createCalendarController(options: {
       };
       return false;
     }
+
+    state = {
+      ...state,
+      snapshotStatus: 'ready',
+      snapshotAt: cachedAt,
+      snapshotOrigin: origin
+    };
 
     return true;
   }
@@ -332,11 +347,15 @@ export function createCalendarController(options: {
                   ? state.schedule.message
                   : 'Showing browser-local week data.'
           }),
-          boardSource: snapshotResult.snapshot.origin === 'local-write' ? 'cached-local' : state.boardSource
+          boardSource: snapshotResult.snapshot.origin === 'local-write' ? 'cached-local' : state.boardSource,
+          snapshotStatus: 'ready',
+          snapshotAt: snapshotResult.snapshot.cachedAt,
+          snapshotOrigin: snapshotResult.snapshot.origin
         };
       } else if (snapshotResult.status === 'malformed' || snapshotResult.status === 'unavailable') {
         state = {
           ...state,
+          snapshotStatus: 'failed',
           lastFailure: {
             reason: snapshotResult.reason.toUpperCase().replace(/-/g, '_'),
             detail: snapshotResult.detail

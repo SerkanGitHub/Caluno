@@ -95,3 +95,9 @@
 **Context:** Manual browser verification against `pnpm --dir apps/web dev` during S05/T01.
 **Rule/Pattern:** Before using the local web dev server for browser proof in this repo, ensure `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_PUBLISHABLE_KEY` are present in the web app environment.
 **Rationale:** The SvelteKit server hook constructs the Supabase server client on every request; when those public env vars are missing, even `/` fails with a 500 before the app shell or protected calendar route can render.
+
+## 2026-04-16: Preview-backed offline proof needs both asset isolation headers and the project sqlite worker entrypoint
+
+**Context:** S05/T02 browser proof for cached-offline, reconnect, and realtime flows against `vite preview`.
+**Rule/Pattern:** In `apps/web`, keep the Vite dev/preview asset responses stamped with the worker isolation headers and bootstrap the offline repository through `src/lib/offline/sqlite.worker.ts` instead of relying on `sqlite3Worker1Promiser()`'s default worker.
+**Rationale:** The protected route HTML can have COEP/COOP while Vite-served worker assets still miss those headers, and the library default worker can resolve `sqlite3.wasm` to a preview-broken path. When that happens the SQLite worker never initializes, `controllerState` stays null, and every offline/realtime proof falsely looks like a route/test problem.

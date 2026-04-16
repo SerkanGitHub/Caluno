@@ -168,6 +168,20 @@ type ShiftRealtimeChannelLike = {
 type ShiftRealtimeClientLike = {
   channel: (name: string) => ShiftRealtimeChannelLike;
   removeChannel: (channel: ShiftRealtimeChannelLike) => Promise<unknown> | unknown;
+  auth?: {
+    getSession?: () => Promise<{
+      data: {
+        session:
+          | {
+              access_token?: string | null;
+            }
+          | null;
+      };
+    }>;
+  };
+  realtime?: {
+    setAuth?: (token?: string) => Promise<unknown> | unknown;
+  };
 };
 
 export type CalendarShiftRealtimeSubscription = {
@@ -657,6 +671,22 @@ export function createCalendarShiftRealtimeSubscription(params: {
     }
   };
 
+  const primeRealtimeAuth = async () => {
+    const getSession = client.auth?.getSession;
+    const setAuth = client.realtime?.setAuth;
+    if (typeof getSession !== 'function' || typeof setAuth !== 'function') {
+      return;
+    }
+
+    try {
+      const sessionResult = await getSession();
+      const accessToken = sessionResult.data.session?.access_token ?? undefined;
+      await setAuth(accessToken ?? undefined);
+    } catch {
+      // best effort: leave the realtime client on its current auth token
+    }
+  };
+
   const flushRefreshQueue = async () => {
     if (disposed || refreshInFlight || !queuedSignal) {
       return;
@@ -787,6 +817,7 @@ export function createCalendarShiftRealtimeSubscription(params: {
     }
 
     await removeActiveChannel();
+    await primeRealtimeAuth();
     setChannelState('subscribing', null, 'Connecting to shared shift change detection for this calendar week.');
 
     const nextChannel = client

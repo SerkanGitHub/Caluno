@@ -8,12 +8,155 @@ import "../../../../../chunks/root.js";
 import "../../../../../chunks/state.svelte.js";
 import "../../../../../chunks/recurrence.js";
 import "@supabase/ssr";
+function deriveVisibleWeekConflicts(schedule) {
+  const days = {};
+  const shifts = {};
+  const invalidShiftIds = new Set(findDuplicateShiftIds(schedule.days));
+  const conflictDayKeys = [];
+  const conflictingShiftIds = /* @__PURE__ */ new Set();
+  let totalOverlapCount = 0;
+  for (const day of schedule.days) {
+    const dayResult = deriveDayConflicts(day.dayKey, day.shifts, invalidShiftIds);
+    for (const conflict of dayResult.shiftConflicts) {
+      shifts[conflict.shiftId] = conflict;
+      conflictingShiftIds.add(conflict.shiftId);
+    }
+    if (dayResult.dayConflict) {
+      days[day.dayKey] = dayResult.dayConflict;
+      conflictDayKeys.push(day.dayKey);
+      totalOverlapCount += dayResult.dayConflict.overlapCount;
+    }
+  }
+  return {
+    board: totalOverlapCount > 0 ? {
+      overlapCount: totalOverlapCount,
+      conflictDayCount: conflictDayKeys.length,
+      conflictingShiftCount: conflictingShiftIds.size,
+      conflictDayKeys
+    } : null,
+    days,
+    shifts,
+    invalidShiftIds: [...invalidShiftIds].sort()
+  };
+}
+function deriveDayConflicts(dayKey, dayShifts, invalidShiftIds) {
+  const validShifts = [];
+  for (const shift of sortCalendarShifts(dayShifts)) {
+    if (invalidShiftIds.has(shift.id)) {
+      continue;
+    }
+    const normalized = normalizeShiftForConflict(dayKey, shift);
+    if (!normalized) {
+      invalidShiftIds.add(shift.id);
+      continue;
+    }
+    validShifts.push(normalized);
+  }
+  if (validShifts.length < 2) {
+    return {
+      dayConflict: null,
+      shiftConflicts: []
+    };
+  }
+  const conflictsByShiftId = /* @__PURE__ */ new Map();
+  const conflictPairs = [];
+  for (let index = 0; index < validShifts.length; index += 1) {
+    const current = validShifts[index];
+    for (let nextIndex = index + 1; nextIndex < validShifts.length; nextIndex += 1) {
+      const next = validShifts[nextIndex];
+      if (next.startAt >= current.endAt) {
+        break;
+      }
+      if (!rangesOverlap(current, next)) {
+        continue;
+      }
+      addConflictCounterpart(conflictsByShiftId, current, next);
+      addConflictCounterpart(conflictsByShiftId, next, current);
+      conflictPairs.push({
+        leftShiftId: current.id,
+        rightShiftId: next.id
+      });
+    }
+  }
+  if (conflictPairs.length === 0) {
+    return {
+      dayConflict: null,
+      shiftConflicts: []
+    };
+  }
+  const conflictingShiftIds = [...conflictsByShiftId.keys()].sort();
+  const shiftConflicts = conflictingShiftIds.map((shiftId) => {
+    const conflictingShifts = [...conflictsByShiftId.get(shiftId)?.values() ?? []];
+    const sortedConflictingShifts = sortConflictingShifts(conflictingShifts);
+    return {
+      shiftId,
+      dayKey,
+      overlapCount: sortedConflictingShifts.length,
+      conflictingShiftIds: sortedConflictingShifts.map((shift) => shift.id),
+      conflictingShifts: sortedConflictingShifts
+    };
+  });
+  return {
+    dayConflict: {
+      dayKey,
+      overlapCount: conflictPairs.length,
+      conflictingShiftIds,
+      conflictPairs
+    },
+    shiftConflicts
+  };
+}
+function normalizeShiftForConflict(dayKey, shift) {
+  const start = new Date(shift.startAt);
+  const end = new Date(shift.endAt);
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || end.getTime() <= start.getTime()) {
+    return null;
+  }
+  if (shift.startAt.slice(0, 10) !== dayKey) {
+    return null;
+  }
+  return {
+    id: shift.id,
+    title: shift.title,
+    dayKey,
+    startAt: shift.startAt,
+    endAt: shift.endAt
+  };
+}
+function sortCalendarShifts(shifts) {
+  return [...shifts].sort((left, right) => {
+    return left.startAt.localeCompare(right.startAt) || left.endAt.localeCompare(right.endAt) || left.title.localeCompare(right.title) || left.id.localeCompare(right.id);
+  });
+}
+function findDuplicateShiftIds(days) {
+  const counts = /* @__PURE__ */ new Map();
+  for (const day of days) {
+    for (const shift of day.shifts) {
+      counts.set(shift.id, (counts.get(shift.id) ?? 0) + 1);
+    }
+  }
+  return [...counts.entries()].filter(([, count]) => count > 1).map(([shiftId]) => shiftId).sort();
+}
+function addConflictCounterpart(conflictsByShiftId, shift, counterpart) {
+  const existing = conflictsByShiftId.get(shift.id) ?? /* @__PURE__ */ new Map();
+  existing.set(counterpart.id, counterpart);
+  conflictsByShiftId.set(shift.id, existing);
+}
+function sortConflictingShifts(shifts) {
+  return [...shifts].sort((left, right) => {
+    return left.startAt.localeCompare(right.startAt) || left.endAt.localeCompare(right.endAt) || left.title.localeCompare(right.title) || left.id.localeCompare(right.id);
+  });
+}
+function rangesOverlap(left, right) {
+  return left.startAt < right.endAt && right.startAt < left.endAt;
+}
 function buildCalendarWeekBoard(schedule, options) {
   const visibleWeek = schedule.visibleWeek;
   const todayKey = toDayKey(options?.now ?? null);
   const startDate = parseUtcDate(visibleWeek.start);
   const endDate = parseUtcDate(addDayKey(visibleWeek.endExclusive, -1));
   const runtime = options?.runtime;
+  const conflicts = deriveVisibleWeekConflicts(schedule);
   return {
     visibleWeekStart: visibleWeek.start,
     visibleWeekEndExclusive: visibleWeek.endExclusive,
@@ -26,11 +169,12 @@ function buildCalendarWeekBoard(schedule, options) {
     totalShifts: schedule.totalShifts,
     hasShifts: schedule.totalShifts > 0,
     statusBadges: buildBoardStatusBadges(),
+    conflict: buildBoardConflictModel(schedule, conflicts),
     syncPhaseLabel: formatSyncPhaseLabel("idle"),
     lastSyncAttemptLabel: runtime?.lastSyncAttemptAt ?? null,
     lastFailure: runtime?.lastFailure ?? null,
     lastSyncError: runtime?.lastSyncError ?? null,
-    days: schedule.days.map((day) => buildDayColumn(day, todayKey, {}))
+    days: schedule.days.map((day) => buildDayColumn(day, todayKey, {}, conflicts))
   };
 }
 function sortShiftsForBoard(shifts) {
@@ -68,9 +212,12 @@ function buildDefaultCreateTimes(dayKey) {
     endAt: `${safeDayKey}T13:00`
   };
 }
-function buildDayColumn(day, todayKey, shiftDiagnostics) {
+function buildDayColumn(day, todayKey, shiftDiagnostics, conflicts) {
   const date = parseUtcDate(day.dayKey);
-  const shifts = sortShiftsForBoard(day.shifts).map((shift) => buildShiftCardModel(shift, day.shifts.length, shiftDiagnostics));
+  const dayConflict = buildDayConflictModel(day, conflicts.days[day.dayKey] ?? null);
+  const shifts = sortShiftsForBoard(day.shifts).map(
+    (shift) => buildShiftCardModel(shift, day.shifts.length, shiftDiagnostics, conflicts.shifts[shift.id] ?? null)
+  );
   return {
     dayKey: day.dayKey,
     label: day.label,
@@ -90,10 +237,11 @@ function buildDayColumn(day, todayKey, shiftDiagnostics) {
     isEmpty: shifts.length === 0,
     density: shifts.length === 0 ? "empty" : shifts.length >= 3 ? "busy" : "quiet",
     shiftCount: shifts.length,
-    shifts
+    shifts,
+    conflict: dayConflict
   };
 }
-function buildShiftCardModel(shift, dayShiftCount, shiftDiagnostics) {
+function buildShiftCardModel(shift, dayShiftCount, shiftDiagnostics, shiftConflict) {
   const start = new Date(shift.startAt);
   const end = new Date(shift.endAt);
   const durationMinutes = Math.max(1, Math.round((end.getTime() - start.getTime()) / 6e4));
@@ -114,8 +262,66 @@ function buildShiftCardModel(shift, dayShiftCount, shiftDiagnostics) {
     seriesId: shift.seriesId,
     occurrenceIndex: shift.occurrenceIndex,
     sourceKind: shift.sourceKind,
-    statusBadges: shiftDiagnostics[shift.id] ?? []
+    statusBadges: shiftDiagnostics[shift.id] ?? [],
+    conflict: buildShiftConflictModel(shiftConflict)
   };
+}
+function buildBoardConflictModel(schedule, conflicts) {
+  if (!conflicts.board) {
+    return null;
+  }
+  const conflictedDayLabels = schedule.days.filter((day) => conflicts.board?.conflictDayKeys.includes(day.dayKey)).map((day) => day.label);
+  return {
+    overlapCount: conflicts.board.overlapCount,
+    dayCount: conflicts.board.conflictDayCount,
+    shiftCount: conflicts.board.conflictingShiftCount,
+    conflictDayKeys: conflicts.board.conflictDayKeys,
+    label: `${conflicts.board.overlapCount} overlap ${conflicts.board.overlapCount === 1 ? "pair" : "pairs"} in view`,
+    detail: conflictedDayLabels.length === 1 ? `${conflictedDayLabels[0]} contains ${conflicts.board.conflictingShiftCount} conflicting visible ${conflicts.board.conflictingShiftCount === 1 ? "shift" : "shifts"}.` : `${conflictedDayLabels.length} visible days contain ${conflicts.board.conflictingShiftCount} conflicting shifts: ${formatInlineList(conflictedDayLabels)}.`
+  };
+}
+function buildDayConflictModel(day, dayConflict) {
+  if (!dayConflict) {
+    return null;
+  }
+  const conflictingShifts = sortShiftsForBoard(day.shifts).filter((shift) => dayConflict.conflictingShiftIds.includes(shift.id));
+  return {
+    overlapCount: dayConflict.overlapCount,
+    conflictingShiftIds: dayConflict.conflictingShiftIds,
+    label: `${dayConflict.overlapCount} overlap ${dayConflict.overlapCount === 1 ? "pair" : "pairs"}`,
+    detail: formatConflictShiftList(conflictingShifts)
+  };
+}
+function buildShiftConflictModel(shiftConflict) {
+  if (!shiftConflict) {
+    return null;
+  }
+  return {
+    overlapCount: shiftConflict.overlapCount,
+    conflictingShiftIds: shiftConflict.conflictingShiftIds,
+    label: `Overlaps ${shiftConflict.overlapCount} visible ${shiftConflict.overlapCount === 1 ? "shift" : "shifts"}`,
+    detail: formatConflictShiftList(shiftConflict.conflictingShifts)
+  };
+}
+function formatConflictShiftList(shifts) {
+  const items = [...shifts].sort((left, right) => {
+    return left.startAt.localeCompare(right.startAt) || left.endAt.localeCompare(right.endAt) || left.title.localeCompare(right.title) || left.id.localeCompare(right.id);
+  }).map((shift) => {
+    return `${shift.title} (${formatTime(new Date(shift.startAt))} → ${formatTime(new Date(shift.endAt))})`;
+  });
+  if (items.length <= 2) {
+    return items.join(" · ");
+  }
+  return `${items.slice(0, 2).join(" · ")} +${items.length - 2} more`;
+}
+function formatInlineList(items) {
+  if (items.length <= 1) {
+    return items[0] ?? "";
+  }
+  if (items.length === 2) {
+    return `${items[0]} and ${items[1]}`;
+  }
+  return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`;
 }
 function buildBoardStatusBadges(runtime) {
   {
@@ -322,10 +528,17 @@ function ShiftCard($$renderer, $$props) {
       }
       return scopedDeleteState().status === "pending-local" || scopedDeleteState().status === "timeout" ? "tone-warning" : "tone-danger";
     });
-    $$renderer2.push(`<article${attr_class(`shift-card shift-card--${shift.density}`)}${attr("data-testid", `shift-card-${shift.id}`)}><div class="shift-card__header"><div><p class="panel-kicker">${escape_html(shift.sourceLabel)}</p> <h3>${escape_html(shift.title)}</h3></div> <div class="shift-card__meta-pills"><span class="pill pill-neutral">${escape_html(shift.rangeLabel)}</span> `);
+    $$renderer2.push(`<article${attr_class(`shift-card shift-card--${shift.density} ${shift.conflict ? "shift-card--conflict" : ""}`)}${attr("data-testid", `shift-card-${shift.id}`)}${attr("data-conflict-overlaps", shift.conflict?.overlapCount ?? 0)}><div class="shift-card__header"><div><p class="panel-kicker">${escape_html(shift.sourceLabel)}</p> <h3>${escape_html(shift.title)}</h3></div> <div class="shift-card__meta-pills"><span class="pill pill-neutral">${escape_html(shift.rangeLabel)}</span> `);
     if (shift.occurrenceLabel) {
       $$renderer2.push("<!--[0-->");
       $$renderer2.push(`<span class="pill pill-active">${escape_html(shift.occurrenceLabel)}</span>`);
+    } else {
+      $$renderer2.push("<!--[-1-->");
+    }
+    $$renderer2.push(`<!--]--> `);
+    if (shift.conflict) {
+      $$renderer2.push("<!--[0-->");
+      $$renderer2.push(`<span class="pill pill-conflict"${attr("data-testid", `shift-conflict-pill-${shift.id}`)}${attr("data-conflict-overlaps", shift.conflict.overlapCount)}>${escape_html(shift.conflict.label)}</span>`);
     } else {
       $$renderer2.push("<!--[-1-->");
     }
@@ -335,7 +548,14 @@ function ShiftCard($$renderer, $$props) {
       let badge = each_array[$$index];
       $$renderer2.push(`<span${attr_class(`pill ${badge.tone === "danger" ? "pill-danger" : badge.tone === "warning" ? "pill-expired" : "pill-neutral"}`)}>${escape_html(badge.label)}</span>`);
     }
-    $$renderer2.push(`<!--]--></div></div> <div class="shift-card__stats"><div><span>Window</span> <strong>${escape_html(shift.startTimeLabel)} → ${escape_html(shift.endTimeLabel)}</strong></div> <div><span>Duration</span> <strong>${escape_html(shift.durationLabel)}</strong></div> <div><span>Shift id</span> <code>${escape_html(shift.id)}</code></div></div> <div class="shift-card__actions">`);
+    $$renderer2.push(`<!--]--></div></div> `);
+    if (shift.conflict) {
+      $$renderer2.push("<!--[0-->");
+      $$renderer2.push(`<article class="inline-state tone-warning shift-card__conflict"${attr("data-testid", `shift-conflict-summary-${shift.id}`)}${attr("data-conflict-overlaps", shift.conflict.overlapCount)}><strong>${escape_html(shift.conflict.label)}</strong> <p>${escape_html(shift.conflict.detail)}</p></article>`);
+    } else {
+      $$renderer2.push("<!--[-1-->");
+    }
+    $$renderer2.push(`<!--]--> <div class="shift-card__stats"><div><span>Window</span> <strong>${escape_html(shift.startTimeLabel)} → ${escape_html(shift.endTimeLabel)}</strong></div> <div><span>Duration</span> <strong>${escape_html(shift.durationLabel)}</strong></div> <div><span>Shift id</span> <code>${escape_html(shift.id)}</code></div></div> <div class="shift-card__actions">`);
     ShiftEditorDialog($$renderer2, {
       action: "edit",
       mode: "edit",
@@ -376,10 +596,17 @@ function ShiftDayColumn($$renderer, $$props) {
       pendingActionKey,
       enhanceMutation
     } = $$props;
-    $$renderer2.push(`<section${attr_class(`shift-day-column shift-day-column--${day.density} ${day.isToday ? "shift-day-column--today" : ""}`)}><header class="shift-day-column__header"><div><p class="panel-kicker">${escape_html(day.weekdayLabel)}</p> <h3>${escape_html(day.monthLabel)} ${escape_html(day.dayNumberLabel)}</h3></div> <div class="shift-day-column__pills">`);
+    $$renderer2.push(`<section${attr_class(`shift-day-column shift-day-column--${day.density} ${day.isToday ? "shift-day-column--today" : ""} ${day.conflict ? "shift-day-column--conflict" : ""}`)}${attr("data-conflict-pairs", day.conflict?.overlapCount ?? 0)}${attr("data-testid", `day-shell-${day.dayKey}`)}><header class="shift-day-column__header"><div><p class="panel-kicker">${escape_html(day.weekdayLabel)}</p> <h3>${escape_html(day.monthLabel)} ${escape_html(day.dayNumberLabel)}</h3></div> <div class="shift-day-column__pills">`);
     if (day.isToday) {
       $$renderer2.push("<!--[0-->");
       $$renderer2.push(`<span class="pill pill-active">Today</span>`);
+    } else {
+      $$renderer2.push("<!--[-1-->");
+    }
+    $$renderer2.push(`<!--]--> `);
+    if (day.conflict) {
+      $$renderer2.push("<!--[0-->");
+      $$renderer2.push(`<span class="pill pill-conflict"${attr("data-testid", `day-conflict-pill-${day.dayKey}`)}${attr("data-conflict-pairs", day.conflict.overlapCount)}${attr("data-conflict-shifts", day.conflict.conflictingShiftIds.length)}>${escape_html(day.conflict.label)}</span>`);
     } else {
       $$renderer2.push("<!--[-1-->");
     }
@@ -389,7 +616,14 @@ function ShiftDayColumn($$renderer, $$props) {
       $$renderer2.push(`<article class="empty-card shift-day-column__empty"${attr("data-testid", `day-empty-${day.dayKey}`)}><p class="panel-kicker">Open capacity</p> <h3>Nothing scheduled.</h3> <p class="panel-copy">This day stays visible so users can add or move a shift here without losing week context.</p></article>`);
     } else {
       $$renderer2.push("<!--[-1-->");
-      $$renderer2.push(`<div class="shift-day-column__stack"${attr("data-testid", `day-column-${day.dayKey}`)}><!--[-->`);
+      $$renderer2.push(`<div class="shift-day-column__stack"${attr("data-testid", `day-column-${day.dayKey}`)}>`);
+      if (day.conflict) {
+        $$renderer2.push("<!--[0-->");
+        $$renderer2.push(`<article class="inline-state tone-warning shift-day-column__conflict"${attr("data-testid", `day-conflict-summary-${day.dayKey}`)}${attr("data-conflict-pairs", day.conflict.overlapCount)}${attr("data-conflict-shifts", day.conflict.conflictingShiftIds.length)}><strong>${escape_html(day.conflict.label)}</strong> <p>${escape_html(day.conflict.detail)}</p></article>`);
+      } else {
+        $$renderer2.push("<!--[-1-->");
+      }
+      $$renderer2.push(`<!--]--> <!--[-->`);
       const each_array = ensure_array_like(day.shifts);
       for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
         let shift = each_array[$$index];
@@ -427,7 +661,14 @@ function CalendarWeekBoard($$renderer, $$props) {
     const canRenderSchedule = derived(() => scheduleStatus !== "malformed-response");
     const actionSummaries = derived(() => summarizeScheduleActions(actionStates));
     const realtimeTone = derived(() => !realtimeDiagnostics ? "tone-neutral" : realtimeDiagnostics.channelState === "retrying" || realtimeDiagnostics.remoteRefreshState === "failed" ? "tone-danger" : realtimeDiagnostics.channelState === "subscribing" || realtimeDiagnostics.remoteRefreshState === "refreshing" ? "tone-warning" : "tone-neutral");
-    $$renderer2.push(`<section class="calendar-week-board framed-panel" data-testid="calendar-week-board"${attr("data-visible-week-start", board.visibleWeekStart)}${attr("data-visible-week-end", board.visibleWeekEndExclusive)}><header class="calendar-week-board__header"><div><p class="eyebrow">Protected week board</p> <h2>${escape_html(board.rangeLabel)}</h2> <p class="lede">${escape_html(board.caption)}</p></div> <div class="calendar-week-board__header-side"><div class="calendar-week-board__meta"><span${attr_class(`pill pill-neutral ${board.sourceTone === "warning" ? "pill-expired" : ""}`)}>${escape_html(board.sourceLabel)}</span> <span class="pill pill-active">${escape_html(board.totalShifts)} ${escape_html(board.totalShifts === 1 ? "shift" : "shifts")}</span> <span class="pill pill-neutral">UTC board</span> <!--[-->`);
+    $$renderer2.push(`<section class="calendar-week-board framed-panel" data-testid="calendar-week-board"${attr("data-visible-week-start", board.visibleWeekStart)}${attr("data-visible-week-end", board.visibleWeekEndExclusive)}><header class="calendar-week-board__header"><div><p class="eyebrow">Protected week board</p> <h2>${escape_html(board.rangeLabel)}</h2> <p class="lede">${escape_html(board.caption)}</p></div> <div class="calendar-week-board__header-side"><div class="calendar-week-board__meta"><span${attr_class(`pill pill-neutral ${board.sourceTone === "warning" ? "pill-expired" : ""}`)}>${escape_html(board.sourceLabel)}</span> <span class="pill pill-active">${escape_html(board.totalShifts)} ${escape_html(board.totalShifts === 1 ? "shift" : "shifts")}</span> <span class="pill pill-neutral">UTC board</span> `);
+    if (board.conflict) {
+      $$renderer2.push("<!--[0-->");
+      $$renderer2.push(`<span class="pill pill-conflict" data-testid="board-conflict-pill"${attr("data-conflict-days", board.conflict.dayCount)}${attr("data-conflict-shifts", board.conflict.shiftCount)}${attr("data-conflict-pairs", board.conflict.overlapCount)}>${escape_html(board.conflict.label)}</span>`);
+    } else {
+      $$renderer2.push("<!--[-1-->");
+    }
+    $$renderer2.push(`<!--]--> <!--[-->`);
     const each_array = ensure_array_like(board.statusBadges);
     for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
       let badge = each_array[$$index];
@@ -462,6 +703,13 @@ function CalendarWeekBoard($$renderer, $$props) {
     if (board.lastFailure) {
       $$renderer2.push("<!--[0-->");
       $$renderer2.push(`<article class="status-card tone-danger" data-testid="local-write-failure"><span class="status-card__label">Local-first failure</span> <strong>${escape_html(board.lastFailure.reason)}</strong> <p>${escape_html(board.lastFailure.detail)}</p></article>`);
+    } else {
+      $$renderer2.push("<!--[-1-->");
+    }
+    $$renderer2.push(`<!--]--> `);
+    if (board.conflict) {
+      $$renderer2.push("<!--[0-->");
+      $$renderer2.push(`<article class="status-card tone-warning" data-testid="board-conflict-summary"${attr("data-conflict-days", board.conflict.dayCount)}${attr("data-conflict-shifts", board.conflict.shiftCount)}${attr("data-conflict-pairs", board.conflict.overlapCount)}><span class="status-card__label">Visible-week conflict watch</span> <strong>${escape_html(board.conflict.label)}</strong> <p>${escape_html(board.conflict.detail)}</p></article>`);
     } else {
       $$renderer2.push("<!--[-1-->");
     }

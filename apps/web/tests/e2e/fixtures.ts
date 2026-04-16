@@ -28,6 +28,21 @@ type FailedResponse = {
   method: string;
 };
 
+type FlowDayConflictSnapshot = {
+  dayKey: string;
+  label: string;
+  detail: string;
+  pairCount: number;
+  shiftCount: number;
+};
+
+type FlowShiftConflictSnapshot = {
+  shiftId: string;
+  label: string;
+  detail: string;
+  overlapCount: number;
+};
+
 type FlowContext = {
   calendarId: string | null;
   visibleWeekStart: string | null;
@@ -44,6 +59,10 @@ type FlowContext = {
   localNetwork: string | null;
   localQueueSummary: string | null;
   localStateDetail: string | null;
+  localQueueState: string | null;
+  localSnapshotStatus: string | null;
+  localSnapshotAt: string | null;
+  localSnapshotOrigin: string | null;
   syncPhase: string | null;
   syncDetail: string | null;
   syncLastAttempt: string | null;
@@ -67,6 +86,13 @@ type FlowContext = {
   localWriteFailureDetail: string | null;
   cachedSnapshotAt: string | null;
   boardMetaBadges: string[];
+  boardConflictLabel: string | null;
+  boardConflictDetail: string | null;
+  boardConflictDayCount: number | null;
+  boardConflictShiftCount: number | null;
+  boardConflictPairCount: number | null;
+  dayConflicts: FlowDayConflictSnapshot[];
+  shiftConflicts: FlowShiftConflictSnapshot[];
   actionReasons: string[];
   actionSummaries: string[];
   deniedReason: string | null;
@@ -86,6 +112,10 @@ type FlowSurfaceSnapshot = Pick<
   | 'localNetwork'
   | 'localQueueSummary'
   | 'localStateDetail'
+  | 'localQueueState'
+  | 'localSnapshotStatus'
+  | 'localSnapshotAt'
+  | 'localSnapshotOrigin'
   | 'syncPhase'
   | 'syncDetail'
   | 'syncLastAttempt'
@@ -109,6 +139,13 @@ type FlowSurfaceSnapshot = Pick<
   | 'localWriteFailureDetail'
   | 'cachedSnapshotAt'
   | 'boardMetaBadges'
+  | 'boardConflictLabel'
+  | 'boardConflictDetail'
+  | 'boardConflictDayCount'
+  | 'boardConflictShiftCount'
+  | 'boardConflictPairCount'
+  | 'dayConflicts'
+  | 'shiftConflicts'
   | 'actionReasons'
   | 'actionSummaries'
   | 'deniedReason'
@@ -284,6 +321,36 @@ async function readFlowSurfaceSnapshot(page: Page): Promise<FlowSurfaceSnapshot>
     const firstOrNull = (values: string[]) => values[0] ?? null;
     const lastOrNull = (values: string[]) => (values.length > 0 ? values[values.length - 1] : null);
     const secondParagraphOrNull = (values: string[]) => (values.length > 1 ? values[values.length - 1] : null);
+    const count = (element: Element | null, attribute: string) => {
+      if (!(element instanceof HTMLElement)) {
+        return null;
+      }
+
+      const raw = element.getAttribute(attribute);
+      if (!raw) {
+        return null;
+      }
+
+      const parsed = Number.parseInt(raw, 10);
+      return Number.isFinite(parsed) ? parsed : null;
+    };
+    const dayConflicts = Array.from(document.querySelectorAll<HTMLElement>('[data-testid^="day-conflict-summary-"]')).map(
+      (element) => ({
+        dayKey: element.getAttribute('data-testid')?.replace('day-conflict-summary-', '') ?? 'unknown-day',
+        label: element.querySelector('strong')?.textContent?.trim() ?? '',
+        detail: element.querySelector('p')?.textContent?.trim() ?? '',
+        pairCount: count(element, 'data-conflict-pairs') ?? 0,
+        shiftCount: count(element, 'data-conflict-shifts') ?? 0
+      }) satisfies FlowDayConflictSnapshot
+    );
+    const shiftConflicts = Array.from(document.querySelectorAll<HTMLElement>('[data-testid^="shift-conflict-summary-"]')).map(
+      (element) => ({
+        shiftId: element.getAttribute('data-testid')?.replace('shift-conflict-summary-', '') ?? 'unknown-shift',
+        label: element.querySelector('strong')?.textContent?.trim() ?? '',
+        detail: element.querySelector('p')?.textContent?.trim() ?? '',
+        overlapCount: count(element, 'data-conflict-overlaps') ?? 0
+      }) satisfies FlowShiftConflictSnapshot
+    );
 
     const syncParagraphs = texts('[data-testid="calendar-sync-state"] p');
     const syncCodes = texts('[data-testid="calendar-sync-state"] code');
@@ -294,6 +361,7 @@ async function readFlowSurfaceSnapshot(page: Page): Promise<FlowSurfaceSnapshot>
     const boardRealtimeParagraphs = texts('[data-testid="board-realtime-diagnostics"] p');
     const boardRealtimeCodes = texts('[data-testid="board-realtime-diagnostics"] code');
     const boardMetaBadges = texts('[data-testid="calendar-week-board"] .calendar-week-board__meta .pill');
+    const boardConflictSummary = document.querySelector<HTMLElement>('[data-testid="board-conflict-summary"]');
 
     return {
       navigatorOnline: typeof navigator !== 'undefined' ? navigator.onLine : null,
@@ -306,6 +374,10 @@ async function readFlowSurfaceSnapshot(page: Page): Promise<FlowSurfaceSnapshot>
       localNetwork: text('[data-testid="calendar-local-state"] strong'),
       localQueueSummary: text('[data-testid="calendar-local-state"] code'),
       localStateDetail: text('[data-testid="calendar-local-state"] p'),
+      localQueueState: document.querySelector<HTMLElement>('[data-testid="calendar-local-state"]')?.dataset.queueState ?? null,
+      localSnapshotStatus: document.querySelector<HTMLElement>('[data-testid="calendar-local-state"]')?.dataset.snapshotStatus ?? null,
+      localSnapshotAt: document.querySelector<HTMLElement>('[data-testid="calendar-local-state"]')?.dataset.snapshotAt ?? null,
+      localSnapshotOrigin: document.querySelector<HTMLElement>('[data-testid="calendar-local-state"]')?.dataset.snapshotOrigin ?? null,
       syncPhase: text('[data-testid="calendar-sync-state"] strong'),
       syncDetail: firstOrNull(syncParagraphs),
       syncLastAttempt: firstOrNull(syncCodes),
@@ -335,6 +407,13 @@ async function readFlowSurfaceSnapshot(page: Page): Promise<FlowSurfaceSnapshot>
       localWriteFailureDetail: text('[data-testid="local-write-failure"] p'),
       cachedSnapshotAt: text('.status-stack article:nth-of-type(5) strong') ?? text('.status-stack article:nth-of-type(4) strong'),
       boardMetaBadges,
+      boardConflictLabel: boardConflictSummary?.querySelector('strong')?.textContent?.trim() ?? null,
+      boardConflictDetail: boardConflictSummary?.querySelector('p')?.textContent?.trim() ?? null,
+      boardConflictDayCount: count(boardConflictSummary, 'data-conflict-days'),
+      boardConflictShiftCount: count(boardConflictSummary, 'data-conflict-shifts'),
+      boardConflictPairCount: count(boardConflictSummary, 'data-conflict-pairs'),
+      dayConflicts,
+      shiftConflicts,
       actionReasons: texts('[data-testid="schedule-action-strip"] article strong'),
       actionSummaries: texts('[data-testid="schedule-action-strip"] article p'),
       deniedReason: text('[data-testid="access-denied-state"] .denied-meta div:nth-of-type(2) strong'),
@@ -374,6 +453,10 @@ export class FlowDiagnostics {
     localNetwork: null,
     localQueueSummary: null,
     localStateDetail: null,
+    localQueueState: null,
+    localSnapshotStatus: null,
+    localSnapshotAt: null,
+    localSnapshotOrigin: null,
     syncPhase: null,
     syncDetail: null,
     syncLastAttempt: null,
@@ -397,6 +480,13 @@ export class FlowDiagnostics {
     localWriteFailureDetail: null,
     cachedSnapshotAt: null,
     boardMetaBadges: [],
+    boardConflictLabel: null,
+    boardConflictDetail: null,
+    boardConflictDayCount: null,
+    boardConflictShiftCount: null,
+    boardConflictPairCount: null,
+    dayConflicts: [],
+    shiftConflicts: [],
     actionReasons: [],
     actionSummaries: [],
     deniedReason: null,
@@ -444,6 +534,8 @@ export class FlowDiagnostics {
       ...patch,
       focusShiftIds: patch.focusShiftIds ?? this.context.focusShiftIds,
       boardMetaBadges: patch.boardMetaBadges ?? this.context.boardMetaBadges,
+      dayConflicts: patch.dayConflicts ?? this.context.dayConflicts,
+      shiftConflicts: patch.shiftConflicts ?? this.context.shiftConflicts,
       actionReasons: patch.actionReasons ?? this.context.actionReasons,
       actionSummaries: patch.actionSummaries ?? this.context.actionSummaries
     };
@@ -594,6 +686,14 @@ export async function openCalendarWeek(params: {
   await expect(page.getByTestId('calendar-shell')).toBeVisible();
   await expect(page.getByTestId('calendar-week-board')).toBeVisible();
 
+  const routeState = page.getByTestId('calendar-route-state');
+  if ((await routeState.count()) > 0 && ((await routeState.textContent()) ?? '').includes('trusted-online')) {
+    const localState = page.getByTestId('calendar-local-state');
+    if ((await localState.count()) > 0) {
+      await waitForLocalSnapshotStatus(page, 'ready');
+    }
+  }
+
   const boardWeek = await readVisibleWeekFromBoard(page);
   expect(boardWeek.visibleWeekStart).toBe(visibleWeekStart);
   expect(boardWeek.visibleWeekEndExclusive).toBe(seededSchedule.visibleWeek.endExclusive);
@@ -631,6 +731,8 @@ export async function syncCalendarFlowContext(page: Page, flow: FlowDiagnostics,
     ...snapshot,
     ...patch,
     boardMetaBadges: patch.boardMetaBadges ?? snapshot.boardMetaBadges,
+    dayConflicts: patch.dayConflicts ?? snapshot.dayConflicts,
+    shiftConflicts: patch.shiftConflicts ?? snapshot.shiftConflicts,
     actionReasons: patch.actionReasons ?? snapshot.actionReasons,
     actionSummaries: patch.actionSummaries ?? snapshot.actionSummaries
   });
@@ -663,6 +765,223 @@ async function readStateText(page: Page, testId: string, selector: string) {
   return (await locator.textContent())?.trim() ?? null;
 }
 
+export type VisibleShiftCardIdentityKind = 'any' | 'local' | 'server';
+
+export type VisibleShiftCardIdentity = {
+  shiftId: string;
+  testId: string;
+  locator: Locator;
+};
+
+export function findVisibleShiftCards(params: {
+  page: Page;
+  title: string;
+  dayKey?: string;
+  windowLabel?: string;
+}) {
+  const scope = params.dayKey ? params.page.getByTestId(`day-column-${params.dayKey}`) : params.page.locator('main');
+  let locator = scope.locator('[data-testid^="shift-card-"]').filter({ hasText: params.title });
+
+  if (params.windowLabel) {
+    locator = locator.filter({ hasText: params.windowLabel });
+  }
+
+  return locator;
+}
+
+function matchesVisibleShiftCardIdentityKind(shiftId: string, kind: VisibleShiftCardIdentityKind) {
+  if (kind === 'any') {
+    return true;
+  }
+
+  return kind === 'local' ? shiftId.startsWith('local-') : !shiftId.startsWith('local-');
+}
+
+export async function resolveVisibleShiftCardIdentity(params: {
+  page: Page;
+  title: string;
+  dayKey?: string;
+  windowLabel?: string;
+  idKind?: VisibleShiftCardIdentityKind;
+  timeout?: number;
+}): Promise<VisibleShiftCardIdentity> {
+  const timeout = params.timeout ?? 20_000;
+  const idKind = params.idKind ?? 'any';
+  const locator = findVisibleShiftCards({
+    page: params.page,
+    title: params.title,
+    dayKey: params.dayKey,
+    windowLabel: params.windowLabel
+  }).first();
+
+  await expect(locator).toBeVisible({ timeout });
+
+  const startedAt = Date.now();
+  while (Date.now() - startedAt <= timeout) {
+    const testId = await locator.getAttribute('data-testid');
+    if (testId?.startsWith('shift-card-')) {
+      const shiftId = testId.replace('shift-card-', '');
+      if (matchesVisibleShiftCardIdentityKind(shiftId, idKind)) {
+        return {
+          shiftId,
+          testId,
+          locator
+        };
+      }
+    }
+
+    await params.page.waitForTimeout(200);
+  }
+
+  const finalTestId = await locator.getAttribute('data-testid');
+  throw new Error(
+    `Expected visible shift card "${params.title}"${params.dayKey ? ` in day ${params.dayKey}` : ''} to expose a ${idKind} id via data-testid, received ${finalTestId ?? 'no data-testid'}.`
+  );
+}
+
+export type BoardConflictState = {
+  visible: boolean;
+  label: string | null;
+  detail: string | null;
+  dayCount: number | null;
+  shiftCount: number | null;
+  pairCount: number | null;
+};
+
+export type DayConflictState = {
+  visible: boolean;
+  dayKey: string;
+  label: string | null;
+  detail: string | null;
+  pairCount: number | null;
+  shiftCount: number | null;
+};
+
+export type ShiftConflictState = {
+  visible: boolean;
+  shiftId: string;
+  label: string | null;
+  detail: string | null;
+  overlapCount: number | null;
+};
+
+async function readCountAttribute(locator: Locator, attribute: string) {
+  if ((await locator.count()) === 0) {
+    return null;
+  }
+
+  const raw = await locator.getAttribute(attribute);
+  if (!raw) {
+    return null;
+  }
+
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+export async function readBoardConflictSummary(page: Page): Promise<BoardConflictState> {
+  const summary = page.getByTestId('board-conflict-summary');
+  if ((await summary.count()) === 0) {
+    return {
+      visible: false,
+      label: null,
+      detail: null,
+      dayCount: null,
+      shiftCount: null,
+      pairCount: null
+    };
+  }
+
+  return {
+    visible: await summary.isVisible(),
+    label: ((await summary.locator('strong').textContent()) ?? '').trim() || null,
+    detail: ((await summary.locator('p').textContent()) ?? '').trim() || null,
+    dayCount: await readCountAttribute(summary, 'data-conflict-days'),
+    shiftCount: await readCountAttribute(summary, 'data-conflict-shifts'),
+    pairCount: await readCountAttribute(summary, 'data-conflict-pairs')
+  };
+}
+
+export async function readDayConflictSummary(page: Page, dayKey: string): Promise<DayConflictState> {
+  const summary = page.getByTestId(`day-conflict-summary-${dayKey}`);
+  if ((await summary.count()) === 0) {
+    return {
+      visible: false,
+      dayKey,
+      label: null,
+      detail: null,
+      pairCount: null,
+      shiftCount: null
+    };
+  }
+
+  return {
+    visible: await summary.isVisible(),
+    dayKey,
+    label: ((await summary.locator('strong').textContent()) ?? '').trim() || null,
+    detail: ((await summary.locator('p').textContent()) ?? '').trim() || null,
+    pairCount: await readCountAttribute(summary, 'data-conflict-pairs'),
+    shiftCount: await readCountAttribute(summary, 'data-conflict-shifts')
+  };
+}
+
+export async function readShiftConflictSummary(page: Page, shiftId: string): Promise<ShiftConflictState> {
+  const summary = page.getByTestId(`shift-conflict-summary-${shiftId}`);
+  if ((await summary.count()) === 0) {
+    return {
+      visible: false,
+      shiftId,
+      label: null,
+      detail: null,
+      overlapCount: null
+    };
+  }
+
+  return {
+    visible: await summary.isVisible(),
+    shiftId,
+    label: ((await summary.locator('strong').textContent()) ?? '').trim() || null,
+    detail: ((await summary.locator('p').textContent()) ?? '').trim() || null,
+    overlapCount: await readCountAttribute(summary, 'data-conflict-overlaps')
+  };
+}
+
+export async function waitForBoardConflictPairs(page: Page, expectedPairCount: number | null, timeout = 20_000) {
+  await expect
+    .poll(async () => (await readBoardConflictSummary(page)).pairCount, {
+      timeout,
+      message:
+        expectedPairCount === null
+          ? 'expected the board conflict summary to stay absent'
+          : `expected the board conflict summary to show ${expectedPairCount} overlap pair(s)`
+    })
+    .toBe(expectedPairCount);
+}
+
+export async function waitForDayConflictPairs(page: Page, dayKey: string, expectedPairCount: number | null, timeout = 20_000) {
+  await expect
+    .poll(async () => (await readDayConflictSummary(page, dayKey)).pairCount, {
+      timeout,
+      message:
+        expectedPairCount === null
+          ? `expected day ${dayKey} to stay conflict-free`
+          : `expected day ${dayKey} to show ${expectedPairCount} overlap pair(s)`
+    })
+    .toBe(expectedPairCount);
+}
+
+export async function waitForShiftConflictOverlaps(page: Page, shiftId: string, expectedOverlapCount: number | null, timeout = 20_000) {
+  await expect
+    .poll(async () => (await readShiftConflictSummary(page, shiftId)).overlapCount, {
+      timeout,
+      message:
+        expectedOverlapCount === null
+          ? `expected shift ${shiftId} to stay conflict-free`
+          : `expected shift ${shiftId} to show ${expectedOverlapCount} visible overlap(s)`
+    })
+    .toBe(expectedOverlapCount);
+}
+
 export async function waitForQueueSummary(page: Page, expectedSummary: string | RegExp, timeout = 20_000) {
   const message = `expected queue summary to become ${String(expectedSummary)}`;
 
@@ -682,6 +1001,15 @@ export async function waitForQueueSummary(page: Page, expectedSummary: string | 
       message
     })
     .toBe(expectedSummary);
+}
+
+export async function waitForLocalSnapshotStatus(page: Page, expectedStatus: 'ready' | 'failed' | 'idle', timeout = 20_000) {
+  await expect
+    .poll(async () => page.getByTestId('calendar-local-state').getAttribute('data-snapshot-status'), {
+      timeout,
+      message: `expected local snapshot status to become ${expectedStatus}`
+    })
+    .toBe(expectedStatus);
 }
 
 export async function waitForSyncAttempt(page: Page, timeout = 20_000) {

@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-16T10:09:56Z | Files: 256 | Described: 0/256
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T10:09:56Z","fingerprint":"0793e9cfae6931527b62a06c30092b4e5dc34dd8","fileCount":256,"truncated":false} -->
+Generated: 2026-04-16T12:41:58Z | Files: 279 | Described: 0/279
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T12:41:58Z","fingerprint":"7313319bb68707e88ec9ea5ba453cf074f60d9e1","fileCount":279,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -81,9 +81,6 @@ Generated: 2026-04-16T10:09:56Z | Files: 256 | Described: 0/256
 ### apps/web/.svelte-kit/adapter-node/.vite/
 - `apps/web/.svelte-kit/adapter-node/.vite/manifest.json`
 
-### apps/web/.svelte-kit/adapter-node/_app/immutable/assets/
-- `apps/web/.svelte-kit/adapter-node/_app/immutable/assets/_layout.BhkzxgrJ.css`
-
 ### apps/web/.svelte-kit/adapter-node/chunks/
 - `apps/web/.svelte-kit/adapter-node/chunks/app-shell.js`
 - `apps/web/.svelte-kit/adapter-node/chunks/attributes.js`
@@ -94,6 +91,7 @@ Generated: 2026-04-16T10:09:56Z | Files: 256 | Described: 0/256
 - `apps/web/.svelte-kit/adapter-node/chunks/false.js`
 - `apps/web/.svelte-kit/adapter-node/chunks/index.js`
 - `apps/web/.svelte-kit/adapter-node/chunks/internal.js`
+- `apps/web/.svelte-kit/adapter-node/chunks/recurrence.js`
 - `apps/web/.svelte-kit/adapter-node/chunks/render-context.js`
 - `apps/web/.svelte-kit/adapter-node/chunks/renderer.js`
 - `apps/web/.svelte-kit/adapter-node/chunks/root.js`
@@ -123,10 +121,12 @@ Generated: 2026-04-16T10:09:56Z | Files: 256 | Described: 0/256
 
 ### apps/web/.svelte-kit/adapter-node/entries/pages/(app)/
 - `apps/web/.svelte-kit/adapter-node/entries/pages/(app)/_layout.server.ts.js`
+- `apps/web/.svelte-kit/adapter-node/entries/pages/(app)/_layout.ts.js`
 
 ### apps/web/.svelte-kit/adapter-node/entries/pages/(app)/calendars/_calendarId_/
 - `apps/web/.svelte-kit/adapter-node/entries/pages/(app)/calendars/_calendarId_/_page.server.ts.js`
 - `apps/web/.svelte-kit/adapter-node/entries/pages/(app)/calendars/_calendarId_/_page.svelte.js`
+- `apps/web/.svelte-kit/adapter-node/entries/pages/(app)/calendars/_calendarId_/_page.ts.js`
 
 ### apps/web/.svelte-kit/adapter-node/entries/pages/(app)/groups/
 - `apps/web/.svelte-kit/adapter-node/entries/pages/(app)/groups/_page.server.ts.js`
@@ -188,10 +188,32 @@ Generated: 2026-04-16T10:09:56Z | Files: 256 | Described: 0/256
 - `apps/web/.svelte-kit/output/client/_app/version.json`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/assets/
-- `apps/web/.svelte-kit/output/client/_app/immutable/assets/0.BhkzxgrJ.css`
+- `apps/web/.svelte-kit/output/client/_app/immutable/assets/sqlite3.DGXXSD5r.wasm`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/chunks/
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BFVfXAuL.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Bpvak2mh.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/C0IRkBfy.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/CEVaURT-.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/CZ5TP99Q.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/CzBrKa3R.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/D5EpjGQt.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DOMc5UJB.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DsnmJJEf.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DYBES7nT.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/vOItGLpa.js`
+
+### apps/web/.svelte-kit/output/client/_app/immutable/nodes/
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/3.D0-6ptpY.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/5.B1OrzvUL.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/6.Cjd7Twn1.js`
+
+### apps/web/.svelte-kit/output/client/_app/immutable/workers/
+- `apps/web/.svelte-kit/output/client/_app/immutable/workers/sqlite3-opfs-async-proxy-BRz_lFSG.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/workers/sqlite3-worker1-PxFADYt0.js`
+
+### apps/web/.svelte-kit/output/client/_app/immutable/workers/assets/
+- `apps/web/.svelte-kit/output/client/_app/immutable/workers/assets/sqlite3-DGXXSD5r.wasm`
 
 ### apps/web/.svelte-kit/output/server/
 - `apps/web/.svelte-kit/output/server/index.js`
@@ -203,9 +225,6 @@ Generated: 2026-04-16T10:09:56Z | Files: 256 | Described: 0/256
 ### apps/web/.svelte-kit/output/server/.vite/
 - `apps/web/.svelte-kit/output/server/.vite/manifest.json`
 
-### apps/web/.svelte-kit/output/server/_app/immutable/assets/
-- `apps/web/.svelte-kit/output/server/_app/immutable/assets/_layout.BhkzxgrJ.css`
-
 ### apps/web/.svelte-kit/output/server/chunks/
 - `apps/web/.svelte-kit/output/server/chunks/app-shell.js`
 - `apps/web/.svelte-kit/output/server/chunks/attributes.js`
@@ -216,6 +235,7 @@ Generated: 2026-04-16T10:09:56Z | Files: 256 | Described: 0/256
 - `apps/web/.svelte-kit/output/server/chunks/false.js`
 - `apps/web/.svelte-kit/output/server/chunks/index.js`
 - `apps/web/.svelte-kit/output/server/chunks/internal.js`
+- `apps/web/.svelte-kit/output/server/chunks/recurrence.js`
 - `apps/web/.svelte-kit/output/server/chunks/render-context.js`
 - `apps/web/.svelte-kit/output/server/chunks/renderer.js`
 - `apps/web/.svelte-kit/output/server/chunks/root.js`
@@ -245,10 +265,12 @@ Generated: 2026-04-16T10:09:56Z | Files: 256 | Described: 0/256
 
 ### apps/web/.svelte-kit/output/server/entries/pages/(app)/
 - `apps/web/.svelte-kit/output/server/entries/pages/(app)/_layout.server.ts.js`
+- `apps/web/.svelte-kit/output/server/entries/pages/(app)/_layout.ts.js`
 
 ### apps/web/.svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/
 - `apps/web/.svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/_page.server.ts.js`
 - `apps/web/.svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/_page.svelte.js`
+- `apps/web/.svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/_page.ts.js`
 
 ### apps/web/.svelte-kit/output/server/entries/pages/(app)/groups/
 - `apps/web/.svelte-kit/output/server/entries/pages/(app)/groups/_page.server.ts.js`
@@ -326,6 +348,7 @@ Generated: 2026-04-16T10:09:56Z | Files: 256 | Described: 0/256
 
 ### apps/web/src/lib/schedule/
 - `apps/web/src/lib/schedule/board.ts`
+- `apps/web/src/lib/schedule/conflicts.ts`
 - `apps/web/src/lib/schedule/recurrence.ts`
 - `apps/web/src/lib/schedule/route-contract.ts`
 - `apps/web/src/lib/schedule/types.ts`
@@ -384,6 +407,7 @@ Generated: 2026-04-16T10:09:56Z | Files: 256 | Described: 0/256
 - `apps/web/tests/e2e/auth-groups-access.spec.ts`
 - `apps/web/tests/e2e/calendar-offline.spec.ts`
 - `apps/web/tests/e2e/calendar-shifts.spec.ts`
+- `apps/web/tests/e2e/calendar-sync.spec.ts`
 - `apps/web/tests/e2e/fixtures.ts`
 
 ### apps/web/tests/routes/
@@ -391,6 +415,7 @@ Generated: 2026-04-16T10:09:56Z | Files: 256 | Described: 0/256
 
 ### apps/web/tests/schedule/
 - `apps/web/tests/schedule/board.unit.test.ts`
+- `apps/web/tests/schedule/conflicts.unit.test.ts`
 - `apps/web/tests/schedule/offline-queue.unit.test.ts`
 - `apps/web/tests/schedule/offline-store.unit.test.ts`
 - `apps/web/tests/schedule/recurrence.unit.test.ts`

@@ -8,6 +8,7 @@ import type { CalendarShift, VisibleWeek } from '$lib/server/schedule';
 import type { StorageLike } from './app-shell-cache';
 
 export const OFFLINE_REPOSITORY_MEMORY_STORAGE_KEY = 'caluno.offline.repository.memory.v1';
+export const OFFLINE_REPOSITORY_SHADOW_STORAGE_KEY = 'caluno.offline.repository.shadow.v1';
 const SQLITE_DATABASE_FILENAME = 'file:caluno-offline-v1.sqlite3?vfs=opfs';
 
 export type OfflineScheduleScope = {
@@ -155,6 +156,7 @@ export function createOfflineScheduleRepository(factory: () => RepositoryDriver)
   let driver: RepositoryDriver | null = null;
   let openPromise: Promise<OfflineRepositoryState> | null = null;
   let state: OfflineRepositoryState | null = null;
+  const shadowStorage = getShadowStorage();
 
   async function ensureReady(): Promise<{ driver: RepositoryDriver; state: OfflineRepositoryState } | null> {
     if (driver && state?.status === 'ready') {
@@ -208,10 +210,27 @@ export function createOfflineScheduleRepository(factory: () => RepositoryDriver)
 
       const ready = await ensureReady();
       if (!ready) {
+        const shadowRecord = readShadowWeekRecord(shadowStorage, scope);
+        if (shadowRecord) {
+          try {
+            const parsed = JSON.parse(shadowRecord.snapshotJson);
+            if (!isOfflineScheduleWeekSnapshot(parsed) || !scopesMatch(parsed.scope, scope)) {
+              return unavailableWeekResult(state);
+            }
+
+            return {
+              status: 'available',
+              snapshot: parsed
+            };
+          } catch {
+            return unavailableWeekResult(state);
+          }
+        }
+
         return unavailableWeekResult(state);
       }
 
-      const record = await ready.driver.getWeekRecord(scope);
+      const record = (await ready.driver.getWeekRecord(scope)) ?? readShadowWeekRecord(shadowStorage, scope);
       if (!record) {
         return {
           status: 'missing',
@@ -257,6 +276,10 @@ export function createOfflineScheduleRepository(factory: () => RepositoryDriver)
         scope: snapshot.scope,
         snapshotJson: JSON.stringify(snapshot)
       });
+      writeShadowWeekRecord(shadowStorage, {
+        scope: snapshot.scope,
+        snapshotJson: JSON.stringify(snapshot)
+      });
 
       return { ok: true };
     },
@@ -272,6 +295,7 @@ export function createOfflineScheduleRepository(factory: () => RepositoryDriver)
       }
 
       await ready.driver.deleteWeekRecord(scope);
+      deleteShadowWeekRecord(shadowStorage, scope);
       return { ok: true };
     },
 
@@ -286,13 +310,35 @@ export function createOfflineScheduleRepository(factory: () => RepositoryDriver)
 
       const ready = await ensureReady();
       if (!ready) {
+        const shadowMutations = readShadowMutationRecords(shadowStorage, scope);
+        if (shadowMutations.length > 0) {
+          const mutations: OfflineScheduleMutationRecord[] = [];
+          for (const record of shadowMutations) {
+            try {
+              const parsed = JSON.parse(record.mutationJson);
+              if (!isOfflineScheduleMutationRecord(parsed) || !scopesMatch(parsed.scope, scope)) {
+                return unavailableMutationResult(state);
+              }
+              mutations.push(parsed);
+            } catch {
+              return unavailableMutationResult(state);
+            }
+          }
+
+          return {
+            status: 'available',
+            mutations
+          };
+        }
+
         return unavailableMutationResult(state);
       }
 
       const records = await ready.driver.listMutationRecords(scope);
+      const effectiveRecords = records.length > 0 ? records : readShadowMutationRecords(shadowStorage, scope);
       const mutations: OfflineScheduleMutationRecord[] = [];
 
-      for (const record of records) {
+      for (const record of effectiveRecords) {
         try {
           const parsed = JSON.parse(record.mutationJson);
           if (!isOfflineScheduleMutationRecord(parsed) || !scopesMatch(parsed.scope, scope)) {
@@ -335,6 +381,11 @@ export function createOfflineScheduleRepository(factory: () => RepositoryDriver)
         scope: mutation.scope,
         mutationJson: JSON.stringify(mutation)
       });
+      writeShadowMutationRecord(shadowStorage, {
+        id: mutation.id,
+        scope: mutation.scope,
+        mutationJson: JSON.stringify(mutation)
+      });
 
       return { ok: true };
     },
@@ -350,6 +401,7 @@ export function createOfflineScheduleRepository(factory: () => RepositoryDriver)
       }
 
       await ready.driver.deleteMutationRecord(scope, mutationId);
+      deleteShadowMutationRecord(shadowStorage, scope, mutationId);
       return { ok: true };
     },
 
@@ -364,6 +416,7 @@ export function createOfflineScheduleRepository(factory: () => RepositoryDriver)
       }
 
       await ready.driver.clearMutationRecords(scope);
+      clearShadowMutationRecords(shadowStorage, scope);
       return { ok: true };
     },
 
@@ -402,8 +455,13 @@ function createSqliteWorkerRepositoryDriver(options: { openTimeoutMs: number }):
       }
 
       try {
+        worker = new Worker(new URL('./sqlite.worker.ts', import.meta.url), { type: 'module' });
         const workerPromiser = await withTimeout(
-          Promise.resolve(sqlite3Worker1Promiser()),
+          Promise.resolve(
+            sqlite3Worker1Promiser({
+              worker: () => worker as Worker
+            })
+          ),
           options.openTimeoutMs,
           'Timed out while waiting for the SQLite worker bootstrap to become ready.'
         );
@@ -816,6 +874,131 @@ function readMemoryStore(storage: StorageLike, storageKey: string): MemoryStore 
 
 function writeMemoryStore(storage: StorageLike, storageKey: string, store: MemoryStore) {
   storage.setItem(storageKey, JSON.stringify(store));
+}
+
+function getShadowStorage(): { storage: StorageLike; storageKey: string } | null {
+  if (!browser || typeof localStorage === 'undefined') {
+    return null;
+  }
+
+  try {
+    localStorage.getItem(OFFLINE_REPOSITORY_SHADOW_STORAGE_KEY);
+    return {
+      storage: localStorage,
+      storageKey: OFFLINE_REPOSITORY_SHADOW_STORAGE_KEY
+    };
+  } catch {
+    return null;
+  }
+}
+
+function readShadowWeekRecord(
+  shadowStorage: { storage: StorageLike; storageKey: string } | null,
+  scope: OfflineScheduleScope
+): PersistedWeekRecord | null {
+  if (!shadowStorage) {
+    return null;
+  }
+
+  const store = readMemoryStore(shadowStorage.storage, shadowStorage.storageKey);
+  const snapshotJson = store.weekSnapshots[scopeKey(scope)] ?? null;
+  return snapshotJson
+    ? {
+        scope,
+        snapshotJson
+      }
+    : null;
+}
+
+function writeShadowWeekRecord(
+  shadowStorage: { storage: StorageLike; storageKey: string } | null,
+  record: PersistedWeekRecord
+) {
+  if (!shadowStorage) {
+    return;
+  }
+
+  const store = readMemoryStore(shadowStorage.storage, shadowStorage.storageKey);
+  store.weekSnapshots[scopeKey(record.scope)] = record.snapshotJson;
+  writeMemoryStore(shadowStorage.storage, shadowStorage.storageKey, store);
+}
+
+function deleteShadowWeekRecord(
+  shadowStorage: { storage: StorageLike; storageKey: string } | null,
+  scope: OfflineScheduleScope
+) {
+  if (!shadowStorage) {
+    return;
+  }
+
+  const store = readMemoryStore(shadowStorage.storage, shadowStorage.storageKey);
+  delete store.weekSnapshots[scopeKey(scope)];
+  writeMemoryStore(shadowStorage.storage, shadowStorage.storageKey, store);
+}
+
+function readShadowMutationRecords(
+  shadowStorage: { storage: StorageLike; storageKey: string } | null,
+  scope: OfflineScheduleScope
+): PersistedMutationRecord[] {
+  if (!shadowStorage) {
+    return [];
+  }
+
+  const store = readMemoryStore(shadowStorage.storage, shadowStorage.storageKey);
+  const prefix = `${scopeKey(scope)}::`;
+  return Object.entries(store.localMutations)
+    .filter(([key]) => key.startsWith(prefix))
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([key, mutationJson]) => ({
+      id: key.slice(prefix.length),
+      scope,
+      mutationJson
+    }));
+}
+
+function writeShadowMutationRecord(
+  shadowStorage: { storage: StorageLike; storageKey: string } | null,
+  record: PersistedMutationRecord
+) {
+  if (!shadowStorage) {
+    return;
+  }
+
+  const store = readMemoryStore(shadowStorage.storage, shadowStorage.storageKey);
+  store.localMutations[mutationKey(record.scope, record.id)] = record.mutationJson;
+  writeMemoryStore(shadowStorage.storage, shadowStorage.storageKey, store);
+}
+
+function deleteShadowMutationRecord(
+  shadowStorage: { storage: StorageLike; storageKey: string } | null,
+  scope: OfflineScheduleScope,
+  mutationId: string
+) {
+  if (!shadowStorage) {
+    return;
+  }
+
+  const store = readMemoryStore(shadowStorage.storage, shadowStorage.storageKey);
+  delete store.localMutations[mutationKey(scope, mutationId)];
+  writeMemoryStore(shadowStorage.storage, shadowStorage.storageKey, store);
+}
+
+function clearShadowMutationRecords(
+  shadowStorage: { storage: StorageLike; storageKey: string } | null,
+  scope: OfflineScheduleScope
+) {
+  if (!shadowStorage) {
+    return;
+  }
+
+  const store = readMemoryStore(shadowStorage.storage, shadowStorage.storageKey);
+  const prefix = `${scopeKey(scope)}::`;
+  for (const key of Object.keys(store.localMutations)) {
+    if (key.startsWith(prefix)) {
+      delete store.localMutations[key];
+    }
+  }
+  writeMemoryStore(shadowStorage.storage, shadowStorage.storageKey, store);
 }
 
 type MemoryStore = {

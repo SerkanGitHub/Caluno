@@ -90,7 +90,7 @@ Load the installed `frontend-design` and `debug-like-expert` skills before codin
   - Files: `apps/web/src/lib/schedule/conflicts.ts`, `apps/web/src/lib/schedule/board.ts`, `apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte`, `apps/web/src/lib/components/calendar/ShiftDayColumn.svelte`, `apps/web/src/lib/components/calendar/ShiftCard.svelte`, `apps/web/src/app.css`, `apps/web/tests/schedule/conflicts.unit.test.ts`, `apps/web/tests/schedule/board.unit.test.ts`
   - Verify: pnpm --dir apps/web exec vitest run tests/schedule/conflicts.unit.test.ts tests/schedule/board.unit.test.ts
 
-- [ ] **T02: Prove conflict visibility through trusted, offline reconnect, and realtime collaborator flows** `est:2h30m`
+- [x] **T02: Prove conflict visibility through trusted, offline reconnect, and realtime collaborator flows** `est:2h30m`
   ## Description
 
 Turn the new warning layer into milestone-closing proof. Use the existing seeded fixtures plus the S03/S04 local-first substrate to show that conflicts are visible online, appear immediately for offline local overlaps, survive reload and reconnect replay, and propagate to another online session through realtime-triggered trusted refreshes.

@@ -16,6 +16,7 @@
   import {
     createCalendarShiftRealtimeSubscription,
     createReconnectTransportFailureOutcome,
+    decideTrustedRefreshSnapshotWrite,
     drainReconnectQueue,
     normalizeScheduleActionResult,
     type CalendarControllerServerOutcome,
@@ -31,7 +32,7 @@
   let { data }: { data: PageData } = $props();
   let pendingActionKey = $state<string | null>(null);
   let controllerState = $state<CalendarControllerState | null>(null);
-  let controller: CalendarController | null = null;
+  let controller = $state<CalendarController | null>(null);
   let reconnectDrainPromise: Promise<void> | null = null;
   let realtimeSubscription: CalendarShiftRealtimeSubscription | null = null;
   let realtimeDiagnostics = $state<CalendarRealtimeDiagnostics>(createInitialRealtimeDiagnostics());
@@ -47,6 +48,15 @@
   const controllerScopeKey = $derived(
     browser && appShell && readyCalendarId && readyWeekStart
       ? `${appShell.viewer.id}:${readyCalendarId}:${readyWeekStart}:${calendarState.mode}`
+      : null
+  );
+  const trustedSnapshotSeedKey = $derived(
+    browser &&
+      calendarState.mode === 'trusted-online' &&
+      appShell &&
+      readyView &&
+      readyView.schedule.status === 'ready'
+      ? `${appShell.viewer.id}:${readyView.calendar.id}:${readyView.schedule.visibleWeek.start}:${buildTrustedScheduleKey(readyView.schedule)}`
       : null
   );
   const realtimeScopeKey = $derived(
@@ -198,6 +208,67 @@
           : `${signal.eventType} signal reloaded the trusted week with no pending local work to replay.`
     };
   }
+
+  $effect(() => {
+    if (!browser) {
+      return;
+    }
+
+    const snapshotSeedKey = trustedSnapshotSeedKey;
+    const currentAppShell = untrack(() => appShell);
+    const currentReadyView = untrack(() => readyView);
+    if (!snapshotSeedKey || !currentAppShell || !currentReadyView || currentReadyView.schedule.status !== 'ready') {
+      return;
+    }
+
+    let cancelled = false;
+
+    void (async () => {
+      const { createBrowserScheduleRepository } = await import('$lib/offline/repository');
+      const { createOfflineMutationQueue } = await import('$lib/offline/mutation-queue');
+      if (cancelled) {
+        return;
+      }
+
+      const repository = createBrowserScheduleRepository();
+      const queue = createOfflineMutationQueue({ repository });
+      const scope = {
+        userId: currentAppShell.viewer.id,
+        calendarId: currentReadyView.calendar.id,
+        weekStart: currentReadyView.schedule.visibleWeek.start
+      };
+
+      try {
+        const [currentSnapshot, queueReadResult] = await Promise.all([repository.getWeekSnapshot(scope), queue.read(scope)]);
+        if (cancelled) {
+          return;
+        }
+
+        const writeDecision = decideTrustedRefreshSnapshotWrite({
+          currentSnapshot,
+          queueReadResult
+        });
+
+        if (writeDecision.shouldPersist) {
+          await repository.putWeekSnapshot({
+            scope,
+            visibleWeek: currentReadyView.schedule.visibleWeek,
+            shifts: currentReadyView.schedule.days.flatMap((day) => day.shifts),
+            cachedAt: new Date().toISOString(),
+            origin: writeDecision.origin
+          });
+        }
+      } catch {
+        // fail closed: keep the trusted online route active even if snapshot seeding is unavailable
+      } finally {
+        await repository.close();
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  });
 
   $effect(() => {
     if (!browser || !readyView) {
@@ -457,13 +528,28 @@
       </article>
 
       {#if controllerState}
-        <article class={`status-card ${networkTone}`} data-testid="calendar-local-state">
+        <article
+          class={`status-card ${networkTone}`}
+          data-testid="calendar-local-state"
+          data-queue-state={controllerState.queueState}
+          data-snapshot-status={controllerState.snapshotStatus}
+          data-snapshot-at={controllerState.snapshotAt ?? ''}
+          data-snapshot-origin={controllerState.snapshotOrigin ?? ''}
+        >
           <span class="status-card__label">Local-first state</span>
           <strong>{controllerState.network}</strong>
           <p>
-            {controllerState.boardSource === 'cached-local'
-              ? 'The visible week is rendering from browser-local data.'
-              : 'The visible week is rendering from the trusted server snapshot.'}
+            {#if controllerState.snapshotStatus === 'failed'}
+              Browser-local week persistence could not be confirmed, so offline continuity may fail closed until the next trusted refresh succeeds.
+            {:else if controllerState.snapshotStatus === 'ready'}
+              {controllerState.boardSource === 'cached-local'
+                ? 'The visible week is rendering from browser-local data.'
+                : 'The visible week is rendering from the trusted server snapshot, and offline continuity is cached on this browser.'}
+            {:else}
+              {controllerState.boardSource === 'cached-local'
+                ? 'The visible week is rendering from browser-local data.'
+                : 'The visible week is rendering from the trusted server snapshot while browser-local continuity finishes caching.'}
+            {/if}
           </p>
           <code>{controllerState.pendingQueueLength} pending / {controllerState.retryableQueueLength} retryable</code>
         </article>
