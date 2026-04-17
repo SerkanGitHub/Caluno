@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-16T14:08:14Z | Files: 295 | Described: 0/295
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T14:08:14Z","fingerprint":"da560d8e38e5e3013c7ec2a29bd8069c4fee6bb6","fileCount":295,"truncated":false} -->
+Generated: 2026-04-17T22:36:57Z | Files: 292 | Described: 0/292
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-17T22:36:57Z","fingerprint":"9f66965d54a59445a76773f74f45f7656d6e612c","fileCount":292,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -195,9 +195,9 @@ Generated: 2026-04-16T14:08:14Z | Files: 295 | Described: 0/295
 - `apps/web/.svelte-kit/output/client/_app/immutable/assets/sqlite3.DGXXSD5r.wasm`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/chunks/
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/2dadQpJb.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BFVfXAuL.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Bpvak2mh.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/C_476Q2x.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/C0IRkBfy.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/CEVaURT-.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/CZ5TP99Q.js`
@@ -205,21 +205,21 @@ Generated: 2026-04-16T14:08:14Z | Files: 295 | Described: 0/295
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/D5EpjGQt.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DOMc5UJB.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DsnmJJEf.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DUIbugbJ.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DYBES7nT.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DYK4CpHh.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/vOItGLpa.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Z3FZk6iU.js`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/entry/
-- `apps/web/.svelte-kit/output/client/_app/immutable/entry/app.BXb9Qd6X.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/entry/start.DP3EeKcr.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/entry/app.CzDoDn9w.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/entry/start.BTFRMBBV.js`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/nodes/
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/0.DKts0e-T.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/1.oEfi6fWD.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/2.D5md2tkk.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/1.CWi7vlJ0.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/2.B2WI7eqM.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/3.D0-6ptpY.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/4.CknsKwEA.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/4.CPsmWsw8.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/5.B1OrzvUL.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/6.Cjd7Twn1.js`
 
@@ -415,11 +415,6 @@ Generated: 2026-04-16T14:08:14Z | Files: 295 | Described: 0/295
 
 ### apps/web/test-results/e2e-offline/
 - `apps/web/test-results/e2e-offline/.last-run.json`
-
-### apps/web/test-results/e2e-offline/calendar-sync-online-colla-d89ab--same-trusted-calendar-week/
-- `apps/web/test-results/e2e-offline/calendar-sync-online-colla-d89ab--same-trusted-calendar-week/error-context.md`
-- `apps/web/test-results/e2e-offline/calendar-sync-online-colla-d89ab--same-trusted-calendar-week/trace.zip`
-- `apps/web/test-results/e2e-offline/calendar-sync-online-colla-d89ab--same-trusted-calendar-week/video.webm`
 
 ### apps/web/tests/access/
 - `apps/web/tests/access/policy-contract.unit.test.ts`

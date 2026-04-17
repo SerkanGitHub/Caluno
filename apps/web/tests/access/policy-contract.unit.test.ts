@@ -14,6 +14,8 @@ function readRepoFile(relativePath: string): string {
 }
 
 const migrationSql = readRepoFile('supabase/migrations/20260414_000001_auth_groups_access.sql');
+const scheduleMigrationSql = readRepoFile('supabase/migrations/20260415_000002_schedule_shifts.sql');
+const findTimeMigrationSql = readRepoFile('supabase/migrations/20260418_000001_find_time_member_availability.sql');
 const seedSql = readRepoFile('supabase/seed.sql');
 
 const memberships: GroupMembership[] = [
@@ -166,6 +168,7 @@ describe('supabase sql contract', () => {
     expect(migrationSql).toContain('create unique index calendars_one_default_per_group_idx');
     expect(migrationSql).toContain('create or replace function public.create_group_with_default_calendar(');
     expect(migrationSql).toContain('create or replace function public.redeem_group_join_code(p_code text)');
+    expect(scheduleMigrationSql).toContain('create table public.shifts (');
   });
 
   it('derives calendar visibility from authenticated membership and denies guessed calendar ids through policy', () => {
@@ -173,6 +176,21 @@ describe('supabase sql contract', () => {
     expect(migrationSql).toContain('and public.current_user_is_group_member(c.group_id)');
     expect(migrationSql).toMatch(
       /create policy calendars_select_member_group[\s\S]*using \(public\.current_user_can_access_calendar\(id\)\);/
+    );
+  });
+
+  it('adds member-attributed shift assignments without loosening profile rls', () => {
+    expect(findTimeMigrationSql).toContain('create table public.shift_assignments (');
+    expect(findTimeMigrationSql).toContain('member_id uuid not null references auth.users (id) on delete cascade');
+    expect(findTimeMigrationSql).toContain('create or replace function public.current_user_can_assign_member_to_shift(target_shift_id uuid, target_member_id uuid)');
+    expect(findTimeMigrationSql).toContain('create or replace function public.list_calendar_members(p_calendar_id uuid)');
+    expect(findTimeMigrationSql).toContain('join public.profiles p');
+    expect(findTimeMigrationSql).toContain('and public.current_user_can_access_calendar(p_calendar_id)');
+    expect(findTimeMigrationSql).toMatch(
+      /create policy shift_assignments_select_member_calendar[\s\S]*using \(public\.current_user_can_access_shift\(shift_id\)\);/
+    );
+    expect(findTimeMigrationSql).toMatch(
+      /create policy shift_assignments_insert_member_calendar[\s\S]*public\.current_user_can_assign_member_to_shift\(shift_id, member_id\)/
     );
   });
 
@@ -205,5 +223,15 @@ describe('seed scenarios', () => {
     expect(seedSql).toContain('Beta shared');
     expect(seedSql).toContain("interval '30 day'");
     expect(seedSql).toContain("interval '1 day'");
+  });
+
+  it('attributes seeded alpha and beta shifts to named members for truthful availability fixtures', () => {
+    expect(seedSql).toContain('Beta planning');
+    expect(seedSql).toContain('Beta support window');
+    expect(seedSql).toContain('insert into public.shift_assignments (shift_id, member_id, created_by)');
+    expect(seedSql).toContain("'aaaaaaaa-7777-1111-1111-222222222222', '22222222-2222-2222-2222-222222222222'");
+    expect(seedSql).toContain("'aaaaaaaa-7777-1111-1111-222222222222', '44444444-4444-4444-4444-444444444444'");
+    expect(seedSql).toContain("'bbbbbbbb-6666-2222-2222-111111111111', '33333333-3333-3333-3333-333333333333'");
+    expect(seedSql).toContain("'bbbbbbbb-6666-2222-2222-222222222222', '44444444-4444-4444-4444-444444444444'");
   });
 });

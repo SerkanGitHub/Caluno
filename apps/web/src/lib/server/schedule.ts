@@ -114,6 +114,12 @@ type ShiftSeriesRow = {
   calendar_id: string;
 };
 
+type ShiftAssignmentInsertRow = {
+  shift_id: string;
+  member_id: string;
+  created_by: string;
+};
+
 type SupabaseResult<T> = {
   data: T | null;
   error: { message: string } | null;
@@ -417,11 +423,43 @@ export async function createScheduleShift(params: {
       });
     }
 
+    const assignmentsInsert = (await params.supabase.from('shift_assignments').insert(
+      buildShiftAssignmentInsertRows({
+        shiftIds: [generatedShiftId],
+        memberId: params.userId,
+        createdBy: params.userId
+      })
+    )) as SupabaseResult<null>;
+
+    if (assignmentsInsert.error) {
+      await params.supabase
+        .from('shifts')
+        .delete()
+        .eq('id', generatedShiftId)
+        .eq('calendar_id', params.calendarId);
+
+      return actionFailure({
+        action: 'create',
+        visibleWeek,
+        status: isTimeoutMessage(assignmentsInsert.error.message) ? 504 : 400,
+        actionStatus: isTimeoutMessage(assignmentsInsert.error.message) ? 'timeout' : 'write-error',
+        reason: isTimeoutMessage(assignmentsInsert.error.message)
+          ? 'SCHEDULE_CREATE_TIMEOUT'
+          : 'SCHEDULE_CREATE_ASSIGNMENT_FAILED',
+        message: isTimeoutMessage(assignmentsInsert.error.message)
+          ? 'The creator assignment write timed out, so the shift create was rolled back.'
+          : 'The creator assignment could not be written, so the shift create was rolled back and the board stayed unchanged.',
+        fields,
+        shiftId: generatedShiftId,
+        affectedShiftIds: [generatedShiftId]
+      });
+    }
+
     return actionSuccess({
       action: 'create',
       visibleWeek,
       reason: 'SHIFT_CREATED',
-      message: 'The shift was created inside the current trusted calendar.',
+      message: 'The shift was created inside the current trusted calendar with creator assignment attribution.',
       fields,
       shiftId: generatedShiftId,
       affectedShiftIds: [generatedShiftId]
@@ -484,12 +522,39 @@ export async function createScheduleShift(params: {
   }
 
   const affectedShiftIds = occurrenceRows.map((row) => row.id);
+  const assignmentsInsert = (await params.supabase.from('shift_assignments').insert(
+    buildShiftAssignmentInsertRows({
+      shiftIds: affectedShiftIds,
+      memberId: params.userId,
+      createdBy: params.userId
+    })
+  )) as SupabaseResult<null>;
+
+  if (assignmentsInsert.error) {
+    await params.supabase.from('shift_series').delete().eq('id', generatedSeriesId).eq('calendar_id', params.calendarId);
+
+    return actionFailure({
+      action: 'create',
+      visibleWeek,
+      status: isTimeoutMessage(assignmentsInsert.error.message) ? 504 : 400,
+      actionStatus: isTimeoutMessage(assignmentsInsert.error.message) ? 'timeout' : 'write-error',
+      reason: isTimeoutMessage(assignmentsInsert.error.message)
+        ? 'SCHEDULE_CREATE_TIMEOUT'
+        : 'SCHEDULE_CREATE_ASSIGNMENT_FAILED',
+      message: isTimeoutMessage(assignmentsInsert.error.message)
+        ? 'The recurring creator-assignment write timed out, so the series was rolled back.'
+        : 'The recurring creator-assignment write failed, so the series was rolled back and the board stayed unchanged.',
+      fields,
+      seriesId: generatedSeriesId,
+      affectedShiftIds
+    });
+  }
 
   return actionSuccess({
     action: 'create',
     visibleWeek,
     reason: 'SHIFT_CREATED',
-    message: 'The recurring shift series and its concrete occurrences were created inside the current trusted calendar.',
+    message: 'The recurring shift series, concrete occurrences, and creator assignments were created inside the current trusted calendar.',
     fields,
     seriesId: generatedSeriesId,
     affectedShiftIds,
@@ -1067,6 +1132,18 @@ function buildRecurringShiftInsertRows(params: {
     occurrence_index: occurrence.occurrenceIndex,
     source_kind: 'series' as const,
     created_by: params.userId
+  }));
+}
+
+function buildShiftAssignmentInsertRows(params: {
+  shiftIds: string[];
+  memberId: string;
+  createdBy: string;
+}): ShiftAssignmentInsertRow[] {
+  return params.shiftIds.map((shiftId) => ({
+    shift_id: shiftId,
+    member_id: params.memberId,
+    created_by: params.createdBy
   }));
 }
 

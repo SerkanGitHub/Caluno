@@ -131,3 +131,9 @@
 **Context:** M001 milestone closeout after `calendar-offline.spec.ts` mutates the seeded Alpha week before `calendar-sync.spec.ts` runs in the same clean-reset Playwright command.
 **Rule/Pattern:** For collaborator overlap proof in this repo, detect the current conflict-bearing day from the rendered board/day conflict summaries and build the next create/assertion flow from that visible state instead of assuming the original seeded Thursday overlap is still present.
 **Rationale:** Earlier specs can legitimately move or delete seeded shifts while still preserving a valid conflict baseline elsewhere in the week; deriving the scenario from the live board removes false failures caused by stale fixture assumptions without weakening the proof.
+
+## 2026-04-18: Vitest can silently ignore nonexistent explicit file arguments in app-scoped verification commands
+
+**Context:** M002/S01/T01 slice-level verification used `pnpm --dir apps/web exec vitest run ...` with a mix of existing and not-yet-created test files.
+**Rule/Pattern:** When a slice verification command names future test files explicitly, separately confirm those files exist (for example with `test -f` or `rg --files`) instead of assuming a green Vitest exit means every named file actually ran.
+**Rationale:** In this repo's current Vitest invocation path, the command can succeed while running only the existing files, which can create a false sense that broader slice verification already covers future-task artifacts.

@@ -10,10 +10,10 @@ This file is the explicit capability and coverage contract for the project.
 - Description: Users can create groups, assign roles, and share calendars so only permitted members can access shared schedule data.
 - Why it matters: Shared scheduling is the product foundation, not an add-on.
 - Source: user
-- Primary owning slice: M001/S01
-- Supporting slices: M001/S04
+- Primary owning slice: M002/S01
+- Supporting slices: M002/S03
 - Validation: mapped
-- Notes: Must support family/team style collaboration with role-based access.
+- Notes: Shared free-time matching must stay inside the existing shared-calendar membership boundary and preserve trusted calendar context during handoff.
 
 ### R008 — Caluno computes shared free-time windows across two or more users and explains why a suggested window works.
 - Class: differentiator
@@ -21,10 +21,10 @@ This file is the explicit capability and coverage contract for the project.
 - Description: Caluno computes shared free-time windows across two or more users and explains why a suggested window works.
 - Why it matters: Shared free-time matching is the core product differentiator once the substrate is trustworthy.
 - Source: user
-- Primary owning slice: M002 (provisional)
-- Supporting slices: none
+- Primary owning slice: M002/S01
+- Supporting slices: M002/S02, M002/S03
 - Validation: unmapped
-- Notes: Deferred to M002 after the scheduling substrate is proven.
+- Notes: M002 delivers truthful shared free-time matching via member-scoped availability search first, then ranking/explanations, then prefilled create handoff.
 
 ### R009 — The product remains coherent across web and mobile surfaces, with mobile added on top of the same scheduling substrate and domain model.
 - Class: launchability
@@ -122,10 +122,10 @@ This file is the explicit capability and coverage contract for the project.
 - Description: The browser scheduling experience is stress-friendly, clear, fast, and accessible enough for everyday coordination work.
 - Why it matters: This product serves users under time pressure; a cluttered or brittle UI defeats the point of the tool.
 - Source: user
-- Primary owning slice: M001/S02
-- Supporting slices: M001/S03, M001/S05
+- Primary owning slice: M002/S02
+- Supporting slices: M002/S01, M002/S03
 - Validation: Validated in M001/S02 by the custom week-board/browser proof and unit coverage: `pnpm --dir apps/web check`, `pnpm --dir apps/web exec vitest run tests/schedule/board.unit.test.ts tests/routes/protected-routes.unit.test.ts tests/schedule/server-actions.unit.test.ts`, and `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts` confirmed the stress-friendly week board, accessible create/edit/move/delete controls, clear denied state, and visible week/action diagnostics.
-- Notes: The current proof is web-desktop focused; later slices can extend the same calm interaction model to offline and conflict surfaces.
+- Notes: Calm, explicit messaging is required for invalid input, no-results, retryable failures, and the final suggestion-to-create transition.
 
 ### R012 — Authentication, row-level policies, and sharing rules prevent cross-group data leakage and limit each user to calendars they are permitted to access.
 - Class: compliance/security
@@ -133,10 +133,10 @@ This file is the explicit capability and coverage contract for the project.
 - Description: Authentication, row-level policies, and sharing rules prevent cross-group data leakage and limit each user to calendars they are permitted to access.
 - Why it matters: The product cannot be trusted if shared calendar data leaks across groups or roles.
 - Source: user
-- Primary owning slice: M001/S01
-- Supporting slices: M001/S04
+- Primary owning slice: M002/S01
+- Supporting slices: M002/S02
 - Validation: Validated by the M001 auth/policy/browser proof surfaces: `tests/access/policy-contract.unit.test.ts`, protected-route/unit coverage, denied-route browser proof, and the combined offline+sync browser verification together proved auth, RLS, and sharing rules keep cross-group calendar access fail-closed.
-- Notes: Validated in M001 by the auth/session, policy-contract, denied-route, and combined scheduling proof surfaces. Supabase Auth plus RLS-backed sharing remained fail-closed through trusted SSR access, schedule mutations, offline reopen, reconnect replay, and collaborator refresh.
+- Notes: Find time remains fail-closed for denied scope and offline/non-authoritative conditions; matching reads only trusted roster and busy-interval scope.
 
 ## Deferred
 
@@ -228,17 +228,17 @@ This file is the explicit capability and coverage contract for the project.
 | ID | Class | Status | Primary owner | Supporting | Proof |
 |---|---|---|---|---|---|
 | R001 | primary-user-loop | validated | M001/S01 | M001/S03 | Validated by M001 combined clean-reset preview-backed browser proof (`npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test -c playwright.offline.config.ts tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-sync.spec.ts`), which proved trusted sign-in, cached-session offline reopen for previously synced calendars, reload continuity, and fail-closed denial for unsynced calendar URLs. |
-| R002 | core-capability | active | M001/S01 | M001/S04 | mapped |
+| R002 | core-capability | active | M002/S01 | M002/S03 | mapped |
 | R003 | core-capability | validated | M001/S02 | M001/S05 | Validated in M001/S02 by passing `pnpm --dir apps/web exec vitest run tests/routes/protected-routes.unit.test.ts tests/schedule/board.unit.test.ts tests/schedule/recurrence.unit.test.ts tests/schedule/server-actions.unit.test.ts` plus `npx --yes supabase db reset --local --yes` and `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts`, which proved same-day multi-shift rendering, bounded recurring creation, edit, move, delete, and reload continuity on the protected calendar route. |
 | R004 | continuity | validated | M001/S03 | M001/S04 | Validated by M001 combined clean-reset preview-backed browser proof (`npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test -c playwright.offline.config.ts tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-sync.spec.ts`), which proved previously synced schedule data remains readable and editable offline, survives reload, and reconciles through reconnect drain. |
 | R005 | integration | validated | M001/S04 | M001/S03, M001/S05 | Validated by M001 combined clean-reset preview-backed browser proof plus passing `tests/schedule/sync-engine.unit.test.ts` and `tests/schedule/offline-queue.unit.test.ts`, proving deterministic reconnect replay through trusted route actions and live collaborator refresh propagation within the permitted shared calendar scope. |
 | R006 | failure-visibility | validated | M001/S05 | M001/S02, M001/S04 | Validated by M001 combined clean-reset preview-backed browser proof plus conflict/unit coverage, proving board/day/shift overlap warnings remain visible across offline reload, reconnect drain, and collaborator refresh without becoming authoritative write blockers. |
-| R007 | quality-attribute | validated | M001/S02 | M001/S03, M001/S05 | Validated in M001/S02 by the custom week-board/browser proof and unit coverage: `pnpm --dir apps/web check`, `pnpm --dir apps/web exec vitest run tests/schedule/board.unit.test.ts tests/routes/protected-routes.unit.test.ts tests/schedule/server-actions.unit.test.ts`, and `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts` confirmed the stress-friendly week board, accessible create/edit/move/delete controls, clear denied state, and visible week/action diagnostics. |
-| R008 | differentiator | active | M002 (provisional) | none | unmapped |
+| R007 | quality-attribute | validated | M002/S02 | M002/S01, M002/S03 | Validated in M001/S02 by the custom week-board/browser proof and unit coverage: `pnpm --dir apps/web check`, `pnpm --dir apps/web exec vitest run tests/schedule/board.unit.test.ts tests/routes/protected-routes.unit.test.ts tests/schedule/server-actions.unit.test.ts`, and `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts` confirmed the stress-friendly week board, accessible create/edit/move/delete controls, clear denied state, and visible week/action diagnostics. |
+| R008 | differentiator | active | M002/S01 | M002/S02, M002/S03 | unmapped |
 | R009 | launchability | active | M003 (provisional) | none | unmapped |
 | R010 | continuity | active | M003 (provisional) | none | unmapped |
 | R011 | differentiator | active | M004 (provisional) | none | unmapped |
-| R012 | compliance/security | validated | M001/S01 | M001/S04 | Validated by the M001 auth/policy/browser proof surfaces: `tests/access/policy-contract.unit.test.ts`, protected-route/unit coverage, denied-route browser proof, and the combined offline+sync browser verification together proved auth, RLS, and sharing rules keep cross-group calendar access fail-closed. |
+| R012 | compliance/security | validated | M002/S01 | M002/S02 | Validated by the M001 auth/policy/browser proof surfaces: `tests/access/policy-contract.unit.test.ts`, protected-route/unit coverage, denied-route browser proof, and the combined offline+sync browser verification together proved auth, RLS, and sharing rules keep cross-group calendar access fail-closed. |
 | R013 | admin/support | deferred | none | none | unmapped |
 | R014 | admin/support | deferred | none | none | unmapped |
 | R015 | admin/support | deferred | none | none | unmapped |
