@@ -126,8 +126,8 @@
 **Rule/Pattern:** When resolving a shift card in Playwright, scope to visible `shift-card-*` nodes and compare the card's primary heading text exactly; do not rely on `hasText` substring matching alone.
 **Rationale:** Conflict warnings and nested dialogs reuse shift titles in surrounding text, so substring-only matching can return the wrong card and make overlap assertions look nondeterministic even when the board data is correct.
 
-## 2026-04-17: Combined preview proof can drift if one spec mutates the seeded week that the next spec assumes as baseline
+## 2026-04-17: In combined preview-backed browser proof, choose the overlap scenario from live conflict summaries before asserting collaborator refresh
 
-**Context:** S06 final combined run of `calendar-offline.spec.ts` plus `calendar-sync.spec.ts` on one clean local reset.
-**Rule/Pattern:** For this repo's preview-backed scheduling proof, either reset state between spec files or make follow-on assertions derive their baseline from the currently visible board instead of assuming the original seeded overlap counts still hold after an earlier spec mutates the same calendar week.
-**Rationale:** The offline proof intentionally edits the shared Alpha week. When the sync proof runs afterward in the same clean-reset process, hard-coded seeded baseline expectations can fail even though the isolated sync proof is green.
+**Context:** M001 milestone closeout after `calendar-offline.spec.ts` mutates the seeded Alpha week before `calendar-sync.spec.ts` runs in the same clean-reset Playwright command.
+**Rule/Pattern:** For collaborator overlap proof in this repo, detect the current conflict-bearing day from the rendered board/day conflict summaries and build the next create/assertion flow from that visible state instead of assuming the original seeded Thursday overlap is still present.
+**Rationale:** Earlier specs can legitimately move or delete seeded shifts while still preserving a valid conflict baseline elsewhere in the week; deriving the scenario from the live board removes false failures caused by stale fixture assumptions without weakening the proof.

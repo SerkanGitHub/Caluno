@@ -1,54 +1,55 @@
 ---
-verdict: needs-attention
-remediation_round: 1
+verdict: pass
+remediation_round: 2
 ---
 
 # Milestone Validation: M001
 
 ## Success Criteria Checklist
-- [x] Previously synced calendars reopen offline and queued local edits survive reload in isolated browser proof.
-- [x] Reconnect drain returns to `0 pending / 0 retryable` in isolated browser proof.
-- [x] Collaborator updates appear live in isolated browser proof and next-week scope guards remain fail-closed.
-- [x] Missing S01-S04 assessment artifacts now exist.
-- [ ] The clean local reset combined command for `calendar-offline.spec.ts` plus `calendar-sync.spec.ts` is green end-to-end. Current blocker: earlier preview-backed mutations still change the seeded baseline assumed by the later sync spec.
+- [x] Previously synced calendars reopen offline and queued local edits survive reload in browser proof. Evidence: `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test -c playwright.offline.config.ts tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-sync.spec.ts` passed on 2026-04-17, and `calendar-offline.spec.ts` covered cached reopen, reload continuity, offline local edits, unsynced-route denial, and reconnect replay.
+- [x] Reconnect drain returns to `0 pending / 0 retryable` in browser proof. Evidence: the same clean-reset combined Playwright command passed after proving queued offline create/edit/move/delete work drained back to server-confirmed state.
+- [x] Collaborator updates appear live in browser proof and next-week scope guards remain fail-closed. Evidence: the same combined Playwright command passed with `calendar-sync.spec.ts` proving realtime collaborator refresh reaches `data-remote-refresh-state="applied"` and next-week viewers ignore out-of-scope current-week writes.
+- [x] Missing S01-S04 assessment artifacts exist. Evidence: `.gsd/milestones/M001/slices/S01/S01-ASSESSMENT.md` through `S04-ASSESSMENT.md` are present on disk.
+- [x] The clean local reset combined command for `calendar-offline.spec.ts` plus `calendar-sync.spec.ts` is green end-to-end. Evidence: 4/4 Playwright tests passed in the combined run after the sync proof was updated to derive its overlap baseline from the currently visible week state instead of a hard-coded seeded Thursday assumption.
 
 ## Slice Delivery Audit
 | Slice | Delivered output | Assessment status | Verdict |
 |---|---|---|---|
-| S01 | Trusted auth/session, memberships, permitted calendar access, fail-closed denied routes | S01-ASSESSMENT.md present | PASS |
-| S02 | Concrete schedule rows, trusted route actions, calm multi-shift board | S02-ASSESSMENT.md present | PASS |
-| S03 | Browser-local continuity, cached shell/snapshots, local-first queue | S03-ASSESSMENT.md present | PASS |
-| S04 | Replay/rebase sync engine, reconnect drain, realtime-triggered trusted refresh | S04-ASSESSMENT.md present | PASS |
-| S05 | Conflict visibility and milestone assembly evidence | Existing S05-ASSESSMENT.md present | PASS |
-| S06 | Offline proof hardening, realtime startup repair, stronger sync helpers, assessment backfill | Slice execution evidence exists; combined browser proof still has one shared-state verification blocker | NEEDS-ATTENTION |
+| S01 | Trusted auth/session boundary, memberships, permitted calendar access, and fail-closed denied routes | S01-SUMMARY.md and S01-ASSESSMENT.md present | PASS |
+| S02 | Concrete schedule rows, trusted route actions, and calm multi-shift board editing | S02-SUMMARY.md and S02-ASSESSMENT.md present | PASS |
+| S03 | Browser-local continuity, cached scope/snapshots, and local-first queueing | S03-SUMMARY.md and S03-ASSESSMENT.md present | PASS |
+| S04 | Replay/rebase sync engine, reconnect drain, and realtime-triggered trusted refresh | S04-SUMMARY.md and S04-ASSESSMENT.md present | PASS |
+| S05 | Derived conflict visibility and milestone proof diagnostics | S05-SUMMARY.md and S05-ASSESSMENT.md present | PASS |
+| S06 | Offline/realtime proof hardening, browser-session hydration for realtime, and milestone-close remediation | S06-SUMMARY.md present; combined clean-reset proof now passes | PASS |
 
 ## Cross-Slice Integration
 | Boundary | Expected | Current evidence | Verdict |
 |---|---|---|---|
-| S01 → S03/S04/S06 auth boundary | Trusted SSR auth scope remains the only authority for protected routes and browser session continuity must not widen scope. | Isolated S06 offline and sync proof still sign in through trusted routes, hydrate the browser client from trusted layout session data, and keep unauthorized/unsynced route handling fail-closed. | PASS |
-| S02 → S03/S04/S06 schedule authority | Concrete shift rows and `/calendars/[calendarId]` actions remain the only write authority. | Offline reconnect drain still replays create/edit/move/delete through trusted actions; sync proof still treats visible board state plus route diagnostics as the authority. | PASS |
-| S03 → S06 offline continuity | Previously synced calendars reopen offline and retain local-first queue/snapshot semantics. | `calendar-offline.spec.ts` now passes in isolation on a clean reset, proving cached reopen, reload continuity, unsynced-route denial, and reconnect drain. | PASS |
-| S04 → S06 realtime proof | Collaborator refresh should use realtime as change detection plus trusted refresh, while out-of-scope next-week views stay unchanged. | Isolated `calendar-sync.spec.ts` now passes in isolation with collaborator refresh reaching `applied` and next-week scope guards remaining closed. | PASS |
-| Combined S03+S04+S06 browser proof | Offline and sync proof should both pass in one clean-reset command without hidden state coupling. | The combined command still fails because earlier preview-backed mutations shift the seeded-week baseline assumed by later sync assertions. | NEEDS-ATTENTION |
+| S01 → S03/S04/S06 auth boundary | Trusted SSR auth scope remains the only authority for protected routes and browser session continuity must not widen scope. | Combined offline+sync proof still signs in through trusted routes, hydrates the browser Supabase client from trusted layout session data, and keeps unsynced/off-limits routes fail-closed. | PASS |
+| S02 → S03/S04/S06 schedule authority | Concrete shift rows and `/calendars/[calendarId]` actions remain the only write authority. | Offline reconnect drain replays create/edit/move/delete through trusted route actions and collaborator refresh proof observes the server-confirmed board after refresh. | PASS |
+| S03 → S06 offline continuity | Previously synced calendars reopen offline and retain local-first queue/snapshot semantics. | Combined clean-reset proof passed cached reopen, reload continuity, offline local writes, and reconnect drain without route-scope loss. | PASS |
+| S04 → S06 realtime proof | Collaborator refresh should use realtime as change detection plus trusted refresh, while out-of-scope next-week views stay unchanged. | Combined clean-reset proof passed with collaborator refresh reaching `applied` and next-week scope guards remaining closed. | PASS |
+| Combined S03+S04+S06 browser proof | Offline and sync proof should both pass in one clean-reset command without hidden state coupling. | The combined clean-reset Playwright command now passes end-to-end after the sync spec derives its overlap baseline from visible current state. | PASS |
 
 ## Requirement Coverage
 | Requirement | Current evidence | Verdict |
 |---|---|---|
-| R001 | S01/S03 contracts still hold and S06 isolated offline proof confirms cached-session continuity for previously synced Alpha calendars. | NEEDS-ATTENTION — strong supporting evidence, but milestone validation remains tied to the combined browser proof gap. |
-| R004 | Isolated S06 offline proof now passes for offline reopen, reload continuity, local edits, and reconnect drain. | NEEDS-ATTENTION — evidence is strong but not yet closed at assembled milestone level because the combined clean-reset browser command still fails. |
-| R005 | Isolated S06 sync proof now passes for collaborator realtime refresh, trusted refresh application, and out-of-scope next-week guards. | NEEDS-ATTENTION — architecture and isolated proof look good, but the milestone still lacks a green combined browser run. |
-| R006 | Conflict warnings remain visible through offline reload, reconnect, and collaborator refresh in isolated proof. | NEEDS-ATTENTION — conflict visibility is well evidenced, but final milestone validation still depends on the combined browser command. |
-| R002 / R012 | Upstream auth/access and permitted-calendar boundaries remain intact and are reaffirmed by S06 reruns. | PASS |
-| Out-of-scope requirements (R008+) | No new milestone evidence. | UNCHANGED |
+| R001 | `calendar-offline.spec.ts` in the clean-reset combined proof confirms cached-session continuity for previously synced Alpha calendars and fail-closed handling for unsynced Beta routes. | PASS |
+| R004 | The same combined proof confirms previously synced schedule data stays readable/editable offline, survives reload, and reconciles after reconnect. | PASS |
+| R005 | Combined collaborator proof plus passing `tests/schedule/sync-engine.unit.test.ts` / `tests/schedule/offline-queue.unit.test.ts` confirm deterministic reconnect replay and live shared refresh propagation. | PASS |
+| R006 | Combined offline+sync proof preserves board/day/shift overlap warnings across offline reload, reconnect drain, and collaborator refresh. | PASS |
+| R002 | Membership-derived sharing, join onboarding, and permitted calendar access are proven; explicit user-facing role assignment remains modeled but not separately validated, so the requirement stays active. | PASS (advanced, not promoted) |
+| R012 | Auth/session revalidation, policy-contract tests, denied-route browser proof, and combined scheduling proof keep cross-group access fail-closed. | PASS |
+| Out-of-scope requirements (R008+) | No milestone-scope change. | UNCHANGED |
 
 ## Verification Class Compliance
 | Class | Evidence | Verdict |
 |---|---|---|
-| Contract | `pnpm --dir apps/web check` plus 40 passing unit tests across conflicts, board, offline queue, sync engine, and server actions. | PASS |
-| Integration | Isolated `calendar-offline.spec.ts` and `calendar-sync.spec.ts` both pass on clean resets. | PASS |
-| Operational | Combined clean-reset browser command still fails because spec-order state mutation changes the later sync baseline. | NEEDS-ATTENTION |
-| UAT | Slice UAT can be written from the passing isolated flows plus the known combined-run blocker. | NEEDS-ATTENTION |
+| Contract | `pnpm --dir apps/web check` and `pnpm --dir apps/web exec vitest run tests/schedule/conflicts.unit.test.ts tests/schedule/board.unit.test.ts tests/schedule/offline-queue.unit.test.ts tests/schedule/sync-engine.unit.test.ts tests/schedule/server-actions.unit.test.ts` passed (40 tests). | PASS |
+| Integration | `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/auth-groups-access.spec.ts`, `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts`, and the clean-reset combined preview-backed offline+sync Playwright command all passed across the milestone. | PASS |
+| Operational | The required clean-reset combined browser command now passes without hidden seeded-state coupling, and milestone closeout artifacts/assessments are present. | PASS |
+| UAT | Slice summaries and browser proof together demonstrate the end-to-end user loop: sign in, access permitted calendars, edit shifts, reopen offline, reconnect, and observe collaborator updates/conflicts. | PASS |
 
 
 ## Verdict Rationale
-S06 materially improved milestone evidence: isolated offline and sync browser proof now pass, missing slice assessments exist, and requirements R005/R006 now point to current evidence. However, the milestone cannot be treated as fully validated yet because the required combined clean-reset browser command still fails due to shared-state verification drift between offline and sync specs.
+M001 now satisfies its assembled milestone contract. Non-.gsd code changes exist relative to the integration base, all slices are complete, all required summary/assessment artifacts are present, and the last blocker from the previous validation round—the combined clean-reset offline+sync browser proof—now passes after removing the hard-coded seeded-baseline assumption from the sync verification flow.

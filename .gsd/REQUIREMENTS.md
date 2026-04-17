@@ -4,17 +4,6 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Active
 
-### R001 — Users can create an account, sign in, and continue using previously synced calendars offline with a cached session.
-- Class: primary-user-loop
-- Status: active
-- Description: Users can create an account, sign in, and continue using previously synced calendars offline with a cached session.
-- Why it matters: Offline continuity is part of the core promise for people coordinating around irregular schedules.
-- Source: user
-- Primary owning slice: M001/S01
-- Supporting slices: M001/S03
-- Validation: mapped
-- Notes: Fresh sign-in remains an online operation; cached-session access must preserve previously synced data offline.
-
 ### R002 — Users can create groups, assign roles, and share calendars so only permitted members can access shared schedule data.
 - Class: core-capability
 - Status: active
@@ -25,39 +14,6 @@ This file is the explicit capability and coverage contract for the project.
 - Supporting slices: M001/S04
 - Validation: mapped
 - Notes: Must support family/team style collaboration with role-based access.
-
-### R004 — Previously synced schedule data can be read and edited locally in the browser while offline.
-- Class: continuity
-- Status: active
-- Description: Previously synced schedule data can be read and edited locally in the browser while offline.
-- Why it matters: Users need the schedule to remain usable when connectivity drops, not just visible.
-- Source: user
-- Primary owning slice: M001/S03
-- Supporting slices: M001/S04
-- Validation: mapped
-- Notes: M001 uses browser-local persistence as the main proof surface for offline behavior.
-
-### R005 — Local-first schedule changes sync back to the backend deterministically, and live shared updates propagate to other group members when online.
-- Class: integration
-- Status: active
-- Description: Local-first schedule changes sync back to the backend deterministically, and live shared updates propagate to other group members when online.
-- Why it matters: Shared coordination breaks down if edits drift across users or devices.
-- Source: user
-- Primary owning slice: M001/S04
-- Supporting slices: M001/S03, M001/S05
-- Validation: Advanced by S06 isolated browser proof (`calendar-sync.spec.ts`) plus passing `sync-engine`, board, server-actions, and offline-queue regressions; full milestone validation still needs the combined clean-reset browser command to pass.
-- Notes: S06 strengthened browser proof substantially: isolated `calendar-sync.spec.ts` now passes with browser-session hydration before realtime subscribe, collaborator refresh reaches `data-remote-refresh-state="applied"`, and next-week scope guards stay fail-closed. The remaining gap is the combined clean-reset offline+sync command, where spec-order state mutation still shifts the assumed seeded baseline.
-
-### R006 — The system warns users about baseline schedule conflicts such as overlapping shifts, double-booking, or conflicting edits that would silently change schedule meaning.
-- Class: failure-visibility
-- Status: active
-- Description: The system warns users about baseline schedule conflicts such as overlapping shifts, double-booking, or conflicting edits that would silently change schedule meaning.
-- Why it matters: A shared schedule is only trustworthy if obvious conflicts are visible before they cause coordination mistakes.
-- Source: inferred
-- Primary owning slice: M001/S05
-- Supporting slices: M001/S02, M001/S04
-- Validation: mapped
-- Notes: M001 covers baseline conflicts only, not childcare-specific domain policies.
 
 ### R008 — Caluno computes shared free-time windows across two or more users and explains why a suggested window works.
 - Class: differentiator
@@ -103,18 +59,18 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: unmapped
 - Notes: Planned after substrate and matching work; not part of M001.
 
-### R012 — Authentication, row-level policies, and sharing rules prevent cross-group data leakage and limit each user to calendars they are permitted to access.
-- Class: compliance/security
-- Status: active
-- Description: Authentication, row-level policies, and sharing rules prevent cross-group data leakage and limit each user to calendars they are permitted to access.
-- Why it matters: The product cannot be trusted if shared calendar data leaks across groups or roles.
+## Validated
+
+### R001 — Users can create an account, sign in, and continue using previously synced calendars offline with a cached session.
+- Class: primary-user-loop
+- Status: validated
+- Description: Users can create an account, sign in, and continue using previously synced calendars offline with a cached session.
+- Why it matters: Offline continuity is part of the core promise for people coordinating around irregular schedules.
 - Source: user
 - Primary owning slice: M001/S01
-- Supporting slices: M001/S04
-- Validation: mapped
-- Notes: Supabase Auth and RLS are part of the chosen backend direction.
-
-## Validated
+- Supporting slices: M001/S03
+- Validation: Validated by M001 combined clean-reset preview-backed browser proof (`npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test -c playwright.offline.config.ts tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-sync.spec.ts`), which proved trusted sign-in, cached-session offline reopen for previously synced calendars, reload continuity, and fail-closed denial for unsynced calendar URLs.
+- Notes: Fresh sign-in remains an online operation; cached-session access must preserve previously synced data offline.
 
 ### R003 — Users can create, edit, move, and delete multiple shifts per day, including recurring patterns, through browser calendar views.
 - Class: core-capability
@@ -127,6 +83,39 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: Validated in M001/S02 by passing `pnpm --dir apps/web exec vitest run tests/routes/protected-routes.unit.test.ts tests/schedule/board.unit.test.ts tests/schedule/recurrence.unit.test.ts tests/schedule/server-actions.unit.test.ts` plus `npx --yes supabase db reset --local --yes` and `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts`, which proved same-day multi-shift rendering, bounded recurring creation, edit, move, delete, and reload continuity on the protected calendar route.
 - Notes: S02 delivered the web-first schedule editing proof surface for multiple same-day and recurring shifts.
 
+### R004 — Previously synced schedule data can be read and edited locally in the browser while offline.
+- Class: continuity
+- Status: validated
+- Description: Previously synced schedule data can be read and edited locally in the browser while offline.
+- Why it matters: Users need the schedule to remain usable when connectivity drops, not just visible.
+- Source: user
+- Primary owning slice: M001/S03
+- Supporting slices: M001/S04
+- Validation: Validated by M001 combined clean-reset preview-backed browser proof (`npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test -c playwright.offline.config.ts tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-sync.spec.ts`), which proved previously synced schedule data remains readable and editable offline, survives reload, and reconciles through reconnect drain.
+- Notes: M001 uses browser-local persistence as the main proof surface for offline behavior.
+
+### R005 — Local-first schedule changes sync back to the backend deterministically, and live shared updates propagate to other group members when online.
+- Class: integration
+- Status: validated
+- Description: Local-first schedule changes sync back to the backend deterministically, and live shared updates propagate to other group members when online.
+- Why it matters: Shared coordination breaks down if edits drift across users or devices.
+- Source: user
+- Primary owning slice: M001/S04
+- Supporting slices: M001/S03, M001/S05
+- Validation: Validated by M001 combined clean-reset preview-backed browser proof plus passing `tests/schedule/sync-engine.unit.test.ts` and `tests/schedule/offline-queue.unit.test.ts`, proving deterministic reconnect replay through trusted route actions and live collaborator refresh propagation within the permitted shared calendar scope.
+- Notes: Validated in M001 after the combined clean-reset preview-backed browser proof passed. Deterministic reconnect replay now reuses trusted route actions, collaborator refresh reaches `data-remote-refresh-state="applied"`, and next-week scope guards remain fail-closed.
+
+### R006 — The system warns users about baseline schedule conflicts such as overlapping shifts, double-booking, or conflicting edits that would silently change schedule meaning.
+- Class: failure-visibility
+- Status: validated
+- Description: The system warns users about baseline schedule conflicts such as overlapping shifts, double-booking, or conflicting edits that would silently change schedule meaning.
+- Why it matters: A shared schedule is only trustworthy if obvious conflicts are visible before they cause coordination mistakes.
+- Source: inferred
+- Primary owning slice: M001/S05
+- Supporting slices: M001/S02, M001/S04
+- Validation: Validated by M001 combined clean-reset preview-backed browser proof plus conflict/unit coverage, proving board/day/shift overlap warnings remain visible across offline reload, reconnect drain, and collaborator refresh without becoming authoritative write blockers.
+- Notes: Validated in M001 after the combined clean-reset preview-backed browser proof passed. Conflict visibility remains derived from the effective visible week and stays visible across offline reload, reconnect drain, and collaborator refresh without becoming authoritative write policy.
+
 ### R007 — The browser scheduling experience is stress-friendly, clear, fast, and accessible enough for everyday coordination work.
 - Class: quality-attribute
 - Status: validated
@@ -137,6 +126,17 @@ This file is the explicit capability and coverage contract for the project.
 - Supporting slices: M001/S03, M001/S05
 - Validation: Validated in M001/S02 by the custom week-board/browser proof and unit coverage: `pnpm --dir apps/web check`, `pnpm --dir apps/web exec vitest run tests/schedule/board.unit.test.ts tests/routes/protected-routes.unit.test.ts tests/schedule/server-actions.unit.test.ts`, and `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts` confirmed the stress-friendly week board, accessible create/edit/move/delete controls, clear denied state, and visible week/action diagnostics.
 - Notes: The current proof is web-desktop focused; later slices can extend the same calm interaction model to offline and conflict surfaces.
+
+### R012 — Authentication, row-level policies, and sharing rules prevent cross-group data leakage and limit each user to calendars they are permitted to access.
+- Class: compliance/security
+- Status: validated
+- Description: Authentication, row-level policies, and sharing rules prevent cross-group data leakage and limit each user to calendars they are permitted to access.
+- Why it matters: The product cannot be trusted if shared calendar data leaks across groups or roles.
+- Source: user
+- Primary owning slice: M001/S01
+- Supporting slices: M001/S04
+- Validation: Validated by the M001 auth/policy/browser proof surfaces: `tests/access/policy-contract.unit.test.ts`, protected-route/unit coverage, denied-route browser proof, and the combined offline+sync browser verification together proved auth, RLS, and sharing rules keep cross-group calendar access fail-closed.
+- Notes: Validated in M001 by the auth/session, policy-contract, denied-route, and combined scheduling proof surfaces. Supabase Auth plus RLS-backed sharing remained fail-closed through trusted SSR access, schedule mutations, offline reopen, reconnect replay, and collaborator refresh.
 
 ## Deferred
 
@@ -227,18 +227,18 @@ This file is the explicit capability and coverage contract for the project.
 
 | ID | Class | Status | Primary owner | Supporting | Proof |
 |---|---|---|---|---|---|
-| R001 | primary-user-loop | active | M001/S01 | M001/S03 | mapped |
+| R001 | primary-user-loop | validated | M001/S01 | M001/S03 | Validated by M001 combined clean-reset preview-backed browser proof (`npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test -c playwright.offline.config.ts tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-sync.spec.ts`), which proved trusted sign-in, cached-session offline reopen for previously synced calendars, reload continuity, and fail-closed denial for unsynced calendar URLs. |
 | R002 | core-capability | active | M001/S01 | M001/S04 | mapped |
 | R003 | core-capability | validated | M001/S02 | M001/S05 | Validated in M001/S02 by passing `pnpm --dir apps/web exec vitest run tests/routes/protected-routes.unit.test.ts tests/schedule/board.unit.test.ts tests/schedule/recurrence.unit.test.ts tests/schedule/server-actions.unit.test.ts` plus `npx --yes supabase db reset --local --yes` and `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts`, which proved same-day multi-shift rendering, bounded recurring creation, edit, move, delete, and reload continuity on the protected calendar route. |
-| R004 | continuity | active | M001/S03 | M001/S04 | mapped |
-| R005 | integration | active | M001/S04 | M001/S03, M001/S05 | Advanced by S06 isolated browser proof (`calendar-sync.spec.ts`) plus passing `sync-engine`, board, server-actions, and offline-queue regressions; full milestone validation still needs the combined clean-reset browser command to pass. |
-| R006 | failure-visibility | active | M001/S05 | M001/S02, M001/S04 | mapped |
+| R004 | continuity | validated | M001/S03 | M001/S04 | Validated by M001 combined clean-reset preview-backed browser proof (`npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test -c playwright.offline.config.ts tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-sync.spec.ts`), which proved previously synced schedule data remains readable and editable offline, survives reload, and reconciles through reconnect drain. |
+| R005 | integration | validated | M001/S04 | M001/S03, M001/S05 | Validated by M001 combined clean-reset preview-backed browser proof plus passing `tests/schedule/sync-engine.unit.test.ts` and `tests/schedule/offline-queue.unit.test.ts`, proving deterministic reconnect replay through trusted route actions and live collaborator refresh propagation within the permitted shared calendar scope. |
+| R006 | failure-visibility | validated | M001/S05 | M001/S02, M001/S04 | Validated by M001 combined clean-reset preview-backed browser proof plus conflict/unit coverage, proving board/day/shift overlap warnings remain visible across offline reload, reconnect drain, and collaborator refresh without becoming authoritative write blockers. |
 | R007 | quality-attribute | validated | M001/S02 | M001/S03, M001/S05 | Validated in M001/S02 by the custom week-board/browser proof and unit coverage: `pnpm --dir apps/web check`, `pnpm --dir apps/web exec vitest run tests/schedule/board.unit.test.ts tests/routes/protected-routes.unit.test.ts tests/schedule/server-actions.unit.test.ts`, and `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts` confirmed the stress-friendly week board, accessible create/edit/move/delete controls, clear denied state, and visible week/action diagnostics. |
 | R008 | differentiator | active | M002 (provisional) | none | unmapped |
 | R009 | launchability | active | M003 (provisional) | none | unmapped |
 | R010 | continuity | active | M003 (provisional) | none | unmapped |
 | R011 | differentiator | active | M004 (provisional) | none | unmapped |
-| R012 | compliance/security | active | M001/S01 | M001/S04 | mapped |
+| R012 | compliance/security | validated | M001/S01 | M001/S04 | Validated by the M001 auth/policy/browser proof surfaces: `tests/access/policy-contract.unit.test.ts`, protected-route/unit coverage, denied-route browser proof, and the combined offline+sync browser verification together proved auth, RLS, and sharing rules keep cross-group calendar access fail-closed. |
 | R013 | admin/support | deferred | none | none | unmapped |
 | R014 | admin/support | deferred | none | none | unmapped |
 | R015 | admin/support | deferred | none | none | unmapped |
@@ -251,7 +251,7 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Coverage Summary
 
-- Active requirements: 10
-- Mapped to slices: 10
-- Validated: 2 (R003, R007)
+- Active requirements: 5
+- Mapped to slices: 5
+- Validated: 7 (R001, R003, R004, R005, R006, R007, R012)
 - Unmapped active requirements: 0
