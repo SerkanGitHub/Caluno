@@ -32,11 +32,11 @@
 
   let { data }: { data: PageData } = $props();
   let pendingActionKey = $state<string | null>(null);
-  let controllerState = $state<CalendarControllerState | null>(null);
-  let controller = $state<CalendarController | null>(null);
+  let controllerState = $state.raw<CalendarControllerState | null>(null);
+  let controller = $state.raw<CalendarController | null>(null);
   let reconnectDrainPromise: Promise<void> | null = null;
   let realtimeSubscription: CalendarShiftRealtimeSubscription | null = null;
-  let realtimeDiagnostics = $state<CalendarRealtimeDiagnostics>(createInitialRealtimeDiagnostics());
+  let realtimeDiagnostics = $state.raw<CalendarRealtimeDiagnostics>(createInitialRealtimeDiagnostics());
   let retainedRealtimeScopeKey: string | null = null;
   let retainedRealtimeDiagnostics: CalendarRealtimeDiagnostics | null = null;
 
@@ -449,43 +449,53 @@
     const previousRetainedScopeKey = untrack(() => retainedRealtimeScopeKey);
     const previousRetainedDiagnostics = untrack(() => retainedRealtimeDiagnostics);
     const reusingScope = previousRetainedScopeKey === scopeKey && previousRetainedDiagnostics !== null;
-    retainedRealtimeScopeKey = scopeKey;
-    realtimeDiagnostics = reusingScope && previousRetainedDiagnostics
-      ? previousRetainedDiagnostics
+    const initialRealtimeDiagnostics = reusingScope && previousRetainedDiagnostics
+      ? cloneRealtimeDiagnostics(previousRetainedDiagnostics)
       : {
           ...createInitialRealtimeDiagnostics(),
           channelDetail: 'Connecting to shared shift change detection for this calendar week.'
         };
-    retainedRealtimeDiagnostics = realtimeDiagnostics;
+    retainedRealtimeScopeKey = scopeKey;
+    realtimeDiagnostics = initialRealtimeDiagnostics;
+    retainedRealtimeDiagnostics = cloneRealtimeDiagnostics(initialRealtimeDiagnostics);
 
     let disposed = false;
+    let subscription: CalendarShiftRealtimeSubscription | null = null;
 
-    const subscription = createCalendarShiftRealtimeSubscription({
-      calendarId: currentReadyView.calendar.id,
-      visibleWeek: currentReadyView.schedule.visibleWeek,
-      requestTrustedRefresh: (signal) => refreshTrustedWeekFromRoute(nextController, scopeKey, signal),
-      onDiagnostics: (diagnostics) => {
-        if (!disposed) {
-          const nextDiagnostics = reusingScope
-            ? mergeRealtimeDiagnosticsForScopeReload({
-                previous: retainedRealtimeDiagnostics,
-                next: diagnostics
-              })
-            : diagnostics;
-          realtimeDiagnostics = nextDiagnostics;
-          retainedRealtimeDiagnostics = nextDiagnostics;
-        }
+    queueMicrotask(() => {
+      if (disposed) {
+        return;
       }
-    });
 
-    realtimeSubscription = subscription;
+      subscription = createCalendarShiftRealtimeSubscription({
+        calendarId: currentReadyView.calendar.id,
+        visibleWeek: currentReadyView.schedule.visibleWeek,
+        requestTrustedRefresh: (signal) => refreshTrustedWeekFromRoute(nextController, scopeKey, signal),
+        onDiagnostics: (diagnostics) => {
+          if (!disposed) {
+            const nextDiagnostics = reusingScope
+              ? mergeRealtimeDiagnosticsForScopeReload({
+                  previous: retainedRealtimeDiagnostics,
+                  next: diagnostics
+                })
+              : diagnostics;
+            realtimeDiagnostics = nextDiagnostics;
+            retainedRealtimeDiagnostics = cloneRealtimeDiagnostics(nextDiagnostics);
+          }
+        }
+      });
+
+      realtimeSubscription = subscription;
+    });
 
     return () => {
       disposed = true;
       if (realtimeSubscription === subscription) {
         realtimeSubscription = null;
       }
-      void subscription.close();
+      if (subscription) {
+        void subscription.close();
+      }
     };
   });
 
@@ -568,6 +578,10 @@
       lastRemoteRefreshReason: null,
       lastRemoteRefreshDetail: null
     };
+  }
+
+  function cloneRealtimeDiagnostics(diagnostics: CalendarRealtimeDiagnostics): CalendarRealtimeDiagnostics {
+    return { ...diagnostics };
   }
 </script>
 

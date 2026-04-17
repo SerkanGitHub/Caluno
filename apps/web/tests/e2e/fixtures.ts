@@ -662,13 +662,14 @@ export async function openCalendarWeek(params: {
   phase?: string;
 }) {
   const { page, flow, calendarId, visibleWeekStart = seededSchedule.visibleWeek.start, focusShiftIds = [], phase } = params;
+  const expectedVisibleWeekEndExclusive = addUtcDays(visibleWeekStart, 7);
   const targetUrl = `/calendars/${calendarId}?start=${visibleWeekStart}`;
 
   flow.mark(phase ?? 'open-calendar', targetUrl);
   flow.setContext({
     calendarId,
     visibleWeekStart,
-    visibleWeekEndExclusive: seededSchedule.visibleWeek.endExclusive,
+    visibleWeekEndExclusive: expectedVisibleWeekEndExclusive,
     focusShiftIds,
     note: `calendar route ${targetUrl}`
   });
@@ -696,7 +697,7 @@ export async function openCalendarWeek(params: {
 
   const boardWeek = await readVisibleWeekFromBoard(page);
   expect(boardWeek.visibleWeekStart).toBe(visibleWeekStart);
-  expect(boardWeek.visibleWeekEndExclusive).toBe(seededSchedule.visibleWeek.endExclusive);
+  expect(boardWeek.visibleWeekEndExclusive).toBe(expectedVisibleWeekEndExclusive);
 
   await syncCalendarFlowContext(page, flow, {
     calendarId,
@@ -705,6 +706,12 @@ export async function openCalendarWeek(params: {
     focusShiftIds,
     note: `calendar route ${targetUrl}`
   });
+}
+
+function addUtcDays(dayKey: string, days: number): string {
+  const date = new Date(`${dayKey}T00:00:00.000Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
 }
 
 export async function expectRuntimeSurfaceReady(page: Page) {
@@ -807,35 +814,49 @@ export async function resolveVisibleShiftCardIdentity(params: {
 }): Promise<VisibleShiftCardIdentity> {
   const timeout = params.timeout ?? 20_000;
   const idKind = params.idKind ?? 'any';
-  const locator = findVisibleShiftCards({
-    page: params.page,
-    title: params.title,
-    dayKey: params.dayKey,
-    windowLabel: params.windowLabel
-  }).first();
-
-  await expect(locator).toBeVisible({ timeout });
+  const scope = params.dayKey ? params.page.getByTestId(`day-column-${params.dayKey}`) : params.page.locator('main');
 
   const startedAt = Date.now();
   while (Date.now() - startedAt <= timeout) {
-    const testId = await locator.getAttribute('data-testid');
-    if (testId?.startsWith('shift-card-')) {
-      const shiftId = testId.replace('shift-card-', '');
-      if (matchesVisibleShiftCardIdentityKind(shiftId, idKind)) {
-        return {
-          shiftId,
-          testId,
-          locator
-        };
+    const candidates = scope.locator('[data-testid^="shift-card-"]');
+    const candidateCount = await candidates.count();
+
+    for (let index = 0; index < candidateCount; index += 1) {
+      const locator = candidates.nth(index);
+      if (!(await locator.isVisible())) {
+        continue;
+      }
+
+      const headingText = ((await locator.locator('h3').first().textContent()) ?? '').trim();
+      if (headingText !== params.title) {
+        continue;
+      }
+
+      if (params.windowLabel) {
+        const cardText = ((await locator.textContent()) ?? '').trim();
+        if (!cardText.includes(params.windowLabel)) {
+          continue;
+        }
+      }
+
+      const testId = await locator.getAttribute('data-testid');
+      if (testId?.startsWith('shift-card-')) {
+        const shiftId = testId.replace('shift-card-', '');
+        if (matchesVisibleShiftCardIdentityKind(shiftId, idKind)) {
+          return {
+            shiftId,
+            testId,
+            locator
+          };
+        }
       }
     }
 
     await params.page.waitForTimeout(200);
   }
 
-  const finalTestId = await locator.getAttribute('data-testid');
   throw new Error(
-    `Expected visible shift card "${params.title}"${params.dayKey ? ` in day ${params.dayKey}` : ''} to expose a ${idKind} id via data-testid, received ${finalTestId ?? 'no data-testid'}.`
+    `Expected visible shift card "${params.title}"${params.dayKey ? ` in day ${params.dayKey}` : ''} to expose a ${idKind} id via data-testid${params.windowLabel ? ` with window ${params.windowLabel}` : ''}, but no matching visible card was found before timeout.`
   );
 }
 

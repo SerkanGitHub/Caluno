@@ -1,5 +1,9 @@
 import type { ActionResult } from '@sveltejs/kit';
-import { getSupabaseBrowserClient } from '$lib/supabase/client';
+import {
+  getSupabaseBrowserClient,
+  readSupabaseBrowserSessionWithRetry,
+  waitForSupabaseBrowserSessionHydration
+} from '$lib/supabase/client';
 import type { CalendarScheduleView, CalendarShift, ScheduleActionState, VisibleWeek } from '$lib/server/schedule';
 import type { OfflineMutationQueueEntry, OfflineMutationQueueReadResult } from './mutation-queue';
 import type { OfflineWeekSnapshotReadResult } from './repository';
@@ -679,6 +683,8 @@ export function createCalendarShiftRealtimeSubscription(params: {
   let queuedSignal: ShiftRealtimeSignal | null = null;
   let ignoreClosedStatus = false;
   let authSubscription: ShiftRealtimeAuthSubscriptionLike | null = null;
+  let lastRealtimeAccessToken: string | null = null;
+  let lastRealtimeAuthFailureDetail: string | null = null;
 
   let diagnostics: CalendarRealtimeDiagnostics = {
     channelState: 'subscribing',
@@ -758,21 +764,29 @@ export function createCalendarShiftRealtimeSubscription(params: {
 
   const applyRealtimeAuth = async (sessionOverride?: ShiftRealtimeSessionLike | null) => {
     const getSession = client.auth?.getSession;
-    const setAuth = client.realtime?.setAuth;
-    if (typeof getSession !== 'function' || typeof setAuth !== 'function') {
+    if (typeof getSession !== 'function' || typeof client.realtime?.setAuth !== 'function') {
       return 'unsupported' as const;
     }
 
     try {
-      const session = sessionOverride ?? (await getSession()).data.session;
+      const session = sessionOverride ?? (await readSupabaseBrowserSessionWithRetry(client as unknown as never));
       const accessToken = session?.access_token?.trim();
       if (!accessToken) {
+        lastRealtimeAuthFailureDetail = null;
         return 'missing-token' as const;
       }
 
-      await setAuth(accessToken);
+      if (lastRealtimeAccessToken === accessToken) {
+        lastRealtimeAuthFailureDetail = null;
+        return 'ready' as const;
+      }
+
+      await client.realtime.setAuth(accessToken);
+      lastRealtimeAccessToken = accessToken;
+      lastRealtimeAuthFailureDetail = null;
       return 'ready' as const;
-    } catch {
+    } catch (error) {
+      lastRealtimeAuthFailureDetail = error instanceof Error ? error.message : String(error);
       return 'failed' as const;
     }
   };
@@ -913,25 +927,34 @@ export function createCalendarShiftRealtimeSubscription(params: {
 
     setChannelState('subscribing', null, 'Connecting to shared shift change detection for this calendar week.');
 
-    const nextChannel = client
-      .channel(`calendar-shifts:${params.calendarId}:${params.visibleWeek.start}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'shifts',
-          filter: `calendar_id=eq.${params.calendarId}`
-        },
-        handlePayload
-      )
-      .subscribe(handleSubscribeStatus);
+    try {
+      const nextChannel = client
+        .channel(`calendar-shifts:${params.calendarId}:${params.visibleWeek.start}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'shifts',
+            filter: `calendar_id=eq.${params.calendarId}`
+          },
+          handlePayload
+        )
+        .subscribe(handleSubscribeStatus);
 
-    channel = nextChannel;
-    subscribeTimer = setTimeoutFn(() => {
-      subscribeTimer = null;
-      handleSubscribeStatus('TIMED_OUT');
-    }, subscribeTimeoutMs);
+      channel = nextChannel;
+      subscribeTimer = setTimeoutFn(() => {
+        subscribeTimer = null;
+        handleSubscribeStatus('TIMED_OUT');
+      }, subscribeTimeoutMs);
+    } catch (error) {
+      scheduleRestart(
+        'REALTIME_CHANNEL_CREATE_FAILED',
+        error instanceof Error && error.message.trim().length > 0
+          ? error.message
+          : 'The shared shift channel could not be created, so it is being recreated while the current board stays visible.'
+      );
+    }
   };
 
   const startChannel = async (sessionOverride?: ShiftRealtimeSessionLike | null) => {
@@ -941,6 +964,11 @@ export function createCalendarShiftRealtimeSubscription(params: {
 
     const startFreshChannel = async () => {
       if (hasRealtimeAuthHooks()) {
+        await waitForSupabaseBrowserSessionHydration();
+        if (disposed) {
+          return;
+        }
+
         const authStatus = await applyRealtimeAuth(sessionOverride);
         if (disposed) {
           return;
@@ -958,7 +986,9 @@ export function createCalendarShiftRealtimeSubscription(params: {
         if (authStatus === 'failed') {
           scheduleRestart(
             'REALTIME_AUTH_APPLY_FAILED',
-            'The browser session could not be applied to shared shift change detection yet, so the channel will retry without widening the current board scope.'
+            lastRealtimeAuthFailureDetail?.trim()
+              ? `The browser session could not be applied to shared shift change detection yet, so the channel will retry without widening the current board scope. ${lastRealtimeAuthFailureDetail.trim()}`
+              : 'The browser session could not be applied to shared shift change detection yet, so the channel will retry without widening the current board scope.'
           );
           return;
         }
@@ -980,6 +1010,46 @@ export function createCalendarShiftRealtimeSubscription(params: {
     await startFreshChannel();
   };
 
+  const handleAuthSessionUpdate = (session: ShiftRealtimeSessionLike | null) => {
+    void (async () => {
+      const authStatus = await applyRealtimeAuth(session);
+      if (disposed) {
+        return;
+      }
+
+      if (authStatus === 'missing-token') {
+        if (!channel) {
+          setChannelState(
+            'subscribing',
+            'REALTIME_AUTH_SESSION_PENDING',
+            'Waiting for the browser auth session before opening shared shift change detection for this calendar week.'
+          );
+        }
+        return;
+      }
+
+      if (authStatus === 'failed') {
+        scheduleRestart(
+          'REALTIME_AUTH_APPLY_FAILED',
+          lastRealtimeAuthFailureDetail?.trim()
+            ? `The browser session could not be applied to shared shift change detection yet, so the channel will retry without widening the current board scope. ${lastRealtimeAuthFailureDetail.trim()}`
+            : 'The browser session could not be applied to shared shift change detection yet, so the channel will retry without widening the current board scope.'
+        );
+        return;
+      }
+
+      const shouldRestartChannel =
+        !channel ||
+        diagnostics.channelState === 'closed' ||
+        diagnostics.channelState === 'retrying' ||
+        diagnostics.channelReason === 'REALTIME_AUTH_SESSION_PENDING';
+
+      if (shouldRestartChannel) {
+        await startChannel(session);
+      }
+    })();
+  };
+
   authSubscription = readShiftRealtimeAuthSubscription(
     client.auth?.onAuthStateChange?.((event, session) => {
       if (disposed) {
@@ -987,6 +1057,7 @@ export function createCalendarShiftRealtimeSubscription(params: {
       }
 
       if (event === 'SIGNED_OUT') {
+        lastRealtimeAccessToken = null;
         queuedSignal = null;
         setRemoteRefreshState('idle', null, diagnostics.lastRemoteRefreshDetail);
         clearTimers();
@@ -996,7 +1067,7 @@ export function createCalendarShiftRealtimeSubscription(params: {
       }
 
       if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-        startChannel(session);
+        handleAuthSessionUpdate(session);
       }
     })
   );

@@ -999,6 +999,8 @@ describe('sync engine', () => {
     await Promise.resolve();
     await Promise.resolve();
     await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
 
     expect(client.callOrder).toEqual(expect.arrayContaining(['getSession', 'setAuth', 'channel']));
     expect(client.callOrder.indexOf('getSession')).toBeLessThan(client.callOrder.indexOf('setAuth'));
@@ -1026,6 +1028,9 @@ describe('sync engine', () => {
 
     await Promise.resolve();
     await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
 
     expect(client.channels).toHaveLength(0);
     expect(subscription.getDiagnostics()).toMatchObject({
@@ -1038,6 +1043,10 @@ describe('sync engine', () => {
     client.authStateChangeCallback?.('INITIAL_SESSION', client.session);
     await Promise.resolve();
     await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
 
     expect(client.channels).toHaveLength(1);
     client.channels[0]?.emitStatus('SUBSCRIBED');
@@ -1045,6 +1054,41 @@ describe('sync engine', () => {
       channelState: 'ready',
       channelReason: null
     });
+
+    await subscription.close();
+  });
+
+  it('does not recreate the realtime channel when duplicate auth-session events arrive during the initial subscribe handshake', async () => {
+    const client = new FakeRealtimeAuthClient();
+
+    const subscription = createCalendarShiftRealtimeSubscription({
+      calendarId: createScope().calendarId,
+      visibleWeek: createVisibleWeek(),
+      client: client as never,
+      requestTrustedRefresh: async () => ({
+        status: 'applied',
+        boardSource: 'server-sync',
+        replayedQueueLength: 0,
+        detail: 'trusted refresh applied'
+      })
+    });
+
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(client.channels).toHaveLength(1);
+    client.authStateChangeCallback?.('INITIAL_SESSION', client.session);
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(client.channels).toHaveLength(1);
+    expect(client.removedChannels).toHaveLength(0);
 
     await subscription.close();
   });

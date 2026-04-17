@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T03",
+  "unitId": "M001/S06/T03",
+  "timestamp": 1776362228356,
+  "passed": false,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "npx --yes supabase db reset --local --yes",
+      "exitCode": 0,
+      "durationMs": 25379,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/web exec playwright test -c playwright.offline.config.ts tests/e2e/calendar-sync.spec.ts",
+      "exitCode": 1,
+      "durationMs": 31684,
+      "verdict": "fail"
+    },
+    {
+      "command": "pnpm --dir apps/web exec vitest run tests/schedule/sync-engine.unit.test.ts tests/schedule/board.unit.test.ts tests/schedule/server-actions.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 1327,
+      "verdict": "pass"
+    }
+  ],
+  "retryAttempt": 1,
+  "maxRetries": 2,
+  "runtimeErrors": [
+    {
+      "source": "bg-shell",
+      "severity": "crash",
+      "message": "[caluno-preview] exitCode=1",
+      "blocking": true
+    }
+  ]
+}

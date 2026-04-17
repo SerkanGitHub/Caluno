@@ -113,3 +113,21 @@
 **Context:** S06/T03 browser investigation of `calendar-sync.spec.ts` after the collaborator channel never reached `ready` on the trusted shared-week route.
 **Rule/Pattern:** When the route-level realtime diagnostics stay at `subscribing` with no timeout/error reason, check browser console/page errors for `effect_update_depth_exceeded` and audit the calendar route's `$effect` blocks for retained-state writes that re-trigger mount logic.
 **Rationale:** In this repo, the browser proof could look like a Supabase realtime transport failure even though the page was also hitting a reactive update loop during calendar mount; without checking the console, the investigation stays trapped on backend hypotheses while the subscription is being recreated before it can acknowledge.
+
+## 2026-04-17: Do not detach Supabase Realtime methods before calling them
+
+**Context:** S06 realtime auth hardening where `calendar-sync.spec.ts` kept failing with `REALTIME_AUTH_APPLY_FAILED` and details like `Cannot read properties of undefined (reading '_performAuth')`.
+**Rule/Pattern:** In this repo, call `client.realtime.setAuth(...)` directly instead of storing `const setAuth = client.realtime?.setAuth` and invoking the detached reference later.
+**Rationale:** Supabase Realtime methods depend on their instance binding. Detaching `setAuth` loses `this`, which turns a valid browser session into a misleading auth-apply failure and keeps the channel stuck in retrying.
+
+## 2026-04-17: Shared calendar E2E helpers must match visible shift cards by exact card heading, not substring text
+
+**Context:** S06 browser-proof hardening where collaborator overlap assertions accidentally matched conflict-summary text inside the wrong card and where nested editor headings caused strict-mode `h3` collisions.
+**Rule/Pattern:** When resolving a shift card in Playwright, scope to visible `shift-card-*` nodes and compare the card's primary heading text exactly; do not rely on `hasText` substring matching alone.
+**Rationale:** Conflict warnings and nested dialogs reuse shift titles in surrounding text, so substring-only matching can return the wrong card and make overlap assertions look nondeterministic even when the board data is correct.
+
+## 2026-04-17: Combined preview proof can drift if one spec mutates the seeded week that the next spec assumes as baseline
+
+**Context:** S06 final combined run of `calendar-offline.spec.ts` plus `calendar-sync.spec.ts` on one clean local reset.
+**Rule/Pattern:** For this repo's preview-backed scheduling proof, either reset state between spec files or make follow-on assertions derive their baseline from the currently visible board instead of assuming the original seeded overlap counts still hold after an earlier spec mutates the same calendar week.
+**Rationale:** The offline proof intentionally edits the shared Alpha week. When the sync proof runs afterward in the same clean-reset process, hard-coded seeded baseline expectations can fail even though the isolated sync proof is green.

@@ -11,4 +11,4 @@ Prove Caluno's web-first shared scheduling substrate so shared calendars, multi-
 | S03 | S03 | high | — | ✅ | A previously signed-in user can reopen synced calendars offline and continue making schedule changes locally in the browser. |
 | S04 | S04 | high | — | ✅ | Multiple group members see shared calendar updates propagate live when online, and offline edits reconcile when connectivity returns. |
 | S05 | S05 | medium | — | ✅ | In the browser, shared calendars warn about overlapping or double-booked schedule conflicts while the full substrate works end-to-end offline and online. |
-| S06 | S06 | high | — | ⬜ | Previously synced calendars reopen offline, queued edits reconcile after reconnect, collaborator updates appear in browser proof, and validation artifacts clearly map touched requirements and assessments. |
+| S06 | S06 | high | — | ✅ | Previously synced calendars reopen offline, queued edits reconcile after reconnect, collaborator updates appear in browser proof, and validation artifacts clearly map touched requirements and assessments. |

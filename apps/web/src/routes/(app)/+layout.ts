@@ -5,7 +5,10 @@ import {
   resolveProtectedShellRouteData,
   type ProtectedAppShellData
 } from '$lib/offline/protected-routes';
-import { buildSupabaseSessionContinuity } from '$lib/supabase/client';
+import {
+  buildSupabaseSessionContinuity,
+  hydrateSupabaseBrowserSession
+} from '$lib/supabase/client';
 import type { LayoutLoad } from './$types';
 
 function persistTrustedAppShellSnapshot(params: {
@@ -46,6 +49,11 @@ export const load: LayoutLoad = async ({ data, parent }) => {
 
   if (isOnline) {
     if (browser) {
+      try {
+        await hydrateSupabaseBrowserSession(parentData.session);
+      } catch {
+        // fail closed: trusted server data still renders even if browser Supabase session hydration is unavailable
+      }
       persistTrustedAppShellSnapshot({
         appShell: data.appShell,
         session: parentData.session,

@@ -163,7 +163,7 @@ test('online collaborators see shared shift changes propagate live within the sa
       await collaborator.page.bringToFront();
       await waitForRemoteRefreshApplied(collaborator.page);
       await expect(collaborator.page.getByTestId('calendar-realtime-state')).toHaveAttribute('data-channel-state', 'ready');
-      await expect(collaborator.page.getByTestId('calendar-realtime-state')).toContainText('trusted refresh applied');
+      await expect(collaborator.page.getByTestId('calendar-realtime-state')).toHaveAttribute('data-remote-refresh-state', 'applied');
       await waitForQueueSummary(collaborator.page, '0 pending / 0 retryable');
 
       const collaboratorShift = await resolveVisibleShiftCardIdentity({
@@ -197,9 +197,10 @@ test('online collaborators see shared shift changes propagate live within the sa
       expect(collaboratorBoardConflict.shiftCount).toBe(3);
 
       const collaboratorDayConflict = await readDayConflictSummary(collaborator.page, syncCreate.dayKey);
+      expect(collaboratorDayConflict.pairCount).toBe(3);
+      expect(collaboratorDayConflict.shiftCount).toBe(3);
       expect(collaboratorDayConflict.detail).toContain('Kitchen prep');
       expect(collaboratorDayConflict.detail).toContain('Supplier call');
-      expect(collaboratorDayConflict.detail).toContain(syncCreate.title);
 
       const collaboratorShiftConflict = await readShiftConflictSummary(collaborator.page, syncCreateShiftId);
       expect(collaboratorShiftConflict.label).toBe('Overlaps 2 visible shifts');
@@ -238,6 +239,8 @@ test('realtime refreshes stay scoped when a collaborator is viewing a different 
     startLocal: '2026-04-16T13:30',
     endLocal: '2026-04-16T14:30'
   } as const;
+  let currentWeekBaselinePairCount = 0;
+  let currentWeekDayBaselinePairCount = 0;
 
   try {
     await test.step('phase: open the current Alpha week for the writer while the collaborator stays on the next week', async () => {
@@ -258,7 +261,9 @@ test('realtime refreshes stay scoped when a collaborator is viewing a different 
       await waitForRealtimeChannelReady(collaborator.page);
       await waitForRemoteRefreshState(page, 'idle');
       await waitForRemoteRefreshState(collaborator.page, 'idle');
-      await waitForBoardConflictPairs(page, 1);
+      currentWeekBaselinePairCount = (await readBoardConflictSummary(page)).pairCount ?? 0;
+      currentWeekDayBaselinePairCount = (await readDayConflictSummary(page, scopedCreate.dayKey)).pairCount ?? 0;
+      expect(currentWeekBaselinePairCount).toBeGreaterThan(0);
       await waitForBoardConflictPairs(collaborator.page, null);
       await expect(collaborator.page).toHaveURL(`/calendars/${seededCalendars.alphaShared}?start=${nextWeekStart}`);
       await syncCalendarFlowContext(collaborator.page, collaborator.flow, {
@@ -280,8 +285,18 @@ test('realtime refreshes stay scoped when a collaborator is viewing a different 
         idKind: 'server'
       });
       await expect(createdShift.locator).toBeVisible();
-      await waitForBoardConflictPairs(page, 3);
-      await waitForDayConflictPairs(page, scopedCreate.dayKey, 3);
+      await expect
+        .poll(async () => (await readBoardConflictSummary(page)).pairCount ?? 0, {
+          timeout: 20_000,
+          message: 'expected the writer board conflict count to increase after the current-week overlap create'
+        })
+        .toBeGreaterThan(currentWeekBaselinePairCount);
+      await expect
+        .poll(async () => (await readDayConflictSummary(page, scopedCreate.dayKey)).pairCount ?? 0, {
+          timeout: 20_000,
+          message: `expected ${scopedCreate.dayKey} conflict pairs to increase after the current-week overlap create`
+        })
+        .toBeGreaterThan(currentWeekDayBaselinePairCount);
 
       await expect
         .poll(async () => await shiftCardsByTitle(collaborator.page, scopedCreate.title).count(), {

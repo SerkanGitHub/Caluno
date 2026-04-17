@@ -10,6 +10,15 @@ import {
 import { readSupabasePublicEnv } from './config';
 
 let browserClient: SupabaseClient | undefined;
+let browserSessionHydrationPromise: Promise<void> | null = null;
+
+function isSupabaseBrowserAuthBootstrapError(error: unknown): boolean {
+  return error instanceof Error && error.message.includes('initializePromise');
+}
+
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 export type BrowserSessionContinuityLookup =
   | {
@@ -34,6 +43,76 @@ export function getSupabaseBrowserClient(): SupabaseClient {
 
   browserClient ??= createSupabaseBrowserClient();
   return browserClient;
+}
+
+export async function readSupabaseBrowserSessionWithRetry(
+  client: SupabaseClient = getSupabaseBrowserClient(),
+  params: { attempts?: number; delayMs?: number } = {}
+): Promise<Session | null> {
+  const attempts = params.attempts ?? 6;
+  const delayMs = params.delayMs ?? 25;
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const {
+        data: { session }
+      } = await client.auth.getSession();
+      return session;
+    } catch (error) {
+      if (!isSupabaseBrowserAuthBootstrapError(error) || attempt === attempts) {
+        throw error;
+      }
+
+      await delay(delayMs * attempt);
+    }
+  }
+
+  return null;
+}
+
+export async function hydrateSupabaseBrowserSession(session: Session | null | undefined): Promise<void> {
+  if (!browser || !session?.access_token || !session.refresh_token) {
+    return;
+  }
+
+  const hydrationTask = (async () => {
+    const client = getSupabaseBrowserClient();
+    const existingSession = await readSupabaseBrowserSessionWithRetry(client);
+
+    if (
+      existingSession?.access_token === session.access_token &&
+      existingSession.refresh_token === session.refresh_token
+    ) {
+      return;
+    }
+
+    await client.auth.setSession({
+      access_token: session.access_token,
+      refresh_token: session.refresh_token
+    });
+  })();
+
+  browserSessionHydrationPromise = hydrationTask;
+
+  try {
+    await hydrationTask;
+  } finally {
+    if (browserSessionHydrationPromise === hydrationTask) {
+      browserSessionHydrationPromise = null;
+    }
+  }
+}
+
+export async function waitForSupabaseBrowserSessionHydration(): Promise<void> {
+  if (!browser) {
+    return;
+  }
+
+  if (browserSessionHydrationPromise) {
+    await browserSessionHydrationPromise;
+  }
+
+  await readSupabaseBrowserSessionWithRetry();
 }
 
 export function buildSupabaseSessionContinuity(params: {

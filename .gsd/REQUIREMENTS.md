@@ -45,8 +45,8 @@ This file is the explicit capability and coverage contract for the project.
 - Source: user
 - Primary owning slice: M001/S04
 - Supporting slices: M001/S03, M001/S05
-- Validation: mapped
-- Notes: Server is canonical after reconnect; sync must remain observable and deterministic.
+- Validation: Advanced by S06 isolated browser proof (`calendar-sync.spec.ts`) plus passing `sync-engine`, board, server-actions, and offline-queue regressions; full milestone validation still needs the combined clean-reset browser command to pass.
+- Notes: S06 strengthened browser proof substantially: isolated `calendar-sync.spec.ts` now passes with browser-session hydration before realtime subscribe, collaborator refresh reaches `data-remote-refresh-state="applied"`, and next-week scope guards stay fail-closed. The remaining gap is the combined clean-reset offline+sync command, where spec-order state mutation still shifts the assumed seeded baseline.
 
 ### R006 — The system warns users about baseline schedule conflicts such as overlapping shifts, double-booking, or conflicting edits that would silently change schedule meaning.
 - Class: failure-visibility
@@ -231,7 +231,7 @@ This file is the explicit capability and coverage contract for the project.
 | R002 | core-capability | active | M001/S01 | M001/S04 | mapped |
 | R003 | core-capability | validated | M001/S02 | M001/S05 | Validated in M001/S02 by passing `pnpm --dir apps/web exec vitest run tests/routes/protected-routes.unit.test.ts tests/schedule/board.unit.test.ts tests/schedule/recurrence.unit.test.ts tests/schedule/server-actions.unit.test.ts` plus `npx --yes supabase db reset --local --yes` and `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts`, which proved same-day multi-shift rendering, bounded recurring creation, edit, move, delete, and reload continuity on the protected calendar route. |
 | R004 | continuity | active | M001/S03 | M001/S04 | mapped |
-| R005 | integration | active | M001/S04 | M001/S03, M001/S05 | mapped |
+| R005 | integration | active | M001/S04 | M001/S03, M001/S05 | Advanced by S06 isolated browser proof (`calendar-sync.spec.ts`) plus passing `sync-engine`, board, server-actions, and offline-queue regressions; full milestone validation still needs the combined clean-reset browser command to pass. |
 | R006 | failure-visibility | active | M001/S05 | M001/S02, M001/S04 | mapped |
 | R007 | quality-attribute | validated | M001/S02 | M001/S03, M001/S05 | Validated in M001/S02 by the custom week-board/browser proof and unit coverage: `pnpm --dir apps/web check`, `pnpm --dir apps/web exec vitest run tests/schedule/board.unit.test.ts tests/routes/protected-routes.unit.test.ts tests/schedule/server-actions.unit.test.ts`, and `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts` confirmed the stress-friendly week board, accessible create/edit/move/delete controls, clear denied state, and visible week/action diagnostics. |
 | R008 | differentiator | active | M002 (provisional) | none | unmapped |
