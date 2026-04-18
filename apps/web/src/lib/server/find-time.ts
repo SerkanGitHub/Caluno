@@ -58,7 +58,11 @@ export type FindTimeSearchView = {
   durationMinutes: number | null;
   roster: CalendarRosterMember[];
   busyIntervals: MemberBusyInterval[];
+  topPicks: FindTimeWindow[];
+  browseWindows: FindTimeWindow[];
   windows: FindTimeWindow[];
+  topPickCount: number;
+  totalBrowseWindows: number;
   totalWindows: number;
   truncated: boolean;
   shiftIds: string[];
@@ -384,7 +388,11 @@ export async function loadFindTimeSearchView(params: {
       durationMinutes: duration.value.durationMinutes,
       roster: availability.roster,
       busyIntervals: availability.busyIntervals,
+      topPicks: [],
+      browseWindows: [],
       windows: [],
+      topPickCount: 0,
+      totalBrowseWindows: 0,
       totalWindows: 0,
       truncated: false,
       shiftIds: availability.shiftIds,
@@ -409,7 +417,11 @@ export async function loadFindTimeSearchView(params: {
       durationMinutes: duration.value.durationMinutes,
       roster: availability.roster,
       busyIntervals: availability.busyIntervals,
+      topPicks: [],
+      browseWindows: [],
       windows: [],
+      topPickCount: 0,
+      totalBrowseWindows: 0,
       totalWindows: 0,
       truncated: false,
       shiftIds: availability.shiftIds,
@@ -427,7 +439,11 @@ export async function loadFindTimeSearchView(params: {
       durationMinutes: duration.value.durationMinutes,
       roster: availability.roster,
       busyIntervals: availability.busyIntervals,
+      topPicks: [],
+      browseWindows: [],
       windows: [],
+      topPickCount: 0,
+      totalBrowseWindows: 0,
       totalWindows: 0,
       truncated: false,
       shiftIds: availability.shiftIds,
@@ -435,20 +451,46 @@ export async function loadFindTimeSearchView(params: {
     };
   }
 
+  const splitWindows = splitRankedFindTimeWindows(matches.windows);
+
   return {
     status: 'ready',
     reason: null,
-    message: `Found ${matches.totalWindows} truthful window${matches.totalWindows === 1 ? '' : 's'} for the requested duration.`,
+    message: `Found ${matches.totalWindows} truthful window${matches.totalWindows === 1 ? '' : 's'}, including ${splitWindows.topPicks.length} top pick${splitWindows.topPicks.length === 1 ? '' : 's'}.`,
     calendarId: params.calendarId,
     range: range.value,
     durationMinutes: duration.value.durationMinutes,
     roster: availability.roster,
     busyIntervals: availability.busyIntervals,
-    windows: matches.windows,
+    topPicks: splitWindows.topPicks,
+    browseWindows: splitWindows.browseWindows,
+    windows: splitWindows.windows,
+    topPickCount: splitWindows.topPicks.length,
+    totalBrowseWindows: Math.max(0, matches.totalWindows - splitWindows.topPicks.length),
     totalWindows: matches.totalWindows,
     truncated: matches.truncated,
     shiftIds: availability.shiftIds,
     memberIds: availability.memberIds
+  };
+}
+
+function splitRankedFindTimeWindows(windows: FindTimeWindow[]) {
+  const topPicks: FindTimeWindow[] = [];
+  const browseWindows: FindTimeWindow[] = [];
+
+  for (const window of windows) {
+    if (window.topPick) {
+      topPicks.push(window);
+      continue;
+    }
+
+    browseWindows.push(window);
+  }
+
+  return {
+    topPicks,
+    browseWindows,
+    windows: [...topPicks, ...browseWindows]
   };
 }
 
@@ -469,7 +511,11 @@ function createEmptyFindTimeSearchView(params: {
     durationMinutes: params.durationMinutes,
     roster: [],
     busyIntervals: [],
+    topPicks: [],
+    browseWindows: [],
     windows: [],
+    topPickCount: 0,
+    totalBrowseWindows: 0,
     totalWindows: 0,
     truncated: false,
     shiftIds: [],

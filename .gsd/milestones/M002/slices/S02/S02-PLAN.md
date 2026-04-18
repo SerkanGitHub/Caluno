@@ -60,7 +60,7 @@ The work stays in three tasks because the real risk is not CSS polish; it is pro
   - Do: Add a dedicated ranking module, refactor matcher exports so ranking runs on the full candidate set before final truncation, preserve same-calendar shift titles for truthful nearby explanations, and prove order, tie-breaks, shortlist eligibility, and malformed-assignment fail-closed behavior with unit tests.
   - Verify: `pnpm --dir apps/web exec vitest run tests/find-time/matcher.unit.test.ts tests/find-time/member-availability.unit.test.ts`
   - Done when: ranked candidates expose trusted score/explanation metadata, shortlist rules are explicit and test-covered, and malformed roster or assignment data still refuses to produce guessed explanations.
-- [ ] **T02: Return ranked shortlist and browse payloads from the protected route** `est:90m`
+- [x] **T02: Return ranked shortlist and browse payloads from the protected route** `est:90m`
   - Why: Executors need a stable server contract before touching Svelte, and this task is where `R002`/`R012` are re-verified against the richer ready-path payload.
   - Files: `apps/web/src/lib/server/find-time.ts`, `apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.server.ts`, `apps/web/tests/routes/find-time-routes.unit.test.ts`, `apps/web/tests/find-time/matcher.unit.test.ts`
   - Do: Compose the ranking layer into `loadFindTimeSearchView()`, return separate `topPicks` and `browseWindows` arrays plus explanation fields, keep denied/invalid/timeout/malformed branches explicit, and extend route tests for ranked ordering, shortlist separation, and fail-closed boundary behavior.

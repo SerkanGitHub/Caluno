@@ -50,11 +50,11 @@ Error: expect(received).toEqual(expected) // deep equality
       - article [ref=e14]:
         - generic [ref=e15]: Find-time route
         - strong [ref=e16]: Truthful results
-        - paragraph [ref=e17]: Found 9 truthful windows for the requested duration.
+        - paragraph [ref=e17]: Found 9 truthful windows, including 3 top picks.
       - article [ref=e18]:
         - generic [ref=e19]: Search diagnostics
         - strong [ref=e20]: ready
-        - paragraph [ref=e21]: Found 9 truthful windows for the requested duration.
+        - paragraph [ref=e21]: Found 9 truthful windows, including 3 top picks.
         - code [ref=e22]: none
       - article [ref=e23]:
         - generic [ref=e24]: Trusted scope

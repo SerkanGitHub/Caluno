@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-18T17:07:50Z | Files: 306 | Described: 0/306
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-18T17:07:50Z","fingerprint":"cc65da29f69b00421c24cbddb6dd40c19bf50db3","fileCount":306,"truncated":false} -->
+Generated: 2026-04-18T17:51:04Z | Files: 310 | Described: 0/310
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-18T17:51:04Z","fingerprint":"8766a5797f75bc9b682d898acec565b0ffdfe2fe","fileCount":310,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -363,6 +363,7 @@ Generated: 2026-04-18T17:07:50Z | Files: 306 | Described: 0/306
 
 ### apps/web/src/lib/find-time/
 - `apps/web/src/lib/find-time/matcher.ts`
+- `apps/web/src/lib/find-time/ranking.ts`
 
 ### apps/web/src/lib/offline/
 - `apps/web/src/lib/offline/app-shell-cache.ts`
@@ -430,6 +431,11 @@ Generated: 2026-04-18T17:07:50Z | Files: 306 | Described: 0/306
 
 ### apps/web/test-results/e2e-offline/
 - `apps/web/test-results/e2e-offline/.last-run.json`
+
+### apps/web/test-results/e2e/find-time-permitted-member-3191e-owse-truthful-named-windows/
+- `apps/web/test-results/e2e/find-time-permitted-member-3191e-owse-truthful-named-windows/error-context.md`
+- `apps/web/test-results/e2e/find-time-permitted-member-3191e-owse-truthful-named-windows/trace.zip`
+- `apps/web/test-results/e2e/find-time-permitted-member-3191e-owse-truthful-named-windows/video.webm`
 
 ### apps/web/tests/access/
 - `apps/web/tests/access/policy-contract.unit.test.ts`
