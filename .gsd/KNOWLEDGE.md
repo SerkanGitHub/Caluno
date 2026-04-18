@@ -137,3 +137,9 @@
 **Context:** M002/S01/T01 slice-level verification used `pnpm --dir apps/web exec vitest run ...` with a mix of existing and not-yet-created test files.
 **Rule/Pattern:** When a slice verification command names future test files explicitly, separately confirm those files exist (for example with `test -f` or `rg --files`) instead of assuming a green Vitest exit means every named file actually ran.
 **Rationale:** In this repo's current Vitest invocation path, the command can succeed while running only the existing files, which can create a false sense that broader slice verification already covers future-task artifacts.
+
+## 2026-04-18: For browser-load offline proof, prefer forcing `navigator.onLine = false` over Playwright context-offline when the route still needs network to boot
+
+**Context:** M002/S01/T03 needed to prove `/calendars/[calendarId]/find-time` renders an explicit `offline-unavailable` state from its browser `+page.ts` load.
+**Rule/Pattern:** When the goal is to verify a client-side offline branch on a protected SvelteKit route, first load the route or its entrypoint online, then use `context.addInitScript()` to override `navigator.onLine` for the next navigation instead of immediately calling `context.setOffline(true)`.
+**Rationale:** Playwright's full context-offline mode can turn the next navigation into `chrome-error://chromewebdata/` before the route's browser load runs, which tests raw network failure rather than the app's intended fail-closed client logic.

@@ -11,7 +11,11 @@ const NAVIGATION_CACHE = `caluno-pages-${version}`;
 const CACHE_PREFIXES = ['caluno-shell-', 'caluno-pages-'];
 const APP_SHELL_ASSETS = [...new Set([...build, ...files])];
 const PUBLIC_ROUTE_PATTERNS = [/^\/$/, /^\/signin\/?$/];
-const PROTECTED_ROUTE_PATTERNS = [/^\/groups\/?$/, /^\/calendars\/[0-9a-f-]+\/?$/i];
+const PROTECTED_ROUTE_PATTERNS = [
+  /^\/groups\/?$/,
+  /^\/calendars\/[0-9a-f-]+\/find-time\/?$/i,
+  /^\/calendars\/[0-9a-f-]+\/?$/i
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

@@ -1,4 +1,11 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import {
+  buildFindTimeWindows,
+  normalizeFindTimeDuration,
+  normalizeFindTimeSearchRange,
+  type FindTimeSearchRange as MatcherFindTimeSearchRange,
+  type FindTimeWindow
+} from '$lib/find-time/matcher';
 
 export type FindTimeLoadStatus =
   | 'ready'
@@ -35,6 +42,24 @@ export type CalendarMemberAvailability = {
   range: FindTimeRange;
   roster: CalendarRosterMember[];
   busyIntervals: MemberBusyInterval[];
+  shiftIds: string[];
+  memberIds: string[];
+};
+
+export type FindTimeSearchStatus = FindTimeLoadStatus | 'no-results';
+
+export type FindTimeSearchView = {
+  status: FindTimeSearchStatus;
+  reason: string | null;
+  message: string;
+  calendarId: string;
+  range: MatcherFindTimeSearchRange;
+  durationMinutes: number | null;
+  roster: CalendarRosterMember[];
+  busyIntervals: MemberBusyInterval[];
+  windows: FindTimeWindow[];
+  totalWindows: number;
+  truncated: boolean;
   shiftIds: string[];
   memberIds: string[];
 };
@@ -285,6 +310,150 @@ export async function loadCalendarMemberAvailability(params: {
     busyIntervals: busyIntervals.value,
     shiftIds: Array.from(new Set(busyIntervals.value.map((interval) => interval.shiftId))),
     memberIds: roster.value.map((member) => member.memberId)
+  };
+}
+
+export async function loadFindTimeSearchView(params: {
+  supabase: SupabaseClient;
+  calendarId: string;
+  userId: string | null | undefined;
+  duration: string | null | undefined;
+  start: string | null | undefined;
+  now?: Date;
+}): Promise<FindTimeSearchView> {
+  const fallbackRange = normalizeFindTimeSearchRange({
+    start: null,
+    now: params.now
+  });
+  const emptyRange = fallbackRange.ok
+    ? fallbackRange.value
+    : {
+        startAt: new Date(0).toISOString(),
+        endAt: new Date(0).toISOString(),
+        totalDays: MAX_FIND_TIME_RANGE_DAYS,
+        source: 'default' as const,
+        requestedStart: null
+      };
+
+  const duration = normalizeFindTimeDuration(params.duration);
+  if (!duration.ok) {
+    return createEmptyFindTimeSearchView({
+      calendarId: params.calendarId,
+      range: emptyRange,
+      durationMinutes: null,
+      status: 'invalid-input',
+      reason: duration.reason,
+      message: duration.message
+    });
+  }
+
+  const range = normalizeFindTimeSearchRange({
+    start: params.start,
+    now: params.now,
+    totalDays: MAX_FIND_TIME_RANGE_DAYS
+  });
+
+  if (!range.ok) {
+    return createEmptyFindTimeSearchView({
+      calendarId: params.calendarId,
+      range: emptyRange,
+      durationMinutes: duration.value.durationMinutes,
+      status: 'invalid-input',
+      reason: range.reason,
+      message: range.message
+    });
+  }
+
+  const availability = await loadCalendarMemberAvailability({
+    supabase: params.supabase,
+    calendarId: params.calendarId,
+    userId: params.userId,
+    rangeStart: range.value.startAt,
+    rangeEnd: range.value.endAt
+  });
+
+  if (availability.status !== 'ready') {
+    return {
+      status: availability.status,
+      reason: availability.reason,
+      message: availability.message,
+      calendarId: params.calendarId,
+      range: range.value,
+      durationMinutes: duration.value.durationMinutes,
+      roster: availability.roster,
+      busyIntervals: availability.busyIntervals,
+      windows: [],
+      totalWindows: 0,
+      truncated: false,
+      shiftIds: availability.shiftIds,
+      memberIds: availability.memberIds
+    };
+  }
+
+  const matches = buildFindTimeWindows({
+    roster: availability.roster,
+    busyIntervals: availability.busyIntervals,
+    range: range.value,
+    duration: duration.value
+  });
+
+  if (matches.totalWindows === 0) {
+    return {
+      status: 'no-results',
+      reason: 'FIND_TIME_NO_RESULTS',
+      message: 'No truthful windows matched that duration inside the trusted 30-day horizon.',
+      calendarId: params.calendarId,
+      range: range.value,
+      durationMinutes: duration.value.durationMinutes,
+      roster: availability.roster,
+      busyIntervals: availability.busyIntervals,
+      windows: [],
+      totalWindows: 0,
+      truncated: false,
+      shiftIds: availability.shiftIds,
+      memberIds: availability.memberIds
+    };
+  }
+
+  return {
+    status: 'ready',
+    reason: null,
+    message: `Found ${matches.totalWindows} truthful window${matches.totalWindows === 1 ? '' : 's'} for the requested duration.`,
+    calendarId: params.calendarId,
+    range: range.value,
+    durationMinutes: duration.value.durationMinutes,
+    roster: availability.roster,
+    busyIntervals: availability.busyIntervals,
+    windows: matches.windows,
+    totalWindows: matches.totalWindows,
+    truncated: matches.truncated,
+    shiftIds: availability.shiftIds,
+    memberIds: availability.memberIds
+  };
+}
+
+function createEmptyFindTimeSearchView(params: {
+  calendarId: string;
+  range: MatcherFindTimeSearchRange;
+  durationMinutes: number | null;
+  status: Exclude<FindTimeSearchStatus, 'ready' | 'no-results'>;
+  reason: string;
+  message: string;
+}): FindTimeSearchView {
+  return {
+    status: params.status,
+    reason: params.reason,
+    message: params.message,
+    calendarId: params.calendarId,
+    range: params.range,
+    durationMinutes: params.durationMinutes,
+    roster: [],
+    busyIntervals: [],
+    windows: [],
+    totalWindows: 0,
+    truncated: false,
+    shiftIds: [],
+    memberIds: []
   };
 }
 

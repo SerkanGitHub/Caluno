@@ -741,6 +741,17 @@
             {/if}
           </p>
 
+          <div class="hero-actions" data-testid="calendar-find-time-entry">
+            <a
+              class="button button-primary"
+              data-testid="find-time-entrypoint"
+              href={`/calendars/${readyView.calendar.id}/find-time?duration=60&start=${effectiveSchedule.visibleWeek.start}`}
+            >
+              Browse truthful find-time
+            </a>
+            <span class="pill pill-neutral">Server-shaped availability</span>
+          </div>
+
           <div class="calendar-board__meta">
             <span class="pill pill-active">{readyView.calendar.isDefault ? 'Default calendar' : 'Secondary calendar'}</span>
             <span class="pill pill-neutral">{readyView.group?.role ?? 'member'} access</span>

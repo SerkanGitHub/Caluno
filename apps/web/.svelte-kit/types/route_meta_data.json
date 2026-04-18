@@ -15,6 +15,13 @@
 		"src/routes/(app)/+layout.server.ts",
 		"src/routes/+layout.server.ts"
 	],
+	"/(app)/calendars/[calendarId]/find-time": [
+		"src/routes/(app)/calendars/[calendarId]/find-time/+page.ts",
+		"src/routes/(app)/calendars/[calendarId]/find-time/+page.server.ts",
+		"src/routes/(app)/+layout.ts",
+		"src/routes/(app)/+layout.server.ts",
+		"src/routes/+layout.server.ts"
+	],
 	"/(auth)/callback": [
 		"src/routes/(auth)/callback/+server.ts"
 	],

@@ -311,6 +311,33 @@ export const seededSchedule = {
   };
 };
 
+export const seededFindTime = {
+  start: '2026-04-15',
+  durationMinutes: '60',
+  alphaWindowCount: 9,
+  firstWindow: {
+    startAt: '2026-04-15T00:00:00.000Z',
+    endAt: '2026-04-15T01:00:00.000Z',
+    spanStartAt: '2026-04-15T00:00:00.000Z',
+    spanEndAt: '2026-04-15T08:30:00.000Z',
+    availableMembers: ['Alice Owner', 'Bob Member', 'Dana Multi-Group']
+  },
+  focusedWindow: {
+    startAt: '2026-04-15T08:30:00.000Z',
+    endAt: '2026-04-15T09:30:00.000Z',
+    spanStartAt: '2026-04-15T08:30:00.000Z',
+    spanEndAt: '2026-04-15T11:00:00.000Z',
+    availableMembers: ['Bob Member', 'Dana Multi-Group']
+  },
+  lastWindow: {
+    startAt: '2026-04-16T15:00:00.000Z',
+    endAt: '2026-04-16T16:00:00.000Z',
+    spanStartAt: '2026-04-16T15:00:00.000Z',
+    spanEndAt: '2026-05-15T00:00:00.000Z',
+    availableMembers: ['Alice Owner', 'Bob Member', 'Dana Multi-Group']
+  }
+} as const;
+
 async function readFlowSurfaceSnapshot(page: Page): Promise<FlowSurfaceSnapshot> {
   return page.evaluate(() => {
     const text = (selector: string) => document.querySelector<HTMLElement>(selector)?.textContent?.trim() ?? null;
@@ -1213,6 +1240,44 @@ export async function openTrackedCalendarSession(params: {
     await session.close();
     throw error;
   }
+}
+
+export async function openFindTimeRoute(params: {
+  page: Page;
+  calendarId: string;
+  durationMinutes?: string | number;
+  start?: string;
+  flow?: FlowDiagnostics;
+  phase?: string;
+}) {
+  const searchParams = new URLSearchParams({
+    duration: String(params.durationMinutes ?? seededFindTime.durationMinutes)
+  });
+
+  if (params.start ?? seededFindTime.start) {
+    searchParams.set('start', params.start ?? seededFindTime.start);
+  }
+
+  const targetUrl = `/calendars/${params.calendarId}/find-time?${searchParams.toString()}`;
+  params.flow?.mark(params.phase ?? 'open-find-time', targetUrl);
+
+  await params.page.goto(targetUrl);
+  await expect(params.page.getByTestId('find-time-route-state')).toBeVisible();
+
+  return targetUrl;
+}
+
+export async function readFindTimeWindowSnapshot(page: Page, index: number) {
+  const card = page.getByTestId(`find-time-window-${index}`);
+  await expect(card).toBeVisible();
+
+  return {
+    startAt: await card.getAttribute('data-start-at'),
+    endAt: await card.getAttribute('data-end-at'),
+    spanStartAt: await card.getAttribute('data-span-start-at'),
+    spanEndAt: await card.getAttribute('data-span-end-at'),
+    availableMembers: ((await card.getAttribute('data-available-members')) ?? '').split('|').filter(Boolean)
+  };
 }
 
 export async function submitShiftEditorForm(

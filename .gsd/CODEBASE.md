@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-17T22:36:57Z | Files: 292 | Described: 0/292
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-17T22:36:57Z","fingerprint":"9f66965d54a59445a76773f74f45f7656d6e612c","fileCount":292,"truncated":false} -->
+Generated: 2026-04-17T22:56:14Z | Files: 295 | Described: 0/295
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-17T22:56:14Z","fingerprint":"69998ecc4934a402fd10d9d1b71a6f4fad6dac64","fileCount":295,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -375,6 +375,7 @@ Generated: 2026-04-17T22:36:57Z | Files: 292 | Described: 0/292
 ### apps/web/src/lib/server/
 - `apps/web/src/lib/server/app-shell.ts`
 - `apps/web/src/lib/server/auth-flow.ts`
+- `apps/web/src/lib/server/find-time.ts`
 - `apps/web/src/lib/server/schedule.ts`
 
 ### apps/web/src/lib/supabase/
@@ -429,6 +430,9 @@ Generated: 2026-04-17T22:36:57Z | Files: 292 | Described: 0/292
 - `apps/web/tests/e2e/calendar-sync.spec.ts`
 - `apps/web/tests/e2e/fixtures.ts`
 
+### apps/web/tests/find-time/
+- `apps/web/tests/find-time/member-availability.unit.test.ts`
+
 ### apps/web/tests/routes/
 - `apps/web/tests/routes/protected-routes.unit.test.ts`
 
@@ -476,3 +480,4 @@ Generated: 2026-04-17T22:36:57Z | Files: 292 | Described: 0/292
 - `supabase/migrations/20260414_000001_auth_groups_access.sql`
 - `supabase/migrations/20260415_000002_schedule_shifts.sql`
 - `supabase/migrations/20260416_000001_schedule_realtime.sql`
+- `supabase/migrations/20260418_000001_find_time_member_availability.sql`
