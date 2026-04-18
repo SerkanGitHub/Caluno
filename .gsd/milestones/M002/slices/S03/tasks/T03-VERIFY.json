@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T03",
+  "unitId": "M002/S03/T03",
+  "timestamp": 1776546590919,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "npx --yes supabase db reset --local --yes",
+      "exitCode": 0,
+      "durationMs": 26207,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/web exec playwright test tests/e2e/find-time.spec.ts tests/e2e/calendar-shifts.spec.ts",
+      "exitCode": 0,
+      "durationMs": 15942,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/web check",
+      "exitCode": 0,
+      "durationMs": 3117,
+      "verdict": "pass"
+    }
+  ]
+}

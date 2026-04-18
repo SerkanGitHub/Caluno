@@ -155,3 +155,21 @@
 **Context:** M002/S03/T03 runs `calendar-shifts.spec.ts` and `find-time.spec.ts` in one clean-reset Playwright command, and the browse-to-create proof adds a real shift before the later find-time assertions execute.
 **Rule/Pattern:** In this repo, avoid asserting that later `/find-time` browser proof still reflects a perfectly pristine seed after earlier specs create/edit/delete shifts; prefer timing-stable assertions (CTA hrefs, slot timestamps, visible week targets, URL cleanup) over full untouched browse-card detail snapshots.
 **Rationale:** The shared local Supabase state persists across specs inside the same Playwright run, so truthful availability can legitimately change even though the suggestion-to-create contract is still working correctly.
+
+## 2026-04-18: SvelteKit page-server modules reject arbitrary named exports, so unit-test helpers should use underscore-prefixed exports
+
+**Context:** M002/S03/T02 needed direct unit coverage for calendar-route search-param cleanup in `+page.server.ts`.
+**Rule/Pattern:** When exposing a test-only helper from a SvelteKit `+page.server` module in this repo, use an underscore-prefixed export (for example `_resolveActionSearchParams`) instead of an arbitrary named export.
+**Rationale:** The live SvelteKit module validation rejects unexpected named exports in page-server files, so underscore-prefixed helpers keep the runtime module valid while still allowing direct unit proof of route-local logic.
+
+## 2026-04-18: One-shot cross-route prefills should preserve durable context but strip transient timing params after arrival
+
+**Context:** M002/S03 carried a chosen `/find-time` suggestion into the existing calendar create dialog.
+**Rule/Pattern:** For route-to-route create/edit handoffs in this repo, keep the handoff contract timing-only (`source`, `start`, `end`, optional target week), validate it in the trusted destination route, and remove the transient timing params once the destination has opened the intended UI while preserving any durable navigation context like `start=`.
+**Rationale:** This keeps the handoff exact and inspectable on first arrival without making stale create state sticky across reloads, later writes, or copied URLs.
+
+## 2026-04-18: When milestone closeout runs on `main`, verify code-change existence from the pre-milestone auto-commit rather than `merge-base HEAD main`
+
+**Context:** M002 milestone completion happened after slice commits had already been auto-merged onto `main`, which makes `git merge-base HEAD main` equal `HEAD` and yields an empty diff.
+**Rule/Pattern:** If milestone closeout is executing on `main`, use the last auto-commit before the milestone started as the equivalent code-diff base for the required non-`.gsd/` verification, and record that base explicitly in the milestone summary.
+**Rationale:** Otherwise a milestone with real application changes can look like it produced only planning artifacts purely because the branch topology has already collapsed to `main` by the time closeout verification runs.
