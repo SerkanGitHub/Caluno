@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T02",
+  "unitId": "M002/S02/T02",
+  "timestamp": 1776541481567,
+  "passed": true,
+  "discoverySource": "package-json",
+  "checks": [
+    {
+      "command": "npm run lint",
+      "exitCode": 0,
+      "durationMs": 427,
+      "verdict": "pass"
+    },
+    {
+      "command": "npm run test",
+      "exitCode": 0,
+      "durationMs": 2119,
+      "verdict": "pass"
+    }
+  ],
+  "postExecutionChecks": [
+    {
+      "category": "pattern",
+      "target": "apps/web/tests/routes/find-time-routes.unit.test.ts",
+      "passed": true,
+      "message": "File apps/web/tests/routes/find-time-routes.unit.test.ts mixes async/await with .then() promise chaining — consider using consistent async style",
+      "blocking": false
+    }
+  ]
+}

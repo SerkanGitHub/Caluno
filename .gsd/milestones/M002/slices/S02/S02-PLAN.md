@@ -66,7 +66,7 @@ The work stays in three tasks because the real risk is not CSS polish; it is pro
   - Do: Compose the ranking layer into `loadFindTimeSearchView()`, return separate `topPicks` and `browseWindows` arrays plus explanation fields, keep denied/invalid/timeout/malformed branches explicit, and extend route tests for ranked ordering, shortlist separation, and fail-closed boundary behavior.
   - Verify: `pnpm --dir apps/web exec vitest run tests/routes/find-time-routes.unit.test.ts tests/find-time/matcher.unit.test.ts tests/find-time/member-availability.unit.test.ts`
   - Done when: the protected route emits a recommendation-aware ready payload without relaxing authorization, and route tests prove malformed ids, out-of-scope access, and trusted query failures still short-circuit safely.
-- [ ] **T03: Render Top picks explanations and prove the ranked flow in the browser** `est:2h`
+- [x] **T03: Render Top picks explanations and prove the ranked flow in the browser** `est:2h`
   - Why: The slice demo is only true once the real route visibly highlights top picks, explains nearby exclusions, and still behaves correctly for denied and offline entry in the browser.
   - Files: `apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte`, `apps/web/tests/e2e/fixtures.ts`, `apps/web/tests/e2e/find-time.spec.ts`
   - Do: Redesign the page so Top picks render before the browse list with richer explanation density, add stable `data-testid` and data-attribute hooks for shortlist and browse cards, and update seeded browser assertions for ranked order, explanation details, explicit denial, and fail-closed offline entry.

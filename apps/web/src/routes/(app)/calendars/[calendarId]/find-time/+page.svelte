@@ -1,11 +1,21 @@
 <script lang="ts">
   import type { FindTimeWindow } from '$lib/find-time/matcher';
+  import type { FindTimeBlockedMember, FindTimeNearbyConstraint } from '$lib/find-time/ranking';
   import type { PageData } from './$types';
 
   type SurfaceTone = 'tone-neutral' | 'tone-warning' | 'tone-danger';
 
   type RouteSurfaceState = {
-    status: 'trusted-online' | 'ready' | 'no-results' | 'invalid-input' | 'query-failure' | 'timeout' | 'malformed-response' | 'denied' | 'offline-unavailable';
+    status:
+      | 'trusted-online'
+      | 'ready'
+      | 'no-results'
+      | 'invalid-input'
+      | 'query-failure'
+      | 'timeout'
+      | 'malformed-response'
+      | 'denied'
+      | 'offline-unavailable';
     label: string;
     tone: SurfaceTone;
     reason: string | null;
@@ -135,6 +145,85 @@
       hour12: false,
       timeZone: 'UTC'
     }).format(new Date(value));
+  }
+
+  function serializeNames(values: string[]) {
+    return values.join('|');
+  }
+
+  function serializeNearbyConstraints(constraints: FindTimeNearbyConstraint[]) {
+    return constraints.map((constraint) => `${constraint.memberName}:${constraint.shiftTitle}:${constraint.distanceMinutes}`).join('|');
+  }
+
+  function availableMemberNames(window: FindTimeWindow) {
+    return window.availableMembers.map((member) => member.displayName);
+  }
+
+  function blockedMemberNames(window: FindTimeWindow) {
+    return window.blockedMembers.map((member) => member.displayName);
+  }
+
+  function nearbyConstraintCount(window: FindTimeWindow) {
+    return window.nearbyConstraints.leading.length + window.nearbyConstraints.trailing.length;
+  }
+
+  function topPickHeadline(window: FindTimeWindow) {
+    if (window.blockedMembers.length === 0) {
+      return `All ${window.availableMembers.length} named members stay free across this slot and the nearby edges remain unconstrained.`;
+    }
+
+    return `${window.availableMembers.length} named members align while ${window.blockedMembers.length} blocked member${window.blockedMembers.length === 1 ? '' : 's'} explain the nearby exclusions.`;
+  }
+
+  function browseHeadline(window: FindTimeWindow) {
+    if (window.blockedMembers.length === 0) {
+      return 'Shared slot with no blocked roster members during the exact window.';
+    }
+
+    return `${window.availableMembers.length} free • ${window.blockedMembers.length} blocked nearby.`;
+  }
+
+  function scoreSummary(window: FindTimeWindow) {
+    return `${window.scoreBreakdown.sharedMemberCount} shared • ${window.scoreBreakdown.spanSlackMinutes} slack min • ${window.scoreBreakdown.nearbyEdgePressureMinutes} edge pressure`;
+  }
+
+  function describeNearbyConstraint(constraint: FindTimeNearbyConstraint) {
+    const distance = constraint.overlapsBoundary
+      ? constraint.relation === 'leading'
+        ? 'touches the start edge'
+        : 'touches the end edge'
+      : `${constraint.distanceMinutes} min ${constraint.relation === 'leading' ? 'before' : 'after'} the slot`;
+
+    return `${constraint.memberName} · ${constraint.shiftTitle} · ${formatUtcClock(constraint.startAt)}–${formatUtcClock(constraint.endAt)} UTC · ${distance}`;
+  }
+
+  function summarizeBlockedMember(blockedMember: FindTimeBlockedMember) {
+    const snippets = [
+      ...blockedMember.nearbyConstraints.leading.map((constraint) => summarizeConstraintEdge(constraint)),
+      ...blockedMember.nearbyConstraints.trailing.map((constraint) => summarizeConstraintEdge(constraint))
+    ];
+
+    if (snippets.length === 0) {
+      return `${blockedMember.displayName} is unavailable, but no nearby trusted shift detail was available for the adjacent edges.`;
+    }
+
+    return `${blockedMember.displayName}: ${snippets.join(' · ')}`;
+  }
+
+  function summarizeConstraintEdge(constraint: FindTimeNearbyConstraint) {
+    if (constraint.overlapsBoundary) {
+      return `${constraint.shiftTitle} holds the ${constraint.relation === 'leading' ? 'start' : 'end'} edge`;
+    }
+
+    return `${constraint.shiftTitle} ${constraint.distanceMinutes} min ${constraint.relation === 'leading' ? 'before' : 'after'}`;
+  }
+
+  function shortConstraintSummary(constraints: FindTimeNearbyConstraint[], emptyLabel: string) {
+    if (constraints.length === 0) {
+      return emptyLabel;
+    }
+
+    return constraints.map((constraint) => `${constraint.shiftTitle} (${constraint.memberName})`).join(' · ');
   }
 </script>
 
@@ -271,7 +360,7 @@
           <p class="eyebrow">{calendarView.group?.name ?? 'Permitted calendar'}</p>
           <h2>{calendarView.calendar.name}</h2>
           <p class="lede">
-            Browse truthful windows from named member availability. Every card below is shaped from the protected server contract for the next 30 days only.
+            Review ranked top picks before the lighter browse list. Every explanation below is shaped by the protected server contract for the next 30 days only.
           </p>
         </div>
 
@@ -347,14 +436,14 @@
             <span class="status-card__label">Window inventory</span>
             <strong>{search.totalWindows} truthful window{search.totalWindows === 1 ? '' : 's'}</strong>
             <p>
-              Exact cards show the requested slot first, then the wider continuous span that still remains free for the same member set.
+              Top picks stay high-density, while browse cards remain lighter-weight for scanning the rest of the truthful inventory.
             </p>
           </article>
 
           <article class="status-card tone-neutral">
             <span class="status-card__label">Roster names</span>
             <strong>{search.roster.map((member) => member.displayName).join(' · ')}</strong>
-            <p>Only names already authorized for this calendar scope appear in the browse list.</p>
+            <p>Only names already authorized for this calendar scope appear in these recommendation surfaces.</p>
           </article>
         </section>
 
@@ -362,57 +451,236 @@
           <section class="feature-banner tone-warning" data-testid="find-time-truncated-state">
             <span>Result list trimmed</span>
             <p>
-              The browse list stayed compact after {search.windows.length} cards even though {search.totalWindows} windows matched.
+              The browse list stayed compact after {search.windows.length} rendered cards even though {search.totalWindows} windows matched.
             </p>
           </section>
         {/if}
 
-        <section class="find-time-results" data-testid="find-time-results" data-window-count={search.totalWindows}>
-          {#each search.windows as window, index}
-            <article
-              class="framed-panel find-time-card"
-              data-testid={`find-time-window-${index}`}
-              data-start-at={window.startAt}
-              data-end-at={window.endAt}
-              data-span-start-at={window.spanStartAt}
-              data-span-end-at={window.spanEndAt}
-              data-available-members={window.availableMembers.map((member) => member.displayName).join('|')}
-            >
-              <div class="find-time-card__header">
-                <div>
-                  <p class="panel-kicker">Window {index + 1}</p>
-                  <h3>{formatUtcSlot(window)}</h3>
-                </div>
-                <span class={`pill ${window.busyMemberCount === 0 ? 'pill-active' : 'pill-neutral'}`}>
-                  {window.availableMembers.length} free / {window.busyMemberCount} busy
-                </span>
+        <section
+          class="find-time-results-shell"
+          data-testid="find-time-results"
+          data-window-count={search.totalWindows}
+          data-top-pick-count={search.topPicks.length}
+          data-browse-count={search.browseWindows.length}
+        >
+          <section class="find-time-top-picks framed-panel" data-testid="find-time-top-picks" data-top-pick-count={search.topPicks.length}>
+            <div class="find-time-section-heading">
+              <div>
+                <p class="panel-kicker">Top picks</p>
+                <h3>Ranked before truncation.</h3>
+                <p class="panel-copy">
+                  These cards keep the richer explanation layer: who is free, who is blocked, and what nearby busy edges explain the adjacent exclusions.
+                </p>
               </div>
+              <span class="pill pill-active">{search.topPicks.length} surfaced</span>
+            </div>
 
-              <div class="find-time-card__meta">
-                <div>
-                  <span>Exact slot</span>
-                  <strong>{formatUtcRange(window.startAt, window.endAt)}</strong>
-                </div>
-                <div>
-                  <span>Continuous span</span>
-                  <strong>{formatUtcRange(window.spanStartAt, window.spanEndAt)}</strong>
-                </div>
-                <div>
-                  <span>Span length</span>
-                  <strong>{window.spanDurationMinutes} minutes</strong>
-                </div>
-              </div>
+            {#if search.topPicks.length === 0}
+              <article class="find-time-empty-panel" data-testid="find-time-top-picks-empty">
+                <strong>No shortlist candidate qualified.</strong>
+                <p>The browse inventory below stays truthful, but no shared window met the shortlist threshold for this query.</p>
+              </article>
+            {:else}
+              <div class="find-time-top-pick-grid">
+                {#each search.topPicks as window, index}
+                  <article
+                    class="framed-panel find-time-card find-time-card--top-pick"
+                    data-testid={`find-time-top-pick-${index}`}
+                    data-top-pick-rank={window.topPickRank ?? ''}
+                    data-start-at={window.startAt}
+                    data-end-at={window.endAt}
+                    data-span-start-at={window.spanStartAt}
+                    data-span-end-at={window.spanEndAt}
+                    data-available-members={serializeNames(availableMemberNames(window))}
+                    data-blocked-members={serializeNames(blockedMemberNames(window))}
+                    data-blocked-member-count={window.blockedMembers.length}
+                    data-leading-constraints={serializeNearbyConstraints(window.nearbyConstraints.leading)}
+                    data-trailing-constraints={serializeNearbyConstraints(window.nearbyConstraints.trailing)}
+                    data-leading-constraint-count={window.nearbyConstraints.leading.length}
+                    data-trailing-constraint-count={window.nearbyConstraints.trailing.length}
+                    data-score-shared-members={window.scoreBreakdown.sharedMemberCount}
+                    data-score-slack-minutes={window.scoreBreakdown.spanSlackMinutes}
+                    data-score-edge-pressure={window.scoreBreakdown.nearbyEdgePressureMinutes}
+                  >
+                    <div class="find-time-card__header find-time-card__header--stacked">
+                      <div>
+                        <div class="find-time-card__eyebrow-row">
+                          <p class="panel-kicker">Top pick {window.topPickRank ?? index + 1}</p>
+                          <span class="pill pill-active">{scoreSummary(window)}</span>
+                        </div>
+                        <h4>{formatUtcSlot(window)}</h4>
+                        <p class="find-time-card__summary">{topPickHeadline(window)}</p>
+                      </div>
+                      <div class="find-time-card__pill-row">
+                        <span class="pill pill-active">{window.availableMembers.length} free</span>
+                        <span class={`pill ${window.blockedMembers.length === 0 ? 'pill-neutral' : 'pill-expired'}`}>
+                          {window.blockedMembers.length} blocked nearby
+                        </span>
+                      </div>
+                    </div>
 
-              <div class="find-time-members">
-                <p class="panel-kicker">Available members</p>
-                <ul class="find-time-member-list">
-                  {#each window.availableMembers as member}
-                    <li>{member.displayName}</li>
-                  {/each}
-                </ul>
+                    <div class="find-time-card__meta find-time-card__meta--triple">
+                      <div>
+                        <span>Exact slot</span>
+                        <strong>{formatUtcRange(window.startAt, window.endAt)}</strong>
+                      </div>
+                      <div>
+                        <span>Continuous span</span>
+                        <strong>{formatUtcRange(window.spanStartAt, window.spanEndAt)}</strong>
+                      </div>
+                      <div>
+                        <span>Span slack</span>
+                        <strong>{window.scoreBreakdown.spanSlackMinutes} minutes</strong>
+                      </div>
+                    </div>
+
+                    <div class="find-time-explanation-grid">
+                      <section class="find-time-detail-panel" data-testid={`find-time-top-pick-${index}-free-members`}>
+                        <p class="panel-kicker">Who is free</p>
+                        <ul class="find-time-member-list">
+                          {#each window.availableMembers as member}
+                            <li>{member.displayName}</li>
+                          {/each}
+                        </ul>
+                      </section>
+
+                      <section
+                        class="find-time-detail-panel"
+                        data-testid={`find-time-top-pick-${index}-blocked-members`}
+                        data-blocked-member-count={window.blockedMembers.length}
+                      >
+                        <p class="panel-kicker">Who is blocked</p>
+                        {#if window.blockedMembers.length > 0}
+                          <ul class="find-time-detail-list">
+                            {#each window.blockedMembers as blockedMember}
+                              <li>{summarizeBlockedMember(blockedMember)}</li>
+                            {/each}
+                          </ul>
+                        {:else}
+                          <p class="find-time-fallback-copy">All named members stay free across this exact slot.</p>
+                        {/if}
+                      </section>
+                    </div>
+
+                    <div class="find-time-nearby-grid">
+                      <section
+                        class="find-time-detail-panel"
+                        data-testid={`find-time-top-pick-${index}-nearby-leading`}
+                        data-constraint-count={window.nearbyConstraints.leading.length}
+                      >
+                        <p class="panel-kicker">Why earlier times fail</p>
+                        {#if window.nearbyConstraints.leading.length > 0}
+                          <ul class="find-time-detail-list">
+                            {#each window.nearbyConstraints.leading as constraint}
+                              <li>{describeNearbyConstraint(constraint)}</li>
+                            {/each}
+                          </ul>
+                        {:else}
+                          <p class="find-time-fallback-copy">No trusted busy interval pushes into the start edge for this shortlist slot.</p>
+                        {/if}
+                      </section>
+
+                      <section
+                        class="find-time-detail-panel"
+                        data-testid={`find-time-top-pick-${index}-nearby-trailing`}
+                        data-constraint-count={window.nearbyConstraints.trailing.length}
+                      >
+                        <p class="panel-kicker">Why nearby later times fail</p>
+                        {#if window.nearbyConstraints.trailing.length > 0}
+                          <ul class="find-time-detail-list">
+                            {#each window.nearbyConstraints.trailing as constraint}
+                              <li>{describeNearbyConstraint(constraint)}</li>
+                            {/each}
+                          </ul>
+                        {:else}
+                          <p class="find-time-fallback-copy">No trusted busy interval pushes into the trailing edge for this shortlist slot.</p>
+                        {/if}
+                      </section>
+                    </div>
+                  </article>
+                {/each}
               </div>
-            </article>
-          {/each}
+            {/if}
+          </section>
+
+          <section class="find-time-browse framed-panel" data-testid="find-time-browse-results" data-browse-count={search.browseWindows.length}>
+            <div class="find-time-section-heading">
+              <div>
+                <p class="panel-kicker">Browse all ranked windows</p>
+                <h3>Lighter follow-on inventory.</h3>
+                <p class="panel-copy">
+                  Browse cards stay truthful but compact so the shortlist can carry the heavier explanation load.
+                </p>
+              </div>
+              <span class="pill pill-neutral">{search.browseWindows.length} remaining</span>
+            </div>
+
+            {#if search.browseWindows.length === 0}
+              <article class="find-time-empty-panel" data-testid="find-time-browse-empty">
+                <strong>No remaining browse windows.</strong>
+                <p>Every truthful result for this query is already captured in the shortlist above.</p>
+              </article>
+            {:else}
+              <div class="find-time-browse-grid">
+                {#each search.browseWindows as window, index}
+                  <article
+                    class="framed-panel find-time-card find-time-card--browse"
+                    data-testid={`find-time-browse-window-${index}`}
+                    data-start-at={window.startAt}
+                    data-end-at={window.endAt}
+                    data-span-start-at={window.spanStartAt}
+                    data-span-end-at={window.spanEndAt}
+                    data-available-members={serializeNames(availableMemberNames(window))}
+                    data-blocked-members={serializeNames(blockedMemberNames(window))}
+                    data-blocked-member-count={window.blockedMembers.length}
+                    data-leading-constraints={serializeNearbyConstraints(window.nearbyConstraints.leading)}
+                    data-trailing-constraints={serializeNearbyConstraints(window.nearbyConstraints.trailing)}
+                    data-nearby-constraint-count={nearbyConstraintCount(window)}
+                  >
+                    <div class="find-time-card__header">
+                      <div>
+                        <p class="panel-kicker">Browse {index + 1}</p>
+                        <h4>{formatUtcSlot(window)}</h4>
+                      </div>
+                      <span class={`pill ${window.blockedMembers.length === 0 ? 'pill-neutral' : 'pill-expired'}`}>
+                        {window.availableMembers.length} free / {window.blockedMembers.length} blocked
+                      </span>
+                    </div>
+
+                    <p class="find-time-card__summary find-time-card__summary--compact">{browseHeadline(window)}</p>
+
+                    <div class="find-time-card__meta">
+                      <div>
+                        <span>Exact slot</span>
+                        <strong>{formatUtcRange(window.startAt, window.endAt)}</strong>
+                      </div>
+                      <div>
+                        <span>Span</span>
+                        <strong>{window.spanDurationMinutes} minutes</strong>
+                      </div>
+                    </div>
+
+                    <div class="find-time-compact-grid">
+                      <section class="find-time-detail-panel" data-testid={`find-time-browse-window-${index}-free-members`}>
+                        <p class="panel-kicker">Free</p>
+                        <p>{availableMemberNames(window).join(' · ')}</p>
+                      </section>
+
+                      <section class="find-time-detail-panel" data-testid={`find-time-browse-window-${index}-nearby-summary`}>
+                        <p class="panel-kicker">Nearby edges</p>
+                        <p>
+                          Before: {shortConstraintSummary(window.nearbyConstraints.leading, 'No leading constraint summary.')}
+                        </p>
+                        <p>
+                          After: {shortConstraintSummary(window.nearbyConstraints.trailing, 'No trailing constraint summary.')}
+                        </p>
+                      </section>
+                    </div>
+                  </article>
+                {/each}
+              </div>
+            {/if}
+          </section>
         </section>
       {:else if search.status === 'no-results'}
         <section class="feature-banner tone-warning" data-testid="find-time-empty-state">
@@ -459,15 +727,23 @@
   .find-time-hero,
   .find-time-toolbar,
   .find-time-summary-grid,
-  .find-time-results,
+  .find-time-results-shell,
+  .find-time-top-picks,
+  .find-time-browse,
+  .find-time-top-pick-grid,
+  .find-time-browse-grid,
   .find-time-card,
   .find-time-card__header,
   .find-time-card__meta,
   .find-time-form,
   .find-time-form__grid,
   .find-time-presets,
-  .find-time-members,
-  .find-time-member-list {
+  .find-time-explanation-grid,
+  .find-time-nearby-grid,
+  .find-time-compact-grid,
+  .find-time-member-list,
+  .find-time-detail-list,
+  .find-time-section-heading {
     display: grid;
     gap: 1rem;
   }
@@ -479,7 +755,9 @@
   }
 
   .find-time-hero__meta,
-  .find-time-presets {
+  .find-time-presets,
+  .find-time-card__pill-row,
+  .find-time-card__eyebrow-row {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
@@ -496,11 +774,26 @@
 
   .find-time-form__grid,
   .find-time-summary-grid,
-  .find-time-card__meta {
+  .find-time-compact-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .find-time-results {
+  .find-time-results-shell {
+    gap: 1.25rem;
+  }
+
+  .find-time-top-picks,
+  .find-time-browse {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015)),
+      rgba(7, 16, 26, 0.72);
+  }
+
+  .find-time-top-pick-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .find-time-browse-grid {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
 
@@ -511,14 +804,52 @@
       rgba(7, 16, 26, 0.75);
   }
 
+  .find-time-card--top-pick {
+    border-color: rgba(244, 162, 89, 0.42);
+    box-shadow: 0 20px 44px rgba(0, 0, 0, 0.28);
+    background:
+      radial-gradient(circle at top right, rgba(244, 162, 89, 0.12), transparent 35%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
+      rgba(7, 16, 26, 0.88);
+  }
+
+  .find-time-card--browse {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.01)),
+      rgba(7, 16, 26, 0.68);
+  }
+
   .find-time-card__header {
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: start;
   }
 
+  .find-time-card__header--stacked {
+    gap: 1.25rem;
+  }
+
+  .find-time-card__summary {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.78);
+    line-height: 1.6;
+  }
+
+  .find-time-card__summary--compact {
+    font-size: 0.96rem;
+  }
+
+  .find-time-card__meta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .find-time-card__meta--triple {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .find-time-card__meta > div,
-  .find-time-members {
-    padding: 0.95rem;
+  .find-time-detail-panel,
+  .find-time-empty-panel {
+    padding: 1rem;
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.06);
     background: rgba(255, 255, 255, 0.03);
@@ -538,18 +869,45 @@
     line-height: 1.5;
   }
 
-  .find-time-member-list {
+  .find-time-explanation-grid,
+  .find-time-nearby-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .find-time-member-list,
+  .find-time-detail-list {
     list-style: none;
     padding: 0;
     margin: 0;
+  }
+
+  .find-time-member-list {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   }
 
-  .find-time-member-list li {
+  .find-time-member-list li,
+  .find-time-detail-list li {
     padding: 0.8rem 0.95rem;
-    border-radius: 999px;
-    border: 1px solid rgba(143, 211, 193, 0.24);
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    line-height: 1.5;
+  }
+
+  .find-time-member-list li {
+    border-color: rgba(143, 211, 193, 0.24);
     background: rgba(143, 211, 193, 0.08);
+  }
+
+  .find-time-fallback-copy,
+  .find-time-empty-panel p,
+  .find-time-detail-panel p:last-child {
+    margin: 0;
+  }
+
+  .find-time-empty-panel strong {
+    display: block;
+    margin-bottom: 0.5rem;
   }
 
   @media (max-width: 980px) {
@@ -557,7 +915,11 @@
     .find-time-form__grid,
     .find-time-summary-grid,
     .find-time-card__meta,
-    .find-time-card__header {
+    .find-time-card__meta--triple,
+    .find-time-card__header,
+    .find-time-explanation-grid,
+    .find-time-nearby-grid,
+    .find-time-compact-grid {
       grid-template-columns: 1fr;
     }
   }

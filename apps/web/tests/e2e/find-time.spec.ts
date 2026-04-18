@@ -2,7 +2,8 @@ import {
   expect,
   openCalendarWeek,
   openFindTimeRoute,
-  readFindTimeWindowSnapshot,
+  readFindTimeBrowseWindowSnapshot,
+  readFindTimeTopPickSnapshot,
   seededCalendars,
   seededFindTime,
   seededUsers,
@@ -12,7 +13,7 @@ import {
 
 test.describe.configure({ mode: 'serial' });
 
-test('permitted member can enter find-time from the calendar board and browse truthful named windows', async ({
+test('permitted member sees ranked top picks before the lighter browse inventory on the real find-time route', async ({
   page,
   flow
 }) => {
@@ -38,7 +39,7 @@ test('permitted member can enter find-time from the calendar board and browse tr
     await expect(page.getByTestId('find-time-duration-input')).toHaveValue('60');
   });
 
-  await test.step('phase: search the seeded day range and verify exact server-shaped windows', async () => {
+  await test.step('phase: search the seeded day range and verify shortlist order plus explanation density', async () => {
     await openFindTimeRoute({
       page,
       flow,
@@ -55,19 +56,57 @@ test('permitted member can enter find-time from the calendar board and browse tr
     await expect(page.getByTestId('find-time-search-state')).toHaveAttribute('data-status', 'ready');
     await expect(page.getByTestId('find-time-summary')).toContainText('9 truthful windows');
     await expect(page.getByTestId('find-time-results')).toHaveAttribute('data-window-count', String(seededFindTime.alphaWindowCount));
+    await expect(page.getByTestId('find-time-results')).toHaveAttribute('data-top-pick-count', String(seededFindTime.topPickCount));
+    await expect(page.getByTestId('find-time-results')).toHaveAttribute('data-browse-count', String(seededFindTime.browseCount));
 
-    await expect(page.getByTestId('find-time-window-0')).toContainText('Alice Owner');
-    await expect(page.getByTestId('find-time-window-1')).toContainText('Bob Member');
-    await expect(page.getByTestId('find-time-window-1')).toContainText('Dana Multi-Group');
-    await expect(page.getByTestId('find-time-window-8')).toContainText('Alice Owner');
+    await expect(
+      page.evaluate(() => {
+        const topPicks = document.querySelector('[data-testid="find-time-top-picks"]');
+        const browse = document.querySelector('[data-testid="find-time-browse-results"]');
 
-    await expect(await readFindTimeWindowSnapshot(page, 0)).toEqual(seededFindTime.firstWindow);
-    await expect(await readFindTimeWindowSnapshot(page, 1)).toEqual(seededFindTime.focusedWindow);
-    await expect(await readFindTimeWindowSnapshot(page, 8)).toEqual(seededFindTime.lastWindow);
+        if (!topPicks || !browse) {
+          return false;
+        }
+
+        return Boolean(topPicks.compareDocumentPosition(browse) & Node.DOCUMENT_POSITION_FOLLOWING);
+      })
+    ).resolves.toBe(true);
+
+    await expect(page.getByTestId('find-time-top-picks')).toBeVisible();
+    await expect(page.getByTestId('find-time-browse-results')).toBeVisible();
+
+    await expect(await readFindTimeTopPickSnapshot(page, 0)).toEqual(seededFindTime.topPicks[0]);
+    await expect(await readFindTimeTopPickSnapshot(page, 1)).toEqual(seededFindTime.topPicks[1]);
+    await expect(await readFindTimeTopPickSnapshot(page, 2)).toEqual(seededFindTime.topPicks[2]);
+
+    await expect(page.getByTestId('find-time-top-pick-0-free-members')).toContainText('Alice Owner');
+    await expect(page.getByTestId('find-time-top-pick-0-free-members')).toContainText('Bob Member');
+    await expect(page.getByTestId('find-time-top-pick-0-free-members')).toContainText('Dana Multi-Group');
+    await expect(page.getByTestId('find-time-top-pick-0-blocked-members')).toContainText(
+      'All named members stay free across this exact slot.'
+    );
+    await expect(page.getByTestId('find-time-top-pick-0-nearby-leading')).toContainText(
+      'No trusted busy interval pushes into the start edge for this shortlist slot.'
+    );
+    await expect(page.getByTestId('find-time-top-pick-0-nearby-trailing')).toContainText(
+      'No trusted busy interval pushes into the trailing edge for this shortlist slot.'
+    );
+
+    await expect(page.getByTestId('find-time-browse-window-0')).not.toContainText('Who is blocked');
+    await expect(page.getByTestId('find-time-browse-window-0')).not.toContainText('Why earlier times fail');
+
+    await expect(await readFindTimeBrowseWindowSnapshot(page, 2)).toEqual(seededFindTime.focusedBrowseWindow);
+    await expect(page.getByTestId('find-time-browse-window-2-free-members')).toContainText('Bob Member · Dana Multi-Group');
+    await expect(page.getByTestId('find-time-browse-window-2-nearby-summary')).toContainText(
+      'Before: Alpha opening sweep (Alice Owner)'
+    );
+    await expect(page.getByTestId('find-time-browse-window-2-nearby-summary')).toContainText(
+      'After: Morning intake (Alice Owner)'
+    );
   });
 });
 
-test('unauthorized member gets an explicit denial on another group\'s find-time route', async ({ page, flow }) => {
+test("unauthorized member gets an explicit denial on another group's find-time route", async ({ page, flow }) => {
   await test.step('phase: sign in as the seeded Alpha-only member', async () => {
     flow.mark('login', seededUsers.alphaMember.email);
     await signInThroughUi(page, seededUsers.alphaMember);
@@ -128,6 +167,8 @@ test('offline entry from the calendar board fails closed on the find-time route'
     await expect(page.getByTestId('find-time-offline-state')).toContainText('fail-closed');
     await expect(page.getByTestId('find-time-offline-state')).toContainText('FIND_TIME_OFFLINE_UNAVAILABLE');
     await expect(page.getByTestId('find-time-results')).toHaveCount(0);
+    await expect(page.getByTestId('find-time-top-picks')).toHaveCount(0);
+    await expect(page.getByTestId('find-time-browse-results')).toHaveCount(0);
   });
 });
 

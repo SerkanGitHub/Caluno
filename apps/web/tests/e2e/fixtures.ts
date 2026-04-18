@@ -315,26 +315,53 @@ export const seededFindTime = {
   start: '2026-04-15',
   durationMinutes: '60',
   alphaWindowCount: 9,
-  firstWindow: {
-    startAt: '2026-04-15T00:00:00.000Z',
-    endAt: '2026-04-15T01:00:00.000Z',
-    spanStartAt: '2026-04-15T00:00:00.000Z',
-    spanEndAt: '2026-04-15T08:30:00.000Z',
-    availableMembers: ['Alice Owner', 'Bob Member', 'Dana Multi-Group']
-  },
-  focusedWindow: {
+  topPickCount: 3,
+  browseCount: 6,
+  topPicks: [
+    {
+      rank: '1',
+      startAt: '2026-04-16T15:00:00.000Z',
+      endAt: '2026-04-16T16:00:00.000Z',
+      spanStartAt: '2026-04-16T15:00:00.000Z',
+      spanEndAt: '2026-05-15T00:00:00.000Z',
+      availableMembers: ['Alice Owner', 'Bob Member', 'Dana Multi-Group'],
+      blockedMembers: [],
+      leadingConstraints: [],
+      trailingConstraints: []
+    },
+    {
+      rank: '2',
+      startAt: '2026-04-15T15:00:00.000Z',
+      endAt: '2026-04-15T16:00:00.000Z',
+      spanStartAt: '2026-04-15T15:00:00.000Z',
+      spanEndAt: '2026-04-16T08:30:00.000Z',
+      availableMembers: ['Alice Owner', 'Bob Member', 'Dana Multi-Group'],
+      blockedMembers: [],
+      leadingConstraints: [],
+      trailingConstraints: []
+    },
+    {
+      rank: '3',
+      startAt: '2026-04-15T00:00:00.000Z',
+      endAt: '2026-04-15T01:00:00.000Z',
+      spanStartAt: '2026-04-15T00:00:00.000Z',
+      spanEndAt: '2026-04-15T08:30:00.000Z',
+      availableMembers: ['Alice Owner', 'Bob Member', 'Dana Multi-Group'],
+      blockedMembers: [],
+      leadingConstraints: [],
+      trailingConstraints: []
+    }
+  ],
+  focusedBrowseWindow: {
+    rank: null,
     startAt: '2026-04-15T08:30:00.000Z',
     endAt: '2026-04-15T09:30:00.000Z',
     spanStartAt: '2026-04-15T08:30:00.000Z',
     spanEndAt: '2026-04-15T11:00:00.000Z',
-    availableMembers: ['Bob Member', 'Dana Multi-Group']
-  },
-  lastWindow: {
-    startAt: '2026-04-16T15:00:00.000Z',
-    endAt: '2026-04-16T16:00:00.000Z',
-    spanStartAt: '2026-04-16T15:00:00.000Z',
-    spanEndAt: '2026-05-15T00:00:00.000Z',
-    availableMembers: ['Alice Owner', 'Bob Member', 'Dana Multi-Group']
+    availableMembers: ['Bob Member', 'Dana Multi-Group'],
+    blockedMembers: ['Alice Owner'],
+    leadingConstraints: ['Alice Owner:Alpha opening sweep:0'],
+    trailingConstraints: ['Alice Owner:Morning intake:0']
   }
 } as const;
 
@@ -1267,17 +1294,29 @@ export async function openFindTimeRoute(params: {
   return targetUrl;
 }
 
-export async function readFindTimeWindowSnapshot(page: Page, index: number) {
-  const card = page.getByTestId(`find-time-window-${index}`);
+async function readFindTimeCardSnapshot(page: Page, testId: string) {
+  const card = page.getByTestId(testId);
   await expect(card).toBeVisible();
 
   return {
+    rank: await card.getAttribute('data-top-pick-rank'),
     startAt: await card.getAttribute('data-start-at'),
     endAt: await card.getAttribute('data-end-at'),
     spanStartAt: await card.getAttribute('data-span-start-at'),
     spanEndAt: await card.getAttribute('data-span-end-at'),
-    availableMembers: ((await card.getAttribute('data-available-members')) ?? '').split('|').filter(Boolean)
+    availableMembers: ((await card.getAttribute('data-available-members')) ?? '').split('|').filter(Boolean),
+    blockedMembers: ((await card.getAttribute('data-blocked-members')) ?? '').split('|').filter(Boolean),
+    leadingConstraints: ((await card.getAttribute('data-leading-constraints')) ?? '').split('|').filter(Boolean),
+    trailingConstraints: ((await card.getAttribute('data-trailing-constraints')) ?? '').split('|').filter(Boolean)
   };
+}
+
+export async function readFindTimeTopPickSnapshot(page: Page, index: number) {
+  return readFindTimeCardSnapshot(page, `find-time-top-pick-${index}`);
+}
+
+export async function readFindTimeBrowseWindowSnapshot(page: Page, index: number) {
+  return readFindTimeCardSnapshot(page, `find-time-browse-window-${index}`);
 }
 
 export async function submitShiftEditorForm(
