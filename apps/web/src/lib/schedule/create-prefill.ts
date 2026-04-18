@@ -2,6 +2,12 @@ import { toDateTimeLocalValue } from '$lib/schedule/board';
 
 export const CREATE_PREFILL_FLAG = '1';
 export const CREATE_PREFILL_SOURCE = 'find-time';
+export const CREATE_PREFILL_SEARCH_PARAM_KEYS = [
+  'create',
+  'prefillStartAt',
+  'prefillEndAt',
+  'source'
+] as const;
 
 export type CreatePrefillSource = typeof CREATE_PREFILL_SOURCE;
 
@@ -107,6 +113,20 @@ export function deriveCreatePrefillWeekStart(startAt: string): string | null {
   dayStart.setUTCDate(dayStart.getUTCDate() - daysFromMonday);
 
   return dayStart.toISOString().slice(0, 10);
+}
+
+export function hasCreatePrefillSearchParams(searchParams: URLSearchParams): boolean {
+  return CREATE_PREFILL_SEARCH_PARAM_KEYS.some((key) => searchParams.has(key));
+}
+
+export function stripCreatePrefillSearchParams(searchParams: URLSearchParams): URLSearchParams {
+  const nextSearchParams = new URLSearchParams(searchParams);
+
+  for (const key of CREATE_PREFILL_SEARCH_PARAM_KEYS) {
+    nextSearchParams.delete(key);
+  }
+
+  return nextSearchParams;
 }
 
 function normalizeCreatePrefillWindow(window: CreatePrefillWindow): CreatePrefillWindow | null {

@@ -2,6 +2,7 @@
   import type { SubmitFunction } from '@sveltejs/kit';
   import type { CalendarControllerActionState } from '$lib/offline/calendar-controller';
   import type { CalendarRealtimeDiagnostics } from '$lib/offline/sync-engine';
+  import type { CreatePrefillPayload } from '$lib/schedule/create-prefill';
   import type { ScheduleLoadStatus } from '$lib/server/schedule';
   import { summarizeScheduleActions, type CalendarWeekBoardModel } from '$lib/schedule/board';
   import ShiftDayColumn from './ShiftDayColumn.svelte';
@@ -12,6 +13,7 @@
     scheduleStatus: ScheduleLoadStatus;
     scheduleReason: string | null;
     scheduleMessage: string;
+    createPrefill?: CreatePrefillPayload | null;
     actionStates?: CalendarControllerActionState[];
     realtimeDiagnostics?: CalendarRealtimeDiagnostics | null;
     pendingActionKey: string | null;
@@ -26,6 +28,7 @@
     scheduleStatus,
     scheduleReason,
     scheduleMessage,
+    createPrefill = null,
     actionStates = [],
     realtimeDiagnostics = null,
     pendingActionKey,
@@ -96,6 +99,7 @@
       mode="create"
       formId="create:week"
       visibleWeekStart={board.visibleWeekStart}
+      {createPrefill}
       actionStates={actionStates}
       defaultDayKey={board.days[0]?.dayKey ?? board.visibleWeekStart}
       {pendingActionKey}

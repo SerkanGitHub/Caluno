@@ -1,6 +1,7 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { describeDeniedCalendarReason } from '$lib/server/app-shell';
+import { parseCreatePrefill, stripCreatePrefillSearchParams } from '$lib/schedule/create-prefill';
 import {
   createScheduleShift,
   deleteScheduleShift,
@@ -65,8 +66,8 @@ function respondWithActionResult(key: 'createShift' | 'editShift' | 'moveShift' 
   };
 }
 
-function resolveActionSearchParams(url: URL, formData: FormData) {
-  const searchParams = new URLSearchParams(url.searchParams);
+export function _resolveActionSearchParams(url: URL, formData: FormData) {
+  const searchParams = stripCreatePrefillSearchParams(url.searchParams);
   const submittedWeekStart = formData.get('visibleWeekStart');
 
   if (!searchParams.get('start') && typeof submittedWeekStart === 'string' && submittedWeekStart.trim()) {
@@ -103,6 +104,7 @@ export const load: PageServerLoad = async ({ params, parent, url, locals }) => {
     calendarId: calendarState.calendar.id,
     searchParams: url.searchParams
   });
+  const createPrefill = parseCreatePrefill(url.searchParams);
 
   return {
     calendarView: {
@@ -111,7 +113,8 @@ export const load: PageServerLoad = async ({ params, parent, url, locals }) => {
       group,
       welcome: url.searchParams.get('welcome'),
       visibleWeek: schedule.visibleWeek,
-      schedule
+      schedule,
+      createPrefill
     }
   };
 };
@@ -119,7 +122,7 @@ export const load: PageServerLoad = async ({ params, parent, url, locals }) => {
 export const actions = {
   createShift: async ({ request, locals, params, url }) => {
     const formData = await request.formData();
-    const actionSearchParams = resolveActionSearchParams(url, formData);
+    const actionSearchParams = _resolveActionSearchParams(url, formData);
     const user = await requireAuthenticatedUser(locals);
     if (!user) {
       return fail(401, {
@@ -140,7 +143,7 @@ export const actions = {
 
   editShift: async ({ request, locals, params, url }) => {
     const formData = await request.formData();
-    const actionSearchParams = resolveActionSearchParams(url, formData);
+    const actionSearchParams = _resolveActionSearchParams(url, formData);
     const user = await requireAuthenticatedUser(locals);
     if (!user) {
       return fail(401, {
@@ -161,7 +164,7 @@ export const actions = {
 
   moveShift: async ({ request, locals, params, url }) => {
     const formData = await request.formData();
-    const actionSearchParams = resolveActionSearchParams(url, formData);
+    const actionSearchParams = _resolveActionSearchParams(url, formData);
     const user = await requireAuthenticatedUser(locals);
     if (!user) {
       return fail(401, {
@@ -182,7 +185,7 @@ export const actions = {
 
   deleteShift: async ({ request, locals, params, url }) => {
     const formData = await request.formData();
-    const actionSearchParams = resolveActionSearchParams(url, formData);
+    const actionSearchParams = _resolveActionSearchParams(url, formData);
     const user = await requireAuthenticatedUser(locals);
     if (!user) {
       return fail(401, {

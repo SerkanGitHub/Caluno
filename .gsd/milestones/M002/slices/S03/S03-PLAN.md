@@ -60,7 +60,7 @@ This slice is best split into three tasks because the risky part is the transien
   - Do: Add one shared helper for building suggestion handoff hrefs and parsing/validating incoming prefill params, derive the destination week from `window.startAt` instead of the original find-time search anchor, keep the contract timing-only, and add unit coverage for valid plus malformed/end-before-start cases.
   - Verify: `pnpm --dir apps/web exec vitest run tests/schedule/create-prefill.unit.test.ts`
   - Done when: the helper owns both handoff generation and fail-closed parsing, and tests prove correct week derivation plus invalid-input rejection.
-- [ ] **T02: Wire calendar-route prefill consumption, visible cue, and one-shot cleanup** `est:2h`
+- [x] **T02: Wire calendar-route prefill consumption, visible cue, and one-shot cleanup** `est:2h`
   - Why: The highest-risk integration is the destination route, because schedule actions currently preserve search params and can otherwise reopen the dialog indefinitely.
   - Files: `apps/web/src/routes/(app)/calendars/[calendarId]/+page.server.ts`, `apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte`, `apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte`, `apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte`, `apps/web/tests/routes/protected-routes.unit.test.ts`
   - Do: Parse validated prefill data in the calendar route, thread it into the existing create dialog, auto-open only the create path for valid handoffs, show a visible “From Find time” cue, preserve manual create/edit/move behavior, and strip one-shot prefill params after arrival while keeping `start=` intact.

@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-18T19:56:38Z | Files: 307 | Described: 0/307
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-18T19:56:38Z","fingerprint":"9cbe70bd7d6a7cb3d701fe8a2c531a4360a1fd2c","fileCount":307,"truncated":false} -->
+Generated: 2026-04-18T20:12:26Z | Files: 309 | Described: 0/309
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-18T20:12:26Z","fingerprint":"763f3f2cb9f8cd71f8bcbef0bec243a631978bea","fileCount":309,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -378,6 +378,7 @@ Generated: 2026-04-18T19:56:38Z | Files: 307 | Described: 0/307
 ### apps/web/src/lib/schedule/
 - `apps/web/src/lib/schedule/board.ts`
 - `apps/web/src/lib/schedule/conflicts.ts`
+- `apps/web/src/lib/schedule/create-prefill.ts`
 - `apps/web/src/lib/schedule/recurrence.ts`
 - `apps/web/src/lib/schedule/route-contract.ts`
 - `apps/web/src/lib/schedule/types.ts`
@@ -457,6 +458,7 @@ Generated: 2026-04-18T19:56:38Z | Files: 307 | Described: 0/307
 ### apps/web/tests/schedule/
 - `apps/web/tests/schedule/board.unit.test.ts`
 - `apps/web/tests/schedule/conflicts.unit.test.ts`
+- `apps/web/tests/schedule/create-prefill.unit.test.ts`
 - `apps/web/tests/schedule/offline-queue.unit.test.ts`
 - `apps/web/tests/schedule/offline-store.unit.test.ts`
 - `apps/web/tests/schedule/recurrence.unit.test.ts`

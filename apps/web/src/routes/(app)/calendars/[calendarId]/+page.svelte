@@ -14,6 +14,11 @@
   import { createOfflineMutationQueue } from '$lib/offline/mutation-queue';
   import { buildCalendarWeekBoard } from '$lib/schedule/board';
   import {
+    hasCreatePrefillSearchParams,
+    stripCreatePrefillSearchParams,
+    type CreatePrefillPayload
+  } from '$lib/schedule/create-prefill';
+  import {
     createCalendarShiftRealtimeSubscription,
     createReconnectTransportFailureOutcome,
     decideTrustedRefreshSnapshotWrite,
@@ -30,6 +35,11 @@
   import type { CalendarScheduleView } from '$lib/server/schedule';
   import type { PageData } from './$types';
 
+  type ReadyCalendarView = Extract<NonNullable<PageData['calendarView']>, { kind: 'calendar' }> & {
+    createPrefill: CreatePrefillPayload | null;
+  };
+  type DeniedCalendarView = Extract<NonNullable<PageData['calendarView']>, { kind: 'denied' }>;
+
   let { data }: { data: PageData } = $props();
   let pendingActionKey = $state<string | null>(null);
   let controllerState = $state.raw<CalendarControllerState | null>(null);
@@ -39,13 +49,19 @@
   let realtimeDiagnostics = $state.raw<CalendarRealtimeDiagnostics>(createInitialRealtimeDiagnostics());
   let retainedRealtimeScopeKey: string | null = null;
   let retainedRealtimeDiagnostics: CalendarRealtimeDiagnostics | null = null;
+  let lastCreatePrefillCleanupHref = $state<string | null>(null);
 
   const shellState = $derived(data.protectedShellState);
   const calendarState = $derived(data.protectedCalendarState);
   const appShell = $derived(data.appShell ?? null);
   const calendarView = $derived(data.calendarView ?? null);
-  const readyView = $derived(calendarView?.kind === 'calendar' ? calendarView : null);
-  const deniedView = $derived(calendarView?.kind === 'denied' ? calendarView : null);
+  const readyView = $derived.by(() =>
+    calendarView?.kind === 'calendar' ? (calendarView as ReadyCalendarView) : null
+  );
+  const deniedView = $derived.by(() =>
+    calendarView?.kind === 'denied' ? (calendarView as DeniedCalendarView) : null
+  );
+  const readyCreatePrefill = $derived(readyView?.createPrefill ?? null);
   const readyCalendarId = $derived(readyView?.calendar.id ?? null);
   const readyWeekStart = $derived(readyView?.schedule.visibleWeek.start ?? null);
   const controllerScopeKey = $derived(
@@ -540,6 +556,36 @@
     };
   }
 
+  $effect(() => {
+    const currentReadyView = readyView;
+
+    if (!browser || !currentReadyView) {
+      return;
+    }
+
+    const currentUrl = new URL(window.location.href);
+    if (!hasCreatePrefillSearchParams(currentUrl.searchParams)) {
+      return;
+    }
+
+    const nextSearchParams = stripCreatePrefillSearchParams(currentUrl.searchParams);
+    nextSearchParams.set('start', currentReadyView.schedule.visibleWeek.start);
+
+    const nextSearch = nextSearchParams.toString();
+    const nextHref = `${currentUrl.pathname}${nextSearch ? `?${nextSearch}` : ''}${currentUrl.hash}`;
+
+    if (nextHref === `${window.location.pathname}${window.location.search}${window.location.hash}`) {
+      return;
+    }
+
+    if (lastCreatePrefillCleanupHref === nextHref) {
+      return;
+    }
+
+    window.history.replaceState(window.history.state, '', nextHref);
+    lastCreatePrefillCleanupHref = nextHref;
+  });
+
   function describeRealtimeState(diagnostics: CalendarRealtimeDiagnostics): string {
     if (diagnostics.channelState === 'subscribing') {
       return 'The shared shift channel is connecting. The current board stays visible while live change detection becomes ready.';
@@ -781,6 +827,7 @@
           scheduleStatus={effectiveSchedule.status}
           scheduleReason={effectiveSchedule.reason}
           scheduleMessage={effectiveSchedule.message}
+          createPrefill={readyCreatePrefill}
           actionStates={controllerState?.actionStates ?? []}
           realtimeDiagnostics={realtimeDiagnostics}
           {pendingActionKey}

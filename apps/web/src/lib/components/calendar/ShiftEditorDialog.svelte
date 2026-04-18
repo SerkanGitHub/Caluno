@@ -3,6 +3,7 @@
   import type { SubmitFunction } from '@sveltejs/kit';
   import type { CalendarControllerActionState } from '$lib/offline/calendar-controller';
   import { buildDefaultCreateTimes, toDateTimeLocalValue } from '$lib/schedule/board';
+  import type { CreatePrefillPayload } from '$lib/schedule/create-prefill';
   import type { ShiftCardModel } from '$lib/schedule/board';
 
   type Mode = 'create' | 'edit' | 'move';
@@ -12,6 +13,7 @@
     mode: Mode;
     formId: string;
     visibleWeekStart: string;
+    createPrefill?: CreatePrefillPayload | null;
     actionStates?: CalendarControllerActionState[];
     shift?: ShiftCardModel | null;
     defaultDayKey?: string | null;
@@ -27,6 +29,7 @@
     mode,
     formId,
     visibleWeekStart,
+    createPrefill = null,
     actionStates = [],
     shift = null,
     defaultDayKey = null,
@@ -35,6 +38,13 @@
   }: Props = $props();
 
   const defaultTimes = $derived(buildDefaultCreateTimes(defaultDayKey));
+  const createPrefillKey = $derived.by(() =>
+    mode === 'create' && createPrefill
+      ? `${createPrefill.source}:${createPrefill.startAt}:${createPrefill.endAt}`
+      : null
+  );
+  let open = $state(false);
+  let lastAutoOpenedPrefillKey = $state<string | null>(null);
   const isSubmitting = $derived(pendingActionKey === formId);
   const actionTarget = $derived(`?/${mode === 'create' ? 'createShift' : mode === 'edit' ? 'editShift' : 'moveShift'}&start=${visibleWeekStart}`);
   const scopedState = $derived(actionStates.find((state) => state.formId === formId) ?? null);
@@ -89,11 +99,43 @@
 
     return shift?.title ?? '';
   });
-  const startValue = $derived.by(() => toDateTimeLocalValue(shift?.startAt) || defaultTimes.startAt);
-  const endValue = $derived.by(() => toDateTimeLocalValue(shift?.endAt) || defaultTimes.endAt);
+  const startValue = $derived.by(() => {
+    if (mode === 'create' && createPrefill) {
+      return createPrefill.startAtLocal;
+    }
+
+    return toDateTimeLocalValue(shift?.startAt) || defaultTimes.startAt;
+  });
+  const endValue = $derived.by(() => {
+    if (mode === 'create' && createPrefill) {
+      return createPrefill.endAtLocal;
+    }
+
+    return toDateTimeLocalValue(shift?.endAt) || defaultTimes.endAt;
+  });
+
+  $effect(() => {
+    if (!createPrefillKey) {
+      lastAutoOpenedPrefillKey = null;
+      return;
+    }
+
+    if (lastAutoOpenedPrefillKey === createPrefillKey) {
+      return;
+    }
+
+    open = true;
+    lastAutoOpenedPrefillKey = createPrefillKey;
+  });
 </script>
 
-<details class={`shift-editor ${mode === 'create' ? 'shift-editor--create' : ''}`}>
+<details
+  class={`shift-editor ${mode === 'create' ? 'shift-editor--create' : ''}`}
+  bind:open
+  data-testid={`${mode}-shift-editor`}
+  data-create-source={mode === 'create' ? createPrefill?.source ?? 'manual' : ''}
+  data-open-on-arrival={mode === 'create' && createPrefill ? 'true' : 'false'}
+>
   <summary class={`button ${mode === 'create' ? 'button-primary' : 'button-secondary'}`}>{summaryLabel}</summary>
 
   <div class="shift-editor__panel framed-panel">
@@ -104,6 +146,19 @@
       </div>
       <span class="pill pill-neutral">UTC times</span>
     </div>
+
+    {#if mode === 'create' && createPrefill}
+      <article
+        class="inline-state tone-neutral"
+        data-testid="create-prefill-source"
+        data-prefill-source={createPrefill.source}
+        data-prefill-start={createPrefill.startAt}
+        data-prefill-end={createPrefill.endAt}
+      >
+        <strong>From Find time</strong>
+        <p>The dialog opened from a shared free-time suggestion and preserved the exact slot window.</p>
+      </article>
+    {/if}
 
     <form method="POST" action={actionTarget} use:enhance={enhanceMutation({ action, formId })} class="stacked-form">
       <input type="hidden" name="visibleWeekStart" value={visibleWeekStart} />

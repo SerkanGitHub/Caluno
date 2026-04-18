@@ -17,7 +17,7 @@ import {
 } from '../../src/lib/offline/protected-routes';
 import { load as appLayoutLoad } from '../../src/routes/(app)/+layout.server';
 import { actions as groupActions } from '../../src/routes/(app)/groups/+page.server';
-import { load as calendarPageLoad } from '../../src/routes/(app)/calendars/[calendarId]/+page.server';
+import { _resolveActionSearchParams, load as calendarPageLoad } from '../../src/routes/(app)/calendars/[calendarId]/+page.server';
 import { GET as authCallbackGet } from '../../src/routes/(auth)/callback/+server';
 
 function createRequest(formData: FormData) {
@@ -419,6 +419,105 @@ describe('calendar route resolution', () => {
     expect(capture.eq).toContainEqual(['calendar_id', 'aaaaaaaa-aaaa-1111-1111-111111111111']);
     expect(capture.lt).toContainEqual(['start_at', '2026-04-27T00:00:00.000Z']);
     expect(capture.gt).toContainEqual(['end_at', '2026-04-20T00:00:00.000Z']);
+  });
+
+  it('threads a valid create-prefill handoff into the permitted calendar view for the exact visible week', async () => {
+    const shiftsBuilder = createThenableBuilder({ data: [], error: null });
+
+    const result = (await calendarPageLoad({
+      params: { calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111' },
+      locals: {
+        supabase: {
+          from: vi.fn(() => shiftsBuilder)
+        }
+      },
+      parent: vi.fn().mockResolvedValue({
+        user: { id: 'user-a' },
+        appShell: {
+          memberships: [{ groupId: 'group-a', userId: 'user-a', role: 'owner' }],
+          calendars: [{ id: 'aaaaaaaa-aaaa-1111-1111-111111111111', groupId: 'group-a', name: 'Alpha shared', isDefault: true }],
+          groups: [],
+          primaryCalendar: null
+        }
+      }),
+      url: new URL(
+        'http://localhost/calendars/aaaaaaaa-aaaa-1111-1111-111111111111?create=1&start=2026-04-27&prefillStartAt=2026-04-30T13:30:00.000Z&prefillEndAt=2026-04-30T15:00:00.000Z&source=find-time'
+      )
+    } as unknown as Parameters<typeof calendarPageLoad>[0])) as Exclude<
+      Awaited<ReturnType<typeof calendarPageLoad>>,
+      void
+    >;
+
+    expect(result.calendarView.kind).toBe('calendar');
+    if (result.calendarView.kind === 'calendar') {
+      expect(result.calendarView.visibleWeek.start).toBe('2026-04-27');
+      expect(result.calendarView.createPrefill).toEqual({
+        source: 'find-time',
+        visibleWeekStart: '2026-04-27',
+        startAt: '2026-04-30T13:30:00.000Z',
+        endAt: '2026-04-30T15:00:00.000Z',
+        startAtLocal: '2026-04-30T13:30',
+        endAtLocal: '2026-04-30T15:00'
+      });
+    }
+  });
+
+  it('fails closed for malformed create-prefill params while keeping the requested week renderable', async () => {
+    const shiftsBuilder = createThenableBuilder({ data: [], error: null });
+
+    const result = (await calendarPageLoad({
+      params: { calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111' },
+      locals: {
+        supabase: {
+          from: vi.fn(() => shiftsBuilder)
+        }
+      },
+      parent: vi.fn().mockResolvedValue({
+        user: { id: 'user-a' },
+        appShell: {
+          memberships: [{ groupId: 'group-a', userId: 'user-a', role: 'owner' }],
+          calendars: [{ id: 'aaaaaaaa-aaaa-1111-1111-111111111111', groupId: 'group-a', name: 'Alpha shared', isDefault: true }],
+          groups: [],
+          primaryCalendar: null
+        }
+      }),
+      url: new URL(
+        'http://localhost/calendars/aaaaaaaa-aaaa-1111-1111-111111111111?create=1&start=2026-04-27&prefillStartAt=not-an-iso&prefillEndAt=2026-04-30T15:00:00.000Z&source=find-time'
+      )
+    } as unknown as Parameters<typeof calendarPageLoad>[0])) as Exclude<
+      Awaited<ReturnType<typeof calendarPageLoad>>,
+      void
+    >;
+
+    expect(result.calendarView.kind).toBe('calendar');
+    if (result.calendarView.kind === 'calendar') {
+      expect(result.calendarView.visibleWeek.start).toBe('2026-04-27');
+      expect(result.calendarView.createPrefill).toBeNull();
+      expect(result.calendarView.schedule.reason).toBeNull();
+    }
+  });
+
+  it('strips one-shot prefill params from follow-on actions while preserving the week context', () => {
+    const formData = new FormData();
+    formData.set('visibleWeekStart', '2026-04-27');
+
+    expect(
+      _resolveActionSearchParams(
+        new URL(
+          'http://localhost/calendars/aaaaaaaa-aaaa-1111-1111-111111111111?create=1&start=2026-04-27&prefillStartAt=2026-04-30T13:30:00.000Z&prefillEndAt=2026-04-30T15:00:00.000Z&source=find-time&welcome=back'
+        ),
+        formData
+      ).toString()
+    ).toBe('start=2026-04-27&welcome=back');
+
+    expect(
+      _resolveActionSearchParams(
+        new URL(
+          'http://localhost/calendars/aaaaaaaa-aaaa-1111-1111-111111111111?create=1&prefillStartAt=2026-04-30T13:30:00.000Z&prefillEndAt=2026-04-30T15:00:00.000Z&source=find-time'
+        ),
+        formData
+      ).toString()
+    ).toBe('start=2026-04-27');
   });
 
   it('reopens a previously synced calendar week from cached scope offline', async () => {

@@ -3,7 +3,9 @@ import {
   buildCreatePrefillHref,
   CREATE_PREFILL_SOURCE,
   deriveCreatePrefillWeekStart,
-  parseCreatePrefill
+  hasCreatePrefillSearchParams,
+  parseCreatePrefill,
+  stripCreatePrefillSearchParams
 } from '../../src/lib/schedule/create-prefill';
 
 describe('create prefill contract', () => {
@@ -99,6 +101,22 @@ describe('create prefill contract', () => {
     for (const rejectedShape of rejectedShapes) {
       expect(parseCreatePrefill(new URLSearchParams(rejectedShape.search)), rejectedShape.name).toBeNull();
     }
+  });
+
+  it('detects and strips one-shot handoff params while preserving week context and unrelated search state', () => {
+    const searchParams = new URLSearchParams(
+      'create=1&start=2026-05-04&prefillStartAt=2026-05-07T13:30:00.000Z&prefillEndAt=2026-05-07T15:00:00.000Z&source=find-time&welcome=back'
+    );
+
+    expect(hasCreatePrefillSearchParams(searchParams)).toBe(true);
+    expect(stripCreatePrefillSearchParams(searchParams).toString()).toBe('start=2026-05-04&welcome=back');
+  });
+
+  it('ignores clean calendar queries when no one-shot handoff params are present', () => {
+    const searchParams = new URLSearchParams('start=2026-05-04&welcome=back');
+
+    expect(hasCreatePrefillSearchParams(searchParams)).toBe(false);
+    expect(stripCreatePrefillSearchParams(searchParams).toString()).toBe('start=2026-05-04&welcome=back');
   });
 
   it('returns no href for malformed or zero-length selected suggestion windows', () => {
