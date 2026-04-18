@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { FindTimeWindow } from '$lib/find-time/matcher';
   import type { FindTimeBlockedMember, FindTimeNearbyConstraint } from '$lib/find-time/ranking';
+  import { buildCreatePrefillHref, deriveCreatePrefillWeekStart } from '$lib/schedule/create-prefill';
   import type { PageData } from './$types';
 
   type SurfaceTone = 'tone-neutral' | 'tone-warning' | 'tone-danger';
@@ -118,6 +119,17 @@
     }
 
     return `/calendars/${calendarId}/find-time?${searchParams.toString()}`;
+  }
+
+  function buildSuggestionCreateHref(window: FindTimeWindow) {
+    if (!calendarView) {
+      return null;
+    }
+
+    return buildCreatePrefillHref({
+      calendarId: calendarView.calendar.id,
+      window
+    });
   }
 
   function formatUtcSlot(window: FindTimeWindow) {
@@ -483,6 +495,8 @@
             {:else}
               <div class="find-time-top-pick-grid">
                 {#each search.topPicks as window, index}
+                  {@const createHref = buildSuggestionCreateHref(window)}
+                  {@const handoffWeekStart = deriveCreatePrefillWeekStart(window.startAt)}
                   <article
                     class="framed-panel find-time-card find-time-card--top-pick"
                     data-testid={`find-time-top-pick-${index}`}
@@ -597,6 +611,26 @@
                         {/if}
                       </section>
                     </div>
+
+                    <div class="find-time-card__actions">
+                      {#if createHref && handoffWeekStart}
+                        <a
+                          class="button button-primary"
+                          data-testid={`find-time-top-pick-${index}-cta`}
+                          data-handoff-source="find-time"
+                          data-handoff-week-start={handoffWeekStart}
+                          data-handoff-start-at={window.startAt}
+                          data-handoff-end-at={window.endAt}
+                          href={createHref}
+                        >
+                          Create from this slot
+                        </a>
+                      {:else}
+                        <p class="find-time-card__handoff-unavailable" data-testid={`find-time-top-pick-${index}-cta-unavailable`}>
+                          Create handoff is unavailable until this card has a valid exact slot window.
+                        </p>
+                      {/if}
+                    </div>
                   </article>
                 {/each}
               </div>
@@ -623,6 +657,8 @@
             {:else}
               <div class="find-time-browse-grid">
                 {#each search.browseWindows as window, index}
+                  {@const createHref = buildSuggestionCreateHref(window)}
+                  {@const handoffWeekStart = deriveCreatePrefillWeekStart(window.startAt)}
                   <article
                     class="framed-panel find-time-card find-time-card--browse"
                     data-testid={`find-time-browse-window-${index}`}
@@ -675,6 +711,26 @@
                           After: {shortConstraintSummary(window.nearbyConstraints.trailing, 'No trailing constraint summary.')}
                         </p>
                       </section>
+                    </div>
+
+                    <div class="find-time-card__actions">
+                      {#if createHref && handoffWeekStart}
+                        <a
+                          class="button button-secondary"
+                          data-testid={`find-time-browse-window-${index}-cta`}
+                          data-handoff-source="find-time"
+                          data-handoff-week-start={handoffWeekStart}
+                          data-handoff-start-at={window.startAt}
+                          data-handoff-end-at={window.endAt}
+                          href={createHref}
+                        >
+                          Create from this slot
+                        </a>
+                      {:else}
+                        <p class="find-time-card__handoff-unavailable" data-testid={`find-time-browse-window-${index}-cta-unavailable`}>
+                          Create handoff is unavailable until this card has a valid exact slot window.
+                        </p>
+                      {/if}
                     </div>
                   </article>
                 {/each}
@@ -735,6 +791,7 @@
   .find-time-card,
   .find-time-card__header,
   .find-time-card__meta,
+  .find-time-card__actions,
   .find-time-form,
   .find-time-form__grid,
   .find-time-presets,
@@ -853,6 +910,23 @@
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.06);
     background: rgba(255, 255, 255, 0.03);
+  }
+
+  .find-time-card__actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .find-time-card__actions .button {
+    width: fit-content;
+  }
+
+  .find-time-card__handoff-unavailable {
+    margin: 0;
+    padding: 0.9rem 1rem;
+    border-radius: 18px;
+    border: 1px dashed rgba(255, 255, 255, 0.16);
+    color: rgba(255, 255, 255, 0.72);
+    background: rgba(255, 255, 255, 0.02);
   }
 
   .find-time-card__meta span {

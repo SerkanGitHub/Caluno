@@ -1,14 +1,20 @@
 import {
   expect,
+  expectedCreateShiftPrefillValues,
   openCalendarWeek,
+  openFindTimeRoute,
   readBoardConflictSummary,
+  readCreateShiftPrefillSnapshot,
   readDayConflictSummary,
+  readFindTimeBrowseWindowCtaSnapshot,
   readShiftConflictSummary,
   readVisibleWeekFromBoard,
   seededCalendars,
+  seededFindTime,
   seededSchedule,
   seededUsers,
   signInThroughUi,
+  submitShiftEditorForm,
   syncCalendarFlowContext,
   test,
   waitForDayConflictPairs,
@@ -113,6 +119,91 @@ test('seeded member can prove the trusted-online Thursday overlap warning while 
     await syncCalendarFlowContext(page, flow, {
       note: 'seeded Thursday overlap remained visible at board, day, and card level while the Wednesday touch boundary stayed clean'
     });
+  });
+});
+
+test('browse suggestion handoff creates a visible shift on the intended day and does not reopen after reload', async ({ page, flow }) => {
+  const createdTitle = 'Find time browse handoff';
+
+  await test.step('phase: sign in and open the truthful find-time route for the permitted Alpha calendar', async () => {
+    flow.mark('login', seededUsers.alphaMember.email);
+    await signInThroughUi(page, seededUsers.alphaMember);
+    await openFindTimeRoute({
+      page,
+      flow,
+      calendarId: seededCalendars.alphaShared,
+      durationMinutes: seededFindTime.durationMinutes,
+      start: seededFindTime.start,
+      phase: 'find-time-browse-create'
+    });
+
+    await expect(page.getByTestId('find-time-route-state')).toHaveAttribute('data-status', 'ready');
+    await expect(page.getByTestId('find-time-browse-window-2-cta')).toBeVisible();
+  });
+
+  let browseSuggestion: Awaited<ReturnType<typeof readFindTimeBrowseWindowCtaSnapshot>> | null = null;
+
+  await test.step('phase: click the real browse suggestion CTA and verify the board lands on its exact prefill window', async () => {
+    browseSuggestion = await readFindTimeBrowseWindowCtaSnapshot(page, 2);
+    const expectedPrefillValues = expectedCreateShiftPrefillValues(browseSuggestion);
+
+    flow.mark('click-browse-suggestion', browseSuggestion.href ?? 'missing-href');
+    await page.getByTestId('find-time-browse-window-2-cta').click();
+
+    await expect(page.getByTestId('calendar-shell')).toBeVisible();
+
+    const visibleWeek = await readVisibleWeekFromBoard(page);
+    expect(visibleWeek.visibleWeekStart).toBe(browseSuggestion.targetWeekStart);
+
+    const prefill = await readCreateShiftPrefillSnapshot(page);
+    expect(prefill.open).toBe(true);
+    expect(prefill.openOnArrival).toBe('true');
+    expect(prefill.createSource).toBe('find-time');
+    expect(prefill.prefillSource).toBe('find-time');
+    expect(prefill.prefillStart).toBe(browseSuggestion.startAt);
+    expect(prefill.prefillEnd).toBe(browseSuggestion.endAt);
+    expect(prefill.startValue).toBe(expectedPrefillValues.startValue);
+    expect(prefill.endValue).toBe(expectedPrefillValues.endValue);
+
+    await expect
+      .poll(() => page.url(), {
+        message: 'expected the calendar destination URL to stay clean after the browse suggestion handoff'
+      })
+      .toBe(`http://127.0.0.1:4174/calendars/${seededCalendars.alphaShared}?start=${browseSuggestion.targetWeekStart}`);
+  });
+
+  await test.step('phase: submit the existing create dialog and verify the new shift is visible on the chosen board day', async () => {
+    if (!browseSuggestion) {
+      throw new Error('Expected the browse suggestion handoff snapshot before submitting the create dialog.');
+    }
+
+    const editor = page.getByTestId('create-shift-editor');
+    await submitShiftEditorForm(editor, { title: createdTitle });
+
+    const targetDayKey = (browseSuggestion.startAt ?? '').slice(0, 10);
+    const targetDayColumn = page.getByTestId(`day-column-${targetDayKey}`);
+
+    await expect(targetDayColumn).toContainText(createdTitle);
+    await expect(page.locator('[data-testid^="shift-card-"]').filter({ hasText: createdTitle }).first()).toBeVisible();
+  });
+
+  await test.step('phase: reload the board and prove the created shift remains visible without reopening the handoff', async () => {
+    if (!browseSuggestion) {
+      throw new Error('Expected the browse suggestion handoff snapshot before verifying reload behavior.');
+    }
+
+    await page.reload();
+
+    await expect(page.getByTestId('calendar-shell')).toBeVisible();
+    await expect(page.getByTestId('create-shift-editor')).toHaveAttribute('data-open-on-arrival', 'false');
+    await expect(page.getByTestId('create-prefill-source')).toHaveCount(0);
+    await expect(page.locator('[data-testid^="shift-card-"]').filter({ hasText: createdTitle }).first()).toBeVisible();
+
+    await expect
+      .poll(() => page.url(), {
+        message: 'expected reload to keep the cleaned calendar URL instead of restoring one-shot handoff params'
+      })
+      .toBe(`http://127.0.0.1:4174/calendars/${seededCalendars.alphaShared}?start=${browseSuggestion.targetWeekStart}`);
   });
 });
 

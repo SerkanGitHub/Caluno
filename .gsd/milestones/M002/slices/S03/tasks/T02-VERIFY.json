@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T02",
+  "unitId": "M002/S03/T02",
+  "timestamp": 1776543777635,
+  "passed": false,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "pnpm --dir apps/web exec vitest run tests/schedule/create-prefill.unit.test.ts tests/routes/protected-routes.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 1405,
+      "verdict": "pass"
+    }
+  ],
+  "retryAttempt": 1,
+  "maxRetries": 2,
+  "postExecutionChecks": [
+    {
+      "category": "import",
+      "target": "apps/web/src/routes/(app)/calendars/[calendarId]/+page.server.ts:2",
+      "passed": false,
+      "message": "Import './$types' in apps/web/src/routes/(app)/calendars/[calendarId]/+page.server.ts:2 does not resolve to an existing file",
+      "blocking": true
+    },
+    {
+      "category": "pattern",
+      "target": "apps/web/tests/routes/protected-routes.unit.test.ts",
+      "passed": true,
+      "message": "File apps/web/tests/routes/protected-routes.unit.test.ts mixes async/await with .then() promise chaining — consider using consistent async style",
+      "blocking": false
+    }
+  ]
+}

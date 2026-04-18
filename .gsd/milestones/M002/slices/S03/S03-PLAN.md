@@ -66,7 +66,7 @@ This slice is best split into three tasks because the risky part is the transien
   - Do: Parse validated prefill data in the calendar route, thread it into the existing create dialog, auto-open only the create path for valid handoffs, show a visible “From Find time” cue, preserve manual create/edit/move behavior, and strip one-shot prefill params after arrival while keeping `start=` intact.
   - Verify: `pnpm --dir apps/web exec vitest run tests/schedule/create-prefill.unit.test.ts tests/routes/protected-routes.unit.test.ts`
   - Done when: a valid handoff lands on the correct board week with exact values and a visible cue, invalid params are ignored safely, and route proof covers cleanup plus non-sticky follow-on writes.
-- [ ] **T03: Add suggestion CTA wiring and prove the end-to-end handoff in the browser** `est:2h`
+- [x] **T03: Add suggestion CTA wiring and prove the end-to-end handoff in the browser** `est:2h`
   - Why: The slice demo is only true once a real suggestion on `/find-time` can carry a member into the actual create flow and survive submit/reload proof.
   - Files: `apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte`, `apps/web/tests/e2e/fixtures.ts`, `apps/web/tests/e2e/find-time.spec.ts`, `apps/web/tests/e2e/calendar-shifts.spec.ts`
   - Do: Add deterministic CTA hooks to both Top picks and browse cards using the shared prefill helper, extend fixtures to read the CTA target and prefilled dialog values, and prove click→land→create→reload behavior in the browser while preserving denied and offline `/find-time` proof paths.

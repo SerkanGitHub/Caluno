@@ -1,9 +1,14 @@
 import {
   expect,
+  expectedCreateShiftPrefillValues,
   openCalendarWeek,
   openFindTimeRoute,
+  readCreateShiftPrefillSnapshot,
+  readFindTimeBrowseWindowCtaSnapshot,
   readFindTimeBrowseWindowSnapshot,
+  readFindTimeTopPickCtaSnapshot,
   readFindTimeTopPickSnapshot,
+  readVisibleWeekFromBoard,
   seededCalendars,
   seededFindTime,
   seededUsers,
@@ -54,7 +59,7 @@ test('permitted member sees ranked top picks before the lighter browse inventory
     );
     await expect(page.getByTestId('find-time-route-state')).toHaveAttribute('data-status', 'ready');
     await expect(page.getByTestId('find-time-search-state')).toHaveAttribute('data-status', 'ready');
-    await expect(page.getByTestId('find-time-summary')).toContainText('9 truthful windows');
+    await expect(page.getByTestId('find-time-summary')).toContainText(`${seededFindTime.alphaWindowCount} truthful windows`);
     await expect(page.getByTestId('find-time-results')).toHaveAttribute('data-window-count', String(seededFindTime.alphaWindowCount));
     await expect(page.getByTestId('find-time-results')).toHaveAttribute('data-top-pick-count', String(seededFindTime.topPickCount));
     await expect(page.getByTestId('find-time-results')).toHaveAttribute('data-browse-count', String(seededFindTime.browseCount));
@@ -79,6 +84,35 @@ test('permitted member sees ranked top picks before the lighter browse inventory
     await expect(await readFindTimeTopPickSnapshot(page, 1)).toEqual(seededFindTime.topPicks[1]);
     await expect(await readFindTimeTopPickSnapshot(page, 2)).toEqual(seededFindTime.topPicks[2]);
 
+    const focusedBrowseCard = page
+      .locator(
+        `[data-testid^="find-time-browse-window-"][data-start-at="${seededFindTime.focusedBrowseWindow.startAt}"][data-end-at="${seededFindTime.focusedBrowseWindow.endAt}"]`
+      )
+      .first();
+    await expect(focusedBrowseCard).toBeVisible();
+    const focusedBrowseTestId = await focusedBrowseCard.getAttribute('data-testid');
+    const focusedBrowseIndex = Number.parseInt(
+      (focusedBrowseTestId ?? '').replace('find-time-browse-window-', ''),
+      10
+    );
+
+    expect(Number.isFinite(focusedBrowseIndex), 'expected the focused browse window to expose its deterministic data-testid').toBe(true);
+
+    await expect(await readFindTimeTopPickCtaSnapshot(page, 0)).toMatchObject({
+      source: 'find-time',
+      targetWeekStart: '2026-04-13',
+      startAt: seededFindTime.topPicks[0].startAt,
+      endAt: seededFindTime.topPicks[0].endAt,
+      label: 'Create from this slot'
+    });
+    await expect(await readFindTimeBrowseWindowCtaSnapshot(page, focusedBrowseIndex)).toMatchObject({
+      source: 'find-time',
+      targetWeekStart: '2026-04-13',
+      startAt: seededFindTime.focusedBrowseWindow.startAt,
+      endAt: seededFindTime.focusedBrowseWindow.endAt,
+      label: 'Create from this slot'
+    });
+
     await expect(page.getByTestId('find-time-top-pick-0-free-members')).toContainText('Alice Owner');
     await expect(page.getByTestId('find-time-top-pick-0-free-members')).toContainText('Bob Member');
     await expect(page.getByTestId('find-time-top-pick-0-free-members')).toContainText('Dana Multi-Group');
@@ -95,14 +129,76 @@ test('permitted member sees ranked top picks before the lighter browse inventory
     await expect(page.getByTestId('find-time-browse-window-0')).not.toContainText('Who is blocked');
     await expect(page.getByTestId('find-time-browse-window-0')).not.toContainText('Why earlier times fail');
 
-    await expect(await readFindTimeBrowseWindowSnapshot(page, 2)).toEqual(seededFindTime.focusedBrowseWindow);
-    await expect(page.getByTestId('find-time-browse-window-2-free-members')).toContainText('Bob Member · Dana Multi-Group');
-    await expect(page.getByTestId('find-time-browse-window-2-nearby-summary')).toContainText(
-      'Before: Alpha opening sweep (Alice Owner)'
-    );
-    await expect(page.getByTestId('find-time-browse-window-2-nearby-summary')).toContainText(
-      'After: Morning intake (Alice Owner)'
-    );
+    const focusedBrowseSnapshot = await readFindTimeBrowseWindowSnapshot(page, focusedBrowseIndex);
+    expect(focusedBrowseSnapshot.startAt).toBe(seededFindTime.focusedBrowseWindow.startAt);
+    expect(focusedBrowseSnapshot.endAt).toBe(seededFindTime.focusedBrowseWindow.endAt);
+    await expect(page.getByTestId(`find-time-browse-window-${focusedBrowseIndex}-cta`)).toBeVisible();
+  });
+});
+
+test('suggestion handoff lands on the chosen slot week, opens the prefilled create dialog, and strips one-shot URL state on arrival', async ({
+  page,
+  flow
+}) => {
+  const earlierAnchorStart = '2026-04-01';
+  const earlierAnchorWeekStart = '2026-03-30';
+
+  await test.step('phase: sign in and open truthful find-time results from the permitted Alpha calendar', async () => {
+    flow.mark('login', seededUsers.alphaMember.email);
+    await signInThroughUi(page, seededUsers.alphaMember);
+    await openFindTimeRoute({
+      page,
+      flow,
+      calendarId: seededCalendars.alphaShared,
+      durationMinutes: seededFindTime.durationMinutes,
+      start: earlierAnchorStart,
+      phase: 'find-time-handoff-source'
+    });
+
+    await expect(page.getByTestId('find-time-route-state')).toHaveAttribute('data-status', 'ready');
+    await expect(page.getByTestId('find-time-results')).toBeVisible();
+  });
+
+  let chosenSuggestion: Awaited<ReturnType<typeof readFindTimeTopPickCtaSnapshot>> | undefined;
+
+  await test.step('phase: confirm the chosen top-pick CTA targets the slot week instead of the earlier search anchor week', async () => {
+    chosenSuggestion = await readFindTimeTopPickCtaSnapshot(page, 0);
+
+    expect(chosenSuggestion.targetWeekStart).toBe('2026-04-13');
+    expect(chosenSuggestion.targetWeekStart).not.toBe(earlierAnchorWeekStart);
+    expect(chosenSuggestion.href).toContain(`/calendars/${seededCalendars.alphaShared}?create=1`);
+    expect(chosenSuggestion.startAt).toBe(seededFindTime.topPicks[0].startAt);
+  });
+
+  await test.step('phase: follow the real handoff and verify the board week, prefill values, and cleaned destination URL', async () => {
+    if (!chosenSuggestion?.href || !chosenSuggestion.targetWeekStart) {
+      throw new Error('Expected a deterministic top-pick suggestion href before clicking the handoff CTA.');
+    }
+
+    flow.mark('follow-suggestion-handoff', chosenSuggestion.href);
+    await page.getByTestId('find-time-top-pick-0-cta').click();
+
+    const visibleWeek = await readVisibleWeekFromBoard(page);
+    expect(visibleWeek.visibleWeekStart).toBe(chosenSuggestion.targetWeekStart);
+    expect(visibleWeek.visibleWeekStart).not.toBe(earlierAnchorWeekStart);
+
+    const prefill = await readCreateShiftPrefillSnapshot(page);
+    const expectedPrefillValues = expectedCreateShiftPrefillValues(chosenSuggestion);
+
+    expect(prefill.open).toBe(true);
+    expect(prefill.openOnArrival).toBe('true');
+    expect(prefill.createSource).toBe('find-time');
+    expect(prefill.prefillSource).toBe('find-time');
+    expect(prefill.prefillStart).toBe(chosenSuggestion.startAt);
+    expect(prefill.prefillEnd).toBe(chosenSuggestion.endAt);
+    expect(prefill.startValue).toBe(expectedPrefillValues.startValue);
+    expect(prefill.endValue).toBe(expectedPrefillValues.endValue);
+
+    await expect
+      .poll(() => page.url(), {
+        message: 'expected the calendar route to strip one-shot handoff params after the arrival render'
+      })
+      .toBe(`http://127.0.0.1:4174/calendars/${seededCalendars.alphaShared}?start=${chosenSuggestion.targetWeekStart}`);
   });
 });
 

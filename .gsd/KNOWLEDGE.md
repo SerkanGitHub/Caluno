@@ -149,3 +149,9 @@
 **Context:** M002/S02/T01 introduced pre-truncation ranking for `/find-time`, which reorders `search.windows` before the dedicated Top picks UI exists.
 **Rule/Pattern:** When touching the find-time ranking layer in this repo, treat route tests and Playwright snapshots that assert specific window indexes as potentially stale chronological assumptions, and re-verify whether the contract now expects ranked order instead.
 **Rationale:** The matcher can legitimately move a later, higher-quality shared window ahead of the first chronological page, so index-based expectations can fail even when the ranking logic is correct.
+
+## 2026-04-18: Combined Playwright verification can mutate later `/find-time` availability expectations within the same reset
+
+**Context:** M002/S03/T03 runs `calendar-shifts.spec.ts` and `find-time.spec.ts` in one clean-reset Playwright command, and the browse-to-create proof adds a real shift before the later find-time assertions execute.
+**Rule/Pattern:** In this repo, avoid asserting that later `/find-time` browser proof still reflects a perfectly pristine seed after earlier specs create/edit/delete shifts; prefer timing-stable assertions (CTA hrefs, slot timestamps, visible week targets, URL cleanup) over full untouched browse-card detail snapshots.
+**Rationale:** The shared local Supabase state persists across specs inside the same Playwright run, so truthful availability can legitimately change even though the suggestion-to-create contract is still working correctly.

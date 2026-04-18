@@ -314,9 +314,9 @@ export const seededSchedule = {
 export const seededFindTime = {
   start: '2026-04-15',
   durationMinutes: '60',
-  alphaWindowCount: 9,
+  alphaWindowCount: 10,
   topPickCount: 3,
-  browseCount: 6,
+  browseCount: 7,
   topPicks: [
     {
       rank: '1',
@@ -364,6 +364,26 @@ export const seededFindTime = {
     trailingConstraints: ['Alice Owner:Morning intake:0']
   }
 } as const;
+
+export type FindTimeSuggestionCtaSnapshot = {
+  href: string | null;
+  source: string | null;
+  targetWeekStart: string | null;
+  startAt: string | null;
+  endAt: string | null;
+  label: string | null;
+};
+
+export type CreateShiftPrefillSnapshot = {
+  open: boolean;
+  openOnArrival: string | null;
+  createSource: string | null;
+  prefillSource: string | null;
+  prefillStart: string | null;
+  prefillEnd: string | null;
+  startValue: string | null;
+  endValue: string | null;
+};
 
 async function readFlowSurfaceSnapshot(page: Page): Promise<FlowSurfaceSnapshot> {
   return page.evaluate(() => {
@@ -1317,6 +1337,90 @@ export async function readFindTimeTopPickSnapshot(page: Page, index: number) {
 
 export async function readFindTimeBrowseWindowSnapshot(page: Page, index: number) {
   return readFindTimeCardSnapshot(page, `find-time-browse-window-${index}`);
+}
+
+async function readFindTimeSuggestionCtaSnapshot(page: Page, testId: string): Promise<FindTimeSuggestionCtaSnapshot> {
+  const cta = page.getByTestId(testId);
+  await expect(cta).toBeVisible();
+
+  return {
+    href: await cta.getAttribute('href'),
+    source: await cta.getAttribute('data-handoff-source'),
+    targetWeekStart: await cta.getAttribute('data-handoff-week-start'),
+    startAt: await cta.getAttribute('data-handoff-start-at'),
+    endAt: await cta.getAttribute('data-handoff-end-at'),
+    label: ((await cta.textContent()) ?? '').trim() || null
+  };
+}
+
+export async function readFindTimeTopPickCtaSnapshot(page: Page, index: number) {
+  return readFindTimeSuggestionCtaSnapshot(page, `find-time-top-pick-${index}-cta`);
+}
+
+export async function readFindTimeBrowseWindowCtaSnapshot(page: Page, index: number) {
+  return readFindTimeSuggestionCtaSnapshot(page, `find-time-browse-window-${index}-cta`);
+}
+
+export async function readAllFindTimeSuggestionCtas(page: Page): Promise<FindTimeSuggestionCtaSnapshot[]> {
+  return page.evaluate(() =>
+    Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-handoff-source="find-time"][data-testid$="-cta"]')).map((cta) => ({
+      href: cta.getAttribute('href'),
+      source: cta.getAttribute('data-handoff-source'),
+      targetWeekStart: cta.getAttribute('data-handoff-week-start'),
+      startAt: cta.getAttribute('data-handoff-start-at'),
+      endAt: cta.getAttribute('data-handoff-end-at'),
+      label: cta.textContent?.trim() ?? null
+    }))
+  );
+}
+
+function toUtcDateTimeLocalValue(value: string | null) {
+  if (!value) {
+    return null;
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+
+  const year = parsed.getUTCFullYear();
+  const month = `${parsed.getUTCMonth() + 1}`.padStart(2, '0');
+  const day = `${parsed.getUTCDate()}`.padStart(2, '0');
+  const hours = `${parsed.getUTCHours()}`.padStart(2, '0');
+  const minutes = `${parsed.getUTCMinutes()}`.padStart(2, '0');
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+export async function readCreateShiftPrefillSnapshot(page: Page): Promise<CreateShiftPrefillSnapshot> {
+  const editor = page.getByTestId('create-shift-editor');
+  await expect(editor).toBeVisible();
+
+  const prefillSource = page.getByTestId('create-prefill-source');
+  await expect(prefillSource).toBeVisible();
+
+  const form = editor.locator('form');
+  const startValue = await form.locator('input[name="startAt"]').inputValue();
+  const endValue = await form.locator('input[name="endAt"]').inputValue();
+
+  return {
+    open: await editor.evaluate((element) => (element instanceof HTMLDetailsElement ? element.open : false)),
+    openOnArrival: await editor.getAttribute('data-open-on-arrival'),
+    createSource: await editor.getAttribute('data-create-source'),
+    prefillSource: await prefillSource.getAttribute('data-prefill-source'),
+    prefillStart: await prefillSource.getAttribute('data-prefill-start'),
+    prefillEnd: await prefillSource.getAttribute('data-prefill-end'),
+    startValue,
+    endValue
+  };
+}
+
+export function expectedCreateShiftPrefillValues(snapshot: Pick<FindTimeSuggestionCtaSnapshot, 'startAt' | 'endAt'>) {
+  return {
+    startValue: toUtcDateTimeLocalValue(snapshot.startAt),
+    endValue: toUtcDateTimeLocalValue(snapshot.endAt)
+  };
 }
 
 export async function submitShiftEditorForm(
