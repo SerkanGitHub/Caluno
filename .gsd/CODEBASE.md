@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-18T19:44:44Z | Files: 310 | Described: 0/310
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-18T19:44:44Z","fingerprint":"8766a5797f75bc9b682d898acec565b0ffdfe2fe","fileCount":310,"truncated":false} -->
+Generated: 2026-04-18T19:56:38Z | Files: 307 | Described: 0/307
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-18T19:56:38Z","fingerprint":"9cbe70bd7d6a7cb3d701fe8a2c531a4360a1fd2c","fileCount":307,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -431,11 +431,6 @@ Generated: 2026-04-18T19:44:44Z | Files: 310 | Described: 0/310
 
 ### apps/web/test-results/e2e-offline/
 - `apps/web/test-results/e2e-offline/.last-run.json`
-
-### apps/web/test-results/e2e/find-time-permitted-member-3191e-owse-truthful-named-windows/
-- `apps/web/test-results/e2e/find-time-permitted-member-3191e-owse-truthful-named-windows/error-context.md`
-- `apps/web/test-results/e2e/find-time-permitted-member-3191e-owse-truthful-named-windows/trace.zip`
-- `apps/web/test-results/e2e/find-time-permitted-member-3191e-owse-truthful-named-windows/video.webm`
 
 ### apps/web/tests/access/
 - `apps/web/tests/access/policy-contract.unit.test.ts`

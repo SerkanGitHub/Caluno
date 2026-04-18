@@ -15,17 +15,6 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: mapped
 - Notes: Shared free-time matching must stay inside the existing shared-calendar membership boundary and preserve trusted calendar context during handoff.
 
-### R008 — Caluno computes shared free-time windows across two or more users and explains why a suggested window works.
-- Class: differentiator
-- Status: active
-- Description: Caluno computes shared free-time windows across two or more users and explains why a suggested window works.
-- Why it matters: Shared free-time matching is the core product differentiator once the substrate is trustworthy.
-- Source: user
-- Primary owning slice: M002/S01
-- Supporting slices: M002/S02, M002/S03
-- Validation: unmapped
-- Notes: M002 delivers truthful shared free-time matching via member-scoped availability search first, then ranking/explanations, then prefilled create handoff.
-
 ### R009 — The product remains coherent across web and mobile surfaces, with mobile added on top of the same scheduling substrate and domain model.
 - Class: launchability
 - Status: active
@@ -126,6 +115,17 @@ This file is the explicit capability and coverage contract for the project.
 - Supporting slices: M002/S01, M002/S03
 - Validation: Validated in M001/S02 by the custom week-board/browser proof and unit coverage: `pnpm --dir apps/web check`, `pnpm --dir apps/web exec vitest run tests/schedule/board.unit.test.ts tests/routes/protected-routes.unit.test.ts tests/schedule/server-actions.unit.test.ts`, and `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts` confirmed the stress-friendly week board, accessible create/edit/move/delete controls, clear denied state, and visible week/action diagnostics.
 - Notes: Calm, explicit messaging is required for invalid input, no-results, retryable failures, and the final suggestion-to-create transition.
+
+### R008 — Caluno computes shared free-time windows across two or more users and explains why a suggested window works.
+- Class: differentiator
+- Status: validated
+- Description: Caluno computes shared free-time windows across two or more users and explains why a suggested window works.
+- Why it matters: Shared free-time matching is the core product differentiator once the substrate is trustworthy.
+- Source: user
+- Primary owning slice: M002/S01
+- Supporting slices: M002/S02, M002/S03
+- Validation: Validated in M002/S02 by `pnpm --dir apps/web exec vitest run tests/find-time/member-availability.unit.test.ts tests/find-time/matcher.unit.test.ts tests/routes/find-time-routes.unit.test.ts`, `pnpm --dir apps/web check`, and `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/find-time.spec.ts`, which proved ranked shared free-time suggestions, richer top-pick explanations, nearby busy-edge summaries, explicit denial, and fail-closed offline behavior on `/calendars/[calendarId]/find-time`.
+- Notes: M002/S01 delivered truthful browseable windows; M002/S02 validated the full differentiator by ranking suggestions before truncation and explaining why suggested windows work without widening calendar scope.
 
 ### R012 — Authentication, row-level policies, and sharing rules prevent cross-group data leakage and limit each user to calendars they are permitted to access.
 - Class: compliance/security
@@ -234,7 +234,7 @@ This file is the explicit capability and coverage contract for the project.
 | R005 | integration | validated | M001/S04 | M001/S03, M001/S05 | Validated by M001 combined clean-reset preview-backed browser proof plus passing `tests/schedule/sync-engine.unit.test.ts` and `tests/schedule/offline-queue.unit.test.ts`, proving deterministic reconnect replay through trusted route actions and live collaborator refresh propagation within the permitted shared calendar scope. |
 | R006 | failure-visibility | validated | M001/S05 | M001/S02, M001/S04 | Validated by M001 combined clean-reset preview-backed browser proof plus conflict/unit coverage, proving board/day/shift overlap warnings remain visible across offline reload, reconnect drain, and collaborator refresh without becoming authoritative write blockers. |
 | R007 | quality-attribute | validated | M002/S02 | M002/S01, M002/S03 | Validated in M001/S02 by the custom week-board/browser proof and unit coverage: `pnpm --dir apps/web check`, `pnpm --dir apps/web exec vitest run tests/schedule/board.unit.test.ts tests/routes/protected-routes.unit.test.ts tests/schedule/server-actions.unit.test.ts`, and `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts` confirmed the stress-friendly week board, accessible create/edit/move/delete controls, clear denied state, and visible week/action diagnostics. |
-| R008 | differentiator | active | M002/S01 | M002/S02, M002/S03 | unmapped |
+| R008 | differentiator | validated | M002/S01 | M002/S02, M002/S03 | Validated in M002/S02 by `pnpm --dir apps/web exec vitest run tests/find-time/member-availability.unit.test.ts tests/find-time/matcher.unit.test.ts tests/routes/find-time-routes.unit.test.ts`, `pnpm --dir apps/web check`, and `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/find-time.spec.ts`, which proved ranked shared free-time suggestions, richer top-pick explanations, nearby busy-edge summaries, explicit denial, and fail-closed offline behavior on `/calendars/[calendarId]/find-time`. |
 | R009 | launchability | active | M003 (provisional) | none | unmapped |
 | R010 | continuity | active | M003 (provisional) | none | unmapped |
 | R011 | differentiator | active | M004 (provisional) | none | unmapped |
@@ -251,7 +251,7 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Coverage Summary
 
-- Active requirements: 5
-- Mapped to slices: 5
-- Validated: 7 (R001, R003, R004, R005, R006, R007, R012)
+- Active requirements: 4
+- Mapped to slices: 4
+- Validated: 8 (R001, R003, R004, R005, R006, R007, R008, R012)
 - Unmapped active requirements: 0
