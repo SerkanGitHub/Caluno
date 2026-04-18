@@ -22,6 +22,7 @@ export type CalendarRosterMember = {
 
 export type MemberBusyInterval = {
   shiftId: string;
+  shiftTitle: string;
   memberId: string;
   memberName: string;
   startAt: string;
@@ -90,6 +91,7 @@ type ShiftAssignmentRow = {
 
 type ShiftAvailabilityRow = {
   id: string;
+  title: string;
   start_at: string;
   end_at: string;
   shift_assignments: ShiftAssignmentRow[] | null;
@@ -255,7 +257,7 @@ export async function loadCalendarMemberAvailability(params: {
 
   const busyResult = (await params.supabase
     .from('shifts')
-    .select('id, start_at, end_at, shift_assignments(member_id)')
+    .select('id, title, start_at, end_at, shift_assignments(member_id)')
     .eq('calendar_id', params.calendarId)
     .lt('start_at', normalizedRange.value.endAt)
     .gt('end_at', normalizedRange.value.startAt)
@@ -396,6 +398,24 @@ export async function loadFindTimeSearchView(params: {
     range: range.value,
     duration: duration.value
   });
+
+  if (matches.malformed) {
+    return {
+      status: 'malformed-response',
+      reason: matches.malformed.reason,
+      message: matches.malformed.message,
+      calendarId: params.calendarId,
+      range: range.value,
+      durationMinutes: duration.value.durationMinutes,
+      roster: availability.roster,
+      busyIntervals: availability.busyIntervals,
+      windows: [],
+      totalWindows: 0,
+      truncated: false,
+      shiftIds: availability.shiftIds,
+      memberIds: availability.memberIds
+    };
+  }
 
   if (matches.totalWindows === 0) {
     return {
@@ -639,7 +659,8 @@ function normalizeBusyIntervals(params: {
         | 'FIND_TIME_ASSIGNMENTS_RESPONSE_INVALID'
         | 'FIND_TIME_ASSIGNMENTS_MISSING'
         | 'FIND_TIME_ASSIGNMENT_MEMBER_UNKNOWN'
-        | 'FIND_TIME_ASSIGNMENT_DUPLICATE';
+        | 'FIND_TIME_ASSIGNMENT_DUPLICATE'
+        | 'FIND_TIME_ASSIGNMENT_TITLE_MISSING';
       message: string;
     } {
   const rosterById = new Map(params.roster.map((member) => [member.memberId, member]));
@@ -690,9 +711,18 @@ function normalizeBusyIntervals(params: {
         };
       }
 
+      if (typeof row.title !== 'string' || row.title.trim().length === 0) {
+        return {
+          ok: false,
+          reason: 'FIND_TIME_ASSIGNMENT_TITLE_MISSING',
+          message: 'A shift was missing its trusted title, so nearby find-time explanations failed closed.'
+        };
+      }
+
       seenMembersForShift.add(assignment.member_id);
       intervals.push({
         shiftId: row.id,
+        shiftTitle: row.title.trim(),
         memberId: assignment.member_id,
         memberName: member.displayName,
         startAt: row.start_at,
@@ -773,6 +803,7 @@ function isShiftAvailabilityRow(value: unknown): value is ShiftAvailabilityRow {
   const candidate = value as Partial<ShiftAvailabilityRow>;
   return (
     typeof candidate.id === 'string' &&
+    typeof candidate.title === 'string' &&
     typeof candidate.start_at === 'string' &&
     typeof candidate.end_at === 'string' &&
     Array.isArray(candidate.shift_assignments)

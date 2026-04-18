@@ -143,3 +143,9 @@
 **Context:** M002/S01/T03 needed to prove `/calendars/[calendarId]/find-time` renders an explicit `offline-unavailable` state from its browser `+page.ts` load.
 **Rule/Pattern:** When the goal is to verify a client-side offline branch on a protected SvelteKit route, first load the route or its entrypoint online, then use `context.addInitScript()` to override `navigator.onLine` for the next navigation instead of immediately calling `context.setOffline(true)`.
 **Rationale:** Playwright's full context-offline mode can turn the next navigation into `chrome-error://chromewebdata/` before the route's browser load runs, which tests raw network failure rather than the app's intended fail-closed client logic.
+
+## 2026-04-18: Find-time ranking changes invalidate chronological window assertions in route and E2E proof
+
+**Context:** M002/S02/T01 introduced pre-truncation ranking for `/find-time`, which reorders `search.windows` before the dedicated Top picks UI exists.
+**Rule/Pattern:** When touching the find-time ranking layer in this repo, treat route tests and Playwright snapshots that assert specific window indexes as potentially stale chronological assumptions, and re-verify whether the contract now expects ranked order instead.
+**Rationale:** The matcher can legitimately move a later, higher-quality shared window ahead of the first chronological page, so index-based expectations can fail even when the ranking logic is correct.

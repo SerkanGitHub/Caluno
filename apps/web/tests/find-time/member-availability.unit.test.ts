@@ -1,8 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import {
-  loadCalendarMemberAvailability,
-  normalizeFindTimeRange
-} from '../../src/lib/server/find-time';
+import { loadCalendarMemberAvailability, normalizeFindTimeRange } from '../../src/lib/server/find-time';
 
 function createThenableBuilder<T>(result: { data: T; error: { message: string } | null }) {
   const builder = {
@@ -51,7 +48,7 @@ describe('find-time member availability', () => {
     });
   });
 
-  it('returns a trusted roster and member-attributed busy intervals for a permitted calendar', async () => {
+  it('returns a trusted roster and member-attributed busy intervals with shift titles for a permitted calendar', async () => {
     const supabase = createQueuedSupabase({
       fromEntries: [
         {
@@ -74,12 +71,14 @@ describe('find-time member availability', () => {
             data: [
               {
                 id: 'aaaaaaaa-6666-1111-1111-111111111111',
+                title: 'Opening shift',
                 start_at: '2026-04-15T09:00:00.000Z',
                 end_at: '2026-04-15T11:00:00.000Z',
                 shift_assignments: [{ member_id: '11111111-1111-1111-1111-111111111111' }]
               },
               {
                 id: 'aaaaaaaa-7777-1111-1111-222222222222',
+                title: 'Pair coverage',
                 start_at: '2026-04-16T13:00:00.000Z',
                 end_at: '2026-04-16T15:00:00.000Z',
                 shift_assignments: [
@@ -139,6 +138,7 @@ describe('find-time member availability', () => {
     expect(result.busyIntervals).toEqual([
       {
         shiftId: 'aaaaaaaa-6666-1111-1111-111111111111',
+        shiftTitle: 'Opening shift',
         memberId: '11111111-1111-1111-1111-111111111111',
         memberName: 'Alice Owner',
         startAt: '2026-04-15T09:00:00.000Z',
@@ -146,6 +146,7 @@ describe('find-time member availability', () => {
       },
       {
         shiftId: 'aaaaaaaa-7777-1111-1111-222222222222',
+        shiftTitle: 'Pair coverage',
         memberId: '22222222-2222-2222-2222-222222222222',
         memberName: 'Bob Member',
         startAt: '2026-04-16T13:00:00.000Z',
@@ -153,6 +154,7 @@ describe('find-time member availability', () => {
       },
       {
         shiftId: 'aaaaaaaa-7777-1111-1111-222222222222',
+        shiftTitle: 'Pair coverage',
         memberId: '44444444-4444-4444-4444-444444444444',
         memberName: 'Dana Multi-Group',
         startAt: '2026-04-16T13:00:00.000Z',
@@ -256,6 +258,7 @@ describe('find-time member availability', () => {
             data: [
               {
                 id: 'aaaaaaaa-6666-1111-1111-111111111111',
+                title: 'Opening shift',
                 start_at: '2026-04-15T09:00:00.000Z',
                 end_at: '2026-04-15T11:00:00.000Z',
                 shift_assignments: []
@@ -322,6 +325,7 @@ describe('find-time member availability', () => {
             data: [
               {
                 id: 'aaaaaaaa-6666-1111-1111-111111111111',
+                title: 'Opening shift',
                 start_at: '2026-04-15T09:00:00.000Z',
                 end_at: '2026-04-15T11:00:00.000Z',
                 shift_assignments: [{ member_id: '55555555-5555-5555-5555-555555555555' }]
@@ -357,5 +361,128 @@ describe('find-time member availability', () => {
 
     expect(result.status).toBe('malformed-response');
     expect(result.reason).toBe('FIND_TIME_ASSIGNMENT_MEMBER_UNKNOWN');
+  });
+
+  it('refuses duplicate assignments and missing shift titles because nearby explanations depend on trusted rows', async () => {
+    const duplicateAssignmentSupabase = createQueuedSupabase({
+      fromEntries: [
+        {
+          table: 'calendars',
+          builder: createThenableBuilder({
+            data: [{ id: 'aaaaaaaa-aaaa-1111-1111-111111111111', group_id: 'group-a' }],
+            error: null
+          })
+        },
+        {
+          table: 'group_memberships',
+          builder: createThenableBuilder({
+            data: [{ group_id: 'group-a', role: 'owner' as const }],
+            error: null
+          })
+        },
+        {
+          table: 'shifts',
+          builder: createThenableBuilder({
+            data: [
+              {
+                id: 'aaaaaaaa-6666-1111-1111-111111111111',
+                title: 'Duplicated shift',
+                start_at: '2026-04-15T09:00:00.000Z',
+                end_at: '2026-04-15T11:00:00.000Z',
+                shift_assignments: [
+                  { member_id: '11111111-1111-1111-1111-111111111111' },
+                  { member_id: '11111111-1111-1111-1111-111111111111' }
+                ]
+              }
+            ],
+            error: null
+          })
+        }
+      ],
+      rpcEntries: [
+        {
+          fn: 'list_calendar_members',
+          result: {
+            data: [
+              {
+                member_id: '11111111-1111-1111-1111-111111111111',
+                display_name: 'Alice Owner'
+              }
+            ],
+            error: null
+          }
+        }
+      ]
+    });
+
+    const duplicateAssignment = await loadCalendarMemberAvailability({
+      supabase: duplicateAssignmentSupabase as never,
+      calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+      userId: '11111111-1111-1111-1111-111111111111',
+      rangeStart: '2026-04-15T00:00:00.000Z',
+      rangeEnd: '2026-04-18T00:00:00.000Z'
+    });
+
+    expect(duplicateAssignment.status).toBe('malformed-response');
+    expect(duplicateAssignment.reason).toBe('FIND_TIME_ASSIGNMENT_DUPLICATE');
+
+    const missingTitleSupabase = createQueuedSupabase({
+      fromEntries: [
+        {
+          table: 'calendars',
+          builder: createThenableBuilder({
+            data: [{ id: 'aaaaaaaa-aaaa-1111-1111-111111111111', group_id: 'group-a' }],
+            error: null
+          })
+        },
+        {
+          table: 'group_memberships',
+          builder: createThenableBuilder({
+            data: [{ group_id: 'group-a', role: 'owner' as const }],
+            error: null
+          })
+        },
+        {
+          table: 'shifts',
+          builder: createThenableBuilder({
+            data: [
+              {
+                id: 'aaaaaaaa-6666-1111-1111-111111111111',
+                title: '   ',
+                start_at: '2026-04-15T09:00:00.000Z',
+                end_at: '2026-04-15T11:00:00.000Z',
+                shift_assignments: [{ member_id: '11111111-1111-1111-1111-111111111111' }]
+              }
+            ],
+            error: null
+          })
+        }
+      ],
+      rpcEntries: [
+        {
+          fn: 'list_calendar_members',
+          result: {
+            data: [
+              {
+                member_id: '11111111-1111-1111-1111-111111111111',
+                display_name: 'Alice Owner'
+              }
+            ],
+            error: null
+          }
+        }
+      ]
+    });
+
+    const missingTitle = await loadCalendarMemberAvailability({
+      supabase: missingTitleSupabase as never,
+      calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+      userId: '11111111-1111-1111-1111-111111111111',
+      rangeStart: '2026-04-15T00:00:00.000Z',
+      rangeEnd: '2026-04-18T00:00:00.000Z'
+    });
+
+    expect(missingTitle.status).toBe('malformed-response');
+    expect(missingTitle.reason).toBe('FIND_TIME_ASSIGNMENT_TITLE_MISSING');
   });
 });

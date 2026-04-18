@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T03",
+  "unitId": "M002/S01/T03",
+  "timestamp": 1776531253219,
+  "passed": false,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "npx --yes supabase db reset --local --yes",
+      "exitCode": 0,
+      "durationMs": 25418,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/web exec playwright test tests/e2e/find-time.spec.ts",
+      "exitCode": 0,
+      "durationMs": 8369,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/web check",
+      "exitCode": 0,
+      "durationMs": 3128,
+      "verdict": "pass"
+    }
+  ],
+  "retryAttempt": 1,
+  "maxRetries": 2,
+  "postExecutionChecks": [
+    {
+      "category": "import",
+      "target": "apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.ts:2",
+      "passed": false,
+      "message": "Import './$types' in apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.ts:2 does not resolve to an existing file",
+      "blocking": true
+    }
+  ]
+}

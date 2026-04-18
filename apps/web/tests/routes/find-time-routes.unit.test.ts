@@ -211,6 +211,7 @@ describe('find-time protected route contract', () => {
               data: [
                 {
                   id: 'shift-a',
+                  title: 'Always busy',
                   start_at: '2026-04-15T00:00:00.000Z',
                   end_at: '2026-05-15T00:00:00.000Z',
                   shift_assignments: [{ member_id: '11111111-1111-1111-1111-111111111111' }]
@@ -279,6 +280,7 @@ describe('find-time protected route contract', () => {
             data: [
               {
                 id: 'shift-a',
+                title: 'Alice busy',
                 start_at: '2026-04-15T09:00:00.000Z',
                 end_at: '2026-04-15T10:00:00.000Z',
                 shift_assignments: [{ member_id: '11111111-1111-1111-1111-111111111111' }]
@@ -320,13 +322,13 @@ describe('find-time protected route contract', () => {
       expect(result.findTimeView.search.status).toBe('ready');
       expect(result.findTimeView.search.durationMinutes).toBe(60);
       expect(result.findTimeView.search.totalWindows).toBe(3);
-      expect(result.findTimeView.search.windows[1]).toMatchObject({
+      expect(result.findTimeView.search.windows[2]).toMatchObject({
         startAt: '2026-04-15T09:00:00.000Z',
         endAt: '2026-04-15T10:00:00.000Z',
         availableMemberIds: ['22222222-2222-2222-2222-222222222222']
       });
       expect(
-        result.findTimeView.search.windows[1]?.availableMembers.map((member: { displayName: string }) => member.displayName)
+        result.findTimeView.search.windows[2]?.availableMembers.map((member: { displayName: string }) => member.displayName)
       ).toEqual(['Bob Member']);
     }
   });

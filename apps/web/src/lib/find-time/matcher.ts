@@ -1,3 +1,9 @@
+import {
+  rankFindTimeWindows,
+  type FindTimeRankedWindow,
+  type FindTimeWindowRankingFailure
+} from '$lib/find-time/ranking';
+
 export const DEFAULT_FIND_TIME_DURATION_MINUTES = 60;
 export const MIN_FIND_TIME_DURATION_MINUTES = 15;
 export const MAX_FIND_TIME_DURATION_MINUTES = 12 * 60;
@@ -14,6 +20,7 @@ export type FindTimeMatcherMember = {
 
 export type FindTimeMatcherBusyInterval = {
   shiftId: string;
+  shiftTitle?: string | null;
   memberId: string;
   memberName: string;
   startAt: string;
@@ -33,7 +40,7 @@ export type FindTimeSearchRange = {
   requestedStart: string | null;
 };
 
-export type FindTimeWindow = {
+export type FindTimeRawWindow = {
   startAt: string;
   endAt: string;
   durationMinutes: number;
@@ -44,6 +51,8 @@ export type FindTimeWindow = {
   availableMemberIds: string[];
   busyMemberCount: number;
 };
+
+export type FindTimeWindow = FindTimeRankedWindow;
 
 export function normalizeFindTimeDuration(value: string | null | undefined):
   | {
@@ -153,6 +162,57 @@ export function buildFindTimeWindows(params: {
   windows: FindTimeWindow[];
   totalWindows: number;
   truncated: boolean;
+  topPickCount: number;
+  malformed: FindTimeWindowRankingFailure | null;
+} {
+  const rawMatches = buildRawFindTimeWindows(params);
+  if (rawMatches.totalWindows === 0) {
+    return {
+      windows: [],
+      totalWindows: 0,
+      truncated: false,
+      topPickCount: 0,
+      malformed: null
+    };
+  }
+
+  const ranked = rankFindTimeWindows({
+    roster: params.roster,
+    busyIntervals: params.busyIntervals,
+    windows: rawMatches.windows,
+    duration: params.duration
+  });
+
+  if (!ranked.ok) {
+    return {
+      windows: [],
+      totalWindows: 0,
+      truncated: false,
+      topPickCount: 0,
+      malformed: ranked.failure
+    };
+  }
+
+  const maxWindows = params.maxWindows ?? MAX_FIND_TIME_WINDOWS;
+  const windows = ranked.windows.slice(0, maxWindows);
+
+  return {
+    windows,
+    totalWindows: ranked.windows.length,
+    truncated: ranked.windows.length > windows.length,
+    topPickCount: ranked.windows.filter((window) => window.topPick).length,
+    malformed: null
+  };
+}
+
+export function buildRawFindTimeWindows(params: {
+  roster: FindTimeMatcherMember[];
+  busyIntervals: FindTimeMatcherBusyInterval[];
+  range: Pick<FindTimeSearchRange, 'startAt' | 'endAt'>;
+  duration: FindTimeDuration;
+}): {
+  windows: FindTimeRawWindow[];
+  totalWindows: number;
 } {
   const rangeStartMs = toDate(params.range.startAt)?.getTime() ?? Number.NaN;
   const rangeEndMs = toDate(params.range.endAt)?.getTime() ?? Number.NaN;
@@ -160,8 +220,7 @@ export function buildFindTimeWindows(params: {
   if (!Number.isFinite(rangeStartMs) || !Number.isFinite(rangeEndMs) || rangeEndMs <= rangeStartMs) {
     return {
       windows: [],
-      totalWindows: 0,
-      truncated: false
+      totalWindows: 0
     };
   }
 
@@ -237,31 +296,26 @@ export function buildFindTimeWindows(params: {
 
   const durationMs = params.duration.durationMs;
   const matchingSpans = spans.filter((span) => span.endMs - span.startMs >= durationMs);
-  const totalWindows = matchingSpans.length;
-  const maxWindows = params.maxWindows ?? MAX_FIND_TIME_WINDOWS;
-
-  const windows = matchingSpans.slice(0, maxWindows).map((span) => {
-    const availableMembers = span.availableMemberIds
-      .map((memberId) => rosterById.get(memberId))
-      .filter((member): member is FindTimeMatcherMember => member !== undefined);
-
-    return {
-      startAt: new Date(span.startMs).toISOString(),
-      endAt: new Date(span.startMs + durationMs).toISOString(),
-      durationMinutes: params.duration.durationMinutes,
-      spanStartAt: new Date(span.startMs).toISOString(),
-      spanEndAt: new Date(span.endMs).toISOString(),
-      spanDurationMinutes: Math.round((span.endMs - span.startMs) / MINUTE_IN_MS),
-      availableMembers,
-      availableMemberIds: span.availableMemberIds,
-      busyMemberCount: Math.max(0, orderedRoster.length - availableMembers.length)
-    } satisfies FindTimeWindow;
-  });
 
   return {
-    windows,
-    totalWindows,
-    truncated: totalWindows > windows.length
+    windows: matchingSpans.map((span) => {
+      const availableMembers = span.availableMemberIds
+        .map((memberId) => rosterById.get(memberId))
+        .filter((member): member is FindTimeMatcherMember => member !== undefined);
+
+      return {
+        startAt: new Date(span.startMs).toISOString(),
+        endAt: new Date(span.startMs + durationMs).toISOString(),
+        durationMinutes: params.duration.durationMinutes,
+        spanStartAt: new Date(span.startMs).toISOString(),
+        spanEndAt: new Date(span.endMs).toISOString(),
+        spanDurationMinutes: Math.round((span.endMs - span.startMs) / MINUTE_IN_MS),
+        availableMembers,
+        availableMemberIds: span.availableMemberIds,
+        busyMemberCount: Math.max(0, orderedRoster.length - availableMembers.length)
+      } satisfies FindTimeRawWindow;
+    }),
+    totalWindows: matchingSpans.length
   };
 }
 

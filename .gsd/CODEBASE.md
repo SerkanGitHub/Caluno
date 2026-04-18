@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-17T22:56:14Z | Files: 295 | Described: 0/295
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-17T22:56:14Z","fingerprint":"69998ecc4934a402fd10d9d1b71a6f4fad6dac64","fileCount":295,"truncated":false} -->
+Generated: 2026-04-18T17:07:50Z | Files: 306 | Described: 0/306
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-18T17:07:50Z","fingerprint":"cc65da29f69b00421c24cbddb6dd40c19bf50db3","fileCount":306,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -177,6 +177,7 @@ Generated: 2026-04-17T22:56:14Z | Files: 295 | Described: 0/295
 - `apps/web/.svelte-kit/generated/client/nodes/4.js`
 - `apps/web/.svelte-kit/generated/client/nodes/5.js`
 - `apps/web/.svelte-kit/generated/client/nodes/6.js`
+- `apps/web/.svelte-kit/generated/client/nodes/7.js`
 
 ### apps/web/.svelte-kit/generated/server/
 - `apps/web/.svelte-kit/generated/server/internal.js`
@@ -325,6 +326,11 @@ Generated: 2026-04-17T22:56:14Z | Files: 295 | Described: 0/295
 - `apps/web/.svelte-kit/types/src/routes/(app)/calendars/[calendarId]/proxy+page.server.ts`
 - `apps/web/.svelte-kit/types/src/routes/(app)/calendars/[calendarId]/proxy+page.ts`
 
+### apps/web/.svelte-kit/types/src/routes/(app)/calendars/[calendarId]/find-time/
+- `apps/web/.svelte-kit/types/src/routes/(app)/calendars/[calendarId]/find-time/$types.d.ts`
+- `apps/web/.svelte-kit/types/src/routes/(app)/calendars/[calendarId]/find-time/proxy+page.server.ts`
+- `apps/web/.svelte-kit/types/src/routes/(app)/calendars/[calendarId]/find-time/proxy+page.ts`
+
 ### apps/web/.svelte-kit/types/src/routes/(app)/groups/
 - `apps/web/.svelte-kit/types/src/routes/(app)/groups/$types.d.ts`
 - `apps/web/.svelte-kit/types/src/routes/(app)/groups/proxy+page.server.ts`
@@ -354,6 +360,9 @@ Generated: 2026-04-17T22:56:14Z | Files: 295 | Described: 0/295
 - `apps/web/src/lib/components/calendar/ShiftCard.svelte`
 - `apps/web/src/lib/components/calendar/ShiftDayColumn.svelte`
 - `apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte`
+
+### apps/web/src/lib/find-time/
+- `apps/web/src/lib/find-time/matcher.ts`
 
 ### apps/web/src/lib/offline/
 - `apps/web/src/lib/offline/app-shell-cache.ts`
@@ -397,6 +406,11 @@ Generated: 2026-04-17T22:56:14Z | Files: 295 | Described: 0/295
 - `apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte`
 - `apps/web/src/routes/(app)/calendars/[calendarId]/+page.ts`
 
+### apps/web/src/routes/(app)/calendars/[calendarId]/find-time/
+- `apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.server.ts`
+- `apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte`
+- `apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.ts`
+
 ### apps/web/src/routes/(app)/groups/
 - `apps/web/src/routes/(app)/groups/+page.server.ts`
 - `apps/web/src/routes/(app)/groups/+page.svelte`
@@ -428,12 +442,15 @@ Generated: 2026-04-17T22:56:14Z | Files: 295 | Described: 0/295
 - `apps/web/tests/e2e/calendar-offline.spec.ts`
 - `apps/web/tests/e2e/calendar-shifts.spec.ts`
 - `apps/web/tests/e2e/calendar-sync.spec.ts`
+- `apps/web/tests/e2e/find-time.spec.ts`
 - `apps/web/tests/e2e/fixtures.ts`
 
 ### apps/web/tests/find-time/
+- `apps/web/tests/find-time/matcher.unit.test.ts`
 - `apps/web/tests/find-time/member-availability.unit.test.ts`
 
 ### apps/web/tests/routes/
+- `apps/web/tests/routes/find-time-routes.unit.test.ts`
 - `apps/web/tests/routes/protected-routes.unit.test.ts`
 
 ### apps/web/tests/schedule/
