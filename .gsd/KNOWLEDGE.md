@@ -173,3 +173,9 @@
 **Context:** M002 milestone completion happened after slice commits had already been auto-merged onto `main`, which makes `git merge-base HEAD main` equal `HEAD` and yields an empty diff.
 **Rule/Pattern:** If milestone closeout is executing on `main`, use the last auto-commit before the milestone started as the equivalent code-diff base for the required non-`.gsd/` verification, and record that base explicitly in the milestone summary.
 **Rationale:** Otherwise a milestone with real application changes can look like it produced only planning artifacts purely because the branch topology has already collapsed to `main` by the time closeout verification runs.
+
+## 2026-04-21: Shared workspace helpers must stay pure and keep Svelte virtual modules behind app-local wrappers
+
+**Context:** M003/S01/T01 extracted trusted-scope helpers into `@repo/caluno-core` for both web and mobile consumption.
+**Rule/Pattern:** When moving reusable logic out of `apps/web` in this repo, keep workspace packages free of Svelte-only imports like `$env/dynamic/public`, and expose any needed Svelte runtime integration through thin app-local wrapper modules.
+**Rationale:** Workspace packages need to load in both mobile Vitest and web runtime contexts; pulling Svelte virtual modules into the shared package breaks that portability and recreates the same cross-surface drift risk the extraction was meant to remove.

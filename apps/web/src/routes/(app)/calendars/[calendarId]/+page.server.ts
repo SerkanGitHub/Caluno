@@ -1,6 +1,10 @@
 import { fail } from '@sveltejs/kit';
+import {
+  describeDeniedCalendarReason,
+  resolveTrustedCalendarFromAppShell,
+  resolveVisibleWeek
+} from '@repo/caluno-core';
 import type { Actions, PageServerLoad } from './$types';
-import { describeDeniedCalendarReason } from '$lib/server/app-shell';
 import { parseCreatePrefill, stripCreatePrefillSearchParams } from '$lib/schedule/create-prefill';
 import {
   createScheduleShift,
@@ -8,8 +12,6 @@ import {
   editScheduleShift,
   loadCalendarScheduleView,
   moveScheduleShift,
-  resolveTrustedCalendarFromAppShell,
-  resolveVisibleWeek,
   type ScheduleActionKind,
   type ScheduleActionResult,
   type ScheduleActionState

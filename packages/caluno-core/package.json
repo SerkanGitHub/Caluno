@@ -1,0 +1,13 @@
+{
+  "name": "@repo/caluno-core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./access": "./src/access.ts",
+    "./app-shell": "./src/app-shell.ts",
+    "./route-contract": "./src/route-contract.ts",
+    "./supabase": "./src/supabase.ts"
+  }
+}

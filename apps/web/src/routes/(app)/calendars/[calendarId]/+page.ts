@@ -3,7 +3,7 @@ import {
   resolveCachedCalendarRouteData,
   type ProtectedAppShellData
 } from '$lib/offline/protected-routes';
-import { resolveVisibleWeek } from '$lib/schedule/route-contract';
+import { resolveVisibleWeek } from '@repo/caluno-core/route-contract';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ data, params, parent, url }) => {

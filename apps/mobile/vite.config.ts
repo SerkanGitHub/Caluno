@@ -1,6 +1,12 @@
+/// <reference types="vitest/config" />
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  plugins: [sveltekit()]
+  plugins: [sveltekit()],
+  test: {
+    environment: 'node',
+    include: ['tests/**/*.test.ts'],
+    passWithNoTests: false
+  }
 });

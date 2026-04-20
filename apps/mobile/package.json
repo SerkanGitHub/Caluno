@@ -10,12 +10,15 @@
     "dev": "vite dev --port 4173",
     "prepare": "svelte-kit sync || echo ''",
     "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "cap:sync": "npx cap sync",
     "cap:add:ios": "npx cap add ios",
     "cap:add:android": "npx cap add android"
   },
   "dependencies": {
-    "@capacitor/core": "^8.0.1"
+    "@capacitor/core": "^8.0.1",
+    "@repo/caluno-core": "workspace:*"
   },
   "devDependencies": {
     "@capacitor/android": "^8.0.1",
@@ -27,6 +30,7 @@
     "svelte": "^5.45.6",
     "svelte-check": "^4.3.4",
     "typescript": "^5.9.3",
-    "vite": "^7.2.6"
+    "vite": "^7.2.6",
+    "vitest": "^3.2.4"
   }
 }

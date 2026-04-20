@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
+import { normalizeJoinCode } from '@repo/caluno-core/access';
 import type { Actions, PageServerLoad } from './$types';
-import { normalizeJoinCode } from '$lib/access/contract';
 import { extractReasonCode } from '$lib/server/auth-flow';
 
 const GROUP_CREATE_CODES = ['AUTH_REQUIRED', 'GROUP_NAME_REQUIRED'] as const;

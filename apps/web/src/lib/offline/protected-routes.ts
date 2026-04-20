@@ -8,9 +8,12 @@ import {
   createEmptyCalendarScheduleView,
   resolveTrustedCalendarFromAppShell,
   resolveVisibleWeek,
-  type CalendarScheduleView
-} from '$lib/schedule/route-contract';
-import type { AppCalendar, AppGroup, AppMembership, ViewerSummary } from '$lib/server/app-shell';
+  type AppCalendar,
+  type AppGroup,
+  type AppMembership,
+  type CalendarScheduleView,
+  type ViewerSummary
+} from '@repo/caluno-core';
 import type { OfflineWeekSnapshotReadResult } from './repository';
 
 export type ProtectedAppShellData = {

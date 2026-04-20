@@ -1,7 +1,6 @@
+import { describeDeniedCalendarReason, resolveTrustedCalendarFromAppShell } from '@repo/caluno-core';
 import type { PageServerLoad } from './$types';
-import { describeDeniedCalendarReason } from '$lib/server/app-shell';
 import { loadFindTimeSearchView } from '$lib/server/find-time';
-import { resolveTrustedCalendarFromAppShell } from '$lib/server/schedule';
 
 function buildDeniedFindTimeView(params: {
   calendarId: string;

@@ -32,6 +32,9 @@ importers:
       '@capacitor/core':
         specifier: ^8.0.1
         version: 8.3.0
+      '@repo/caluno-core':
+        specifier: workspace:*
+        version: link:../../packages/caluno-core
     devDependencies:
       '@capacitor/android':
         specifier: ^8.0.1
@@ -63,9 +66,15 @@ importers:
       vite:
         specifier: ^7.2.6
         version: 7.3.2(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.32.0)(tsx@4.21.0)
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.32.0)(tsx@4.21.0)
 
   apps/web:
     dependencies:
+      '@repo/caluno-core':
+        specifier: workspace:*
+        version: link:../../packages/caluno-core
       '@sqlite.org/sqlite-wasm':
         specifier: 3.51.2-build9
         version: 3.51.2-build9
@@ -106,6 +115,8 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.32.0)(tsx@4.21.0)
+
+  packages/caluno-core: {}
 
   packages/db: {}
 

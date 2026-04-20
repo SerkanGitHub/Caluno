@@ -10,10 +10,10 @@ This file is the explicit capability and coverage contract for the project.
 - Description: Users can create groups, assign roles, and share calendars so only permitted members can access shared schedule data.
 - Why it matters: Shared scheduling is the product foundation, not an add-on.
 - Source: user
-- Primary owning slice: M002/S01
-- Supporting slices: M002/S03
+- Primary owning slice: M003/S01
+- Supporting slices: M003/S02, M003/S03
 - Validation: mapped
-- Notes: Shared free-time matching must stay inside the existing shared-calendar membership boundary and preserve trusted calendar context during handoff.
+- Notes: M003 extends the trusted shared-calendar permission boundary onto mobile surfaces and keeps create/edit/find-time flows inside permitted calendar scope.
 
 ### R009 — The product remains coherent across web and mobile surfaces, with mobile added on top of the same scheduling substrate and domain model.
 - Class: launchability
@@ -228,7 +228,7 @@ This file is the explicit capability and coverage contract for the project.
 | ID | Class | Status | Primary owner | Supporting | Proof |
 |---|---|---|---|---|---|
 | R001 | primary-user-loop | validated | M001/S01 | M001/S03 | Validated by M001 combined clean-reset preview-backed browser proof (`npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test -c playwright.offline.config.ts tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-sync.spec.ts`), which proved trusted sign-in, cached-session offline reopen for previously synced calendars, reload continuity, and fail-closed denial for unsynced calendar URLs. |
-| R002 | core-capability | active | M002/S01 | M002/S03 | mapped |
+| R002 | core-capability | active | M003/S01 | M003/S02, M003/S03 | mapped |
 | R003 | core-capability | validated | M001/S02 | M001/S05 | Validated in M001/S02 by passing `pnpm --dir apps/web exec vitest run tests/routes/protected-routes.unit.test.ts tests/schedule/board.unit.test.ts tests/schedule/recurrence.unit.test.ts tests/schedule/server-actions.unit.test.ts` plus `npx --yes supabase db reset --local --yes` and `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts`, which proved same-day multi-shift rendering, bounded recurring creation, edit, move, delete, and reload continuity on the protected calendar route. |
 | R004 | continuity | validated | M001/S03 | M001/S04 | Validated by M001 combined clean-reset preview-backed browser proof (`npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test -c playwright.offline.config.ts tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-sync.spec.ts`), which proved previously synced schedule data remains readable and editable offline, survives reload, and reconciles through reconnect drain. |
 | R005 | integration | validated | M001/S04 | M001/S03, M001/S05 | Validated by M001 combined clean-reset preview-backed browser proof plus passing `tests/schedule/sync-engine.unit.test.ts` and `tests/schedule/offline-queue.unit.test.ts`, proving deterministic reconnect replay through trusted route actions and live collaborator refresh propagation within the permitted shared calendar scope. |

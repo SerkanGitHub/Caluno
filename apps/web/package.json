@@ -16,6 +16,7 @@
     "test:e2e:headed": "playwright test tests/e2e/auth-groups-access.spec.ts --headed"
   },
   "dependencies": {
+    "@repo/caluno-core": "workspace:*",
     "@sqlite.org/sqlite-wasm": "3.51.2-build9",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.58.0",

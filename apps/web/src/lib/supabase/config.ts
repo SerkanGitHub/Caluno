@@ -1,35 +1,12 @@
 import { env } from '$env/dynamic/public';
+import {
+  readSupabasePublicEnv as readSharedSupabasePublicEnv,
+  type SupabasePublicConfig,
+  type SupabasePublicEnv
+} from '@repo/caluno-core/supabase';
 
-export type SupabasePublicEnv = {
-  PUBLIC_SUPABASE_URL?: string;
-  PUBLIC_SUPABASE_PUBLISHABLE_KEY?: string;
-};
-
-export type SupabasePublicConfig = {
-  url: string;
-  publishableKey: string;
-};
+export type { SupabasePublicConfig, SupabasePublicEnv } from '@repo/caluno-core/supabase';
 
 export function readSupabasePublicEnv(source: SupabasePublicEnv = env): SupabasePublicConfig {
-  const url = source.PUBLIC_SUPABASE_URL?.trim();
-  const publishableKey = source.PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim();
-
-  if (!url || !publishableKey) {
-    const missing: string[] = [];
-
-    if (!url) {
-      missing.push('PUBLIC_SUPABASE_URL');
-    }
-
-    if (!publishableKey) {
-      missing.push('PUBLIC_SUPABASE_PUBLISHABLE_KEY');
-    }
-
-    throw new Error(`Missing required public Supabase env: ${missing.join(', ')}`);
-  }
-
-  return {
-    url,
-    publishableKey
-  };
+  return readSharedSupabasePublicEnv(source);
 }

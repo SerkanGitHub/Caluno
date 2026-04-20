@@ -5,10 +5,10 @@ import {
   composeAppGroups,
   deriveViewerSummary,
   pickPrimaryCalendar,
+  type AppCalendar,
   type AppGroup,
-  type AppMembership,
-  type AppCalendar
-} from '$lib/server/app-shell';
+  type AppMembership
+} from '@repo/caluno-core/app-shell';
 import { normalizeInternalPath } from '$lib/server/auth-flow';
 
 type MembershipRow = {
