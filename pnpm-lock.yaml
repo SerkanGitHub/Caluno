@@ -35,6 +35,12 @@ importers:
       '@repo/caluno-core':
         specifier: workspace:*
         version: link:../../packages/caluno-core
+      '@supabase/ssr':
+        specifier: ^0.7.0
+        version: 0.7.0(@supabase/supabase-js@2.103.0)
+      '@supabase/supabase-js':
+        specifier: ^2.58.0
+        version: 2.103.0
     devDependencies:
       '@capacitor/android':
         specifier: ^8.0.1

@@ -61,7 +61,7 @@ The order follows the real risk curve for this slice. T01 retires architecture d
   - Do: Extract the pure access/app-shell/route-contract/public-env helpers into `@repo/caluno-core`, rewire web imports without changing denial semantics, add Vitest support to `apps/mobile`, and prove the shared helper contract in a new mobile-local unit test.
   - Verify: `pnpm --dir apps/mobile exec vitest run tests/trusted-core.unit.test.ts && pnpm --dir apps/web exec vitest run tests/auth/session.unit.test.ts tests/routes/protected-routes.unit.test.ts`
   - Done when: mobile imports shared helpers without cross-app reach-in, web regressions stay green, and the new mobile test runner proves the shared denial contract.
-- [ ] **T02: Implement client-validated Supabase auth bootstrap and sign-in entry** `est:90m`
+- [x] **T02: Implement client-validated Supabase auth bootstrap and sign-in entry** `est:90m`
   - Why: R002 and R009 both fail if mobile trusts stale local auth or keeps the starter page instead of a real protected-entry flow.
   - Files: `apps/mobile/src/lib/supabase/client.ts`, `apps/mobile/src/lib/auth/mobile-session.ts`, `apps/mobile/src/routes/+layout.ts`, `apps/mobile/src/routes/+page.svelte`, `apps/mobile/src/routes/signin/+page.svelte`, `apps/mobile/tests/auth-bootstrap.unit.test.ts`
   - Do: Add the mobile Supabase browser client, implement one-time `getSession()` + `getUser()` validation, keep the slice on password auth, and replace the starter screen with explicit signed-out, invalid-session, loading, and error surfaces.

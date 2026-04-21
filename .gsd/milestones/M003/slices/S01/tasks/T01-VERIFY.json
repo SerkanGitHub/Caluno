@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T01",
+  "unitId": "M003/S01/T01",
+  "timestamp": 1776724908241,
+  "passed": false,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "pnpm --dir apps/mobile exec vitest run tests/trusted-core.unit.test.ts\npnpm --dir apps/web exec vitest run tests/auth/session.unit.test.ts tests/routes/protected-routes.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 2514,
+      "verdict": "pass"
+    }
+  ],
+  "retryAttempt": 1,
+  "maxRetries": 2,
+  "postExecutionChecks": [
+    {
+      "category": "import",
+      "target": "apps/web/src/routes/(app)/+layout.server.ts:2",
+      "passed": false,
+      "message": "Import './$types' in apps/web/src/routes/(app)/+layout.server.ts:2 does not resolve to an existing file",
+      "blocking": true
+    },
+    {
+      "category": "import",
+      "target": "apps/web/src/routes/(app)/groups/+page.server.ts:3",
+      "passed": false,
+      "message": "Import './$types' in apps/web/src/routes/(app)/groups/+page.server.ts:3 does not resolve to an existing file",
+      "blocking": true
+    },
+    {
+      "category": "import",
+      "target": "apps/web/src/routes/(app)/calendars/[calendarId]/+page.server.ts:7",
+      "passed": false,
+      "message": "Import './$types' in apps/web/src/routes/(app)/calendars/[calendarId]/+page.server.ts:7 does not resolve to an existing file",
+      "blocking": true
+    },
+    {
+      "category": "import",
+      "target": "apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.server.ts:2",
+      "passed": false,
+      "message": "Import './$types' in apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.server.ts:2 does not resolve to an existing file",
+      "blocking": true
+    },
+    {
+      "category": "import",
+      "target": "apps/web/src/routes/(app)/calendars/[calendarId]/+page.ts:7",
+      "passed": false,
+      "message": "Import './$types' in apps/web/src/routes/(app)/calendars/[calendarId]/+page.ts:7 does not resolve to an existing file",
+      "blocking": true
+    }
+  ]
+}
