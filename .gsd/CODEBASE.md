@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-21T14:16:59Z | Files: 473 | Described: 0/473
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-21T14:16:59Z","fingerprint":"76cb9e720b628266ef0adbbdbfdf91bd31ac3343","fileCount":473,"truncated":false} -->
+Generated: 2026-04-21T14:47:05Z | Files: 479 | Described: 0/479
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-21T14:47:05Z","fingerprint":"d0ef4ea18f57b7ffe0c30905728f9212dd0d8a4d","fileCount":479,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -72,6 +72,7 @@ Generated: 2026-04-21T14:16:59Z | Files: 473 | Described: 0/473
 - `apps/mobile/.svelte-kit/generated/client/nodes/3.js`
 - `apps/mobile/.svelte-kit/generated/client/nodes/4.js`
 - `apps/mobile/.svelte-kit/generated/client/nodes/5.js`
+- `apps/mobile/.svelte-kit/generated/client/nodes/6.js`
 
 ### apps/mobile/.svelte-kit/generated/server/
 - `apps/mobile/.svelte-kit/generated/server/internal.js`
@@ -197,6 +198,9 @@ Generated: 2026-04-21T14:16:59Z | Files: 473 | Described: 0/473
 ### apps/mobile/.svelte-kit/types/src/routes/calendars/[calendarId]/
 - `apps/mobile/.svelte-kit/types/src/routes/calendars/[calendarId]/$types.d.ts`
 
+### apps/mobile/.svelte-kit/types/src/routes/calendars/[calendarId]/find-time/
+- `apps/mobile/.svelte-kit/types/src/routes/calendars/[calendarId]/find-time/$types.d.ts`
+
 ### apps/mobile/.svelte-kit/types/src/routes/groups/
 - `apps/mobile/.svelte-kit/types/src/routes/groups/$types.d.ts`
 
@@ -257,6 +261,10 @@ Generated: 2026-04-21T14:16:59Z | Files: 473 | Described: 0/473
 ### apps/mobile/src/lib/continuity/
 - `apps/mobile/src/lib/continuity/mobile-app-shell-cache.ts`
 
+### apps/mobile/src/lib/find-time/
+- `apps/mobile/src/lib/find-time/transport.ts`
+- `apps/mobile/src/lib/find-time/view.ts`
+
 ### apps/mobile/src/lib/offline/
 - `apps/mobile/src/lib/offline/app-lifecycle.ts`
 - `apps/mobile/src/lib/offline/controller.ts`
@@ -280,6 +288,9 @@ Generated: 2026-04-21T14:16:59Z | Files: 473 | Described: 0/473
 ### apps/mobile/src/routes/calendars/[calendarId]/
 - `apps/mobile/src/routes/calendars/[calendarId]/+page.svelte`
 
+### apps/mobile/src/routes/calendars/[calendarId]/find-time/
+- `apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte`
+
 ### apps/mobile/src/routes/groups/
 - `apps/mobile/src/routes/groups/+page.svelte`
 
@@ -294,6 +305,7 @@ Generated: 2026-04-21T14:16:59Z | Files: 473 | Described: 0/473
 - `apps/mobile/tests/continuity-contract.unit.test.ts`
 - `apps/mobile/tests/find-time-contract.unit.test.ts`
 - `apps/mobile/tests/mobile-continuity.unit.test.ts`
+- `apps/mobile/tests/mobile-find-time.unit.test.ts`
 - `apps/mobile/tests/mobile-sync-runtime.unit.test.ts`
 - `apps/mobile/tests/shell-scope.unit.test.ts`
 - `apps/mobile/tests/trusted-core.unit.test.ts`
