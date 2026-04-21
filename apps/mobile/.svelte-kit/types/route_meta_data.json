@@ -6,6 +6,9 @@
 	"/calendars/[calendarId]": [
 		"src/routes/+layout.ts"
 	],
+	"/calendars/[calendarId]/find-time": [
+		"src/routes/+layout.ts"
+	],
 	"/groups": [
 		"src/routes/+layout.ts"
 	],

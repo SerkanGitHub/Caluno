@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-21T14:06:30Z | Files: 469 | Described: 0/469
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-21T14:06:30Z","fingerprint":"02bae033358028d377204ee308a1bb5e4fd8c0eb","fileCount":469,"truncated":false} -->
+Generated: 2026-04-21T14:16:59Z | Files: 473 | Described: 0/473
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-21T14:16:59Z","fingerprint":"76cb9e720b628266ef0adbbdbfdf91bd31ac3343","fileCount":473,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -92,37 +92,37 @@ Generated: 2026-04-21T14:06:30Z | Files: 469 | Described: 0/469
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/aspVDWtK.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/Booxuhfa.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BP94urvi.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BrFZ6NHt.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/Btw0dzQj.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/C-QreVHk.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CBeHyPwc.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CBHft_Yw.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CFe5Td5s.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CjOqlVhN.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CKbkPM2I.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CPk1WoCL.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CuWyG364.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/Ctlun7xi.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CWeFt6jb.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/D3Y8ARzs.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CZfMR5-B.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/D8jecx1F.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DgHnrCHr.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DKD93rQj.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DlDiel7I.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/Db6uoy2u.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DKI05d02.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DOlCIplG.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/ogggxL16.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/PPVm8Dsz.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/rpg3dlon.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/TkKPizu3.js`
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/entry/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.aEpgk8ZS.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.e8nVXlAF.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.CKRdkVKg.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.CSxLZAYA.js`
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.CAlOlIP6.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.BYRYPXgG.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.DKEWFdZm.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.C4wFHE_l.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.DJ6otPu4.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.CtR9eJ3J.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.BcyMhi6w.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.Dxseql_L.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.DPMZLn4P.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.C-yTtgeU.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.DWAdbfJn.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.6xCj83iF.js`
 
 ### apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/
 - `apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/env.js`
@@ -292,6 +292,7 @@ Generated: 2026-04-21T14:06:30Z | Files: 469 | Described: 0/469
 ### apps/mobile/tests/
 - `apps/mobile/tests/auth-bootstrap.unit.test.ts`
 - `apps/mobile/tests/continuity-contract.unit.test.ts`
+- `apps/mobile/tests/find-time-contract.unit.test.ts`
 - `apps/mobile/tests/mobile-continuity.unit.test.ts`
 - `apps/mobile/tests/mobile-sync-runtime.unit.test.ts`
 - `apps/mobile/tests/shell-scope.unit.test.ts`
@@ -719,6 +720,10 @@ Generated: 2026-04-21T14:06:30Z | Files: 469 | Described: 0/469
 - `packages/caluno-core/src/route-contract.ts`
 - `packages/caluno-core/src/supabase.ts`
 
+### packages/caluno-core/src/find-time/
+- `packages/caluno-core/src/find-time/matcher.ts`
+- `packages/caluno-core/src/find-time/ranking.ts`
+
 ### packages/caluno-core/src/offline/
 - `packages/caluno-core/src/offline/app-shell-cache.ts`
 - `packages/caluno-core/src/offline/mutation-queue.ts`
@@ -728,6 +733,7 @@ Generated: 2026-04-21T14:06:30Z | Files: 469 | Described: 0/469
 ### packages/caluno-core/src/schedule/
 - `packages/caluno-core/src/schedule/board.ts`
 - `packages/caluno-core/src/schedule/conflicts.ts`
+- `packages/caluno-core/src/schedule/create-prefill.ts`
 - `packages/caluno-core/src/schedule/recurrence.ts`
 - `packages/caluno-core/src/schedule/types.ts`
 

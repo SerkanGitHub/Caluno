@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T01",
+  "unitId": "M003/S03/T01",
+  "timestamp": 1776781017004,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "pnpm --dir apps/mobile exec vitest run tests/find-time-contract.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 1184,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/web exec vitest run tests/find-time/matcher.unit.test.ts tests/routes/find-time-routes.unit.test.ts tests/schedule/create-prefill.unit.test.ts tests/routes/protected-routes.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 1421,
+      "verdict": "pass"
+    }
+  ]
+}

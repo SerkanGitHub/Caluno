@@ -82,7 +82,7 @@ What remains before the milestone is truly usable end-to-end: notification contr
   - Files: `packages/caluno-core/package.json`, `packages/caluno-core/src/index.ts`, `packages/caluno-core/src/find-time/matcher.ts`, `packages/caluno-core/src/find-time/ranking.ts`, `packages/caluno-core/src/schedule/create-prefill.ts`, `apps/web/src/lib/find-time/matcher.ts`, `apps/web/src/lib/find-time/ranking.ts`, `apps/web/src/lib/schedule/create-prefill.ts`, `apps/mobile/tests/find-time-contract.unit.test.ts`
   - Verify: pnpm --dir apps/mobile exec vitest run tests/find-time-contract.unit.test.ts && pnpm --dir apps/web exec vitest run tests/find-time/matcher.unit.test.ts tests/routes/find-time-routes.unit.test.ts tests/schedule/create-prefill.unit.test.ts tests/routes/protected-routes.unit.test.ts
 
-- [ ] **T02: Build the trusted mobile Find time route and status model** `est:2h`
+- [x] **T02: Build the trusted mobile Find time route and status model** `est:2h`
   Implement the actual mobile `/calendars/[calendarId]/find-time` route on top of the trusted shell and direct mobile Supabase transport pattern established in S01/S02. This task should keep the route live-backed while online, explicit when offline, and fail-closed for malformed or out-of-scope calendar ids before any roster/busy query runs.
 
 ## Failure Modes

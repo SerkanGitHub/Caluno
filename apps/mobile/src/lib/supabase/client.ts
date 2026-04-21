@@ -26,7 +26,7 @@ export type MobileSupabaseAuthClient = {
   };
 };
 
-export type MobileSupabaseDataClient = MobileSupabaseAuthClient & Pick<SupabaseClient, 'from'>;
+export type MobileSupabaseDataClient = MobileSupabaseAuthClient & Pick<SupabaseClient, 'from' | 'rpc'>;
 
 let browserClient: MobileSupabaseDataClient | undefined;
 

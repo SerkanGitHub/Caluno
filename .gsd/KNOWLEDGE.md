@@ -221,3 +221,9 @@
 **Context:** M003/S02/T05 final mobile offline continuity verification intermittently failed after migrations and seed completed, with the CLI dying during the post-reset container restart on `GET http://127.0.0.1:54321/storage/v1/bucket`.
 **Rule/Pattern:** When local Supabase reset fails in this repo with an upstream `502` on the storage health check, run `npx --yes supabase stop && npx --yes supabase start` before retrying the exact reset-plus-Playwright verification command.
 **Rationale:** The failure came from a degraded local Supabase stack, not from the mobile continuity flow; a full local stack restart restored storage health and the unchanged Playwright proof passed immediately afterward.
+
+## 2026-04-21: Local browser proof for `apps/mobile` also needs public Supabase env before `/signin` can render the real auth surface
+
+**Context:** M003/S03/T02 lightweight browser smoke verification against `pnpm --dir apps/mobile dev`.
+**Rule/Pattern:** Before using the live `apps/mobile` dev server for browser proof in this repo, ensure `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_PUBLISHABLE_KEY` are present in the mobile app environment.
+**Rationale:** When those public env vars are missing, the mobile sign-in page renders a configuration-blocked shell instead of the real auth form, which can masquerade as a route/UI failure even though the blocker is environment setup.
