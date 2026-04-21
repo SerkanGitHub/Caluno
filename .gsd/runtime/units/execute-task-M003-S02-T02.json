@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "unitType": "execute-task",
+  "unitId": "M003/S02/T02",
+  "startedAt": 1776764252937,
+  "updatedAt": 1776765453642,
+  "phase": "wrapup-warning-sent",
+  "wrapupWarningSent": true,
+  "continueHereFired": false,
+  "timeoutAt": null,
+  "lastProgressAt": 1776765453642,
+  "progressCount": 0,
+  "lastProgressKind": "filesystem-activity",
+  "recoveryAttempts": 0
+}

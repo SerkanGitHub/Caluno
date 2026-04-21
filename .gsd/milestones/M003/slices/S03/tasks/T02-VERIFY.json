@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T02",
+  "unitId": "M003/S03/T02",
+  "timestamp": 1776782820737,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "pnpm --dir apps/mobile exec vitest run tests/find-time-contract.unit.test.ts tests/mobile-find-time.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 1469,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/mobile check",
+      "exitCode": 0,
+      "durationMs": 2809,
+      "verdict": "pass"
+    }
+  ],
+  "postExecutionChecks": [
+    {
+      "category": "pattern",
+      "target": "apps/mobile/tests/mobile-find-time.unit.test.ts",
+      "passed": true,
+      "message": "File apps/mobile/tests/mobile-find-time.unit.test.ts mixes async/await with .then() promise chaining — consider using consistent async style",
+      "blocking": false
+    }
+  ]
+}

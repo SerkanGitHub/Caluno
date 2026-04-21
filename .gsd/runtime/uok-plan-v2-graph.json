@@ -1,0 +1,349 @@
+{
+  "compiledAt": "2026-04-21T23:24:06.859Z",
+  "milestoneId": "M003",
+  "pipeline": {
+    "clarifyRoundLimit": 3,
+    "researchSynthesized": true,
+    "draftContextIncluded": false,
+    "finalizedContextIncluded": true,
+    "sourcePhase": "executing"
+  },
+  "nodes": [
+    {
+      "id": "execute-task:M003:S01:T01",
+      "kind": "unit",
+      "dependsOn": [],
+      "writes": [
+        "packages/caluno-core/package.json",
+        "packages/caluno-core/src/index.ts",
+        "packages/caluno-core/src/access.ts",
+        "packages/caluno-core/src/app-shell.ts",
+        "packages/caluno-core/src/route-contract.ts",
+        "packages/caluno-core/src/supabase.ts",
+        "apps/web/src/lib/access/contract.ts",
+        "apps/web/src/lib/server/app-shell.ts",
+        "apps/web/src/lib/schedule/route-contract.ts",
+        "apps/web/src/lib/supabase/config.ts",
+        "apps/web/src/routes/(app)/+layout.server.ts",
+        "apps/web/src/routes/(app)/groups/+page.server.ts",
+        "apps/web/src/routes/(app)/calendars/[calendarId]/+page.server.ts",
+        "apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.server.ts",
+        "apps/web/src/routes/(app)/calendars/[calendarId]/+page.ts",
+        "apps/web/src/lib/offline/protected-routes.ts",
+        "apps/web/package.json",
+        "apps/mobile/package.json",
+        "apps/mobile/vite.config.ts",
+        "apps/mobile/tests/trusted-core.unit.test.ts",
+        ".gsd/KNOWLEDGE.md"
+      ],
+      "metadata": {
+        "unitType": "execute-task",
+        "unitId": "M003.S01.T01",
+        "title": "Extracted the shared trusted-scope helpers into @repo/caluno-core and added the first mobile Vitest contract proof.",
+        "status": "complete"
+      }
+    },
+    {
+      "id": "execute-task:M003:S01:T02",
+      "kind": "unit",
+      "dependsOn": [
+        "execute-task:M003:S01:T01"
+      ],
+      "writes": [
+        "apps/mobile/package.json",
+        "apps/mobile/src/lib/supabase/config.ts",
+        "apps/mobile/src/lib/supabase/client.ts",
+        "apps/mobile/src/lib/auth/mobile-session.ts",
+        "apps/mobile/src/routes/+layout.ts",
+        "apps/mobile/src/routes/+page.svelte",
+        "apps/mobile/src/routes/signin/+page.svelte",
+        "apps/mobile/tests/auth-bootstrap.unit.test.ts"
+      ],
+      "metadata": {
+        "unitType": "execute-task",
+        "unitId": "M003.S01.T02",
+        "title": "Added a singleton mobile Supabase auth bootstrap with real password sign-in and explicit invalid-session/config-error entry surfaces.",
+        "status": "complete"
+      }
+    },
+    {
+      "id": "execute-task:M003:S01:T03",
+      "kind": "unit",
+      "dependsOn": [
+        "execute-task:M003:S01:T02"
+      ],
+      "writes": [
+        "apps/mobile/src/lib/shell/load-app-shell.ts",
+        "apps/mobile/src/lib/components/MobileShell.svelte",
+        "apps/mobile/src/routes/groups/+page.svelte",
+        "apps/mobile/src/routes/calendars/[calendarId]/+page.svelte",
+        "apps/mobile/src/app.css",
+        "apps/mobile/src/routes/signin/+page.svelte",
+        "apps/mobile/src/routes/+page.svelte",
+        "apps/mobile/src/lib/supabase/client.ts",
+        "apps/mobile/tests/shell-scope.unit.test.ts",
+        ".gsd/KNOWLEDGE.md"
+      ],
+      "metadata": {
+        "unitType": "execute-task",
+        "unitId": "M003.S01.T03",
+        "title": "Shipped the mobile trusted shell loader, phone-first groups/calendar routes, and explicit denied states for malformed or out-of-scope calendar ids.",
+        "status": "complete"
+      }
+    },
+    {
+      "id": "execute-task:M003:S01:T04",
+      "kind": "unit",
+      "dependsOn": [
+        "execute-task:M003:S01:T03"
+      ],
+      "writes": [
+        "apps/mobile/playwright.config.ts",
+        "apps/mobile/tests/e2e/fixtures.ts",
+        "apps/mobile/tests/e2e/auth-scope.spec.ts",
+        "apps/mobile/src/lib/components/MobileShell.svelte",
+        "apps/mobile/src/routes/signin/+page.svelte",
+        "apps/mobile/package.json",
+        "apps/mobile/ios/App/App.xcodeproj/project.pbxproj",
+        "apps/mobile/ios/App/App/AppDelegate.swift",
+        ".gsd/KNOWLEDGE.md"
+      ],
+      "metadata": {
+        "unitType": "execute-task",
+        "unitId": "M003.S01.T04",
+        "title": "Added the mobile Playwright proof, reachable shell sign-out observability, and first successful Capacitor iOS bootstrap/sync for the trusted mobile shell.",
+        "status": "complete"
+      }
+    },
+    {
+      "id": "complete-slice:M003:S01",
+      "kind": "verification",
+      "dependsOn": [
+        "execute-task:M003:S01:T04"
+      ],
+      "metadata": {
+        "unitType": "complete-slice",
+        "unitId": "M003.S01",
+        "title": "S01",
+        "status": "complete"
+      }
+    },
+    {
+      "id": "execute-task:M003:S02:T01",
+      "kind": "unit",
+      "dependsOn": [],
+      "writes": [
+        "packages/caluno-core/package.json",
+        "packages/caluno-core/src/index.ts",
+        "packages/caluno-core/src/offline/types.ts",
+        "packages/caluno-core/src/offline/app-shell-cache.ts",
+        "packages/caluno-core/src/offline/mutation-queue.ts",
+        "packages/caluno-core/src/offline/sync-engine.ts",
+        "packages/caluno-core/src/schedule/types.ts",
+        "packages/caluno-core/src/schedule/board.ts",
+        "packages/caluno-core/src/schedule/conflicts.ts",
+        "packages/caluno-core/src/schedule/recurrence.ts",
+        "apps/web/src/lib/offline/sync-engine.ts",
+        "apps/web/tests/schedule/offline-queue.unit.test.ts",
+        "apps/web/tests/schedule/sync-engine.unit.test.ts",
+        "apps/web/tests/schedule/board.unit.test.ts",
+        "apps/web/tests/schedule/conflicts.unit.test.ts",
+        "apps/web/tests/schedule/recurrence.unit.test.ts",
+        "apps/mobile/tests/continuity-contract.unit.test.ts",
+        ".gsd/KNOWLEDGE.md"
+      ],
+      "metadata": {
+        "unitType": "execute-task",
+        "unitId": "M003.S02.T01",
+        "title": "Extracted offline continuity and schedule helpers into @repo/caluno-core with shared web/mobile contract coverage.",
+        "status": "complete"
+      }
+    },
+    {
+      "id": "execute-task:M003:S02:T02",
+      "kind": "unit",
+      "dependsOn": [
+        "execute-task:M003:S02:T01"
+      ],
+      "writes": [
+        "apps/mobile/package.json",
+        "apps/mobile/src/lib/continuity/mobile-app-shell-cache.ts",
+        "apps/mobile/src/lib/offline/repository.ts",
+        "apps/mobile/src/lib/shell/load-app-shell.ts",
+        "apps/mobile/src/lib/auth/mobile-session.ts",
+        "apps/mobile/src/routes/+layout.ts",
+        "apps/mobile/src/routes/groups/+page.svelte",
+        "apps/mobile/src/routes/calendars/[calendarId]/+page.svelte",
+        "apps/mobile/src/lib/components/MobileShell.svelte",
+        "apps/mobile/tests/mobile-continuity.unit.test.ts",
+        "apps/mobile/tests/auth-bootstrap.unit.test.ts",
+        ".gsd/KNOWLEDGE.md"
+      ],
+      "metadata": {
+        "unitType": "execute-task",
+        "unitId": "M003.S02.T02",
+        "title": "Added Preferences-backed mobile continuity so trusted calendars can reopen in cached-offline mode and still fail closed with explicit denial reasons.",
+        "status": "complete"
+      }
+    },
+    {
+      "id": "execute-task:M003:S02:T03",
+      "kind": "unit",
+      "dependsOn": [
+        "execute-task:M003:S02:T02"
+      ],
+      "writes": [
+        "apps/mobile/src/lib/offline/controller.ts",
+        "apps/mobile/src/lib/offline/transport.ts",
+        "apps/mobile/tests/mobile-sync-runtime.unit.test.ts"
+      ],
+      "metadata": {
+        "unitType": "execute-task",
+        "unitId": "M003.S02.T03",
+        "title": "Stabilized the mobile local-first sync runtime by fixing the trusted transport/controller build break and adding deterministic reconnect-drain failure coverage.",
+        "status": "complete"
+      }
+    },
+    {
+      "id": "execute-task:M003:S02:T04",
+      "kind": "unit",
+      "dependsOn": [
+        "execute-task:M003:S02:T03"
+      ],
+      "writes": [
+        "apps/mobile/src/routes/calendars/[calendarId]/+page.svelte",
+        "apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte",
+        "apps/mobile/src/lib/components/calendar/ShiftCard.svelte",
+        "apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte",
+        "apps/mobile/src/lib/components/calendar/SyncStatusStrip.svelte",
+        "apps/mobile/src/app.css",
+        "apps/mobile/tests/mobile-sync-runtime.unit.test.ts",
+        ".gsd/KNOWLEDGE.md"
+      ],
+      "metadata": {
+        "unitType": "execute-task",
+        "unitId": "M003.S02.T04",
+        "title": "Replaced the mobile calendar placeholder with a phone-first local-first week board, shift editor sheets, and explicit sync diagnostics.",
+        "status": "complete"
+      }
+    },
+    {
+      "id": "execute-task:M003:S02:T05",
+      "kind": "unit",
+      "dependsOn": [
+        "execute-task:M003:S02:T04"
+      ],
+      "writes": [
+        "apps/mobile/tests/e2e/fixtures.ts",
+        "apps/mobile/tests/e2e/calendar-offline.spec.ts",
+        "apps/mobile/package.json",
+        "apps/mobile/ios/App/App/capacitor.config.json",
+        "apps/mobile/ios/App/CapApp-SPM/Package.swift",
+        ".gsd/KNOWLEDGE.md"
+      ],
+      "metadata": {
+        "unitType": "execute-task",
+        "unitId": "M003.S02.T05",
+        "title": "Fixed the mobile offline continuity proof harness to target real Capacitor storage, aligned the negative-path assertions with shared queue diagnostics, and re-synced the native plugins.",
+        "status": "complete"
+      }
+    },
+    {
+      "id": "complete-slice:M003:S02",
+      "kind": "verification",
+      "dependsOn": [
+        "execute-task:M003:S02:T05"
+      ],
+      "metadata": {
+        "unitType": "complete-slice",
+        "unitId": "M003.S02",
+        "title": "S02",
+        "status": "complete"
+      }
+    },
+    {
+      "id": "execute-task:M003:S03:T01",
+      "kind": "unit",
+      "dependsOn": [],
+      "writes": [
+        "packages/caluno-core/src/find-time/matcher.ts",
+        "packages/caluno-core/src/find-time/ranking.ts",
+        "packages/caluno-core/src/schedule/create-prefill.ts",
+        "packages/caluno-core/package.json",
+        "packages/caluno-core/src/index.ts",
+        "apps/web/src/lib/find-time/matcher.ts",
+        "apps/web/src/lib/find-time/ranking.ts",
+        "apps/web/src/lib/schedule/create-prefill.ts",
+        "apps/mobile/tests/find-time-contract.unit.test.ts"
+      ],
+      "metadata": {
+        "unitType": "execute-task",
+        "unitId": "M003.S03.T01",
+        "title": "Extracted shared find-time matcher/ranking and create-prefill contracts into caluno-core with mobile contract coverage.",
+        "status": "complete"
+      }
+    },
+    {
+      "id": "execute-task:M003:S03:T02",
+      "kind": "unit",
+      "dependsOn": [
+        "execute-task:M003:S03:T01"
+      ],
+      "writes": [
+        "apps/mobile/src/lib/find-time/transport.ts",
+        "apps/mobile/src/lib/find-time/view.ts",
+        "apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte",
+        "apps/mobile/src/lib/supabase/client.ts",
+        "apps/mobile/tests/mobile-find-time.unit.test.ts",
+        ".gsd/KNOWLEDGE.md"
+      ],
+      "metadata": {
+        "unitType": "execute-task",
+        "unitId": "M003.S03.T02",
+        "title": "Added the mobile find-time route, trusted Supabase transport, and fail-closed mobile state coverage for denied/offline/error paths.",
+        "status": "complete"
+      }
+    },
+    {
+      "id": "execute-task:M003:S03:T03",
+      "kind": "unit",
+      "dependsOn": [
+        "execute-task:M003:S03:T02"
+      ],
+      "writes": [],
+      "metadata": {
+        "unitType": "execute-task",
+        "unitId": "M003.S03.T03",
+        "title": "Wire the calendar entrypoint, compact cards, and one-shot create handoff",
+        "status": "pending"
+      }
+    },
+    {
+      "id": "execute-task:M003:S03:T04",
+      "kind": "unit",
+      "dependsOn": [
+        "execute-task:M003:S03:T03"
+      ],
+      "writes": [],
+      "metadata": {
+        "unitType": "execute-task",
+        "unitId": "M003.S03.T04",
+        "title": "Prove the mobile Find time flow end to end and keep native wiring green",
+        "status": "pending"
+      }
+    },
+    {
+      "id": "complete-slice:M003:S03",
+      "kind": "verification",
+      "dependsOn": [
+        "execute-task:M003:S03:T04"
+      ],
+      "metadata": {
+        "unitType": "complete-slice",
+        "unitId": "M003.S03",
+        "title": "S03",
+        "status": "pending"
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "unitType": "research-slice",
+  "unitId": "M003/parallel-research",
+  "startedAt": 1776778892016,
+  "updatedAt": 1776779492061,
+  "phase": "dispatched",
+  "wrapupWarningSent": false,
+  "continueHereFired": false,
+  "timeoutAt": null,
+  "lastProgressAt": 1776779492060,
+  "progressCount": 0,
+  "lastProgressKind": "tool-in-flight",
+  "recoveryAttempts": 0
+}
