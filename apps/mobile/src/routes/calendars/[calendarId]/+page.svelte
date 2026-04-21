@@ -8,6 +8,7 @@
   import type { CalendarScheduleView } from '@repo/caluno-core/schedule/types';
   import MobileShell from '$lib/components/MobileShell.svelte';
   import MobileCalendarBoard from '$lib/components/calendar/MobileCalendarBoard.svelte';
+  import { hasCreatePrefillSearchParams, parseCreatePrefill, stripCreatePrefillSearchParams } from '@repo/caluno-core/schedule/create-prefill';
   import { rememberSyncedCalendarWeek, createMobileOfflineRepository } from '$lib/offline/repository';
   import { createMobileOfflineRuntime, type MobileOfflineRuntime } from '$lib/offline/runtime';
   import { createTrustedMobileScheduleTransport, type MobileTrustedScheduleTransport } from '$lib/offline/transport';
@@ -41,6 +42,23 @@
   let refreshing = $state(false);
   let retrying = $state(false);
   let pendingActionKey = $state<string | null>(null);
+  let autoOpenCreateSheet = $state(false);
+  let createPrefill: ReturnType<typeof parseCreatePrefill> | null = null;
+    // Auto-open ShiftEditorSheet if navigated from Find time with prefill params
+    $effect(() => {
+      if (!browser || !activeCalendar) return;
+      const searchParams = new URLSearchParams(window.location.search);
+      if (hasCreatePrefillSearchParams(searchParams)) {
+        createPrefill = parseCreatePrefill(searchParams);
+        if (createPrefill && createPrefill.calendarId === activeCalendar.id) {
+          autoOpenCreateSheet = true;
+          // Remove prefill params from URL after opening
+          const cleanParams = stripCreatePrefillSearchParams(searchParams);
+          const newUrl = `${window.location.pathname}${cleanParams.toString() ? '?' + cleanParams.toString() : ''}`;
+          window.history.replaceState({}, '', newUrl);
+        }
+      }
+    });
   let runtimeState = $state.raw<MobileCalendarControllerState | null>(null);
   let runtime = $state.raw<MobileOfflineRuntime | null>(null);
   let transport = $state.raw<MobileTrustedScheduleTransport | null>(null);
@@ -453,6 +471,25 @@
           refreshTrustedWeek={refreshTrustedWeek}
           retryDrain={retryDrain}
         />
+        {#if autoOpenCreateSheet && createPrefill}
+          <svelte:component
+            this={import('$lib/components/calendar/ShiftEditorSheet.svelte')}
+            mode="create"
+            formId="create:find-time-handoff"
+            calendarId={activeCalendar.id}
+            visibleWeekStart={createPrefill.visibleWeekStart}
+            defaultDayKey={createPrefill.visibleWeekStart}
+            canSubmit={canMutate}
+            triggerLabel="From Find time"
+            submitMutation={submitMutation}
+            actionStates={runtimeState.actionStates}
+            pendingActionKey={pendingActionKey}
+            prefillStartAt={createPrefill.startAtLocal}
+            prefillEndAt={createPrefill.endAtLocal}
+            open={true}
+            on:close={() => { autoOpenCreateSheet = false; }}
+          />
+        {/if}
       {/if}
     {:else if protectedEntry.routeMode === 'denied'}
       <article class="hero-card framed-panel tone-danger" data-testid="mobile-continuity-denied">

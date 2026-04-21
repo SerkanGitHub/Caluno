@@ -96,6 +96,13 @@
       <nav class="week-nav" aria-label="Visible week navigation">
         <a class="button button-secondary" href={`?start=${board.previousWeekStart}`}>Back a week</a>
         <a class="button button-secondary" href={`?start=${board.nextWeekStart}`}>Forward a week</a>
+        <a
+          class="button button-primary"
+          href={`/calendars/${calendarId}/find-time`}
+          data-testid="find-time-entrypoint"
+        >
+          Find time
+        </a>
       </nav>
     </div>
   </header>

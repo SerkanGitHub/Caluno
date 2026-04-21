@@ -39,77 +39,55 @@
  */
 declare module '$env/static/private' {
 	export const TERM_PROGRAM: string;
-	export const NODE: string;
-	export const INIT_CWD: string;
 	export const TERM: string;
 	export const SHELL: string;
 	export const HOMEBREW_REPOSITORY: string;
 	export const TMPDIR: string;
 	export const VSCODE_PYTHON_AUTOACTIVATE_GUARD: string;
 	export const TERM_PROGRAM_VERSION: string;
-	export const npm_config_npm_globalconfig: string;
 	export const NODE_OPTIONS: string;
 	export const ZDOTDIR: string;
 	export const MallocNanoZone: string;
-	export const npm_config_registry: string;
-	export const GSD_PKG_ROOT: string;
+	export const GIT_EDITOR: string;
 	export const USER: string;
-	export const GSD_PROJECT_ROOT: string;
 	export const COMMAND_MODE: string;
-	export const npm_config_globalconfig: string;
-	export const PNPM_SCRIPT_SRC_DIR: string;
 	export const SSH_AUTH_SOCK: string;
 	export const VSCODE_PROFILE_INITIALIZED: string;
 	export const __CF_USER_TEXT_ENCODING: string;
-	export const npm_config_dir: string;
-	export const npm_execpath: string;
-	export const npm_config_frozen_lockfile: string;
 	export const npm_config_verify_deps_before_run: string;
-	export const GSD_SHOW_TOKEN_COST: string;
-	export const GSD_WORKFLOW_PATH: string;
 	export const PATH: string;
-	export const npm_package_json: string;
 	export const USER_ZDOTDIR: string;
 	export const __CFBundleIdentifier: string;
-	export const GSD_RTK_DISABLED: string;
-	export const PWD: string;
 	export const npm_command: string;
-	export const GSD_VERSION: string;
-	export const npm_config__jsr_registry: string;
-	export const npm_lifecycle_event: string;
+	export const PWD: string;
 	export const LANG: string;
-	export const npm_package_name: string;
 	export const NODE_PATH: string;
 	export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 	export const XPC_FLAGS: string;
-	export const GSD_BUNDLED_EXTENSION_PATHS: string;
-	export const npm_config_node_gyp: string;
-	export const XPC_SERVICE_NAME: string;
-	export const npm_package_version: string;
+	export const FORCE_COLOR: string;
+	export const GIT_MERGE_AUTOEDIT: string;
 	export const pnpm_config_verify_deps_before_run: string;
+	export const XPC_SERVICE_NAME: string;
+	export const DEBUG_COLORS: string;
 	export const VSCODE_INJECTION: string;
-	export const PI_SKIP_VERSION_CHECK: string;
 	export const SHLVL: string;
 	export const HOME: string;
-	export const GSD_BIN_PATH: string;
 	export const VSCODE_GIT_ASKPASS_MAIN: string;
-	export const RTK_TELEMETRY_DISABLED: string;
-	export const PI_PACKAGE_DIR: string;
 	export const HOMEBREW_PREFIX: string;
-	export const NODE_COMPILE_CACHE: string;
 	export const LOGNAME: string;
-	export const npm_lifecycle_script: string;
+	export const PNPM_PACKAGE_NAME: string;
 	export const VSCODE_GIT_IPC_HANDLE: string;
+	export const BROWSER: string;
 	export const npm_config_user_agent: string;
+	export const PLAYWRIGHT_TEST: string;
 	export const VSCODE_GIT_ASKPASS_NODE: string;
 	export const GIT_ASKPASS: string;
 	export const INFOPATH: string;
 	export const HOMEBREW_CELLAR: string;
 	export const OSLogRateLimit: string;
-	export const GSD_CODING_AGENT_DIR: string;
+	export const GIT_PAGER: string;
 	export const COLORTERM: string;
-	export const npm_config_prefix: string;
-	export const npm_node_execpath: string;
+	export const NODE_ENV: string;
 }
 
 /**
@@ -146,7 +124,9 @@ declare module '$env/static/private' {
  * The above values will be the same _even if_ different values for `ENVIRONMENT` or `PUBLIC_BASE_URL` are set at runtime, as they are statically replaced in your code with their build time values.
  */
 declare module '$env/static/public' {
-	
+	export const PUBLIC_SITE_URL: string;
+	export const PUBLIC_SUPABASE_URL: string;
+	export const PUBLIC_SUPABASE_PUBLISHABLE_KEY: string;
 }
 
 /**
@@ -197,77 +177,55 @@ declare module '$env/static/public' {
 declare module '$env/dynamic/private' {
 	export const env: {
 		TERM_PROGRAM: string;
-		NODE: string;
-		INIT_CWD: string;
 		TERM: string;
 		SHELL: string;
 		HOMEBREW_REPOSITORY: string;
 		TMPDIR: string;
 		VSCODE_PYTHON_AUTOACTIVATE_GUARD: string;
 		TERM_PROGRAM_VERSION: string;
-		npm_config_npm_globalconfig: string;
 		NODE_OPTIONS: string;
 		ZDOTDIR: string;
 		MallocNanoZone: string;
-		npm_config_registry: string;
-		GSD_PKG_ROOT: string;
+		GIT_EDITOR: string;
 		USER: string;
-		GSD_PROJECT_ROOT: string;
 		COMMAND_MODE: string;
-		npm_config_globalconfig: string;
-		PNPM_SCRIPT_SRC_DIR: string;
 		SSH_AUTH_SOCK: string;
 		VSCODE_PROFILE_INITIALIZED: string;
 		__CF_USER_TEXT_ENCODING: string;
-		npm_config_dir: string;
-		npm_execpath: string;
-		npm_config_frozen_lockfile: string;
 		npm_config_verify_deps_before_run: string;
-		GSD_SHOW_TOKEN_COST: string;
-		GSD_WORKFLOW_PATH: string;
 		PATH: string;
-		npm_package_json: string;
 		USER_ZDOTDIR: string;
 		__CFBundleIdentifier: string;
-		GSD_RTK_DISABLED: string;
-		PWD: string;
 		npm_command: string;
-		GSD_VERSION: string;
-		npm_config__jsr_registry: string;
-		npm_lifecycle_event: string;
+		PWD: string;
 		LANG: string;
-		npm_package_name: string;
 		NODE_PATH: string;
 		VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 		XPC_FLAGS: string;
-		GSD_BUNDLED_EXTENSION_PATHS: string;
-		npm_config_node_gyp: string;
-		XPC_SERVICE_NAME: string;
-		npm_package_version: string;
+		FORCE_COLOR: string;
+		GIT_MERGE_AUTOEDIT: string;
 		pnpm_config_verify_deps_before_run: string;
+		XPC_SERVICE_NAME: string;
+		DEBUG_COLORS: string;
 		VSCODE_INJECTION: string;
-		PI_SKIP_VERSION_CHECK: string;
 		SHLVL: string;
 		HOME: string;
-		GSD_BIN_PATH: string;
 		VSCODE_GIT_ASKPASS_MAIN: string;
-		RTK_TELEMETRY_DISABLED: string;
-		PI_PACKAGE_DIR: string;
 		HOMEBREW_PREFIX: string;
-		NODE_COMPILE_CACHE: string;
 		LOGNAME: string;
-		npm_lifecycle_script: string;
+		PNPM_PACKAGE_NAME: string;
 		VSCODE_GIT_IPC_HANDLE: string;
+		BROWSER: string;
 		npm_config_user_agent: string;
+		PLAYWRIGHT_TEST: string;
 		VSCODE_GIT_ASKPASS_NODE: string;
 		GIT_ASKPASS: string;
 		INFOPATH: string;
 		HOMEBREW_CELLAR: string;
 		OSLogRateLimit: string;
-		GSD_CODING_AGENT_DIR: string;
+		GIT_PAGER: string;
 		COLORTERM: string;
-		npm_config_prefix: string;
-		npm_node_execpath: string;
+		NODE_ENV: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
 	}
@@ -323,6 +281,9 @@ declare module '$env/dynamic/private' {
  */
 declare module '$env/dynamic/public' {
 	export const env: {
+		PUBLIC_SITE_URL: string;
+		PUBLIC_SUPABASE_URL: string;
+		PUBLIC_SUPABASE_PUBLISHABLE_KEY: string;
 		[key: `PUBLIC_${string}`]: string | undefined;
 	}
 }
