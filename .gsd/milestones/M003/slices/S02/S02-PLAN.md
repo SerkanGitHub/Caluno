@@ -62,7 +62,7 @@ The order follows the real continuity risk curve. T01 retires drift first by mov
   - Do: Extract pure cached-shell, queue/replay, and schedule-view helpers into `@repo/caluno-core`; rewire web imports/tests; add a mobile-local contract regression file proving fail-closed stale-session, user-mismatch, unsynced-calendar, and replay-order behavior.
   - Verify: `pnpm --dir apps/mobile exec vitest run tests/continuity-contract.unit.test.ts && pnpm --dir apps/web exec vitest run tests/schedule/offline-queue.unit.test.ts tests/schedule/sync-engine.unit.test.ts tests/schedule/board.unit.test.ts tests/schedule/conflicts.unit.test.ts tests/schedule/recurrence.unit.test.ts`
   - Done when: mobile depends on shared pure helpers instead of `apps/web/src`, and existing web offline regressions still pass.
-- [ ] **T02: Add durable trusted shell continuity and offline route reopening on mobile** `est:2h`
+- [x] **T02: Add durable trusted shell continuity and offline route reopening on mobile** `est:2h`
   - Why: Without a durable trusted shell and week cache, the app cannot satisfy R022 after reload or app restart.
   - Files: `apps/mobile/package.json`, `apps/mobile/src/lib/auth/mobile-session.ts`, `apps/mobile/src/lib/shell/load-app-shell.ts`, `apps/mobile/src/lib/continuity/mobile-app-shell-cache.ts`, `apps/mobile/src/lib/offline/repository.ts`, `apps/mobile/src/routes/+layout.ts`, `apps/mobile/tests/mobile-continuity.unit.test.ts`
   - Do: Add Preferences-backed continuity storage, persist trusted shell and week metadata, and teach protected mobile routes to reopen only previously synced permitted scope in a truthful `cached-offline` mode.

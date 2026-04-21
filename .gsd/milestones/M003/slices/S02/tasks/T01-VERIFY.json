@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T01",
+  "unitId": "M003/S02/T01",
+  "timestamp": 1776764249602,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "pnpm --dir apps/mobile exec vitest run tests/continuity-contract.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 1270,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/web exec vitest run tests/schedule/offline-queue.unit.test.ts tests/schedule/sync-engine.unit.test.ts tests/schedule/board.unit.test.ts tests/schedule/conflicts.unit.test.ts tests/schedule/recurrence.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 1424,
+      "verdict": "pass"
+    }
+  ],
+  "postExecutionChecks": [
+    {
+      "category": "pattern",
+      "target": "packages/caluno-core/src/offline/mutation-queue.ts",
+      "passed": true,
+      "message": "File packages/caluno-core/src/offline/mutation-queue.ts mixes async/await with .then() promise chaining — consider using consistent async style",
+      "blocking": false
+    }
+  ]
+}

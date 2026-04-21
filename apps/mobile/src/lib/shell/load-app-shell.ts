@@ -9,10 +9,23 @@ import {
   type CalendarPageState,
   type ViewerSummary
 } from '@repo/caluno-core/app-shell';
-import type { User } from '@supabase/supabase-js';
+import type { CachedAppShellSnapshot, CachedSessionContinuity } from '@repo/caluno-core/offline/app-shell-cache';
+import type { Session, User } from '@supabase/supabase-js';
+import {
+  readMobileCachedAppShellSnapshot,
+  writeMobileCachedAppShellSnapshot,
+  type MobileContinuityStorage,
+  type MobileContinuityUnavailableReason
+} from '$lib/continuity/mobile-app-shell-cache';
+import {
+  hasSyncedCalendarContinuity,
+  type MobileOfflineStorage
+} from '$lib/offline/repository';
 import { getSupabaseBrowserClient, type MobileSupabaseDataClient } from '$lib/supabase/client';
 
 export type MobileShellBootstrapMode = 'idle' | 'loading' | 'ready' | 'needs-group' | 'load-failed';
+export type MobileShellRouteMode = 'trusted-online' | 'cached-offline' | 'denied' | 'public';
+export type MobileSnapshotOrigin = 'trusted-online' | 'cached-offline' | 'none';
 export type MobileShellFailurePhase = 'viewer' | 'memberships' | 'groups' | 'calendars' | 'join-codes' | 'shape';
 export type MobileShellReasonCode =
   | 'APP_SHELL_VIEWER_INVALID'
@@ -38,11 +51,21 @@ export type MobileAppShell = {
   onboardingState: 'ready' | 'needs-group';
 };
 
+export type MobileContinuityState = {
+  availability: 'ready' | 'unavailable';
+  reason: MobileContinuityUnavailableReason | null;
+  detail: string | null;
+  lastTrustedRefreshAt: string | null;
+};
+
 export type MobileShellLoadSuccess = {
   ok: true;
   bootstrapMode: 'ready' | 'needs-group';
   appShell: MobileAppShell;
   loadedFromCache: boolean;
+  routeMode: Extract<MobileShellRouteMode, 'trusted-online' | 'cached-offline'>;
+  snapshotOrigin: Exclude<MobileSnapshotOrigin, 'none'>;
+  continuity: MobileContinuityState;
 };
 
 export type MobileShellLoadFailure = {
@@ -52,6 +75,9 @@ export type MobileShellLoadFailure = {
   reasonCode: MobileShellReasonCode;
   detail: string;
   retryable: boolean;
+  routeMode: 'denied';
+  snapshotOrigin: 'none';
+  continuity: MobileContinuityState;
 };
 
 export type MobileShellLoadResult = MobileShellLoadSuccess | MobileShellLoadFailure;
@@ -71,6 +97,19 @@ export type DeniedMobileCalendarRoute = {
 };
 
 export type MobileCalendarRouteResult = LoadedMobileCalendarRoute | DeniedMobileCalendarRoute;
+
+export type MobileProtectedEntryState = {
+  isProtectedRoute: boolean;
+  routeMode: MobileShellRouteMode;
+  snapshotOrigin: MobileSnapshotOrigin;
+  requestedCalendarId: string | null;
+  cachedSnapshot: CachedAppShellSnapshot | null;
+  denialReasonCode: string | null;
+  continuityReason: MobileContinuityUnavailableReason | null;
+  continuityDetail: string | null;
+  lastTrustedRefreshAt: string | null;
+  signInHref: string | null;
+};
 
 type MembershipRow = {
   group_id: string;
@@ -100,6 +139,10 @@ type LoadDependencies = {
   client?: MobileSupabaseDataClient;
   timeoutMs?: number;
   force?: boolean;
+  session?: Pick<Session, 'expires_at' | 'expires_in'> | null;
+  now?: () => Date;
+  continuityStorage?: MobileContinuityStorage;
+  continuityStorageTimeoutMs?: number;
 };
 
 const DEFAULT_TIMEOUT_MS = 8_000;
@@ -432,6 +475,8 @@ async function performMobileShellLoad(
   user: Pick<User, 'id' | 'email' | 'user_metadata'>,
   dependencies: LoadDependencies
 ): Promise<MobileShellLoadResult> {
+  const now = dependencies.now ?? (() => new Date());
+
   try {
     const client = dependencies.client ?? getSupabaseBrowserClient();
     const timeoutMs = dependencies.timeoutMs ?? DEFAULT_TIMEOUT_MS;
@@ -440,19 +485,22 @@ async function performMobileShellLoad(
     const groupIds = unique(membershipRows.map((membership) => membership.group_id));
 
     if (groupIds.length === 0) {
-      return {
-        ok: true,
-        bootstrapMode: 'needs-group',
-        loadedFromCache: false,
-        appShell: {
+      const emptySuccess = await finalizeOnlineShellSuccess(
+        {
           viewer,
           memberships: [],
           groups: [],
           calendars: [],
           primaryCalendar: null,
           onboardingState: 'needs-group'
-        }
-      };
+        },
+        user,
+        dependencies,
+        now()
+      );
+
+      shellCache.set(user.id, emptySuccess);
+      return emptySuccess;
     }
 
     const { groups, calendars, joinCodes } = await readScopedRows(client, groupIds, timeoutMs);
@@ -464,19 +512,19 @@ async function performMobileShellLoad(
       joinCodes
     });
 
-    const success: MobileShellLoadSuccess = {
-      ok: true,
-      bootstrapMode: shaped.groups.length === 0 ? 'needs-group' : 'ready',
-      loadedFromCache: false,
-      appShell: {
+    const success = await finalizeOnlineShellSuccess(
+      {
         viewer,
         memberships: shaped.memberships,
         groups: shaped.groups,
         calendars: shaped.calendars,
         primaryCalendar: pickPrimaryCalendar(shaped.groups),
         onboardingState: shaped.groups.length === 0 ? 'needs-group' : 'ready'
-      }
-    };
+      },
+      user,
+      dependencies,
+      now()
+    );
 
     shellCache.set(user.id, success);
     return success;
@@ -488,7 +536,10 @@ async function performMobileShellLoad(
         failurePhase: error.failurePhase,
         reasonCode: error.reasonCode,
         detail: error.message,
-        retryable: error.retryable
+        retryable: error.retryable,
+        routeMode: 'denied',
+        snapshotOrigin: 'none',
+        continuity: unavailableContinuity(null, null)
       };
     }
 
@@ -501,9 +552,118 @@ async function performMobileShellLoad(
         error instanceof Error
           ? error.message
           : 'Trusted mobile shell shaping failed before protected content could render.',
-      retryable: true
+      retryable: true,
+      routeMode: 'denied',
+      snapshotOrigin: 'none',
+      continuity: unavailableContinuity(null, null)
     };
   }
+}
+
+async function finalizeOnlineShellSuccess(
+  appShell: MobileAppShell,
+  user: Pick<User, 'id' | 'email' | 'user_metadata'>,
+  dependencies: LoadDependencies,
+  now: Date
+): Promise<MobileShellLoadSuccess> {
+  const continuity = await persistTrustedShellContinuity(appShell, user, dependencies, now);
+
+  return {
+    ok: true,
+    bootstrapMode: appShell.onboardingState === 'needs-group' ? 'needs-group' : 'ready',
+    appShell,
+    loadedFromCache: false,
+    routeMode: 'trusted-online',
+    snapshotOrigin: 'trusted-online',
+    continuity
+  };
+}
+
+async function persistTrustedShellContinuity(
+  appShell: MobileAppShell,
+  user: Pick<User, 'id' | 'email' | 'user_metadata'>,
+  dependencies: LoadDependencies,
+  now: Date
+): Promise<MobileContinuityState> {
+  const sessionContinuity = deriveSessionContinuity(user, dependencies.session, appShell.viewer, now);
+  if (!sessionContinuity) {
+    return unavailableContinuity(null, null);
+  }
+
+  const result = await writeMobileCachedAppShellSnapshot({
+    viewer: appShell.viewer,
+    session: sessionContinuity,
+    groups: appShell.groups,
+    calendars: appShell.calendars,
+    primaryCalendar: appShell.primaryCalendar,
+    onboardingState: appShell.onboardingState,
+    now,
+    timeoutMs: dependencies.continuityStorageTimeoutMs,
+    storage: dependencies.continuityStorage
+  });
+
+  if (!result.ok) {
+    return unavailableContinuity(result.reason, result.detail);
+  }
+
+  return readyContinuity(result.snapshot.refreshedAt);
+}
+
+function deriveSessionContinuity(
+  user: Pick<User, 'id' | 'email' | 'user_metadata'>,
+  session: Pick<Session, 'expires_at' | 'expires_in'> | null | undefined,
+  viewer: ViewerSummary,
+  now: Date
+): CachedSessionContinuity | null {
+  const expiresAtMs = resolveSessionExpiresAtMs(session, now);
+  if (!expiresAtMs || !user.id || !viewer.email) {
+    return null;
+  }
+
+  return {
+    userId: user.id,
+    email: viewer.email,
+    displayName: viewer.displayName,
+    expiresAtMs,
+    refreshedAt: now.toISOString()
+  };
+}
+
+function resolveSessionExpiresAtMs(session: Pick<Session, 'expires_at' | 'expires_in'> | null | undefined, now: Date): number | null {
+  if (!session) {
+    return null;
+  }
+
+  if (typeof session.expires_at === 'number' && Number.isFinite(session.expires_at)) {
+    return session.expires_at * 1000;
+  }
+
+  if (typeof session.expires_in === 'number' && Number.isFinite(session.expires_in)) {
+    return now.getTime() + session.expires_in * 1000;
+  }
+
+  return null;
+}
+
+function readyContinuity(lastTrustedRefreshAt: string): MobileContinuityState {
+  return {
+    availability: 'ready',
+    reason: null,
+    detail: null,
+    lastTrustedRefreshAt
+  };
+}
+
+function unavailableContinuity(
+  reason: MobileContinuityUnavailableReason | null,
+  detail: string | null
+): MobileContinuityState {
+  return {
+    availability: 'unavailable',
+    reason,
+    detail,
+    lastTrustedRefreshAt: null
+  };
 }
 
 export async function loadMobileAppShell(
@@ -533,6 +693,50 @@ export async function loadMobileAppShell(
 
   inflightLoads.set(cacheKey, nextLoad);
   return nextLoad;
+}
+
+export function materializeMobileAppShellFromSnapshot(snapshot: CachedAppShellSnapshot): MobileAppShell {
+  const calendarMap = new Map(
+    snapshot.calendars.map((calendar) => [calendar.id, { ...calendar }] satisfies [string, AppCalendar])
+  );
+
+  const groups: AppGroup[] = snapshot.groups.map((group) => ({
+    id: group.id,
+    name: group.name,
+    role: group.role,
+    calendars: group.calendarIds
+      .map((calendarId) => calendarMap.get(calendarId) ?? null)
+      .filter((calendar): calendar is AppCalendar => calendar !== null),
+    joinCode: null,
+    joinCodeStatus: 'unavailable'
+  }));
+
+  const memberships: AppMembership[] = snapshot.groups.map((group) => ({
+    groupId: group.id,
+    userId: snapshot.viewer.id,
+    role: group.role
+  }));
+
+  return {
+    viewer: snapshot.viewer,
+    memberships,
+    groups,
+    calendars: snapshot.calendars.map((calendar) => ({ ...calendar })),
+    primaryCalendar: snapshot.primaryCalendarId ? (calendarMap.get(snapshot.primaryCalendarId) ?? null) : null,
+    onboardingState: snapshot.onboardingState
+  };
+}
+
+export function loadCachedMobileAppShell(snapshot: CachedAppShellSnapshot): MobileShellLoadSuccess {
+  return {
+    ok: true,
+    bootstrapMode: snapshot.onboardingState === 'needs-group' ? 'needs-group' : 'ready',
+    appShell: materializeMobileAppShellFromSnapshot(snapshot),
+    loadedFromCache: true,
+    routeMode: 'cached-offline',
+    snapshotOrigin: 'cached-offline',
+    continuity: readyContinuity(snapshot.refreshedAt)
+  };
 }
 
 export function resolveMobileCalendarRoute(params: {
@@ -568,7 +772,214 @@ export function primaryCalendarLandingHref(appShell: MobileAppShell): string | n
   return appShell.primaryCalendar ? `/calendars/${appShell.primaryCalendar.id}` : null;
 }
 
+export async function resolveMobileProtectedEntryState(params: {
+  pathname: string;
+  search?: string;
+  authPhase: 'bootstrapping' | 'signed-out' | 'authenticated' | 'invalid-session' | 'error';
+  authReasonCode?: string | null;
+  now?: Date;
+  continuityStorage?: MobileContinuityStorage;
+  continuityStorageTimeoutMs?: number;
+  offlineStorage?: MobileOfflineStorage;
+  offlineStorageTimeoutMs?: number;
+}): Promise<MobileProtectedEntryState> {
+  const isProtectedRoute = isProtectedPath(params.pathname);
+  const requestedCalendarId = extractRequestedCalendarId(params.pathname);
+  const signInHref = isProtectedRoute
+    ? buildSignInTarget(
+        params.pathname,
+        params.search ?? '',
+        params.authPhase === 'invalid-session' ? 'INVALID_SESSION' : 'AUTH_REQUIRED'
+      )
+    : null;
+
+  if (!isProtectedRoute) {
+    return {
+      isProtectedRoute,
+      routeMode: 'public',
+      snapshotOrigin: 'none',
+      requestedCalendarId,
+      cachedSnapshot: null,
+      denialReasonCode: null,
+      continuityReason: null,
+      continuityDetail: null,
+      lastTrustedRefreshAt: null,
+      signInHref
+    };
+  }
+
+  if (params.authPhase === 'authenticated') {
+    return {
+      isProtectedRoute,
+      routeMode: 'trusted-online',
+      snapshotOrigin: 'trusted-online',
+      requestedCalendarId,
+      cachedSnapshot: null,
+      denialReasonCode: null,
+      continuityReason: null,
+      continuityDetail: null,
+      lastTrustedRefreshAt: null,
+      signInHref: null
+    };
+  }
+
+  if (!canUseCachedContinuity(params.authPhase, params.authReasonCode ?? null)) {
+    return {
+      isProtectedRoute,
+      routeMode: 'denied',
+      snapshotOrigin: 'none',
+      requestedCalendarId,
+      cachedSnapshot: null,
+      denialReasonCode: params.authReasonCode ?? (params.authPhase === 'invalid-session' ? 'INVALID_SESSION' : 'AUTH_REQUIRED'),
+      continuityReason: null,
+      continuityDetail: describeProtectedEntryDenial(params.authPhase, params.authReasonCode ?? null),
+      lastTrustedRefreshAt: null,
+      signInHref
+    };
+  }
+
+  const lookup = await readMobileCachedAppShellSnapshot({
+    calendarId: requestedCalendarId,
+    now: params.now,
+    storage: params.continuityStorage,
+    timeoutMs: params.continuityStorageTimeoutMs
+  });
+
+  if (lookup.status !== 'available') {
+    return {
+      isProtectedRoute,
+      routeMode: 'denied',
+      snapshotOrigin: 'none',
+      requestedCalendarId,
+      cachedSnapshot: null,
+      denialReasonCode: lookup.reason,
+      continuityReason: lookup.reason,
+      continuityDetail: lookup.detail,
+      lastTrustedRefreshAt: null,
+      signInHref
+    };
+  }
+
+  if (requestedCalendarId) {
+    const continuity = await hasSyncedCalendarContinuity(
+      {
+        userId: lookup.snapshot.viewer.id,
+        calendarId: requestedCalendarId
+      },
+      {
+        storage: params.offlineStorage,
+        timeoutMs: params.offlineStorageTimeoutMs
+      }
+    );
+
+    if (!continuity.ok) {
+      return {
+        isProtectedRoute,
+        routeMode: 'denied',
+        snapshotOrigin: 'none',
+        requestedCalendarId,
+        cachedSnapshot: null,
+        denialReasonCode: 'storage-unavailable',
+        continuityReason: 'storage-unavailable',
+        continuityDetail: continuity.detail,
+        lastTrustedRefreshAt: null,
+        signInHref
+      };
+    }
+
+    if (!continuity.hasWeek) {
+      return {
+        isProtectedRoute,
+        routeMode: 'denied',
+        snapshotOrigin: 'none',
+        requestedCalendarId,
+        cachedSnapshot: null,
+        denialReasonCode: 'calendar-not-synced',
+        continuityReason: 'calendar-not-synced',
+        continuityDetail:
+          'No previously synced week metadata exists for that calendar on this device, so cached continuity failed closed.',
+        lastTrustedRefreshAt: null,
+        signInHref
+      };
+    }
+  }
+
+  return {
+    isProtectedRoute,
+    routeMode: 'cached-offline',
+    snapshotOrigin: 'cached-offline',
+    requestedCalendarId,
+    cachedSnapshot: lookup.snapshot,
+    denialReasonCode: null,
+    continuityReason: null,
+    continuityDetail: null,
+    lastTrustedRefreshAt: lookup.snapshot.refreshedAt,
+    signInHref: null
+  };
+}
+
 export function resetMobileAppShellCache() {
   shellCache.clear();
   inflightLoads.clear();
+}
+
+export function extractRequestedCalendarId(pathname: string): string | null {
+  const match = pathname.match(/^\/calendars\/([^/?#]+)/);
+  return match?.[1] ?? null;
+}
+
+export function isProtectedPath(pathname: string): boolean {
+  return pathname === '/groups' || pathname.startsWith('/groups/') || pathname === '/calendars' || pathname.startsWith('/calendars/');
+}
+
+export function normalizeInternalPath(input: string | null | undefined, fallback = '/groups'): string {
+  if (!input) {
+    return fallback;
+  }
+
+  const normalized = input.trim();
+
+  if (!normalized.startsWith('/') || normalized.startsWith('//')) {
+    return fallback;
+  }
+
+  return normalized;
+}
+
+export function buildSignInTarget(pathname: string, search: string, reason: 'AUTH_REQUIRED' | 'INVALID_SESSION') {
+  const returnTo = normalizeInternalPath(`${pathname}${search}`, '/groups');
+  const flow = reason === 'INVALID_SESSION' ? 'invalid-session' : 'auth-required';
+  return `/signin?flow=${flow}&reason=${reason}&returnTo=${encodeURIComponent(returnTo)}`;
+}
+
+function canUseCachedContinuity(
+  authPhase: MobileProtectedEntryState extends never ? never : 'bootstrapping' | 'signed-out' | 'authenticated' | 'invalid-session' | 'error',
+  authReasonCode: string | null
+) {
+  if (authPhase === 'signed-out') {
+    return true;
+  }
+
+  if (authPhase !== 'error') {
+    return false;
+  }
+
+  return authReasonCode === 'AUTH_BOOTSTRAP_TIMEOUT' || authReasonCode === 'AUTH_BOOTSTRAP_FAILED';
+}
+
+function describeProtectedEntryDenial(authPhase: MobileProtectedEntryState extends never ? never : 'bootstrapping' | 'signed-out' | 'authenticated' | 'invalid-session' | 'error', authReasonCode: string | null) {
+  if (authPhase === 'invalid-session') {
+    return 'The saved session failed trusted verification and continuity was cleared, so the protected route stayed closed.';
+  }
+
+  switch (authReasonCode) {
+    case 'SUPABASE_ENV_MISSING':
+      return 'Public Supabase configuration is missing, so the protected route stayed closed instead of guessing cached scope.';
+    case 'AUTH_BOOTSTRAP_TIMEOUT':
+      return 'Trusted auth verification timed out before continuity eligibility could be confirmed.';
+    case 'AUTH_BOOTSTRAP_FAILED':
+      return 'Trusted auth verification failed before continuity eligibility could be confirmed.';
+    default:
+      return 'Sign in with your Caluno account before opening protected groups or calendars.';
+  }
 }

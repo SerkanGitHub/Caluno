@@ -2,7 +2,7 @@
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
-  import type { MobileShellBootstrapMode } from '$lib/shell/load-app-shell';
+  import type { MobileShellBootstrapMode, MobileShellRouteMode, MobileSnapshotOrigin } from '$lib/shell/load-app-shell';
   import { mobileSession } from '$lib/auth/mobile-session';
 
   type Props = {
@@ -11,6 +11,10 @@
     subtitle: string;
     activeTab: 'groups' | 'calendar';
     shellBootstrapMode: MobileShellBootstrapMode;
+    routeMode: MobileShellRouteMode;
+    snapshotOrigin: MobileSnapshotOrigin;
+    continuityReason?: string | null;
+    lastTrustedRefreshAt?: string | null;
     onboardingState?: 'ready' | 'needs-group' | null;
     failurePhase?: string | null;
     failureDetail?: string | null;
@@ -25,6 +29,10 @@
     subtitle,
     activeTab,
     shellBootstrapMode,
+    routeMode,
+    snapshotOrigin,
+    continuityReason = null,
+    lastTrustedRefreshAt = null,
     onboardingState = null,
     failurePhase = null,
     failureDetail = null,
@@ -34,7 +42,11 @@
   }: Props = $props();
 
   const shellTone = $derived.by(() => {
-    if (shellBootstrapMode === 'load-failed') {
+    if (routeMode === 'cached-offline') {
+      return 'tone-warning';
+    }
+
+    if (shellBootstrapMode === 'load-failed' || routeMode === 'denied') {
       return 'tone-danger';
     }
 
@@ -81,7 +93,16 @@
   }
 </script>
 
-<div class="mobile-shell-frame" data-testid="mobile-shell-frame" data-shell-bootstrap={shellBootstrapMode} data-onboarding-state={onboardingState ?? 'unknown'}>
+<div
+  class="mobile-shell-frame"
+  data-testid="mobile-shell-frame"
+  data-shell-bootstrap={shellBootstrapMode}
+  data-route-mode={routeMode}
+  data-snapshot-origin={snapshotOrigin}
+  data-continuity-reason={continuityReason ?? 'none'}
+  data-last-trusted-refresh-at={lastTrustedRefreshAt ?? 'none'}
+  data-onboarding-state={onboardingState ?? 'unknown'}
+>
   <header class="mobile-shell-header framed-panel">
     <div class="shell-kicker-row">
       <p class="eyebrow">Caluno pocket shell</p>
@@ -110,6 +131,16 @@
         <strong>{shellLabel}</strong>
       </article>
 
+      <article class={`status-pill ${routeMode === 'cached-offline' ? 'tone-warning' : routeMode === 'denied' ? 'tone-danger' : 'tone-neutral'}`}>
+        <span>Route mode</span>
+        <strong>{routeMode}</strong>
+      </article>
+
+      <article class={`status-pill ${snapshotOrigin === 'cached-offline' ? 'tone-warning' : 'tone-neutral'}`}>
+        <span>Snapshot origin</span>
+        <strong>{snapshotOrigin}</strong>
+      </article>
+
       {#if onboardingState}
         <article class={`status-pill ${onboardingState === 'needs-group' ? 'tone-warning' : 'tone-neutral'}`}>
           <span>Onboarding</span>
@@ -123,10 +154,21 @@
           <strong>{failurePhase}</strong>
         </article>
       {/if}
+
+      {#if continuityReason}
+        <article class="status-pill tone-danger">
+          <span>Continuity</span>
+          <strong>{continuityReason}</strong>
+        </article>
+      {/if}
     </div>
 
     {#if failureDetail}
       <p class="shell-caption">{failureDetail}</p>
+    {/if}
+
+    {#if lastTrustedRefreshAt}
+      <p class="shell-caption">Last trusted refresh: {lastTrustedRefreshAt}</p>
     {/if}
   </header>
 

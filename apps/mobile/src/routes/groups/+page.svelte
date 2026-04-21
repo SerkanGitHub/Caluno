@@ -4,13 +4,17 @@
   import { page } from '$app/state';
   import MobileShell from '$lib/components/MobileShell.svelte';
   import {
+    loadCachedMobileAppShell,
     loadMobileAppShell,
     primaryCalendarLandingHref,
     type MobileShellBootstrapMode,
-    type MobileShellLoadResult
+    type MobileShellLoadResult,
+    type MobileShellRouteMode,
+    type MobileSnapshotOrigin
   } from '$lib/shell/load-app-shell';
 
   const authState = $derived(page.data.authState);
+  const protectedEntry = $derived(page.data.protectedEntry);
   const landingIntent = $derived(page.url.searchParams.get('landing')?.trim() ?? null);
 
   let shellResult = $state<MobileShellLoadResult | null>(null);
@@ -24,6 +28,13 @@
   const primaryHref = $derived(appShell ? primaryCalendarLandingHref(appShell) : null);
   const groups = $derived(appShell?.groups ?? []);
   const hasError = $derived(shellFailure !== null);
+  const routeMode = $derived<MobileShellRouteMode>(shellResult?.ok ? shellResult.routeMode : protectedEntry.routeMode);
+  const snapshotOrigin = $derived<MobileSnapshotOrigin>(shellResult?.ok ? shellResult.snapshotOrigin : protectedEntry.snapshotOrigin);
+  const continuityReason = $derived(shellResult?.ok ? shellResult.continuity.reason : protectedEntry.continuityReason);
+  const continuityDetail = $derived(shellResult?.ok ? shellResult.continuity.detail : protectedEntry.continuityDetail);
+  const lastTrustedRefreshAt = $derived(
+    shellResult?.ok ? shellResult.continuity.lastTrustedRefreshAt : protectedEntry.lastTrustedRefreshAt
+  );
 
   async function loadShell(force = false) {
     if (!browser || authState.phase !== 'authenticated' || !authState.user) {
@@ -32,7 +43,11 @@
 
     loading = true;
     shellBootstrapMode = 'loading';
-    const result = await loadMobileAppShell(authState.user, { force });
+    const result = await loadMobileAppShell(authState.user, {
+      force,
+      session: authState.session,
+      now: () => new Date()
+    });
     shellResult = result;
     shellBootstrapMode = result.bootstrapMode;
     loading = false;
@@ -43,21 +58,30 @@
       return;
     }
 
-    if (authState.phase !== 'authenticated' || !authState.user) {
-      shellResult = null;
-      shellBootstrapMode = 'idle';
-      currentUserId = null;
+    if (authState.phase === 'authenticated' && authState.user) {
+      if (currentUserId === authState.user.id && shellResult) {
+        return;
+      }
+
+      currentUserId = authState.user.id;
       landingRedirected = false;
+      void loadShell();
       return;
     }
 
-    if (currentUserId === authState.user.id && shellResult) {
-      return;
-    }
-
-    currentUserId = authState.user.id;
+    currentUserId = null;
     landingRedirected = false;
-    void loadShell();
+
+    if (protectedEntry.routeMode === 'cached-offline' && protectedEntry.cachedSnapshot) {
+      shellResult = loadCachedMobileAppShell(protectedEntry.cachedSnapshot);
+      shellBootstrapMode = shellResult.bootstrapMode;
+      loading = false;
+      return;
+    }
+
+    shellResult = null;
+    shellBootstrapMode = 'idle';
+    loading = false;
   });
 
   $effect(() => {
@@ -66,7 +90,8 @@
       landingIntent !== 'primary' ||
       landingRedirected ||
       !appShell?.primaryCalendar ||
-      shellBootstrapMode !== 'ready'
+      shellBootstrapMode !== 'ready' ||
+      (routeMode !== 'trusted-online' && routeMode !== 'cached-offline')
     ) {
       return;
     }
@@ -83,26 +108,49 @@
 <MobileShell
   viewerName={appShell?.viewer.displayName ?? authState.displayName ?? 'Caluno member'}
   title="Trusted groups, cut for a phone."
-  subtitle="Your mobile shell opens only the memberships, calendars, and join-code metadata already proven by the authenticated session."
+  subtitle="Your mobile shell opens only the memberships, calendars, and join-code metadata already proven online or previously stored inside trusted continuity."
   activeTab="groups"
   {shellBootstrapMode}
+  {routeMode}
+  {snapshotOrigin}
+  {continuityReason}
+  {lastTrustedRefreshAt}
   onboardingState={appShell?.onboardingState ?? null}
   failurePhase={!shellResult?.ok ? shellResult?.failurePhase : null}
-  failureDetail={!shellResult?.ok ? shellResult?.detail : null}
+  failureDetail={!shellResult?.ok ? shellResult?.detail : continuityDetail}
   primaryHref={primaryHref}
   primaryLabel={appShell?.primaryCalendar?.name ?? null}
 >
-  <section class="hero-stack" data-testid="groups-shell" data-shell-bootstrap={shellBootstrapMode} data-onboarding-state={appShell?.onboardingState ?? 'unknown'}>
+  <section
+    class="hero-stack"
+    data-testid="groups-shell"
+    data-shell-bootstrap={shellBootstrapMode}
+    data-route-mode={routeMode}
+    data-snapshot-origin={snapshotOrigin}
+    data-continuity-reason={continuityReason ?? 'none'}
+    data-last-trusted-refresh-at={lastTrustedRefreshAt ?? 'none'}
+    data-onboarding-state={appShell?.onboardingState ?? 'unknown'}
+  >
     <article class="hero-card framed-panel">
       <div>
         <p class="panel-kicker">Pocket overview</p>
-        <h2>{appShell?.primaryCalendar ? 'Your first tap can be the right calendar.' : 'Protected scope is still settling.'}</h2>
+        <h2>
+          {#if routeMode === 'cached-offline'}
+            Trusted continuity reopened your permitted groups.
+          {:else}
+            {appShell?.primaryCalendar ? 'Your first tap can be the right calendar.' : 'Protected scope is still settling.'}
+          {/if}
+        </h2>
       </div>
       <p class="panel-copy">
         {#if loading}
           Loading the trusted inventory for this device without widening scope.
         {:else if hasError}
           Protected content stayed hidden because the shell loader hit a typed failure.
+        {:else if routeMode === 'cached-offline'}
+          The live session is unavailable, but this device reopened only the previously trusted shell snapshot.
+        {:else if protectedEntry.routeMode === 'denied'}
+          Cached continuity stayed closed, so protected content remains hidden until trusted auth returns.
         {:else if appShell?.onboardingState === 'needs-group'}
           This account has no permitted memberships yet, so the shell stays in an explicit onboarding-empty mode.
         {:else if appShell?.primaryCalendar}
@@ -124,10 +172,10 @@
             Retry trusted load
           </button>
         {:else}
-          <a class="button button-primary" href="/signin">Stay on sign-in</a>
+          <a class="button button-primary" href={protectedEntry.signInHref ?? '/signin'}>Open sign-in</a>
         {/if}
 
-        <a class="button button-secondary" href="/signin">Account state</a>
+        <a class="button button-secondary" href={protectedEntry.signInHref ?? '/signin'}>Account state</a>
       </div>
     </article>
 
@@ -137,6 +185,15 @@
         <strong>{shellResult.reasonCode}</strong>
         <p>{shellResult.detail}</p>
         <code>{shellResult.failurePhase}</code>
+      </article>
+    {:else if protectedEntry.routeMode === 'denied'}
+      <article class="signal-card framed-panel tone-danger" data-testid="mobile-continuity-denied">
+        <span class="signal-card__label">Continuity denied</span>
+        <strong>{protectedEntry.denialReasonCode ?? 'AUTH_REQUIRED'}</strong>
+        <p>{protectedEntry.continuityDetail ?? 'Protected content stayed closed because trusted continuity was unavailable.'}</p>
+        {#if protectedEntry.signInHref}
+          <a class="button button-secondary" href={protectedEntry.signInHref}>Sign in again</a>
+        {/if}
       </article>
     {:else if appShell?.onboardingState === 'needs-group'}
       <article class="signal-card framed-panel tone-warning" data-testid="mobile-shell-onboarding">
@@ -148,7 +205,11 @@
       <article class="signal-card framed-panel tone-neutral">
         <span class="signal-card__label">Trusted inventory</span>
         <strong>{appShell.groups.length} groups / {appShell.calendars.length} calendars</strong>
-        <p>All navigation below comes directly from the shaped app-shell inventory, not from route guessing.</p>
+        <p>
+          {routeMode === 'cached-offline'
+            ? 'All navigation below comes from the stored trusted shell snapshot and remains locked to the previously synced scope.'
+            : 'All navigation below comes directly from the shaped app-shell inventory, not from route guessing.'}
+        </p>
       </article>
     {/if}
   </section>

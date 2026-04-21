@@ -1,18 +1,24 @@
 <script lang="ts">
   import { browser } from '$app/environment';
   import { page } from '$app/state';
+  import { resolveVisibleWeek } from '@repo/caluno-core/route-contract';
+  import { describeDeniedCalendarReason } from '@repo/caluno-core/app-shell';
   import MobileShell from '$lib/components/MobileShell.svelte';
+  import { rememberSyncedCalendarWeek } from '$lib/offline/repository';
   import {
+    loadCachedMobileAppShell,
     loadMobileAppShell,
     primaryCalendarLandingHref,
     resolveMobileCalendarRoute,
     type MobileCalendarRouteResult,
     type MobileShellBootstrapMode,
-    type MobileShellLoadResult
+    type MobileShellLoadResult,
+    type MobileShellRouteMode,
+    type MobileSnapshotOrigin
   } from '$lib/shell/load-app-shell';
-  import { describeDeniedCalendarReason } from '@repo/caluno-core/app-shell';
 
   const authState = $derived(page.data.authState);
+  const protectedEntry = $derived(page.data.protectedEntry);
   const attemptedCalendarId = $derived(page.params.calendarId ?? '');
 
   let shellResult = $state<MobileShellLoadResult | null>(null);
@@ -20,6 +26,7 @@
   let shellBootstrapMode = $state<MobileShellBootstrapMode>('loading');
   let loading = $state(false);
   let currentScopeKey = $state<string | null>(null);
+  let weekContinuityIssue = $state<{ reason: string; detail: string } | null>(null);
 
   const shellFailure = $derived(shellResult?.ok === false ? shellResult : null);
   const appShell = $derived(shellResult?.ok ? shellResult.appShell : null);
@@ -27,6 +34,40 @@
   const activeCalendar = $derived(routeResult?.kind === 'calendar' ? routeResult.state.calendar : null);
   const deniedState = $derived(routeResult?.kind === 'denied' ? routeResult.state : null);
   const deniedDetail = $derived(deniedState ? describeDeniedCalendarReason(deniedState.reason) : null);
+  const routeMode = $derived<MobileShellRouteMode>(shellResult?.ok ? shellResult.routeMode : protectedEntry.routeMode);
+  const snapshotOrigin = $derived<MobileSnapshotOrigin>(shellResult?.ok ? shellResult.snapshotOrigin : protectedEntry.snapshotOrigin);
+  const continuityReason = $derived(
+    weekContinuityIssue?.reason ?? (shellResult?.ok ? shellResult.continuity.reason : protectedEntry.continuityReason)
+  );
+  const continuityDetail = $derived(
+    weekContinuityIssue?.detail ?? (shellResult?.ok ? shellResult.continuity.detail : protectedEntry.continuityDetail)
+  );
+  const lastTrustedRefreshAt = $derived(
+    shellResult?.ok ? shellResult.continuity.lastTrustedRefreshAt : protectedEntry.lastTrustedRefreshAt
+  );
+
+  async function persistWeekContinuity(calendarId: string) {
+    if (authState.phase !== 'authenticated' || !authState.user) {
+      return;
+    }
+
+    const visibleWeek = resolveVisibleWeek(page.url.searchParams, new Date());
+    const result = await rememberSyncedCalendarWeek({
+      userId: authState.user.id,
+      calendarId,
+      weekStart: visibleWeek.start,
+      syncedAt: new Date().toISOString(),
+      source: 'trusted-online'
+    });
+
+    weekContinuityIssue = result.ok
+      ? null
+      : {
+          reason: result.reason === 'repository-unavailable' ? 'storage-unavailable' : 'storage-write-failed',
+          detail:
+            'This calendar opened with trusted online scope, but week continuity metadata could not be stored, so offline reopen will stay unavailable until persistence recovers.'
+        };
+  }
 
   async function loadShell(force = false) {
     if (!browser || authState.phase !== 'authenticated' || !authState.user) {
@@ -35,7 +76,12 @@
 
     loading = true;
     shellBootstrapMode = 'loading';
-    const result = await loadMobileAppShell(authState.user, { force });
+    weekContinuityIssue = null;
+    const result = await loadMobileAppShell(authState.user, {
+      force,
+      session: authState.session,
+      now: () => new Date()
+    });
     shellResult = result;
     shellBootstrapMode = result.bootstrapMode;
     routeResult = result.ok
@@ -45,6 +91,11 @@
           userId: authState.user.id
         })
       : null;
+
+    if (result.ok && routeResult?.kind === 'calendar') {
+      await persistWeekContinuity(routeResult.state.calendar.id);
+    }
+
     loading = false;
   }
 
@@ -53,21 +104,41 @@
       return;
     }
 
-    if (authState.phase !== 'authenticated' || !authState.user) {
-      shellResult = null;
-      routeResult = null;
-      shellBootstrapMode = 'idle';
-      currentScopeKey = null;
+    if (authState.phase === 'authenticated' && authState.user) {
+      const nextScopeKey = `${authState.user.id}:${attemptedCalendarId}`;
+      if (currentScopeKey === nextScopeKey && routeResult) {
+        return;
+      }
+
+      currentScopeKey = nextScopeKey;
+      void loadShell();
       return;
     }
 
-    const nextScopeKey = `${authState.user.id}:${attemptedCalendarId}`;
-    if (currentScopeKey === nextScopeKey && routeResult) {
+    const nextScopeKey = `${protectedEntry.routeMode}:${attemptedCalendarId}`;
+    if (currentScopeKey === nextScopeKey && (routeResult || protectedEntry.routeMode === 'denied')) {
       return;
     }
 
     currentScopeKey = nextScopeKey;
-    void loadShell();
+    weekContinuityIssue = null;
+
+    if (protectedEntry.routeMode === 'cached-offline' && protectedEntry.cachedSnapshot) {
+      shellResult = loadCachedMobileAppShell(protectedEntry.cachedSnapshot);
+      shellBootstrapMode = shellResult.bootstrapMode;
+      routeResult = resolveMobileCalendarRoute({
+        appShell: shellResult.appShell,
+        calendarId: attemptedCalendarId,
+        userId: protectedEntry.cachedSnapshot.viewer.id
+      });
+      loading = false;
+      return;
+    }
+
+    shellResult = null;
+    routeResult = null;
+    shellBootstrapMode = 'idle';
+    loading = false;
   });
 </script>
 
@@ -78,16 +149,31 @@
 <MobileShell
   viewerName={appShell?.viewer.displayName ?? authState.displayName ?? 'Caluno member'}
   title={activeCalendar ? activeCalendar.name : 'Calendar access resolved from trusted scope.'}
-  subtitle="This route never probes arbitrary calendar ids. It resolves the attempted id only against the already-permitted mobile shell inventory."
+  subtitle="This route never probes arbitrary calendar ids. It resolves the attempted id only against trusted online inventory or a previously synced cached continuity snapshot."
   activeTab="calendar"
   {shellBootstrapMode}
+  {routeMode}
+  {snapshotOrigin}
+  {continuityReason}
+  {lastTrustedRefreshAt}
   onboardingState={appShell?.onboardingState ?? null}
   failurePhase={!shellResult?.ok ? shellResult?.failurePhase : deniedState?.failurePhase ?? null}
-  failureDetail={!shellResult?.ok ? shellResult?.detail : deniedDetail?.detail ?? null}
+  failureDetail={!shellResult?.ok ? shellResult?.detail : continuityDetail ?? deniedDetail?.detail ?? null}
   primaryHref={primaryHref}
   primaryLabel={appShell?.primaryCalendar?.name ?? null}
 >
-  <section class="calendar-stack" data-testid="calendar-route-state" data-shell-bootstrap={shellBootstrapMode} data-denied-reason={deniedState?.reason ?? 'none'} data-failure-phase={deniedState?.failurePhase ?? 'none'} data-attempted-calendar-id={attemptedCalendarId}>
+  <section
+    class="calendar-stack"
+    data-testid="calendar-route-state"
+    data-shell-bootstrap={shellBootstrapMode}
+    data-route-mode={routeMode}
+    data-snapshot-origin={snapshotOrigin}
+    data-continuity-reason={continuityReason ?? 'none'}
+    data-last-trusted-refresh-at={lastTrustedRefreshAt ?? 'none'}
+    data-denied-reason={deniedState?.reason ?? 'none'}
+    data-failure-phase={deniedState?.failurePhase ?? 'none'}
+    data-attempted-calendar-id={attemptedCalendarId}
+  >
     {#if loading}
       <article class="hero-card framed-panel tone-neutral">
         <p class="panel-kicker">Trusted route load</p>
@@ -108,41 +194,72 @@
         </button>
       </article>
     {:else if routeResult?.kind === 'calendar' && activeCalendar}
-        <article class="hero-card framed-panel tone-neutral" data-testid="calendar-shell">
-          <div>
-            <p class="panel-kicker">Permitted calendar</p>
-            <h2>{activeCalendar.name}</h2>
-          </div>
-          <p class="panel-copy">
-            {activeCalendar.isDefault
-              ? 'This is the primary calendar chosen from the shared shell helper contract.'
-              : 'This calendar is visible because it already belongs to the trusted inventory returned for your memberships.'}
-          </p>
-          <div class="meta-strip">
-            <span class="pill">{activeCalendar.isDefault ? 'Default calendar' : 'Secondary calendar'}</span>
-            <span class="pill">{routeResult.appShell.calendars.length} trusted calendars</span>
-          </div>
-        </article>
+      <article class="hero-card framed-panel tone-neutral" data-testid="calendar-shell">
+        <div>
+          <p class="panel-kicker">Permitted calendar</p>
+          <h2>{activeCalendar.name}</h2>
+        </div>
+        <p class="panel-copy">
+          {#if routeMode === 'cached-offline'}
+            This calendar reopened from cached continuity only because its id stayed within trusted shell scope and this device had previously synced week metadata for it.
+          {:else if activeCalendar.isDefault}
+            This is the primary calendar chosen from the shared shell helper contract.
+          {:else}
+            This calendar is visible because it already belongs to the trusted inventory returned for your memberships.
+          {/if}
+        </p>
+        <div class="meta-strip">
+          <span class="pill">{activeCalendar.isDefault ? 'Default calendar' : 'Secondary calendar'}</span>
+          <span class="pill">{routeResult.appShell.calendars.length} trusted calendars</span>
+          <span class="pill">{routeMode}</span>
+        </div>
+      </article>
 
-        <article class="detail-card framed-panel">
-          <p class="panel-kicker">Route integrity</p>
-          <h3>No schedule probe happened here.</h3>
-          <p class="panel-copy">The route accepted the attempted id only because the shaped app-shell inventory already contained it. If the id had been malformed or out of scope, the denied state below would have rendered instead.</p>
-          <dl class="facts-grid">
-            <div>
-              <dt>Group</dt>
-              <dd>{routeResult.appShell.groups.find((group) => group.id === activeCalendar.groupId)?.name ?? 'Hidden outside scope'}</dd>
-            </div>
-            <div>
-              <dt>Calendar id</dt>
-              <dd><code>{activeCalendar.id}</code></dd>
-            </div>
-            <div>
-              <dt>Bootstrap mode</dt>
-              <dd>{shellBootstrapMode}</dd>
-            </div>
-          </dl>
-        </article>
+      <article class="detail-card framed-panel">
+        <p class="panel-kicker">Route integrity</p>
+        <h3>No schedule probe happened here.</h3>
+        <p class="panel-copy">The route accepted the attempted id only because the trusted inventory already contained it. If the id had been malformed, out of scope, or missing prior synced-week continuity, the denied state below would have rendered instead.</p>
+        <dl class="facts-grid">
+          <div>
+            <dt>Group</dt>
+            <dd>{routeResult.appShell.groups.find((group) => group.id === activeCalendar.groupId)?.name ?? 'Hidden outside scope'}</dd>
+          </div>
+          <div>
+            <dt>Calendar id</dt>
+            <dd><code>{activeCalendar.id}</code></dd>
+          </div>
+          <div>
+            <dt>Route mode</dt>
+            <dd>{routeMode}</dd>
+          </div>
+        </dl>
+      </article>
+    {:else if protectedEntry.routeMode === 'denied'}
+      <article class="hero-card framed-panel tone-danger" data-testid="mobile-continuity-denied">
+        <p class="panel-kicker">Continuity denied</p>
+        <h2>Protected content stayed closed.</h2>
+        <p class="panel-copy">{protectedEntry.continuityDetail ?? 'Cached continuity was unavailable or rejected, so the route failed closed.'}</p>
+
+        <div class="facts-grid denied-grid">
+          <div>
+            <dt>Reason</dt>
+            <dd>{protectedEntry.denialReasonCode ?? 'AUTH_REQUIRED'}</dd>
+          </div>
+          <div>
+            <dt>Route mode</dt>
+            <dd>{routeMode}</dd>
+          </div>
+          <div>
+            <dt>Attempted id</dt>
+            <dd><code>{attemptedCalendarId}</code></dd>
+          </div>
+        </div>
+
+        <div class="hero-actions">
+          <a class="button button-primary" href={protectedEntry.signInHref ?? '/signin'}>Sign in again</a>
+          <a class="button button-secondary" href="/groups">Return to groups</a>
+        </div>
+      </article>
     {:else if deniedState && deniedDetail}
       <article class="hero-card framed-panel tone-danger" data-testid="access-denied-state">
         <p class="panel-kicker">{deniedDetail.badge}</p>

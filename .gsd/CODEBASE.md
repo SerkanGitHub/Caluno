@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-21T09:17:42Z | Files: 440 | Described: 0/440
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-21T09:17:42Z","fingerprint":"31bba7f4a1e2cabc1267c612faa8c6ed7e098fbf","fileCount":440,"truncated":false} -->
+Generated: 2026-04-21T09:37:32Z | Files: 449 | Described: 0/449
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-21T09:37:32Z","fingerprint":"760c75873d9b0ec73da9c197992bc6a2057c5a5a","fileCount":449,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -94,30 +94,30 @@ Generated: 2026-04-21T09:17:42Z | Files: 440 | Described: 0/440
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BEiRusqB.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BGBxUBMJ.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BGggUP-F.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BoYx6l9U.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BPWJeS-9.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/C41qw67v.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/C6yUIaJf.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BxumzxEV.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CRgRC35y.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CWeFt6jb.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CXIJq0rz.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DepkcXZA.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DtCgwQKJ.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DXq0d1jM.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DxTm2xT0.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/GqY2LIEs.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/J0-LQmk0.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/LPfjZkOj.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/qSE8cyoh.js`
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/entry/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.CbC-_J5N.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.D3AaKbOY.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.07JGHXSI.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.Z1865I6H.js`
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.Dpb2Dqai.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.BFQSaCM8.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.Cp0YjkWS.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.g2bB5ihD.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.DfvWPKKQ.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.DjXAtJLD.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.Bg7jVJqq.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.BkjQodWy.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.C1-9Rd4Q.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.CAYVieob.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.DtDX9eLa.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.CDpzBFnO.js`
 
 ### apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/
 - `apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/env.js`
@@ -268,6 +268,7 @@ Generated: 2026-04-21T09:17:42Z | Files: 440 | Described: 0/440
 
 ### apps/mobile/tests/
 - `apps/mobile/tests/auth-bootstrap.unit.test.ts`
+- `apps/mobile/tests/continuity-contract.unit.test.ts`
 - `apps/mobile/tests/shell-scope.unit.test.ts`
 - `apps/mobile/tests/trusted-core.unit.test.ts`
 
@@ -691,6 +692,18 @@ Generated: 2026-04-21T09:17:42Z | Files: 440 | Described: 0/440
 - `packages/caluno-core/src/index.ts`
 - `packages/caluno-core/src/route-contract.ts`
 - `packages/caluno-core/src/supabase.ts`
+
+### packages/caluno-core/src/offline/
+- `packages/caluno-core/src/offline/app-shell-cache.ts`
+- `packages/caluno-core/src/offline/mutation-queue.ts`
+- `packages/caluno-core/src/offline/sync-engine.ts`
+- `packages/caluno-core/src/offline/types.ts`
+
+### packages/caluno-core/src/schedule/
+- `packages/caluno-core/src/schedule/board.ts`
+- `packages/caluno-core/src/schedule/conflicts.ts`
+- `packages/caluno-core/src/schedule/recurrence.ts`
+- `packages/caluno-core/src/schedule/types.ts`
 
 ### packages/db/
 - `packages/db/package.json`

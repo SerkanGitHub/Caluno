@@ -203,3 +203,9 @@
 **Context:** M003/S02/T01 extracted offline continuity, queue/replay, and schedule helpers into `@repo/caluno-core` for mobile reuse.
 **Rule/Pattern:** When promoting pure helper modules out of `apps/web`, also promote the minimal schedule/offline/controller-facing type shapes they depend on into the shared package, then keep app-local files as thin re-export or runtime-only wrappers.
 **Rationale:** Leaving helper implementations shared but their core types in app-local files forces the new package back to web-only imports and recreates the portability break that the extraction was meant to remove.
+
+## 2026-04-21: Reuse the shared continuity contract on mobile by validating raw Preferences payloads, not by reimplementing the cache rules
+
+**Context:** M003/S02/T02 added Capacitor Preferences-backed continuity and offline reopen on mobile.
+**Rule/Pattern:** When mobile persistence needs the same fail-closed rules as the shared app-shell cache contract, read the raw Preferences string asynchronously and run it back through the shared `readCachedAppShellSnapshot()` contract (using a tiny in-memory `StorageLike` shim) instead of cloning the parse/validation logic in a second mobile-only implementation.
+**Rationale:** Capacitor Preferences is async while the shared contract expects sync storage, so the shim pattern preserves one source of truth for stale/malformed/mismatched rejection behavior and avoids subtle web/mobile drift in offline scope checks.

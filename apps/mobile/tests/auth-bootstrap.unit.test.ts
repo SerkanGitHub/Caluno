@@ -172,8 +172,9 @@ describe('mobile auth bootstrap store', () => {
     });
   });
 
-  it('fails closed when getUser rejects the cached session and signs out locally', async () => {
+  it('fails closed when getUser rejects the cached session, clears continuity, and signs out locally', async () => {
     const signOut = vi.fn().mockResolvedValue({ error: null });
+    const clearContinuity = vi.fn().mockResolvedValue(undefined);
     const { client } = createAuthClient({
       getSession: vi.fn().mockResolvedValue({
         data: { session: createSession() }
@@ -186,7 +187,8 @@ describe('mobile auth bootstrap store', () => {
     });
 
     const store = createMobileSessionStore({
-      clientFactory: () => client
+      clientFactory: () => client,
+      clearContinuity
     });
 
     await expect(store.bootstrap()).resolves.toMatchObject({
@@ -194,6 +196,7 @@ describe('mobile auth bootstrap store', () => {
       failurePhase: 'bootstrap',
       reasonCode: 'INVALID_SESSION'
     });
+    expect(clearContinuity).toHaveBeenCalledTimes(1);
     expect(signOut).toHaveBeenCalledTimes(1);
   });
 
@@ -228,6 +231,7 @@ describe('mobile auth bootstrap store', () => {
     const session = createSession();
     const user = createUser({ email: 'signedin@example.com' });
     const signOut = vi.fn().mockResolvedValue({ error: null });
+    const clearContinuity = vi.fn().mockResolvedValue(undefined);
     const { client } = createAuthClient({
       getSession: vi.fn().mockResolvedValue({ data: { session } }),
       getUser: vi.fn().mockResolvedValue({ data: { user }, error: null }),
@@ -236,7 +240,8 @@ describe('mobile auth bootstrap store', () => {
 
     const store = createMobileSessionStore({
       clientFactory: () => client,
-      now: () => new Date('2026-04-21T09:45:00.000Z')
+      now: () => new Date('2026-04-21T09:45:00.000Z'),
+      clearContinuity
     });
 
     await store.bootstrap();
@@ -245,6 +250,7 @@ describe('mobile auth bootstrap store', () => {
       phase: 'signed-out',
       detail: 'You are safely signed out on this device.'
     });
+    expect(clearContinuity).toHaveBeenCalledTimes(1);
     expect(signOut).toHaveBeenCalledTimes(1);
 
     expect(store.reset('Return to sign-in.')).toMatchObject({

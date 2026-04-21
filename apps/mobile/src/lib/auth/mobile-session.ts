@@ -1,5 +1,7 @@
 import type { Session, User } from '@supabase/supabase-js';
 import { get, writable, type Readable } from 'svelte/store';
+import { clearMobileCachedAppShellSnapshot } from '$lib/continuity/mobile-app-shell-cache';
+import { clearMobileContinuityRepository } from '$lib/offline/repository';
 import { getSupabaseBrowserClient, type MobileSupabaseAuthClient } from '$lib/supabase/client';
 
 export type MobileAuthPhase = 'bootstrapping' | 'signed-out' | 'authenticated' | 'invalid-session' | 'error';
@@ -42,6 +44,7 @@ type StoreDependencies = {
   clientFactory?: () => MobileSupabaseAuthClient;
   timeoutMs?: number;
   now?: () => Date;
+  clearContinuity?: () => Promise<void>;
 };
 
 const DEFAULT_SIGNED_OUT_DETAIL = 'Sign in with your Caluno account before opening protected groups or calendars.';
@@ -164,7 +167,15 @@ function createErrorState(params: {
   };
 }
 
-async function signOutLocally(client: MobileSupabaseAuthClient) {
+async function clearMobileContinuityState() {
+  await Promise.all([clearMobileCachedAppShellSnapshot(), clearMobileContinuityRepository()]);
+}
+
+async function signOutLocally(client: MobileSupabaseAuthClient, clearContinuity: () => Promise<void>) {
+  await clearContinuity().catch(() => {
+    // fail closed: stale continuity must not survive invalid-session or sign-out handling
+  });
+
   try {
     await client.auth.signOut();
   } catch {
@@ -176,6 +187,7 @@ export function createMobileSessionStore(dependencies: StoreDependencies = {}): 
   const timeoutMs = dependencies.timeoutMs ?? 5_000;
   const now = dependencies.now ?? (() => new Date());
   const clientFactory = dependencies.clientFactory ?? getSupabaseBrowserClient;
+  const clearContinuity = dependencies.clearContinuity ?? clearMobileContinuityState;
   const state = writable<MobileAuthState>(createBootstrappingState());
 
   let client: MobileSupabaseAuthClient | null = null;
@@ -207,6 +219,7 @@ export function createMobileSessionStore(dependencies: StoreDependencies = {}): 
       data: { subscription }
     } = authClient.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT') {
+        void clearContinuity();
         setState(createSignedOutState('The session was cleared on this device. Sign in again to reopen protected routes.'));
         return;
       }
@@ -282,7 +295,7 @@ export function createMobileSessionStore(dependencies: StoreDependencies = {}): 
         );
 
         if (error || !user?.id || !user.email) {
-          await signOutLocally(authClient);
+          await signOutLocally(authClient, clearContinuity);
           bootstrapped = true;
           return setState(createInvalidSessionState());
         }
@@ -393,7 +406,7 @@ export function createMobileSessionStore(dependencies: StoreDependencies = {}): 
       }
 
       if (!data.session || !data.user) {
-        await signOutLocally(authClient);
+        await signOutLocally(authClient, clearContinuity);
 
         return setState(
           createErrorState({
@@ -429,6 +442,9 @@ export function createMobileSessionStore(dependencies: StoreDependencies = {}): 
     try {
       authClient = getClient();
     } catch {
+      await clearContinuity().catch(() => {
+        // fail closed even if continuity clear cannot be confirmed
+      });
       return setState(createSignedOutState('The local session state is already cleared on this device.'));
     }
 
@@ -440,6 +456,10 @@ export function createMobileSessionStore(dependencies: StoreDependencies = {}): 
         timeoutMs,
         new Error('LOGOUT_TIMEOUT')
       );
+
+      await clearContinuity().catch(() => {
+        // fail closed even if continuity clear cannot be confirmed
+      });
 
       if (error) {
         return setState(
@@ -456,6 +476,9 @@ export function createMobileSessionStore(dependencies: StoreDependencies = {}): 
 
       return setState(createSignedOutState('You are safely signed out on this device.'));
     } catch (error) {
+      await clearContinuity().catch(() => {
+        // fail closed even if continuity clear cannot be confirmed
+      });
       return setState(
         createErrorState({
           failurePhase: 'sign-out',
