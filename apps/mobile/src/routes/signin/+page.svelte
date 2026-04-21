@@ -89,7 +89,7 @@
         detail:
           'A saved session was rejected during trusted validation, so Caluno kept the mobile shell closed until a fresh sign-in succeeds.',
         tone: 'warning' as const,
-        stateLabel: 'signed-out',
+        stateLabel: 'invalid-session',
         reasonCode: currentReason ?? 'INVALID_SESSION'
       };
     }
@@ -101,6 +101,18 @@
         detail:
           'Protected mobile routes redirect here until a trusted session exists, so stale local auth never reopens the shell silently.',
         tone: 'warning' as const,
+        stateLabel: 'signed-out',
+        reasonCode: currentReason ?? 'AUTH_REQUIRED'
+      };
+    }
+
+    if (currentFlow === 'signed-out') {
+      return {
+        eyebrow: 'Signed out',
+        title: 'This device is safely signed out.',
+        detail:
+          'The trusted mobile session was cleared before protected routes could reopen, so the next shell entry must start from a fresh sign-in.',
+        tone: 'neutral' as const,
         stateLabel: 'signed-out',
         reasonCode: currentReason ?? 'AUTH_REQUIRED'
       };
@@ -167,7 +179,12 @@
   <title>Sign in • Caluno Mobile</title>
 </svelte:head>
 
-<main class="auth-shell">
+<main
+  class="auth-shell"
+  data-testid="mobile-signin-entrypoint"
+  data-signin-flow={flow}
+  data-signin-entrypoint={flow === 'signed-out' ? 'signed-out-entrypoint' : 'mobile-signin-entrypoint'}
+>
   <section class="hero-card">
     <p class="eyebrow">{surface.eyebrow}</p>
     <h1>{surface.title}</h1>
@@ -178,6 +195,7 @@
         class={`signal-card tone-${surface.tone}`}
         data-testid="mobile-auth-state"
         data-auth-phase={authState.phase}
+        data-auth-surface-state={surface.stateLabel}
         data-auth-failure-phase={authState.failurePhase ?? 'none'}
         data-auth-reason={surface.reasonCode ?? 'none'}
       >

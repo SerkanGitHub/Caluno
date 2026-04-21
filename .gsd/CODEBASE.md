@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-20T22:26:50Z | Files: 309 | Described: 0/309
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-20T22:26:50Z","fingerprint":"763f3f2cb9f8cd71f8bcbef0bec243a631978bea","fileCount":309,"truncated":false} -->
+Generated: 2026-04-21T08:30:59Z | Files: 422 | Described: 0/422
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-21T08:30:59Z","fingerprint":"213aaa0529a7fb6edd44ed38e7af95fe22d7ae44","fileCount":422,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -44,19 +44,194 @@ Generated: 2026-04-20T22:26:50Z | Files: 309 | Described: 0/309
 - `apps/mobile/.svelte-kit/non-ambient.d.ts`
 - `apps/mobile/.svelte-kit/tsconfig.json`
 
+### apps/mobile/.svelte-kit/generated/
+- `apps/mobile/.svelte-kit/generated/root.js`
+- `apps/mobile/.svelte-kit/generated/root.svelte`
+
+### apps/mobile/.svelte-kit/generated/client/
+- `apps/mobile/.svelte-kit/generated/client/app.js`
+- `apps/mobile/.svelte-kit/generated/client/matchers.js`
+
+### apps/mobile/.svelte-kit/generated/client-optimized/
+- `apps/mobile/.svelte-kit/generated/client-optimized/app.js`
+- `apps/mobile/.svelte-kit/generated/client-optimized/matchers.js`
+
+### apps/mobile/.svelte-kit/generated/client-optimized/nodes/
+- `apps/mobile/.svelte-kit/generated/client-optimized/nodes/0.js`
+- `apps/mobile/.svelte-kit/generated/client-optimized/nodes/1.js`
+- `apps/mobile/.svelte-kit/generated/client-optimized/nodes/2.js`
+- `apps/mobile/.svelte-kit/generated/client-optimized/nodes/3.js`
+- `apps/mobile/.svelte-kit/generated/client-optimized/nodes/4.js`
+- `apps/mobile/.svelte-kit/generated/client-optimized/nodes/5.js`
+
+### apps/mobile/.svelte-kit/generated/client/nodes/
+- `apps/mobile/.svelte-kit/generated/client/nodes/0.js`
+- `apps/mobile/.svelte-kit/generated/client/nodes/1.js`
+- `apps/mobile/.svelte-kit/generated/client/nodes/2.js`
+- `apps/mobile/.svelte-kit/generated/client/nodes/3.js`
+- `apps/mobile/.svelte-kit/generated/client/nodes/4.js`
+- `apps/mobile/.svelte-kit/generated/client/nodes/5.js`
+
+### apps/mobile/.svelte-kit/generated/server/
+- `apps/mobile/.svelte-kit/generated/server/internal.js`
+
+### apps/mobile/.svelte-kit/output/client/.vite/
+- `apps/mobile/.svelte-kit/output/client/.vite/manifest.json`
+
+### apps/mobile/.svelte-kit/output/client/_app/
+- `apps/mobile/.svelte-kit/output/client/_app/version.json`
+
+### apps/mobile/.svelte-kit/output/client/_app/immutable/assets/
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/0.ci6y-9Wa.css`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/2.CvqVE8tP.css`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/3.mHlEkn6y.css`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/4.uJGzGZgV.css`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/5.D7V9Fcow.css`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/load-app-shell.DwuGCDv7.css`
+
+### apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/_osBsr6E.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/0OXdl1NC.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/ArBnPO9p.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/B1ecOEsu.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BlHDoXnt.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BtSRilfv.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/Bz8fQu9c.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CFnQACfi.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CJlcAf7m.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CjtXrsKL.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CWeFt6jb.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DBq9RprB.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/Dv_1JmhW.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/FzPpC6W2.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/SnuL-rB5.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/uEfWio4P.js`
+
+### apps/mobile/.svelte-kit/output/client/_app/immutable/entry/
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.B0OW-NXL.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.DyR4IDGI.js`
+
+### apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.BjJJKCEl.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.DjaxLGB4.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.Bz2iweAQ.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.DhQHPl-g.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.CbNVJZDP.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.Ckrc7p6B.js`
+
+### apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/
+- `apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/env.js`
+
+### apps/mobile/.svelte-kit/output/server/
+- `apps/mobile/.svelte-kit/output/server/index.js`
+- `apps/mobile/.svelte-kit/output/server/internal.js`
+- `apps/mobile/.svelte-kit/output/server/manifest-full.js`
+- `apps/mobile/.svelte-kit/output/server/manifest.js`
+- `apps/mobile/.svelte-kit/output/server/remote-entry.js`
+
+### apps/mobile/.svelte-kit/output/server/.vite/
+- `apps/mobile/.svelte-kit/output/server/.vite/manifest.json`
+
+### apps/mobile/.svelte-kit/output/server/_app/immutable/assets/
+- `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_layout.DxgQeD05.css`
+- `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_page.-fczuQlw.css`
+- `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_page.CoXGxDD0.css`
+- `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_page.mHlEkn6y.css`
+- `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_page.uJGzGZgV.css`
+- `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/load-app-shell.CdzmC5PJ.css`
+
+### apps/mobile/.svelte-kit/output/server/chunks/
+- `apps/mobile/.svelte-kit/output/server/chunks/environment.js`
+- `apps/mobile/.svelte-kit/output/server/chunks/exports.js`
+- `apps/mobile/.svelte-kit/output/server/chunks/false.js`
+- `apps/mobile/.svelte-kit/output/server/chunks/index.js`
+- `apps/mobile/.svelte-kit/output/server/chunks/index2.js`
+- `apps/mobile/.svelte-kit/output/server/chunks/internal.js`
+- `apps/mobile/.svelte-kit/output/server/chunks/load-app-shell.js`
+- `apps/mobile/.svelte-kit/output/server/chunks/mobile-session.js`
+- `apps/mobile/.svelte-kit/output/server/chunks/render-context.js`
+- `apps/mobile/.svelte-kit/output/server/chunks/root.js`
+- `apps/mobile/.svelte-kit/output/server/chunks/shared.js`
+- `apps/mobile/.svelte-kit/output/server/chunks/state.svelte.js`
+- `apps/mobile/.svelte-kit/output/server/chunks/utils.js`
+- `apps/mobile/.svelte-kit/output/server/chunks/utils2.js`
+
+### apps/mobile/.svelte-kit/output/server/entries/fallbacks/
+- `apps/mobile/.svelte-kit/output/server/entries/fallbacks/error.svelte.js`
+
+### apps/mobile/.svelte-kit/output/server/entries/pages/
+- `apps/mobile/.svelte-kit/output/server/entries/pages/_layout.svelte.js`
+- `apps/mobile/.svelte-kit/output/server/entries/pages/_layout.ts.js`
+- `apps/mobile/.svelte-kit/output/server/entries/pages/_page.svelte.js`
+
+### apps/mobile/.svelte-kit/output/server/entries/pages/calendars/_calendarId_/
+- `apps/mobile/.svelte-kit/output/server/entries/pages/calendars/_calendarId_/_page.svelte.js`
+
+### apps/mobile/.svelte-kit/output/server/entries/pages/groups/
+- `apps/mobile/.svelte-kit/output/server/entries/pages/groups/_page.svelte.js`
+
+### apps/mobile/.svelte-kit/output/server/entries/pages/signin/
+- `apps/mobile/.svelte-kit/output/server/entries/pages/signin/_page.svelte.js`
+
+### apps/mobile/.svelte-kit/output/server/nodes/
+- `apps/mobile/.svelte-kit/output/server/nodes/0.js`
+- `apps/mobile/.svelte-kit/output/server/nodes/1.js`
+- `apps/mobile/.svelte-kit/output/server/nodes/2.js`
+- `apps/mobile/.svelte-kit/output/server/nodes/3.js`
+- `apps/mobile/.svelte-kit/output/server/nodes/4.js`
+- `apps/mobile/.svelte-kit/output/server/nodes/5.js`
+
 ### apps/mobile/.svelte-kit/types/
 - `apps/mobile/.svelte-kit/types/route_meta_data.json`
 
 ### apps/mobile/.svelte-kit/types/src/routes/
 - `apps/mobile/.svelte-kit/types/src/routes/$types.d.ts`
+- `apps/mobile/.svelte-kit/types/src/routes/proxy+layout.ts`
+
+### apps/mobile/.svelte-kit/types/src/routes/calendars/[calendarId]/
+- `apps/mobile/.svelte-kit/types/src/routes/calendars/[calendarId]/$types.d.ts`
+
+### apps/mobile/.svelte-kit/types/src/routes/groups/
+- `apps/mobile/.svelte-kit/types/src/routes/groups/$types.d.ts`
+
+### apps/mobile/.svelte-kit/types/src/routes/signin/
+- `apps/mobile/.svelte-kit/types/src/routes/signin/$types.d.ts`
 
 ### apps/mobile/src/
 - `apps/mobile/src/app.css`
 - `apps/mobile/src/app.html`
 
+### apps/mobile/src/lib/auth/
+- `apps/mobile/src/lib/auth/mobile-session.ts`
+
+### apps/mobile/src/lib/components/
+- `apps/mobile/src/lib/components/MobileShell.svelte`
+
+### apps/mobile/src/lib/shell/
+- `apps/mobile/src/lib/shell/load-app-shell.ts`
+
+### apps/mobile/src/lib/supabase/
+- `apps/mobile/src/lib/supabase/client.ts`
+- `apps/mobile/src/lib/supabase/config.ts`
+
 ### apps/mobile/src/routes/
 - `apps/mobile/src/routes/+layout.svelte`
+- `apps/mobile/src/routes/+layout.ts`
 - `apps/mobile/src/routes/+page.svelte`
+
+### apps/mobile/src/routes/calendars/[calendarId]/
+- `apps/mobile/src/routes/calendars/[calendarId]/+page.svelte`
+
+### apps/mobile/src/routes/groups/
+- `apps/mobile/src/routes/groups/+page.svelte`
+
+### apps/mobile/src/routes/signin/
+- `apps/mobile/src/routes/signin/+page.svelte`
+
+### apps/mobile/tests/
+- `apps/mobile/tests/auth-bootstrap.unit.test.ts`
+- `apps/mobile/tests/shell-scope.unit.test.ts`
+- `apps/mobile/tests/trusted-core.unit.test.ts`
 
 ### apps/web/
 - `apps/web/package.json`
@@ -464,6 +639,16 @@ Generated: 2026-04-20T22:26:50Z | Files: 309 | Described: 0/309
 - `apps/web/tests/schedule/recurrence.unit.test.ts`
 - `apps/web/tests/schedule/server-actions.unit.test.ts`
 - `apps/web/tests/schedule/sync-engine.unit.test.ts`
+
+### packages/caluno-core/
+- `packages/caluno-core/package.json`
+
+### packages/caluno-core/src/
+- `packages/caluno-core/src/access.ts`
+- `packages/caluno-core/src/app-shell.ts`
+- `packages/caluno-core/src/index.ts`
+- `packages/caluno-core/src/route-contract.ts`
+- `packages/caluno-core/src/supabase.ts`
 
 ### packages/db/
 - `packages/db/package.json`

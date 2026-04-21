@@ -73,7 +73,7 @@ The order follows the real risk curve for this slice. T01 retires architecture d
   - Do: Mirror the web app-shell query shape with authenticated Supabase reads, shape the inventory with shared helpers, build a mobile-specific groups/calendar shell, and render explicit denied states for malformed and out-of-scope calendar ids.
   - Verify: `pnpm --dir apps/mobile exec vitest run tests/shell-scope.unit.test.ts tests/auth-bootstrap.unit.test.ts tests/trusted-core.unit.test.ts && pnpm --dir apps/mobile check && pnpm --dir apps/mobile build`
   - Done when: the mobile shell shows only permitted calendars, lands on a primary calendar, and turns guessed or malformed calendar ids into truthful denied surfaces.
-- [ ] **T04: Add mobile browser proof and Capacitor packaging checks** `est:75m`
+- [x] **T04: Add mobile browser proof and Capacitor packaging checks** `est:75m`
   - Why: The slice is not complete until auth/scope behavior is proven end-to-end and the shell is syncable into a real native target.
   - Files: `apps/mobile/playwright.config.ts`, `apps/mobile/tests/e2e/fixtures.ts`, `apps/mobile/tests/e2e/auth-scope.spec.ts`, `apps/mobile/package.json`, `apps/mobile/capacitor.config.ts`, `apps/mobile/ios/App/App.xcodeproj/project.pbxproj`, `apps/mobile/ios/App/App/AppDelegate.swift`
   - Do: Add a dedicated mobile Playwright harness, prove Bob’s permitted scope and Beta denial with real assertions, cover reload and sign-out/invalid-session behavior, and bootstrap/sync the first Capacitor iOS project.

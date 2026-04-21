@@ -185,3 +185,15 @@
 **Context:** M003/S01/T03 added client-side mobile shell loads that apply a generic timeout wrapper around Supabase `.from(...).select(...).returns()` queries.
 **Rule/Pattern:** In this repo, if a helper expects a real `Promise<T>`, wrap Supabase Postgrest builder chains with `Promise.resolve(...)` before passing them into the helper.
 **Rationale:** Supabase query builders are awaitable but not typed as full `Promise<T>` instances under `svelte-check`, so generic timeout wrappers can type-fail even though the runtime query works; the explicit wrap keeps timeout helpers and compile-time checking aligned.
+
+## 2026-04-21: Mobile Supabase SSR browser auth persists in cookies, not `localStorage`
+
+**Context:** M003/S01/T04 added mobile Playwright proof for malformed persisted sessions and initially tried to corrupt `localStorage` after sign-in.
+**Rule/Pattern:** For mobile/browser auth-state inspection or corruption in this repo, look for `sb-...auth-token` cookies first and only fall back to `localStorage` if no Supabase SSR cookies exist.
+**Rationale:** `@supabase/ssr`'s `createBrowserClient` uses `document.cookie` storage by default, so `localStorage`-only assertions can falsely report that no persisted session exists even when the user is signed in.
+
+## 2026-04-21: Do not rely on `/signin` as the only account-action surface for authenticated mobile routes
+
+**Context:** M003/S01/T04 needed real sign-out proof from the protected mobile shell.
+**Rule/Pattern:** In this repo's mobile app, keep sign-out or similar account actions available directly inside protected shell surfaces instead of assuming authenticated users can navigate to `/signin` to manage session state.
+**Rationale:** The mobile layout intentionally redirects authenticated users away from `/signin`, so account controls placed only there become unreachable from the trusted shell and break truthful E2E/runtime proof of sign-out behavior.

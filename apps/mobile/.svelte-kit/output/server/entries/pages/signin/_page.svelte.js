@@ -1,4 +1,4 @@
-import { h as head, e as escape_html, b as attr_class, a as attr, d as derived, s as store_get, u as unsubscribe_stores } from "../../../chunks/root.js";
+import { h as head, a as attr, e as escape_html, b as attr_class, d as derived, s as store_get, u as unsubscribe_stores } from "../../../chunks/root.js";
 import { p as page } from "../../../chunks/index2.js";
 import "@sveltejs/kit/internal";
 import "../../../chunks/exports.js";
@@ -64,7 +64,7 @@ function _page($$renderer, $$props) {
           title: "Sign in again to reopen your calendars.",
           detail: "A saved session was rejected during trusted validation, so Caluno kept the mobile shell closed until a fresh sign-in succeeds.",
           tone: "warning",
-          stateLabel: "signed-out",
+          stateLabel: "invalid-session",
           reasonCode: currentReason ?? "INVALID_SESSION"
         };
       }
@@ -74,6 +74,16 @@ function _page($$renderer, $$props) {
           title: "Sign in to open your permitted calendars.",
           detail: "Protected mobile routes redirect here until a trusted session exists, so stale local auth never reopens the shell silently.",
           tone: "warning",
+          stateLabel: "signed-out",
+          reasonCode: currentReason ?? "AUTH_REQUIRED"
+        };
+      }
+      if (currentFlow === "signed-out") {
+        return {
+          eyebrow: "Signed out",
+          title: "This device is safely signed out.",
+          detail: "The trusted mobile session was cleared before protected routes could reopen, so the next shell entry must start from a fresh sign-in.",
+          tone: "neutral",
           stateLabel: "signed-out",
           reasonCode: currentReason ?? "AUTH_REQUIRED"
         };
@@ -92,7 +102,7 @@ function _page($$renderer, $$props) {
         $$renderer4.push(`<title>Sign in • Caluno Mobile</title>`);
       });
     });
-    $$renderer2.push(`<main class="auth-shell svelte-iq265b"><section class="hero-card svelte-iq265b"><p class="eyebrow svelte-iq265b">${escape_html(surface().eyebrow)}</p> <h1 class="svelte-iq265b">${escape_html(surface().title)}</h1> <p class="lede svelte-iq265b">${escape_html(surface().detail)}</p> <div class="signal-grid svelte-iq265b"><article${attr_class(`signal-card tone-${surface().tone}`, "svelte-iq265b")} data-testid="mobile-auth-state"${attr("data-auth-phase", authState().phase)}${attr("data-auth-failure-phase", authState().failurePhase ?? "none")}${attr("data-auth-reason", surface().reasonCode ?? "none")}><span class="signal-card__label svelte-iq265b">Trusted auth state</span> <strong class="svelte-iq265b">${escape_html(surface().stateLabel)}</strong> <p class="svelte-iq265b">${escape_html(surface().detail)}</p> `);
+    $$renderer2.push(`<main class="auth-shell svelte-iq265b" data-testid="mobile-signin-entrypoint"${attr("data-signin-flow", flow())}${attr("data-signin-entrypoint", flow() === "signed-out" ? "signed-out-entrypoint" : "mobile-signin-entrypoint")}><section class="hero-card svelte-iq265b"><p class="eyebrow svelte-iq265b">${escape_html(surface().eyebrow)}</p> <h1 class="svelte-iq265b">${escape_html(surface().title)}</h1> <p class="lede svelte-iq265b">${escape_html(surface().detail)}</p> <div class="signal-grid svelte-iq265b"><article${attr_class(`signal-card tone-${surface().tone}`, "svelte-iq265b")} data-testid="mobile-auth-state"${attr("data-auth-phase", authState().phase)}${attr("data-auth-surface-state", surface().stateLabel)}${attr("data-auth-failure-phase", authState().failurePhase ?? "none")}${attr("data-auth-reason", surface().reasonCode ?? "none")}><span class="signal-card__label svelte-iq265b">Trusted auth state</span> <strong class="svelte-iq265b">${escape_html(surface().stateLabel)}</strong> <p class="svelte-iq265b">${escape_html(surface().detail)}</p> `);
     if (surface().reasonCode) {
       $$renderer2.push("<!--[0-->");
       $$renderer2.push(`<code class="svelte-iq265b">${escape_html(surface().reasonCode)}</code>`);

@@ -1,5 +1,9 @@
 <script lang="ts">
+  import { browser } from '$app/environment';
+  import { goto } from '$app/navigation';
+  import { page } from '$app/state';
   import type { MobileShellBootstrapMode } from '$lib/shell/load-app-shell';
+  import { mobileSession } from '$lib/auth/mobile-session';
 
   type Props = {
     viewerName: string;
@@ -55,13 +59,44 @@
         return 'idle';
     }
   });
+
+  let signingOut = $state(false);
+
+  async function handleSignOut() {
+    if (!browser || signingOut) {
+      return;
+    }
+
+    signingOut = true;
+
+    try {
+      await mobileSession.signOut();
+      const returnTo = encodeURIComponent(`${page.url.pathname}${page.url.search}`);
+      await goto(`/signin?flow=signed-out&reason=AUTH_REQUIRED&returnTo=${returnTo}`, {
+        replaceState: true
+      });
+    } finally {
+      signingOut = false;
+    }
+  }
 </script>
 
 <div class="mobile-shell-frame" data-testid="mobile-shell-frame" data-shell-bootstrap={shellBootstrapMode} data-onboarding-state={onboardingState ?? 'unknown'}>
   <header class="mobile-shell-header framed-panel">
     <div class="shell-kicker-row">
       <p class="eyebrow">Caluno pocket shell</p>
-      <span class="viewer-chip">{viewerName}</span>
+      <div class="shell-header-actions">
+        <span class="viewer-chip">{viewerName}</span>
+        <button
+          class="signout-chip"
+          type="button"
+          onclick={handleSignOut}
+          disabled={signingOut}
+          data-testid="mobile-shell-signout"
+        >
+          {signingOut ? 'Signing out…' : 'Sign out'}
+        </button>
+      </div>
     </div>
 
     <div class="mobile-shell-copy">
@@ -141,6 +176,14 @@
     gap: 0.75rem;
   }
 
+  .shell-header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
   .eyebrow,
   .status-pill span {
     margin: 0;
@@ -172,6 +215,27 @@
     font-size: 0.82rem;
     font-weight: 700;
     color: var(--caluno-ink-strong);
+  }
+
+  .signout-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.2rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid rgba(34, 31, 27, 0.1);
+    background: rgba(255, 255, 255, 0.72);
+    color: var(--caluno-ink-strong);
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .signout-chip:disabled {
+    opacity: 0.64;
+    cursor: progress;
   }
 
   .status-ribbon {
