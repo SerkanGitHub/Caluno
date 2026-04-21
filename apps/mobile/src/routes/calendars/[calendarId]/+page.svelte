@@ -377,6 +377,7 @@
   failureDetail={!shellResult?.ok ? shellResult?.detail : continuityDetail ?? deniedDetail?.detail ?? null}
   primaryHref={primaryHref}
   primaryLabel={appShell?.primaryCalendar?.name ?? null}
+  shellTestId="calendar-shell"
 >
   <section
     class="calendar-route"
@@ -393,6 +394,8 @@
     data-retryable-count={runtimeState?.retryableQueueLength ?? 0}
     data-sync-phase={runtimeState?.syncPhase ?? 'idle'}
     data-last-retryable-reason={runtimeState?.lastRetryableFailure?.reason ?? 'none'}
+    data-denied-reason={deniedState?.reason ?? protectedEntry.denialReasonCode ?? 'none'}
+    data-failure-phase={deniedState?.failurePhase ?? shellFailure?.failurePhase ?? (protectedEntry.routeMode === 'denied' ? 'continuity' : 'none')}
     data-attempted-calendar-id={attemptedCalendarId}
   >
     {#if loading}

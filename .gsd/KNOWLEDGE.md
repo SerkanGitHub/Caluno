@@ -215,3 +215,9 @@
 **Context:** M003/S02/T04 browser verification of the new phone-first calendar route.
 **Rule/Pattern:** For local browser proof of `apps/mobile` routes that depend on public Supabase env, prefer `pnpm --dir apps/mobile dev ...` over `pnpm --dir apps/mobile preview ...`, and treat preview-only `Cannot read properties of undefined (reading 'env')` failures as environment/adapter proof gaps until the dev server says otherwise.
 **Rationale:** In this repo, the static preview rendered the shell but tripped an env access failure before interactive proof, while the Vite dev server exposed the real route behavior and the honest local blocker: missing `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
+
+## 2026-04-21: If `supabase db reset --local` ends with storage `502`, restart the local stack before retrying Playwright proof
+
+**Context:** M003/S02/T05 final mobile offline continuity verification intermittently failed after migrations and seed completed, with the CLI dying during the post-reset container restart on `GET http://127.0.0.1:54321/storage/v1/bucket`.
+**Rule/Pattern:** When local Supabase reset fails in this repo with an upstream `502` on the storage health check, run `npx --yes supabase stop && npx --yes supabase start` before retrying the exact reset-plus-Playwright verification command.
+**Rationale:** The failure came from a degraded local Supabase stack, not from the mobile continuity flow; a full local stack restart restored storage health and the unchanged Playwright proof passed immediately afterward.

@@ -12,8 +12,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test tests/e2e/auth-scope.spec.ts",
-    "test:e2e:headed": "playwright test tests/e2e/auth-scope.spec.ts --headed",
+    "test:e2e": "playwright test tests/e2e/auth-scope.spec.ts tests/e2e/calendar-offline.spec.ts",
+    "test:e2e:headed": "playwright test tests/e2e/auth-scope.spec.ts tests/e2e/calendar-offline.spec.ts --headed",
     "cap:sync": "cap sync",
     "cap:add:ios": "cap add ios",
     "cap:add:android": "cap add android"

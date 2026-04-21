@@ -972,11 +972,12 @@ async function safeSupabaseCall<T>(
   }
 }
 
-async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, reason: string): Promise<T> {
+async function withTimeout<T>(promise: PromiseLike<T>, timeoutMs: number, reason: string): Promise<T> {
   let timer: ReturnType<typeof setTimeout> | undefined;
+  const normalizedPromise = Promise.resolve(promise);
 
   return Promise.race([
-    promise.finally(() => {
+    normalizedPromise.finally(() => {
       if (timer) {
         clearTimeout(timer);
       }

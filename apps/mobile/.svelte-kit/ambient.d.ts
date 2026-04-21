@@ -48,7 +48,6 @@ declare module '$env/static/private' {
 	export const NODE_OPTIONS: string;
 	export const MallocNanoZone: string;
 	export const ZDOTDIR: string;
-	export const VIPSHOME: string;
 	export const GSD_PKG_ROOT: string;
 	export const USER: string;
 	export const COMMAND_MODE: string;
@@ -71,8 +70,10 @@ declare module '$env/static/private' {
 	export const XPC_FLAGS: string;
 	export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 	export const GSD_BUNDLED_EXTENSION_PATHS: string;
+	export const FORCE_COLOR: string;
 	export const pnpm_config_verify_deps_before_run: string;
 	export const XPC_SERVICE_NAME: string;
+	export const DEBUG_COLORS: string;
 	export const VSCODE_INJECTION: string;
 	export const HOME: string;
 	export const SHLVL: string;
@@ -86,7 +87,9 @@ declare module '$env/static/private' {
 	export const LOGNAME: string;
 	export const PNPM_PACKAGE_NAME: string;
 	export const VSCODE_GIT_IPC_HANDLE: string;
+	export const BROWSER: string;
 	export const npm_config_user_agent: string;
+	export const PLAYWRIGHT_TEST: string;
 	export const HOMEBREW_CELLAR: string;
 	export const INFOPATH: string;
 	export const GIT_ASKPASS: string;
@@ -94,13 +97,7 @@ declare module '$env/static/private' {
 	export const OSLogRateLimit: string;
 	export const GSD_CODING_AGENT_DIR: string;
 	export const COLORTERM: string;
-	export const TEST: string;
-	export const VITEST: string;
 	export const NODE_ENV: string;
-	export const PROD: string;
-	export const DEV: string;
-	export const BASE_URL: string;
-	export const MODE: string;
 }
 
 /**
@@ -137,7 +134,9 @@ declare module '$env/static/private' {
  * The above values will be the same _even if_ different values for `ENVIRONMENT` or `PUBLIC_BASE_URL` are set at runtime, as they are statically replaced in your code with their build time values.
  */
 declare module '$env/static/public' {
-	
+	export const PUBLIC_SITE_URL: string;
+	export const PUBLIC_SUPABASE_URL: string;
+	export const PUBLIC_SUPABASE_PUBLISHABLE_KEY: string;
 }
 
 /**
@@ -197,7 +196,6 @@ declare module '$env/dynamic/private' {
 		NODE_OPTIONS: string;
 		MallocNanoZone: string;
 		ZDOTDIR: string;
-		VIPSHOME: string;
 		GSD_PKG_ROOT: string;
 		USER: string;
 		COMMAND_MODE: string;
@@ -220,8 +218,10 @@ declare module '$env/dynamic/private' {
 		XPC_FLAGS: string;
 		VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 		GSD_BUNDLED_EXTENSION_PATHS: string;
+		FORCE_COLOR: string;
 		pnpm_config_verify_deps_before_run: string;
 		XPC_SERVICE_NAME: string;
+		DEBUG_COLORS: string;
 		VSCODE_INJECTION: string;
 		HOME: string;
 		SHLVL: string;
@@ -235,7 +235,9 @@ declare module '$env/dynamic/private' {
 		LOGNAME: string;
 		PNPM_PACKAGE_NAME: string;
 		VSCODE_GIT_IPC_HANDLE: string;
+		BROWSER: string;
 		npm_config_user_agent: string;
+		PLAYWRIGHT_TEST: string;
 		HOMEBREW_CELLAR: string;
 		INFOPATH: string;
 		GIT_ASKPASS: string;
@@ -243,13 +245,7 @@ declare module '$env/dynamic/private' {
 		OSLogRateLimit: string;
 		GSD_CODING_AGENT_DIR: string;
 		COLORTERM: string;
-		TEST: string;
-		VITEST: string;
 		NODE_ENV: string;
-		PROD: string;
-		DEV: string;
-		BASE_URL: string;
-		MODE: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
 	}
@@ -305,6 +301,9 @@ declare module '$env/dynamic/private' {
  */
 declare module '$env/dynamic/public' {
 	export const env: {
+		PUBLIC_SITE_URL: string;
+		PUBLIC_SUPABASE_URL: string;
+		PUBLIC_SUPABASE_PUBLISHABLE_KEY: string;
 		[key: `PUBLIC_${string}`]: string | undefined;
 	}
 }

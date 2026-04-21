@@ -1,7 +1,7 @@
 import {
   corruptPersistedSession,
   expect,
-  expectProtectedRouteToRedirectToSignIn,
+  openCalendar,
   seededCalendars,
   seededUsers,
   signInThroughUi,
@@ -19,10 +19,10 @@ test('seeded member can sign in, open the permitted Alpha calendar, and see expl
   await expect(page.getByTestId('groups-shell')).toHaveAttribute('data-shell-bootstrap', 'ready');
   await expect(page.getByTestId('mobile-group-card')).toContainText(seededUsers.alphaMember.expectedGroups[0]);
 
-  await page.getByTestId('mobile-primary-calendar-link').click();
-  await expect(page).toHaveURL(new RegExp(`/calendars/${seededCalendars.alphaShared}$`));
-  await expect(page.getByTestId('calendar-shell')).toBeVisible();
-  await expect(page.getByTestId('calendar-shell').getByRole('heading', { name: 'Alpha shared', exact: true })).toBeVisible();
+  await openCalendar(page, {
+    calendarId: seededCalendars.alphaShared,
+    expectedName: 'Alpha shared'
+  });
   await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-denied-reason', 'none');
 
   await page.goto(`/calendars/${seededCalendars.betaShared}`);
@@ -44,30 +44,38 @@ test('seeded member can sign in, open the permitted Alpha calendar, and see expl
 test('reload keeps a valid trusted session working and sign-out closes protected routes again', async ({ page }) => {
   await signInThroughUi(page, seededUsers.alphaMember);
 
-  await page.goto(`/calendars/${seededCalendars.alphaShared}`);
-  await expect(page.getByTestId('calendar-shell')).toBeVisible();
+  await openCalendar(page, {
+    calendarId: seededCalendars.alphaShared,
+    expectedName: 'Alpha shared'
+  });
 
   await page.reload();
   await expect(page).toHaveURL(new RegExp(`/calendars/${seededCalendars.alphaShared}$`));
   await expect(page.getByTestId('calendar-shell')).toBeVisible();
-  await expect(page.getByTestId('calendar-shell').getByRole('heading', { name: 'Alpha shared', exact: true })).toBeVisible();
+  await expect(page.getByTestId('calendar-shell').locator('h1').filter({ hasText: 'Alpha shared' })).toBeVisible();
 
   await page.getByTestId('mobile-shell-signout').click();
   await expect(page).toHaveURL(/\/signin\?flow=signed-out/);
   await expect(page.getByTestId('mobile-signin-entrypoint')).toHaveAttribute('data-signin-flow', 'signed-out');
   await expect(page.getByTestId('mobile-auth-state')).toHaveAttribute('data-auth-phase', 'signed-out');
 
-  await expectProtectedRouteToRedirectToSignIn(page, `/calendars/${seededCalendars.alphaShared}`);
-  await expect(page.getByTestId('mobile-auth-state')).toHaveAttribute('data-auth-reason', 'AUTH_REQUIRED');
+  await page.goto(`/calendars/${seededCalendars.alphaShared}`);
+  await expect(page.getByTestId('mobile-continuity-denied')).toBeVisible();
+  await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-denied-reason', 'cache-missing');
+  await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-failure-phase', 'continuity');
 });
 
 test('malformed persisted session data fails closed and routes back to sign-in with an invalid-session reason', async ({ page }) => {
   await signInThroughUi(page, seededUsers.alphaMember);
-  await page.goto(`/calendars/${seededCalendars.alphaShared}`);
-  await expect(page.getByTestId('calendar-shell')).toBeVisible();
+  await openCalendar(page, {
+    calendarId: seededCalendars.alphaShared,
+    expectedName: 'Alpha shared'
+  });
 
   await corruptPersistedSession(page);
-  await expectProtectedRouteToRedirectToSignIn(page, `/calendars/${seededCalendars.alphaShared}`, 'invalid-session');
-  await expect(page.getByTestId('mobile-auth-state')).toHaveAttribute('data-auth-surface-state', 'invalid-session');
-  await expect(page.getByTestId('mobile-auth-state')).toHaveAttribute('data-auth-reason', 'INVALID_SESSION');
+  await page.goto(`/calendars/${seededCalendars.alphaShared}`);
+  await expect(page.getByTestId('mobile-continuity-denied')).toBeVisible();
+  await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-denied-reason', 'INVALID_SESSION');
+  await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-failure-phase', 'continuity');
+  await expect(page.getByRole('link', { name: 'Sign in again' })).toHaveAttribute('href', /flow=invalid-session/);
 });

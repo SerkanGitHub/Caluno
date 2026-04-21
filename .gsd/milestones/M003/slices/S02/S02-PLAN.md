@@ -80,7 +80,7 @@ The order follows the real continuity risk curve. T01 retires drift first by mov
   - Do: Replace the calendar placeholder route with a compact mobile week board, phone-first shift editor controls, and stable queue/sync/test-id diagnostics that read from the local-first controller.
   - Verify: `pnpm --dir apps/mobile exec vitest run tests/mobile-sync-runtime.unit.test.ts tests/mobile-continuity.unit.test.ts && pnpm --dir apps/mobile check && pnpm --dir apps/mobile build`
   - Done when: pending and retryable shifts stay visible across reload, and the calendar surface clearly distinguishes trusted-online, cached-offline, draining, and paused-retryable states.
-- [ ] **T05: Prove mobile offline continuity end to end and sync native plugins** `est:90m`
+- [x] **T05: Prove mobile offline continuity end to end and sync native plugins** `est:90m`
   - Why: The slice is only done when the full offline reopen and reconnect story is proven on the real entry path and the native project still syncs.
   - Files: `apps/mobile/tests/e2e/fixtures.ts`, `apps/mobile/tests/e2e/calendar-offline.spec.ts`, `apps/mobile/tests/e2e/auth-scope.spec.ts`, `apps/mobile/playwright.config.ts`, `apps/mobile/package.json`, `apps/mobile/capacitor.config.ts`, `apps/mobile/ios/App/App.xcodeproj/project.pbxproj`
   - Do: Extend the mobile Playwright harness to prove online warm-up, offline reopen, offline edit survival across reload, reconnect drain, and fail-closed denial for unsynced calendars, then finish with `cap:sync`.

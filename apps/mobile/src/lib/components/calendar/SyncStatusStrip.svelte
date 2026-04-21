@@ -127,7 +127,7 @@
     {/if}
 
     <div class="sync-strip__actions">
-      <button class="button button-secondary" type="button" onclick={() => onRefresh()} disabled={!canRefresh || refreshing}>
+      <button class="button button-secondary" type="button" onclick={() => onRefresh()} disabled={!canRefresh || refreshing} data-testid="calendar-refresh-button">
         {refreshing ? 'Refreshing…' : 'Refresh trusted week'}
       </button>
       <button
@@ -135,6 +135,7 @@
         type="button"
         onclick={() => onRetryDrain()}
         disabled={!canRefresh || retrying || controllerState.queueLength === 0}
+        data-testid="calendar-drain-button"
       >
         {retrying ? 'Draining…' : controllerState.retryableQueueLength > 0 ? 'Retry queue' : 'Drain queue'}
       </button>

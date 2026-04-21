@@ -20,6 +20,7 @@
     failureDetail?: string | null;
     primaryHref?: string | null;
     primaryLabel?: string | null;
+    shellTestId?: string | null;
     children?: import('svelte').Snippet;
   };
 
@@ -38,6 +39,7 @@
     failureDetail = null,
     primaryHref = null,
     primaryLabel = null,
+    shellTestId = null,
     children
   }: Props = $props();
 
@@ -95,7 +97,7 @@
 
 <div
   class="mobile-shell-frame"
-  data-testid="mobile-shell-frame"
+  data-testid={shellTestId ?? 'mobile-shell-frame'}
   data-shell-bootstrap={shellBootstrapMode}
   data-route-mode={routeMode}
   data-snapshot-origin={snapshotOrigin}

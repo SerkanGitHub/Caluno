@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-21T10:54:35Z | Files: 464 | Described: 0/464
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-21T10:54:35Z","fingerprint":"f16fd08942df75b46551407058521c680504b081","fileCount":464,"truncated":false} -->
+Generated: 2026-04-21T11:09:44Z | Files: 471 | Described: 0/471
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-21T11:09:44Z","fingerprint":"741da440132e5af3ed9e522e9b3c0b8225012d8b","fileCount":471,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -83,43 +83,46 @@ Generated: 2026-04-21T10:54:35Z | Files: 464 | Described: 0/464
 - `apps/mobile/.svelte-kit/output/client/_app/version.json`
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/assets/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/0.ci6y-9Wa.css`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/0.F8d5DQbR.css`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/2.CvqVE8tP.css`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/3.mHlEkn6y.css`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/3.BjVniz8g.css`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/4.uJGzGZgV.css`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/5.D7V9Fcow.css`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/MobileShell.RtvhMW7e.css`
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/3bLNsJUW.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/B4UPgD2r.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/Bc9djO5S.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BcJ4tDa0.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BFMBlgpl.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BlfASW5h.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BtLcqQG7.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BtuoRBFM.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BwXHGXbc.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CtGaJ1xr.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/-vqusUnX.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/2WmQ8Et0.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/5M4fRflV.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/aspVDWtK.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BrFZ6NHt.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/Btw0dzQj.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/C-QreVHk.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CKbkPM2I.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CPk1WoCL.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CWeFt6jb.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CzUbXx83.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DeAaLycq.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DFpi0t-l.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DUJ2Qr7k.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DY0yhLPR.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CxYkEkFj.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/D2g9vb6W.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/D8jecx1F.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DOlCIplG.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DoTdV46f.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/LTnrRdTx.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/PPVm8Dsz.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/rpg3dlon.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/TkKPizu3.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/Zbhf_a-M.js`
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/entry/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.pmBKlS43.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.BpTH6KYT.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.OoJKH2J4.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.CtmXL3Na.js`
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.ClM9KbRK.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.Cl3Nv5Eq.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.CGs1wNGI.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.LPSMoUWE.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.D91o235w.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.CWsmULNb.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.CY_aaunT.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.DzpKHjv2.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.BuBha7en.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.D5iVj_0H.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.C4trWe4h.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.ClvXCYyu.js`
 
 ### apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/
 - `apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/env.js`
@@ -135,10 +138,10 @@ Generated: 2026-04-21T10:54:35Z | Files: 464 | Described: 0/464
 - `apps/mobile/.svelte-kit/output/server/.vite/manifest.json`
 
 ### apps/mobile/.svelte-kit/output/server/_app/immutable/assets/
-- `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_layout.DxgQeD05.css`
+- `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_layout.YzRAIQiD.css`
 - `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_page.-fczuQlw.css`
 - `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_page.CoXGxDD0.css`
-- `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_page.mHlEkn6y.css`
+- `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_page.H1DeJkxM.css`
 - `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_page.uJGzGZgV.css`
 - `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/MobileShell.C33lfloN.css`
 
@@ -244,6 +247,12 @@ Generated: 2026-04-21T10:54:35Z | Files: 464 | Described: 0/464
 
 ### apps/mobile/src/lib/components/
 - `apps/mobile/src/lib/components/MobileShell.svelte`
+
+### apps/mobile/src/lib/components/calendar/
+- `apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte`
+- `apps/mobile/src/lib/components/calendar/ShiftCard.svelte`
+- `apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte`
+- `apps/mobile/src/lib/components/calendar/SyncStatusStrip.svelte`
 
 ### apps/mobile/src/lib/continuity/
 - `apps/mobile/src/lib/continuity/mobile-app-shell-cache.ts`

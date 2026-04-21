@@ -214,6 +214,7 @@
   type="button"
   onclick={() => (open = true)}
   disabled={!canSubmit && mode === 'create'}
+  data-testid={`${mode}-shift-trigger-${formId.replace(/:/g, '-')}`}
 >
   {buttonLabel}
 </button>
@@ -256,7 +257,7 @@
           {#if mode !== 'move'}
             <label class="field">
               <span>Title</span>
-              <input class="input" name="title" bind:value={draftTitle} placeholder="Opening shift" required />
+              <input class="input" name="title" bind:value={draftTitle} placeholder="Opening shift" required data-testid={`${mode}-title-input`} />
             </label>
           {:else}
             <div class="code-strip">
@@ -268,11 +269,11 @@
           <div class="calendar-form-grid">
             <label class="field">
               <span>Start</span>
-              <input class="input" type="datetime-local" name="startAt" bind:value={draftStartAt} required />
+              <input class="input" type="datetime-local" name="startAt" bind:value={draftStartAt} required data-testid={`${mode}-start-input`} />
             </label>
             <label class="field">
               <span>End</span>
-              <input class="input" type="datetime-local" name="endAt" bind:value={draftEndAt} required />
+              <input class="input" type="datetime-local" name="endAt" bind:value={draftEndAt} required data-testid={`${mode}-end-input`} />
             </label>
           </div>
 
@@ -289,7 +290,7 @@
               <div class="calendar-form-grid recurrence-block__grid">
                 <label class="field">
                   <span>Cadence</span>
-                  <select class="input" name="recurrenceCadence" bind:value={recurrenceCadence}>
+                  <select class="input" name="recurrenceCadence" bind:value={recurrenceCadence} data-testid={`${mode}-recurrence-cadence-input`}>
                     <option value="">One-off</option>
                     <option value="daily">Daily</option>
                     <option value="weekly">Weekly</option>
@@ -298,15 +299,15 @@
                 </label>
                 <label class="field">
                   <span>Interval</span>
-                  <input class="input" type="number" min="1" step="1" name="recurrenceInterval" bind:value={recurrenceInterval} />
+                  <input class="input" type="number" min="1" step="1" name="recurrenceInterval" bind:value={recurrenceInterval} data-testid={`${mode}-recurrence-interval-input`} />
                 </label>
                 <label class="field">
                   <span>Repeat count</span>
-                  <input class="input" type="number" min="1" step="1" name="repeatCount" bind:value={repeatCount} />
+                  <input class="input" type="number" min="1" step="1" name="repeatCount" bind:value={repeatCount} data-testid={`${mode}-repeat-count-input`} />
                 </label>
                 <label class="field">
                   <span>Repeat until</span>
-                  <input class="input" type="datetime-local" name="repeatUntil" bind:value={repeatUntil} />
+                  <input class="input" type="datetime-local" name="repeatUntil" bind:value={repeatUntil} data-testid={`${mode}-repeat-until-input`} />
                 </label>
               </div>
             </div>
@@ -329,8 +330,8 @@
       {/if}
 
       <footer class="shift-editor-sheet__footer">
-        <button class="button button-secondary" type="button" onclick={closeSheet}>Keep browsing</button>
-        <button class={`button ${mode === 'delete' ? 'button-danger' : 'button-primary'}`} type="button" onclick={(event) => handleSubmit(event as unknown as SubmitEvent)} disabled={!canSubmit || isSubmitting}>
+        <button class="button button-secondary" type="button" onclick={closeSheet} data-testid={`${mode}-dismiss-button`}>Keep browsing</button>
+        <button class={`button ${mode === 'delete' ? 'button-danger' : 'button-primary'}`} type="button" onclick={(event) => handleSubmit(event as unknown as SubmitEvent)} disabled={!canSubmit || isSubmitting} data-testid={`${mode}-submit-button`}>
           {submitLabel}
         </button>
       </footer>
