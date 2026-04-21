@@ -10,11 +10,14 @@ return {
 	assets: new Set([]),
 	mimeTypes: {},
 	_: {
-		client: {start:"_app/immutable/entry/start.COGiVDO5.js",app:"_app/immutable/entry/app.CD1jARpC.js",imports:["_app/immutable/entry/start.COGiVDO5.js","_app/immutable/chunks/B4jHWqg4.js","_app/immutable/chunks/dcLUnqGf.js","_app/immutable/chunks/4Y___cZe.js","_app/immutable/entry/app.CD1jARpC.js","_app/immutable/chunks/dcLUnqGf.js","_app/immutable/chunks/Ds6tSSsm.js","_app/immutable/chunks/X0df5b2B.js","_app/immutable/chunks/4Y___cZe.js","_app/immutable/chunks/oY3twIYM.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
+		client: {start:"_app/immutable/entry/start.DyR4IDGI.js",app:"_app/immutable/entry/app.B0OW-NXL.js",imports:["_app/immutable/entry/start.DyR4IDGI.js","_app/immutable/chunks/CjtXrsKL.js","_app/immutable/chunks/Dv_1JmhW.js","_app/immutable/chunks/CWeFt6jb.js","_app/immutable/chunks/DBq9RprB.js","_app/immutable/entry/app.B0OW-NXL.js","_app/immutable/chunks/Dv_1JmhW.js","_app/immutable/chunks/CFnQACfi.js","_app/immutable/chunks/ArBnPO9p.js","_app/immutable/chunks/DBq9RprB.js","_app/immutable/chunks/BtSRilfv.js","_app/immutable/chunks/CJlcAf7m.js","_app/immutable/chunks/BlHDoXnt.js","_app/immutable/chunks/B1ecOEsu.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:true},
 		nodes: [
 			__memo(() => import('./nodes/0.js')),
 			__memo(() => import('./nodes/1.js')),
-			__memo(() => import('./nodes/2.js'))
+			__memo(() => import('./nodes/2.js')),
+			__memo(() => import('./nodes/3.js')),
+			__memo(() => import('./nodes/4.js')),
+			__memo(() => import('./nodes/5.js'))
 		],
 		remotes: {
 			
@@ -25,6 +28,27 @@ return {
 				pattern: /^\/$/,
 				params: [],
 				page: { layouts: [0,], errors: [1,], leaf: 2 },
+				endpoint: null
+			},
+			{
+				id: "/calendars/[calendarId]",
+				pattern: /^\/calendars\/([^/]+?)\/?$/,
+				params: [{"name":"calendarId","optional":false,"rest":false,"chained":false}],
+				page: { layouts: [0,], errors: [1,], leaf: 3 },
+				endpoint: null
+			},
+			{
+				id: "/groups",
+				pattern: /^\/groups\/?$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 4 },
+				endpoint: null
+			},
+			{
+				id: "/signin",
+				pattern: /^\/signin\/?$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 5 },
 				endpoint: null
 			}
 		],

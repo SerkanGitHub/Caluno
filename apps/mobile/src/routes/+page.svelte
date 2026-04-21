@@ -7,12 +7,12 @@
 
   function buildDestination() {
     if (data.authState.phase === 'authenticated') {
-      return '/groups';
+      return '/groups?landing=primary';
     }
 
     const reason = data.authState.phase === 'invalid-session' ? 'INVALID_SESSION' : 'AUTH_REQUIRED';
     const flow = data.authState.phase === 'invalid-session' ? 'invalid-session' : 'auth-required';
-    return `/signin?flow=${flow}&reason=${reason}&returnTo=${encodeURIComponent('/groups')}`;
+    return `/signin?flow=${flow}&reason=${reason}&returnTo=${encodeURIComponent('/groups?landing=primary')}`;
   }
 
   const handoffLabel = $derived.by(() => {

@@ -179,3 +179,9 @@
 **Context:** M003/S01/T01 extracted trusted-scope helpers into `@repo/caluno-core` for both web and mobile consumption.
 **Rule/Pattern:** When moving reusable logic out of `apps/web` in this repo, keep workspace packages free of Svelte-only imports like `$env/dynamic/public`, and expose any needed Svelte runtime integration through thin app-local wrapper modules.
 **Rationale:** Workspace packages need to load in both mobile Vitest and web runtime contexts; pulling Svelte virtual modules into the shared package breaks that portability and recreates the same cross-surface drift risk the extraction was meant to remove.
+
+## 2026-04-21: Wrap Supabase Postgrest builders in `Promise.resolve(...)` before feeding them to generic timeout helpers
+
+**Context:** M003/S01/T03 added client-side mobile shell loads that apply a generic timeout wrapper around Supabase `.from(...).select(...).returns()` queries.
+**Rule/Pattern:** In this repo, if a helper expects a real `Promise<T>`, wrap Supabase Postgrest builder chains with `Promise.resolve(...)` before passing them into the helper.
+**Rationale:** Supabase query builders are awaitable but not typed as full `Promise<T>` instances under `svelte-check`, so generic timeout wrappers can type-fail even though the runtime query works; the explicit wrap keeps timeout helpers and compile-time checking aligned.

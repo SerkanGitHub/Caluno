@@ -1,11 +1,13 @@
 import { E as ENDPOINT_METHODS, P as PAGE_METHODS, n as negotiate, m as method_not_allowed, h as handle_error_and_jsonify, g as get_status, i as is_form_content_type, a as normalize_error, s as stringify, b as get_global_name, c as serialize_uses, d as clarify_devalue_error, e as get_node_type, f as noop, j as escape_html, S as SVELTE_KIT_ASSETS, k as create_remote_key, l as static_error_page, r as redirect_response, p as parse_remote_arg, o as stringify$1, q as deserialize_binary_form, t as split_remote_key, u as once, v as has_prerendered_path, T as TRAILING_SLASH_PARAM, I as INVALIDATED_PARAM, w as handle_fatal_error, x as format_server_error } from "./chunks/shared.js";
-import { B as BROWSER, u as uneval } from "./chunks/render-context.js";
+import { b as browser } from "./chunks/false.js";
 import { json, text, isRedirect, error } from "@sveltejs/kit";
 import { Redirect, SvelteKitError, ActionFailure, HttpError } from "@sveltejs/kit/internal";
 import { with_request_store, merge_tracing, try_get_request_store } from "@sveltejs/kit/internal/server";
 import { a as assets, b as base, c as app_dir, r as relative, o as override, d as reset } from "./chunks/environment.js";
-import { m as make_trackable, d as disable_search, a as decode_params, S as SCHEME, w as writable, r as readable, v as validate_layout_server_exports, b as validate_layout_exports, c as validate_page_server_exports, e as validate_page_exports, n as normalize_path, f as resolve, g as decode_pathname, h as validate_server_exports } from "./chunks/exports.js";
+import { u as uneval } from "./chunks/render-context.js";
+import { m as make_trackable, d as disable_search, a as decode_params, S as SCHEME, v as validate_layout_server_exports, b as validate_layout_exports, c as validate_page_server_exports, e as validate_page_exports, n as normalize_path, r as resolve, f as decode_pathname, g as validate_server_exports } from "./chunks/exports.js";
 import { b as base64_encode, t as text_decoder, a as text_encoder, g as get_relative_path } from "./chunks/utils.js";
+import { r as readable, w as writable } from "./chunks/index.js";
 import { p as public_env, r as read_implementation, o as options, s as set_private_env, a as set_public_env, g as get_hooks, b as set_read_implementation } from "./chunks/internal.js";
 function with_resolvers() {
   let resolve2;
@@ -204,7 +206,7 @@ async function handle_action_json_request(event, event_state, options2, server) 
   check_named_default_separate(actions);
   try {
     const data = await call_action(event, event_state, actions);
-    if (BROWSER) ;
+    if (browser) ;
     if (data instanceof ActionFailure) {
       return action_json({
         type: "failure",
@@ -289,7 +291,7 @@ async function handle_action_request(event, event_state, server) {
   check_named_default_separate(actions);
   try {
     const data = await call_action(event, event_state, actions);
-    if (BROWSER) ;
+    if (browser) ;
     if (data instanceof ActionFailure) {
       return {
         type: "failure",
@@ -1606,7 +1608,7 @@ async function render_response({
     };
     const fetch2 = globalThis.fetch;
     try {
-      if (BROWSER) ;
+      if (browser) ;
       const state2 = { ...event_state, is_in_render: true };
       rendered = await with_request_store({ event, state: state2 }, async () => {
         if (relative) override({ base: base$1, assets: assets$1 });
@@ -2534,7 +2536,7 @@ async function render_page(event, event_state, page, options2, manifest, state, 
     const ssr = nodes.ssr();
     const csr = nodes.csr();
     if (ssr === false && !(state.prerendering && should_prerender_data)) {
-      if (BROWSER && action_result && !event.request.headers.has("x-sveltekit-action")) ;
+      if (browser && action_result && !event.request.headers.has("x-sveltekit-action")) ;
       return await render_response({
         branch: [],
         fetched,
@@ -3751,12 +3753,12 @@ async function internal_respond(request, options2, manifest, state) {
       if (url.pathname === base || url.pathname === base + "/") {
         trailing_slash = "always";
       } else if (page_nodes) {
-        if (BROWSER) ;
+        if (browser) ;
         trailing_slash = page_nodes.trailing_slash();
       } else if (route.endpoint) {
         const node = await route.endpoint();
         trailing_slash = node.trailingSlash ?? "never";
-        if (BROWSER) ;
+        if (browser) ;
       }
       if (!is_data_request) {
         const normalized = normalize_path(url.pathname, trailing_slash);

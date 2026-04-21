@@ -3,6 +3,12 @@
 		"src/routes/+layout.ts",
 		"src/routes/+layout.ts"
 	],
+	"/calendars/[calendarId]": [
+		"src/routes/+layout.ts"
+	],
+	"/groups": [
+		"src/routes/+layout.ts"
+	],
 	"/signin": [
 		"src/routes/+layout.ts"
 	]

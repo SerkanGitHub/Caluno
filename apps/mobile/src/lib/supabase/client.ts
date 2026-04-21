@@ -26,14 +26,16 @@ export type MobileSupabaseAuthClient = {
   };
 };
 
-let browserClient: MobileSupabaseAuthClient | undefined;
+export type MobileSupabaseDataClient = MobileSupabaseAuthClient & Pick<SupabaseClient, 'from'>;
 
-export function createSupabaseBrowserClient(source?: SupabasePublicEnv): MobileSupabaseAuthClient {
+let browserClient: MobileSupabaseDataClient | undefined;
+
+export function createSupabaseBrowserClient(source?: SupabasePublicEnv): MobileSupabaseDataClient {
   const { url, publishableKey } = readSupabasePublicEnv(source);
   return createBrowserClient(url, publishableKey);
 }
 
-export function getSupabaseBrowserClient(): MobileSupabaseAuthClient {
+export function getSupabaseBrowserClient(): MobileSupabaseDataClient {
   if (!browser) {
     throw new Error('getSupabaseBrowserClient() must only run in the browser.');
   }

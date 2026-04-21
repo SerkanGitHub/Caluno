@@ -10,7 +10,7 @@
   const authState = $derived($mobileSession);
   const flow = $derived(page.url.searchParams.get('flow')?.trim() ?? 'ready');
   const reason = $derived(page.url.searchParams.get('reason')?.trim().toUpperCase() ?? null);
-  const returnTo = $derived(normalizeInternalPath(page.url.searchParams.get('returnTo'), '/groups'));
+  const returnTo = $derived(normalizeInternalPath(page.url.searchParams.get('returnTo'), '/groups?landing=primary'));
   const surface = $derived.by(() => resolveSurface(authState, flow, reason));
   const formBlocked = $derived(authState.phase === 'error' && authState.failurePhase === 'config');
 

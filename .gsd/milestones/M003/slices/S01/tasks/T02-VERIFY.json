@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T02",
+  "unitId": "M003/S01/T02",
+  "timestamp": 1776759135084,
+  "passed": false,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "pnpm --dir apps/mobile exec vitest run tests/auth-bootstrap.unit.test.ts tests/trusted-core.unit.test.ts\npnpm --dir apps/mobile check",
+      "exitCode": 0,
+      "durationMs": 3221,
+      "verdict": "pass"
+    }
+  ],
+  "retryAttempt": 1,
+  "maxRetries": 2,
+  "postExecutionChecks": [
+    {
+      "category": "import",
+      "target": "apps/mobile/src/routes/+layout.ts:4",
+      "passed": false,
+      "message": "Import './$types' in apps/mobile/src/routes/+layout.ts:4 does not resolve to an existing file",
+      "blocking": true
+    }
+  ]
+}

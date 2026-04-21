@@ -67,7 +67,7 @@ The order follows the real risk curve for this slice. T01 retires architecture d
   - Do: Add the mobile Supabase browser client, implement one-time `getSession()` + `getUser()` validation, keep the slice on password auth, and replace the starter screen with explicit signed-out, invalid-session, loading, and error surfaces.
   - Verify: `pnpm --dir apps/mobile exec vitest run tests/auth-bootstrap.unit.test.ts tests/trusted-core.unit.test.ts && pnpm --dir apps/mobile check`
   - Done when: protected routes stay closed until the session is revalidated, sign-in works through the typed mobile auth store, and auth-state regressions are covered by unit tests.
-- [ ] **T03: Ship the mobile-first shell and trusted calendar denial states** `est:2h`
+- [x] **T03: Ship the mobile-first shell and trusted calendar denial states** `est:2h`
   - Why: This is the user-visible heart of the slice: mobile must load only trusted scope, feel like a phone app, and preserve the same fail-closed denial semantics as web.
   - Files: `apps/mobile/src/lib/shell/load-app-shell.ts`, `apps/mobile/src/lib/components/MobileShell.svelte`, `apps/mobile/src/routes/groups/+page.svelte`, `apps/mobile/src/routes/calendars/[calendarId]/+page.svelte`, `apps/mobile/src/routes/+layout.svelte`, `apps/mobile/src/app.css`, `apps/mobile/tests/shell-scope.unit.test.ts`
   - Do: Mirror the web app-shell query shape with authenticated Supabase reads, shape the inventory with shared helpers, build a mobile-specific groups/calendar shell, and render explicit denied states for malformed and out-of-scope calendar ids.
