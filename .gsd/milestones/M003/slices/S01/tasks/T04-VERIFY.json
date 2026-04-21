@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T04",
+  "unitId": "M003/S01/T04",
+  "timestamp": 1776761521495,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "npx --yes supabase db reset --local --yes",
+      "exitCode": 0,
+      "durationMs": 25132,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/mobile exec playwright test tests/e2e/auth-scope.spec.ts\npnpm --dir apps/mobile check",
+      "exitCode": 0,
+      "durationMs": 11406,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/mobile build",
+      "exitCode": 0,
+      "durationMs": 2394,
+      "verdict": "pass"
+    }
+  ]
+}

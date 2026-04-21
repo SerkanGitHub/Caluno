@@ -3,8 +3,8 @@ import { createCalendarController } from '../../src/lib/offline/calendar-control
 import {
   drainReconnectQueue,
   type CalendarControllerServerOutcome
-} from '../../src/lib/offline/sync-engine';
-import { createOfflineMutationQueue } from '../../src/lib/offline/mutation-queue';
+} from '@repo/caluno-core/offline/sync-engine';
+import { createOfflineMutationQueue } from '@repo/caluno-core/offline/mutation-queue';
 import {
   OFFLINE_REPOSITORY_MEMORY_STORAGE_KEY,
   createMemoryScheduleRepository,

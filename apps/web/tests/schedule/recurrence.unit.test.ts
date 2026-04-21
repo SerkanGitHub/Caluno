@@ -6,7 +6,7 @@ import {
   materializeShiftOccurrences,
   normalizeShiftDraft,
   normalizeVisibleRange
-} from '../../src/lib/schedule/recurrence';
+} from '@repo/caluno-core/schedule/recurrence';
 
 function readRepoFile(relativePath: string): string {
   return readFileSync(resolve(process.cwd(), '..', '..', relativePath), 'utf8');

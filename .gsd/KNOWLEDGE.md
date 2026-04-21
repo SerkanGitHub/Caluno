@@ -197,3 +197,9 @@
 **Context:** M003/S01/T04 needed real sign-out proof from the protected mobile shell.
 **Rule/Pattern:** In this repo's mobile app, keep sign-out or similar account actions available directly inside protected shell surfaces instead of assuming authenticated users can navigate to `/signin` to manage session state.
 **Rationale:** The mobile layout intentionally redirects authenticated users away from `/signin`, so account controls placed only there become unreachable from the trusted shell and break truthful E2E/runtime proof of sign-out behavior.
+
+## 2026-04-21: Shared contract extraction should move pure types with the helpers, not leave them trapped in app-local modules
+
+**Context:** M003/S02/T01 extracted offline continuity, queue/replay, and schedule helpers into `@repo/caluno-core` for mobile reuse.
+**Rule/Pattern:** When promoting pure helper modules out of `apps/web`, also promote the minimal schedule/offline/controller-facing type shapes they depend on into the shared package, then keep app-local files as thin re-export or runtime-only wrappers.
+**Rationale:** Leaving helper implementations shared but their core types in app-local files forces the new package back to web-only imports and recreates the portability break that the extraction was meant to remove.

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { deriveVisibleWeekConflicts } from '../../src/lib/schedule/conflicts';
+import { deriveVisibleWeekConflicts } from '@repo/caluno-core/schedule/conflicts';
 
 describe('visible-week conflict derivation', () => {
   it('detects real overlaps while keeping touching boundaries clean', () => {

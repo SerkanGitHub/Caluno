@@ -4,7 +4,7 @@ import {
   sortShiftsForBoard,
   summarizeScheduleActions,
   toDateTimeLocalValue
-} from '../../src/lib/schedule/board';
+} from '@repo/caluno-core/schedule/board';
 
 describe('schedule board helpers', () => {
   it('keeps multiple same-day shifts sorted by start, end, title, and id', () => {

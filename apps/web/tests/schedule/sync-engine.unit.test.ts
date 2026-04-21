@@ -1,15 +1,15 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { OfflineMutationQueueEntry, OfflineMutationQueueReadResult } from '../../src/lib/offline/mutation-queue';
-import type { OfflineWeekSnapshotReadResult, OfflineScheduleScope } from '../../src/lib/offline/repository';
+import type { OfflineMutationQueueEntry, OfflineMutationQueueReadResult } from '@repo/caluno-core/offline/mutation-queue';
+import type { OfflineWeekSnapshotReadResult, OfflineScheduleScope } from '@repo/caluno-core/offline/types';
 import {
-  createCalendarShiftRealtimeSubscription,
   decideTrustedRefreshSnapshotWrite,
   drainReconnectQueue,
   mergeRealtimeDiagnosticsForScopeReload,
   rebaseTrustedScheduleWithLocalQueue,
   shouldRefreshTrustedWeekFromShiftRealtimeEvent,
   type ShiftRealtimePayload
-} from '../../src/lib/offline/sync-engine';
+} from '@repo/caluno-core/offline/sync-engine';
+import { createCalendarShiftRealtimeSubscription } from '../../src/lib/offline/sync-engine';
 import type { CalendarScheduleView, CalendarShift } from '../../src/lib/server/schedule';
 
 function createScope(): OfflineScheduleScope {
