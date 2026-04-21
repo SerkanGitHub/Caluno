@@ -47,6 +47,25 @@
       "_internal.js"
     ]
   },
+  "_MobileShell.C33lfloN.css": {
+    "file": "_app/immutable/assets/MobileShell.C33lfloN.css",
+    "src": "_MobileShell.C33lfloN.css"
+  },
+  "_MobileShell.js": {
+    "file": "chunks/MobileShell.js",
+    "name": "MobileShell",
+    "imports": [
+      "_root.js",
+      "_exports.js",
+      "_utils.js",
+      "_state.svelte.js",
+      "_index2.js",
+      "_mobile-session.js"
+    ],
+    "css": [
+      "_app/immutable/assets/MobileShell.C33lfloN.css"
+    ]
+  },
   "_environment.js": {
     "file": "chunks/environment.js",
     "name": "environment"
@@ -85,23 +104,11 @@
       "_environment.js"
     ]
   },
-  "_load-app-shell.C33lfloN.css": {
-    "file": "_app/immutable/assets/load-app-shell.C33lfloN.css",
-    "src": "_load-app-shell.C33lfloN.css"
-  },
   "_load-app-shell.js": {
     "file": "chunks/load-app-shell.js",
     "name": "load-app-shell",
     "imports": [
-      "_root.js",
-      "_exports.js",
-      "_utils.js",
-      "_state.svelte.js",
-      "_index2.js",
       "_mobile-session.js"
-    ],
-    "css": [
-      "_app/immutable/assets/load-app-shell.C33lfloN.css"
     ]
   },
   "_mobile-session.js": {
@@ -166,7 +173,8 @@
     "src": "src/routes/+layout.ts",
     "isEntry": true,
     "imports": [
-      "_mobile-session.js"
+      "_mobile-session.js",
+      "_load-app-shell.js"
     ]
   },
   "src/routes/+page.svelte": {
@@ -192,6 +200,8 @@
     "imports": [
       "_root.js",
       "_index2.js",
+      "_MobileShell.js",
+      "_mobile-session.js",
       "_load-app-shell.js"
     ],
     "css": [
@@ -209,6 +219,7 @@
       "_utils.js",
       "_state.svelte.js",
       "_index2.js",
+      "_MobileShell.js",
       "_load-app-shell.js"
     ],
     "css": [

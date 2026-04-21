@@ -1,89 +1,178 @@
-import { a as attr, e as escape_html, b as attr_class, d as derived } from "./root.js";
-import "@sveltejs/kit/internal";
-import "./exports.js";
-import "./utils.js";
-import "@sveltejs/kit/internal/server";
-import "./state.svelte.js";
-import "./index2.js";
-import "./mobile-session.js";
+import { r as readMobileCachedAppShellSnapshot, h as hasSyncedCalendarContinuity } from "./mobile-session.js";
 import "@supabase/ssr";
-function MobileShell($$renderer, $$props) {
-  $$renderer.component(($$renderer2) => {
-    let {
-      viewerName,
-      title,
-      subtitle,
-      activeTab,
-      shellBootstrapMode,
-      onboardingState = null,
-      failurePhase = null,
-      failureDetail = null,
-      primaryHref = null,
-      primaryLabel = null,
-      children
-    } = $$props;
-    const shellTone = derived(() => {
-      if (shellBootstrapMode === "load-failed") {
-        return "tone-danger";
-      }
-      if (shellBootstrapMode === "needs-group") {
-        return "tone-warning";
-      }
-      return "tone-neutral";
-    });
-    const shellLabel = derived(() => {
-      switch (shellBootstrapMode) {
-        case "ready":
-          return "trusted-ready";
-        case "needs-group":
-          return "onboarding-empty";
-        case "load-failed":
-          return "shell-load-failed";
-        case "loading":
-          return "loading-trusted-shell";
-        default:
-          return "idle";
-      }
-    });
-    let signingOut = false;
-    $$renderer2.push(`<div class="mobile-shell-frame svelte-kxq9s8" data-testid="mobile-shell-frame"${attr("data-shell-bootstrap", shellBootstrapMode)}${attr("data-onboarding-state", onboardingState ?? "unknown")}><header class="mobile-shell-header framed-panel svelte-kxq9s8"><div class="shell-kicker-row svelte-kxq9s8"><p class="eyebrow svelte-kxq9s8">Caluno pocket shell</p> <div class="shell-header-actions svelte-kxq9s8"><span class="viewer-chip svelte-kxq9s8">${escape_html(viewerName)}</span> <button class="signout-chip svelte-kxq9s8" type="button"${attr("disabled", signingOut, true)} data-testid="mobile-shell-signout">${escape_html("Sign out")}</button></div></div> <div class="mobile-shell-copy svelte-kxq9s8"><h1 class="svelte-kxq9s8">${escape_html(title)}</h1> <p class="svelte-kxq9s8">${escape_html(subtitle)}</p></div> <div class="status-ribbon svelte-kxq9s8"><article${attr_class(`status-pill ${shellTone()}`, "svelte-kxq9s8")} data-testid="mobile-shell-status"><span class="svelte-kxq9s8">Shell state</span> <strong class="svelte-kxq9s8">${escape_html(shellLabel())}</strong></article> `);
-    if (onboardingState) {
-      $$renderer2.push("<!--[0-->");
-      $$renderer2.push(`<article${attr_class(`status-pill ${onboardingState === "needs-group" ? "tone-warning" : "tone-neutral"}`, "svelte-kxq9s8")}><span class="svelte-kxq9s8">Onboarding</span> <strong class="svelte-kxq9s8">${escape_html(onboardingState)}</strong></article>`);
-    } else {
-      $$renderer2.push("<!--[-1-->");
-    }
-    $$renderer2.push(`<!--]--> `);
-    if (failurePhase) {
-      $$renderer2.push("<!--[0-->");
-      $$renderer2.push(`<article class="status-pill tone-danger svelte-kxq9s8"><span class="svelte-kxq9s8">Failure phase</span> <strong class="svelte-kxq9s8">${escape_html(failurePhase)}</strong></article>`);
-    } else {
-      $$renderer2.push("<!--[-1-->");
-    }
-    $$renderer2.push(`<!--]--></div> `);
-    if (failureDetail) {
-      $$renderer2.push("<!--[0-->");
-      $$renderer2.push(`<p class="shell-caption svelte-kxq9s8">${escape_html(failureDetail)}</p>`);
-    } else {
-      $$renderer2.push("<!--[-1-->");
-    }
-    $$renderer2.push(`<!--]--></header> <section class="mobile-shell-body svelte-kxq9s8">`);
-    children?.($$renderer2);
-    $$renderer2.push(`<!----></section> <nav class="mobile-tab-bar framed-panel svelte-kxq9s8" aria-label="Primary mobile navigation"><a href="/groups"${attr_class("svelte-kxq9s8", void 0, { "active": activeTab === "groups" })}>Groups</a> `);
-    if (primaryHref) {
-      $$renderer2.push("<!--[0-->");
-      $$renderer2.push(`<a${attr("href", primaryHref)}${attr_class("svelte-kxq9s8", void 0, { "active": activeTab === "calendar" })}>${escape_html(primaryLabel ?? "Calendar")}</a>`);
-    } else {
-      $$renderer2.push("<!--[-1-->");
-      $$renderer2.push(`<span class="tab-placeholder svelte-kxq9s8">Calendar locked</span>`);
-    }
-    $$renderer2.push(`<!--]--> <a href="/signin" class="svelte-kxq9s8">Account</a></nav></div>`);
-  });
-}
 function primaryCalendarLandingHref(appShell) {
   return appShell.primaryCalendar ? `/calendars/${appShell.primaryCalendar.id}` : null;
 }
+async function resolveMobileProtectedEntryState(params) {
+  const isProtectedRoute = isProtectedPath(params.pathname);
+  const requestedCalendarId = extractRequestedCalendarId(params.pathname);
+  const signInHref = isProtectedRoute ? buildSignInTarget(
+    params.pathname,
+    params.search ?? "",
+    params.authPhase === "invalid-session" ? "INVALID_SESSION" : "AUTH_REQUIRED"
+  ) : null;
+  if (!isProtectedRoute) {
+    return {
+      isProtectedRoute,
+      routeMode: "public",
+      snapshotOrigin: "none",
+      requestedCalendarId,
+      cachedSnapshot: null,
+      denialReasonCode: null,
+      continuityReason: null,
+      continuityDetail: null,
+      lastTrustedRefreshAt: null,
+      signInHref
+    };
+  }
+  if (params.authPhase === "authenticated") {
+    return {
+      isProtectedRoute,
+      routeMode: "trusted-online",
+      snapshotOrigin: "trusted-online",
+      requestedCalendarId,
+      cachedSnapshot: null,
+      denialReasonCode: null,
+      continuityReason: null,
+      continuityDetail: null,
+      lastTrustedRefreshAt: null,
+      signInHref: null
+    };
+  }
+  if (!canUseCachedContinuity(params.authPhase, params.authReasonCode ?? null)) {
+    return {
+      isProtectedRoute,
+      routeMode: "denied",
+      snapshotOrigin: "none",
+      requestedCalendarId,
+      cachedSnapshot: null,
+      denialReasonCode: params.authReasonCode ?? (params.authPhase === "invalid-session" ? "INVALID_SESSION" : "AUTH_REQUIRED"),
+      continuityReason: null,
+      continuityDetail: describeProtectedEntryDenial(params.authPhase, params.authReasonCode ?? null),
+      lastTrustedRefreshAt: null,
+      signInHref
+    };
+  }
+  const lookup = await readMobileCachedAppShellSnapshot({
+    calendarId: requestedCalendarId,
+    now: params.now,
+    storage: params.continuityStorage,
+    timeoutMs: params.continuityStorageTimeoutMs
+  });
+  if (lookup.status !== "available") {
+    return {
+      isProtectedRoute,
+      routeMode: "denied",
+      snapshotOrigin: "none",
+      requestedCalendarId,
+      cachedSnapshot: null,
+      denialReasonCode: lookup.reason,
+      continuityReason: lookup.reason,
+      continuityDetail: lookup.detail,
+      lastTrustedRefreshAt: null,
+      signInHref
+    };
+  }
+  if (requestedCalendarId) {
+    const continuity = await hasSyncedCalendarContinuity(
+      {
+        userId: lookup.snapshot.viewer.id,
+        calendarId: requestedCalendarId
+      },
+      {
+        storage: params.offlineStorage,
+        timeoutMs: params.offlineStorageTimeoutMs
+      }
+    );
+    if (!continuity.ok) {
+      return {
+        isProtectedRoute,
+        routeMode: "denied",
+        snapshotOrigin: "none",
+        requestedCalendarId,
+        cachedSnapshot: null,
+        denialReasonCode: "storage-unavailable",
+        continuityReason: "storage-unavailable",
+        continuityDetail: continuity.detail,
+        lastTrustedRefreshAt: null,
+        signInHref
+      };
+    }
+    if (!continuity.hasWeek) {
+      return {
+        isProtectedRoute,
+        routeMode: "denied",
+        snapshotOrigin: "none",
+        requestedCalendarId,
+        cachedSnapshot: null,
+        denialReasonCode: "calendar-not-synced",
+        continuityReason: "calendar-not-synced",
+        continuityDetail: "No previously synced week metadata exists for that calendar on this device, so cached continuity failed closed.",
+        lastTrustedRefreshAt: null,
+        signInHref
+      };
+    }
+  }
+  return {
+    isProtectedRoute,
+    routeMode: "cached-offline",
+    snapshotOrigin: "cached-offline",
+    requestedCalendarId,
+    cachedSnapshot: lookup.snapshot,
+    denialReasonCode: null,
+    continuityReason: null,
+    continuityDetail: null,
+    lastTrustedRefreshAt: lookup.snapshot.refreshedAt,
+    signInHref: null
+  };
+}
+function extractRequestedCalendarId(pathname) {
+  const match = pathname.match(/^\/calendars\/([^/?#]+)/);
+  return match?.[1] ?? null;
+}
+function isProtectedPath(pathname) {
+  return pathname === "/groups" || pathname.startsWith("/groups/") || pathname === "/calendars" || pathname.startsWith("/calendars/");
+}
+function normalizeInternalPath(input, fallback = "/groups") {
+  if (!input) {
+    return fallback;
+  }
+  const normalized = input.trim();
+  if (!normalized.startsWith("/") || normalized.startsWith("//")) {
+    return fallback;
+  }
+  return normalized;
+}
+function buildSignInTarget(pathname, search, reason) {
+  const returnTo = normalizeInternalPath(`${pathname}${search}`, "/groups");
+  const flow = reason === "INVALID_SESSION" ? "invalid-session" : "auth-required";
+  return `/signin?flow=${flow}&reason=${reason}&returnTo=${encodeURIComponent(returnTo)}`;
+}
+function canUseCachedContinuity(authPhase, authReasonCode) {
+  if (authPhase === "signed-out") {
+    return true;
+  }
+  if (authPhase !== "error") {
+    return false;
+  }
+  return authReasonCode === "AUTH_BOOTSTRAP_TIMEOUT" || authReasonCode === "AUTH_BOOTSTRAP_FAILED";
+}
+function describeProtectedEntryDenial(authPhase, authReasonCode) {
+  if (authPhase === "invalid-session") {
+    return "The saved session failed trusted verification and continuity was cleared, so the protected route stayed closed.";
+  }
+  switch (authReasonCode) {
+    case "SUPABASE_ENV_MISSING":
+      return "Public Supabase configuration is missing, so the protected route stayed closed instead of guessing cached scope.";
+    case "AUTH_BOOTSTRAP_TIMEOUT":
+      return "Trusted auth verification timed out before continuity eligibility could be confirmed.";
+    case "AUTH_BOOTSTRAP_FAILED":
+      return "Trusted auth verification failed before continuity eligibility could be confirmed.";
+    default:
+      return "Sign in with your Caluno account before opening protected groups or calendars.";
+  }
+}
 export {
-  MobileShell as M,
-  primaryCalendarLandingHref as p
+  primaryCalendarLandingHref as p,
+  resolveMobileProtectedEntryState as r
 };

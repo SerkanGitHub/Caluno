@@ -68,7 +68,7 @@ The order follows the real continuity risk curve. T01 retires drift first by mov
   - Do: Add Preferences-backed continuity storage, persist trusted shell and week metadata, and teach protected mobile routes to reopen only previously synced permitted scope in a truthful `cached-offline` mode.
   - Verify: `pnpm --dir apps/mobile exec vitest run tests/mobile-continuity.unit.test.ts tests/continuity-contract.unit.test.ts && pnpm --dir apps/mobile check`
   - Done when: a previously synced permitted calendar can reopen offline, while stale, mismatched, corrupt, or unsynced continuity state still fails closed.
-- [ ] **T03: Wire mobile local-first schedule storage, trusted writes, and reconnect drain** `est:2h`
+- [x] **T03: Wire mobile local-first schedule storage, trusted writes, and reconnect drain** `est:2h`
   - Why: Continuity without local-first mutation staging would only reopen stale read-only state and still miss the core requirement.
   - Files: `apps/mobile/src/lib/offline/repository.ts`, `apps/mobile/src/lib/offline/runtime.ts`, `apps/mobile/src/lib/offline/transport.ts`, `apps/mobile/src/lib/offline/network.ts`, `apps/mobile/src/lib/offline/app-lifecycle.ts`, `apps/mobile/src/lib/offline/controller.ts`, `apps/mobile/tests/mobile-sync-runtime.unit.test.ts`
   - Do: Implement the mobile repository/runtime adapters, trusted Supabase schedule transport, and one reconnect/drain authority driven by Capacitor Network and App lifecycle signals.

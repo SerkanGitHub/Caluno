@@ -19,11 +19,14 @@
     "cap:add:android": "cap add android"
   },
   "dependencies": {
+    "@capacitor/app": "^8.0.1",
     "@capacitor/core": "^8.0.1",
+    "@capacitor/network": "^8.0.1",
     "@capacitor/preferences": "^8.0.1",
     "@repo/caluno-core": "workspace:*",
     "@supabase/ssr": "^0.7.0",
-    "@supabase/supabase-js": "^2.58.0"
+    "@supabase/supabase-js": "^2.58.0",
+    "rrule": "^2.8.1"
   },
   "devDependencies": {
     "@capacitor/android": "^8.0.1",
