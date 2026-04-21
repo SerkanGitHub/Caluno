@@ -12,7 +12,7 @@ Turn chaotic schedules into shared clarity automatically.
 
 M001 and M002 are complete and validated on the web proof surface.
 
-M003 is in progress. S01 is now complete and turns `apps/mobile` from a Capacitor starter into a real authenticated mobile shell with trusted scope loading and truthful denied states.
+M003 is in progress. S01 and S02 are now complete and turn `apps/mobile` from a Capacitor starter into a real authenticated mobile shell with truthful local-first calendar continuity and editing.
 
 What works today:
 - trusted sign-in, group onboarding, permitted calendar access, and fail-closed denied routes on web
@@ -22,20 +22,21 @@ What works today:
 - visible board/day/shift conflict warnings across online, offline, reconnect, and realtime states on web
 - truthful shared free-time matching with ranked Top picks, explanation-rich windows, and exact suggestion-to-create handoff into the existing calendar flow on web
 - mobile-first auth bootstrap with explicit signed-out, invalid-session, config-error, and loading surfaces
-- shared `@repo/caluno-core` trusted-scope helpers consumed by both web and mobile
+- shared `@repo/caluno-core` trusted-scope, continuity, queue/replay, and schedule helpers consumed by both web and mobile
 - mobile groups and calendar shell routes that load only permitted memberships/calendars through trusted inventory shaping
 - mobile denied states that distinguish malformed calendar ids from real-but-out-of-scope ids without probing arbitrary calendar existence
-- mobile Playwright proof for sign-in, permitted scope, denied scope, reload continuity, sign-out closure, and malformed persisted-session rejection
-- first successful Capacitor iOS bootstrap/sync for the mobile shell
+- mobile continuity that reopens only previously synced permitted calendars in truthful `cached-offline` mode
+- mobile local-first shift create/edit/move/delete with pending and retryable state that survives reload and reconnect drain
+- mobile week-board, shift-card, editor-sheet, and sync-strip UI with stable continuity diagnostics (`data-route-mode`, `data-snapshot-origin`, `data-queue-state`, `data-pending-count`, `data-retryable-count`, `data-sync-phase`)
+- mobile Playwright proof for sign-in, permitted scope, denied scope, reload continuity, sign-out closure, malformed persisted-session rejection, offline reopen, offline edit persistence, reconnect drain, corrupt continuity rejection, unsynced-calendar denial, invalid-week fallback, and malformed queue attribution
+- successful Capacitor iOS sync for the continuity/editing surface with `@capacitor/app`, `@capacitor/network`, and `@capacitor/preferences`
 
 What is not yet complete:
-- mobile schedule continuity, offline edit/drain behavior, and the main calendar editing loop are still pending in M003/S02
 - mobile Find time and create handoff are still pending in M003/S03
 - per-device/per-calendar notification controls and delivery wiring are still pending in M003/S04
 - final cross-surface notification correctness and assembled mobile proof are still pending in M003/S05
 
 What is planned next:
-- M003/S02 extends the new mobile shell into real calendar continuity and editing, including pending offline changes and trusted reconnect drain
 - M003/S03 brings Find time into mobile with compact suggestion browsing and handoff into mobile shift creation
 - M003/S04 adds device-scoped notification controls and delivery wiring for reminders and shared-calendar changes
 - M003/S05 closes the milestone with cross-surface notification correctness and assembled mobile proof that the app does not feel fake
@@ -50,10 +51,12 @@ What is planned next:
 - Thin SvelteKit server composition sits on top of Supabase for trusted schedule and find-time operations
 - Scheduling is local-first, with the server canonical after reconnect
 - Web offline continuity already exists behind repository/controller seams, with browser-local snapshots, queued mutations, reconnect replay, and realtime refresh orchestration
-- Find time is a trusted server-backed capability with explicit fail-closed offline behavior rather than cached guessed answers
-- Shared pure mobile/web auth/scope/app-shell helpers now live in `@repo/caluno-core`, while Svelte/runtime integration stays in app-local wrappers
+- Shared pure continuity, queue/replay, and schedule helpers now live in `@repo/caluno-core`, while runtime-specific Svelte, browser, and Capacitor integration stays in app-local wrappers
+- Mobile continuity uses Capacitor-backed persistence and lifecycle/network adapters, but validates cached shell scope through the same shared fail-closed contract as web
+- Mobile protected calendar routes now expose stable route/sync diagnostics so future slices can inspect continuity state without inferring from UI prose
+- Find time remains a trusted server-backed capability with explicit fail-closed offline behavior rather than cached guessed answers
 - M003 reuses shared product logic and backend contracts where possible, but mobile gets mobile-specific UI flows instead of a thin port of web screens
-- The mobile shell now treats cached Supabase session data as untrusted until `getSession()` plus `getUser()` revalidate it client-side
+- The mobile shell treats cached Supabase session data as untrusted until `getSession()` plus `getUser()` revalidate it client-side
 - Mobile protected routes resolve access only from one shaped trusted inventory snapshot and surface denied reason/failure phase/attempted id explicitly in the UI
 - M003 notification direction remains: local reminders for a user’s own upcoming shifts, push notifications for shared-calendar changes, and per-device/per-calendar control with one calm toggle
 
@@ -65,5 +68,5 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 
 - [x] M001: Shared scheduling substrate — Trusted shared calendars, offline continuity, sync, realtime refresh, and baseline conflict visibility on web.
 - [x] M002: Shared free-time matching — Truthful ranked availability search, explanations, and suggestion-to-create handoff on the shared substrate.
-- [ ] M003: Cross-platform continuity and reminders — Mobile shell/auth/trusted scope are now real; offline continuity, editing, and notification slices remain.
+- [ ] M003: Cross-platform continuity and reminders — Mobile shell plus local-first continuity/editing are now real; Find time and notification slices remain.
 - [ ] M004: Predictive assistance and release hardening — Predictive coordination help and product hardening after cross-platform continuity is real.

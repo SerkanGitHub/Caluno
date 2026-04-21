@@ -15,27 +15,27 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: mapped
 - Notes: M003 extends the trusted shared-calendar permission boundary onto mobile surfaces and keeps create/edit/find-time flows inside permitted calendar scope.
 
-### R009 — The product remains coherent across web and mobile surfaces, with mobile added on top of the same scheduling substrate and domain model.
+### R009 — Mobile is a real first-class Caluno client on the same scheduling substrate and domain model, with mobile-specific UI flows rather than a thin wrapper around web screens.
 - Class: launchability
 - Status: active
-- Description: The product remains coherent across web and mobile surfaces, with mobile added on top of the same scheduling substrate and domain model.
+- Description: Mobile is a real first-class Caluno client on the same scheduling substrate and domain model, with mobile-specific UI flows rather than a thin wrapper around web screens.
 - Why it matters: Caluno is intended to work where coordination actually happens, across both browser and phone contexts.
 - Source: user
-- Primary owning slice: M003 (provisional)
-- Supporting slices: none
-- Validation: unmapped
-- Notes: M001 proves the substrate on web first because that is the available test surface.
+- Primary owning slice: M003/S01
+- Supporting slices: M003/S02, M003/S03
+- Validation: mapped
+- Notes: M003 must make mobile feel real for the core loop: sign in, open shared calendars, create/edit shifts, and use Find time with native-feeling navigation.
 
-### R010 — Users receive reminders and change notifications for important schedule updates without undermining the calmness of the product.
+### R010 — Users control reminders and shared-calendar change notifications per device and per shared calendar, including while the app is closed, without undermining the calmness of the product.
 - Class: continuity
 - Status: active
-- Description: Users receive reminders and change notifications for important schedule updates without undermining the calmness of the product.
+- Description: Users control reminders and shared-calendar change notifications per device and per shared calendar, including while the app is closed, without undermining the calmness of the product.
 - Why it matters: Reminder continuity matters, but it should sit on top of a stable calendar foundation rather than distort the first milestone.
 - Source: user
-- Primary owning slice: M003 (provisional)
-- Supporting slices: none
-- Validation: unmapped
-- Notes: Planned after the substrate is stable; not part of M001.
+- Primary owning slice: M003/S04
+- Supporting slices: M003/S05
+- Validation: mapped
+- Notes: A single per-calendar device toggle covers both upcoming reminders and shared-calendar change notifications; disabled calendars must stay quiet.
 
 ### R011 — Caluno provides predictive scheduling assistance that helps users anticipate better coordination options from their real schedule data.
 - Class: differentiator
@@ -47,6 +47,17 @@ This file is the explicit capability and coverage contract for the project.
 - Supporting slices: none
 - Validation: unmapped
 - Notes: Planned after substrate and matching work; not part of M001.
+
+### R023 — Notification delivery is trustworthy: disabled calendars stay quiet, duplicate notifications are avoided, and tapping a notification lands in the correct mobile context.
+- Class: integration
+- Status: active
+- Description: Notification delivery is trustworthy: disabled calendars stay quiet, duplicate notifications are avoided, and tapping a notification lands in the correct mobile context.
+- Why it matters: Notification controls only matter if delivery behavior is dependable and calm instead of noisy or confusing.
+- Source: user
+- Primary owning slice: M003/S04
+- Supporting slices: M003/S05
+- Validation: mapped
+- Notes: Applies to both local reminders and remote shared-calendar change notifications on a per-device, per-calendar basis.
 
 ## Validated
 
@@ -137,6 +148,17 @@ This file is the explicit capability and coverage contract for the project.
 - Supporting slices: M002/S02
 - Validation: Validated by the M001 auth/policy/browser proof surfaces: `tests/access/policy-contract.unit.test.ts`, protected-route/unit coverage, denied-route browser proof, and the combined offline+sync browser verification together proved auth, RLS, and sharing rules keep cross-group calendar access fail-closed.
 - Notes: Find time remains fail-closed for denied scope and offline/non-authoritative conditions; matching reads only trusted roster and busy-interval scope.
+
+### R022 — Previously synced calendars reopen on mobile, and mobile schedule edits survive offline and reconcile cleanly on reconnect.
+- Class: continuity
+- Status: validated
+- Description: Previously synced calendars reopen on mobile, and mobile schedule edits survive offline and reconcile cleanly on reconnect.
+- Why it matters: Cross-platform continuity feels fake if the phone app drops the product's offline/local-first contract.
+- Source: inferred
+- Primary owning slice: M003/S02
+- Supporting slices: M003/S05
+- Validation: Validated in M003/S02 by passing `pnpm --dir apps/mobile exec vitest run tests/continuity-contract.unit.test.ts tests/mobile-continuity.unit.test.ts tests/mobile-sync-runtime.unit.test.ts`, `npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/auth-scope.spec.ts tests/e2e/calendar-offline.spec.ts`, and `pnpm --dir apps/mobile check && pnpm --dir apps/mobile build && sh -c 'test -d apps/mobile/ios || pnpm --dir apps/mobile cap:add:ios; pnpm --dir apps/mobile cap:sync'`, proving cached-offline reopen for previously synced permitted calendars, persisted offline edits across reload, deterministic reconnect drain, and fail-closed denial for corrupt or unsynced continuity scope.
+- Notes: Mobile should preserve the calendar-core continuity promise already proven on web, while allowing authority-sensitive flows like Find time to remain server-backed.
 
 ## Deferred
 
@@ -235,8 +257,8 @@ This file is the explicit capability and coverage contract for the project.
 | R006 | failure-visibility | validated | M001/S05 | M001/S02, M001/S04 | Validated by M001 combined clean-reset preview-backed browser proof plus conflict/unit coverage, proving board/day/shift overlap warnings remain visible across offline reload, reconnect drain, and collaborator refresh without becoming authoritative write blockers. |
 | R007 | quality-attribute | validated | M002/S02 | M002/S01, M002/S03 | Validated in M001/S02 by the custom week-board/browser proof and unit coverage: `pnpm --dir apps/web check`, `pnpm --dir apps/web exec vitest run tests/schedule/board.unit.test.ts tests/routes/protected-routes.unit.test.ts tests/schedule/server-actions.unit.test.ts`, and `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts` confirmed the stress-friendly week board, accessible create/edit/move/delete controls, clear denied state, and visible week/action diagnostics. |
 | R008 | differentiator | validated | M002/S01 | M002/S02, M002/S03 | Validated in M002 by passing `pnpm --dir apps/web exec vitest run tests/find-time/member-availability.unit.test.ts tests/find-time/matcher.unit.test.ts tests/routes/find-time-routes.unit.test.ts`, `pnpm --dir apps/web exec vitest run tests/schedule/create-prefill.unit.test.ts tests/routes/protected-routes.unit.test.ts`, `pnpm --dir apps/web check`, and `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/find-time.spec.ts tests/e2e/calendar-shifts.spec.ts`, which together proved truthful ranked shared windows, explanation-rich Top picks, explicit denial/offline fail-closed behavior, and exact suggestion-to-create handoff into the real calendar flow. |
-| R009 | launchability | active | M003 (provisional) | none | unmapped |
-| R010 | continuity | active | M003 (provisional) | none | unmapped |
+| R009 | launchability | active | M003/S01 | M003/S02, M003/S03 | mapped |
+| R010 | continuity | active | M003/S04 | M003/S05 | mapped |
 | R011 | differentiator | active | M004 (provisional) | none | unmapped |
 | R012 | compliance/security | validated | M002/S01 | M002/S02 | Validated by the M001 auth/policy/browser proof surfaces: `tests/access/policy-contract.unit.test.ts`, protected-route/unit coverage, denied-route browser proof, and the combined offline+sync browser verification together proved auth, RLS, and sharing rules keep cross-group calendar access fail-closed. |
 | R013 | admin/support | deferred | none | none | unmapped |
@@ -248,10 +270,12 @@ This file is the explicit capability and coverage contract for the project.
 | R019 | constraint | out-of-scope | none | none | n/a |
 | R020 | anti-feature | out-of-scope | none | none | n/a |
 | R021 | constraint | out-of-scope | none | none | n/a |
+| R022 | continuity | validated | M003/S02 | M003/S05 | Validated in M003/S02 by passing `pnpm --dir apps/mobile exec vitest run tests/continuity-contract.unit.test.ts tests/mobile-continuity.unit.test.ts tests/mobile-sync-runtime.unit.test.ts`, `npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/auth-scope.spec.ts tests/e2e/calendar-offline.spec.ts`, and `pnpm --dir apps/mobile check && pnpm --dir apps/mobile build && sh -c 'test -d apps/mobile/ios || pnpm --dir apps/mobile cap:add:ios; pnpm --dir apps/mobile cap:sync'`, proving cached-offline reopen for previously synced permitted calendars, persisted offline edits across reload, deterministic reconnect drain, and fail-closed denial for corrupt or unsynced continuity scope. |
+| R023 | integration | active | M003/S04 | M003/S05 | mapped |
 
 ## Coverage Summary
 
-- Active requirements: 4
-- Mapped to slices: 4
-- Validated: 8 (R001, R003, R004, R005, R006, R007, R008, R012)
+- Active requirements: 5
+- Mapped to slices: 5
+- Validated: 9 (R001, R003, R004, R005, R006, R007, R008, R012, R022)
 - Unmapped active requirements: 0

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T05",
+  "unitId": "M003/S02/T05",
+  "timestamp": 1776778512649,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "npx --yes supabase db reset --local --yes",
+      "exitCode": 0,
+      "durationMs": 25469,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/mobile exec playwright test tests/e2e/auth-scope.spec.ts tests/e2e/calendar-offline.spec.ts",
+      "exitCode": 0,
+      "durationMs": 14949,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/mobile check",
+      "exitCode": 0,
+      "durationMs": 2749,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/mobile build",
+      "exitCode": 0,
+      "durationMs": 2818,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/web exec vitest run tests/schedule/offline-queue.unit.test.ts tests/schedule/sync-engine.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 1337,
+      "verdict": "pass"
+    }
+  ]
+}

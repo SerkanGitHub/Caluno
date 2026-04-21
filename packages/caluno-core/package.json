@@ -13,8 +13,11 @@
     "./offline/mutation-queue": "./src/offline/mutation-queue.ts",
     "./offline/sync-engine": "./src/offline/sync-engine.ts",
     "./offline/types": "./src/offline/types.ts",
+    "./find-time/matcher": "./src/find-time/matcher.ts",
+    "./find-time/ranking": "./src/find-time/ranking.ts",
     "./schedule/board": "./src/schedule/board.ts",
     "./schedule/conflicts": "./src/schedule/conflicts.ts",
+    "./schedule/create-prefill": "./src/schedule/create-prefill.ts",
     "./schedule/recurrence": "./src/schedule/recurrence.ts",
     "./schedule/types": "./src/schedule/types.ts"
   },

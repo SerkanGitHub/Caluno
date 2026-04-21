@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-21T11:09:44Z | Files: 471 | Described: 0/471
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-21T11:09:44Z","fingerprint":"741da440132e5af3ed9e522e9b3c0b8225012d8b","fileCount":471,"truncated":false} -->
+Generated: 2026-04-21T14:06:30Z | Files: 469 | Described: 0/469
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-21T14:06:30Z","fingerprint":"02bae033358028d377204ee308a1bb5e4fd8c0eb","fileCount":469,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -91,38 +91,38 @@ Generated: 2026-04-21T11:09:44Z | Files: 471 | Described: 0/471
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/MobileShell.RtvhMW7e.css`
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/-vqusUnX.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/2WmQ8Et0.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/5M4fRflV.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/aspVDWtK.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/Booxuhfa.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BrFZ6NHt.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/Btw0dzQj.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/C-QreVHk.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CBeHyPwc.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CKbkPM2I.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CPk1WoCL.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CuWyG364.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CWeFt6jb.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CxYkEkFj.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/D2g9vb6W.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/D3Y8ARzs.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/D8jecx1F.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DgHnrCHr.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DKD93rQj.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DlDiel7I.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DOlCIplG.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DoTdV46f.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/LTnrRdTx.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/ogggxL16.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/PPVm8Dsz.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/rpg3dlon.js`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/TkKPizu3.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/Zbhf_a-M.js`
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/entry/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.OoJKH2J4.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.CtmXL3Na.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.aEpgk8ZS.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.e8nVXlAF.js`
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.CY_aaunT.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.DzpKHjv2.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.BuBha7en.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.D5iVj_0H.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.C4trWe4h.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.ClvXCYyu.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.CAlOlIP6.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.BYRYPXgG.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.DKEWFdZm.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.C4wFHE_l.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.DJ6otPu4.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.CtR9eJ3J.js`
 
 ### apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/
 - `apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/env.js`
@@ -289,11 +289,6 @@ Generated: 2026-04-21T11:09:44Z | Files: 471 | Described: 0/471
 ### apps/mobile/test-results/e2e/
 - `apps/mobile/test-results/e2e/.last-run.json`
 
-### apps/mobile/test-results/e2e/auth-scope-reload-keeps-a--6084c-oses-protected-routes-again/
-- `apps/mobile/test-results/e2e/auth-scope-reload-keeps-a--6084c-oses-protected-routes-again/error-context.md`
-- `apps/mobile/test-results/e2e/auth-scope-reload-keeps-a--6084c-oses-protected-routes-again/trace.zip`
-- `apps/mobile/test-results/e2e/auth-scope-reload-keeps-a--6084c-oses-protected-routes-again/video.webm`
-
 ### apps/mobile/tests/
 - `apps/mobile/tests/auth-bootstrap.unit.test.ts`
 - `apps/mobile/tests/continuity-contract.unit.test.ts`
@@ -304,6 +299,7 @@ Generated: 2026-04-21T11:09:44Z | Files: 471 | Described: 0/471
 
 ### apps/mobile/tests/e2e/
 - `apps/mobile/tests/e2e/auth-scope.spec.ts`
+- `apps/mobile/tests/e2e/calendar-offline.spec.ts`
 - `apps/mobile/tests/e2e/fixtures.ts`
 
 ### apps/web/
