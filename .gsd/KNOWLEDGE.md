@@ -209,3 +209,9 @@
 **Context:** M003/S02/T02 added Capacitor Preferences-backed continuity and offline reopen on mobile.
 **Rule/Pattern:** When mobile persistence needs the same fail-closed rules as the shared app-shell cache contract, read the raw Preferences string asynchronously and run it back through the shared `readCachedAppShellSnapshot()` contract (using a tiny in-memory `StorageLike` shim) instead of cloning the parse/validation logic in a second mobile-only implementation.
 **Rationale:** Capacitor Preferences is async while the shared contract expects sync storage, so the shim pattern preserves one source of truth for stale/malformed/mismatched rejection behavior and avoids subtle web/mobile drift in offline scope checks.
+
+## 2026-04-21: Use `apps/mobile` dev server, not static preview, for local browser proof when mobile Supabase env is involved
+
+**Context:** M003/S02/T04 browser verification of the new phone-first calendar route.
+**Rule/Pattern:** For local browser proof of `apps/mobile` routes that depend on public Supabase env, prefer `pnpm --dir apps/mobile dev ...` over `pnpm --dir apps/mobile preview ...`, and treat preview-only `Cannot read properties of undefined (reading 'env')` failures as environment/adapter proof gaps until the dev server says otherwise.
+**Rationale:** In this repo, the static preview rendered the shell but tripped an env access failure before interactive proof, while the Vite dev server exposed the real route behavior and the honest local blocker: missing `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_PUBLISHABLE_KEY`.

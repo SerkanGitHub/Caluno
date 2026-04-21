@@ -14,6 +14,10 @@
   --caluno-surface-strong: rgba(255, 255, 255, 0.92);
   --caluno-panel-border: rgba(34, 31, 27, 0.08);
   --caluno-panel-shadow: 0 26px 54px rgba(33, 28, 23, 0.12);
+  --caluno-warning-ink: #825b14;
+  --caluno-warning-fog: rgba(214, 179, 96, 0.18);
+  --caluno-danger-ink: #8e2a30;
+  --caluno-danger-fog: rgba(184, 77, 88, 0.14);
 }
 
 html,

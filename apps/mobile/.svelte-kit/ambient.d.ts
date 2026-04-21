@@ -48,6 +48,7 @@ declare module '$env/static/private' {
 	export const NODE_OPTIONS: string;
 	export const MallocNanoZone: string;
 	export const ZDOTDIR: string;
+	export const VIPSHOME: string;
 	export const GSD_PKG_ROOT: string;
 	export const USER: string;
 	export const COMMAND_MODE: string;
@@ -196,6 +197,7 @@ declare module '$env/dynamic/private' {
 		NODE_OPTIONS: string;
 		MallocNanoZone: string;
 		ZDOTDIR: string;
+		VIPSHOME: string;
 		GSD_PKG_ROOT: string;
 		USER: string;
 		COMMAND_MODE: string;

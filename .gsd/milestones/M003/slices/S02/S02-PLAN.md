@@ -74,7 +74,7 @@ The order follows the real continuity risk curve. T01 retires drift first by mov
   - Do: Implement the mobile repository/runtime adapters, trusted Supabase schedule transport, and one reconnect/drain authority driven by Capacitor Network and App lifecycle signals.
   - Verify: `pnpm --dir apps/mobile exec vitest run tests/mobile-sync-runtime.unit.test.ts tests/mobile-continuity.unit.test.ts && pnpm --dir apps/mobile check`
   - Done when: offline create/edit/move/delete stage locally, reconnect drain replays in deterministic order, and timed-out or rejected writes remain visible as retryable state.
-- [ ] **T04: Ship the phone-first calendar board and shift editor with explicit sync diagnostics** `est:2h`
+- [x] **T04: Ship the phone-first calendar board and shift editor with explicit sync diagnostics** `est:2h`
   - Why: R009 still requires the mobile surface to feel native and truthful, not like a web placeholder bolted onto the continuity runtime.
   - Files: `apps/mobile/src/routes/calendars/[calendarId]/+page.svelte`, `apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte`, `apps/mobile/src/lib/components/calendar/ShiftCard.svelte`, `apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte`, `apps/mobile/src/lib/components/calendar/SyncStatusStrip.svelte`, `apps/mobile/src/app.css`
   - Do: Replace the calendar placeholder route with a compact mobile week board, phone-first shift editor controls, and stable queue/sync/test-id diagnostics that read from the local-first controller.

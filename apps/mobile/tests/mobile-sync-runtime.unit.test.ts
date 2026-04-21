@@ -445,6 +445,68 @@ describe('mobile sync runtime', () => {
     ]);
   });
 
+  it('rejects malformed local drafts without mutating the queued week state', async () => {
+    const { storage } = createAsyncStorage();
+    const scope = createScope();
+    const repository = createMobileOfflineRepository({ storage });
+    const controller = createMobileCalendarController({
+      scope,
+      initialSchedule: createInitialSchedule(),
+      routeMode: 'cached-offline',
+      repository,
+      queue: createOfflineMutationQueue({ repository }),
+      isOnline: () => false
+    });
+
+    await controller.initialize();
+
+    const invalidCreate = new FormData();
+    invalidCreate.set('title', '   ');
+    invalidCreate.set('startAt', '2026-04-21T09:00');
+    invalidCreate.set('endAt', '2026-04-21T11:00');
+    invalidCreate.set('recurrenceCadence', 'weekly');
+    invalidCreate.set('recurrenceInterval', '1');
+    invalidCreate.set('repeatCount', '');
+    invalidCreate.set('repeatUntil', '');
+
+    const invalidMove = new FormData();
+    invalidMove.set('shiftId', 'shift-alpha');
+    invalidMove.set('title', 'Alpha opening sweep');
+    invalidMove.set('startAt', '2026-04-20T11:00');
+    invalidMove.set('endAt', '2026-04-20T10:00');
+
+    const createResult = await controller.beginMutation({
+      action: 'create',
+      formId: 'create:invalid',
+      formData: invalidCreate
+    });
+    const moveResult = await controller.beginMutation({
+      action: 'move',
+      formId: 'move:invalid-range',
+      formData: invalidMove
+    });
+
+    const state = controller.getState();
+    expect(createResult).toEqual({ submitOnline: false, operationId: null });
+    expect(moveResult).toEqual({ submitOnline: false, operationId: null });
+    expect(state.schedule.totalShifts).toBe(1);
+    expect(state.queueLength).toBe(0);
+    expect(state.pendingQueueLength).toBe(0);
+    expect(state.retryableQueueLength).toBe(0);
+    expect(state.actionStates.slice(0, 2)).toMatchObject([
+      {
+        formId: 'move:invalid-range',
+        status: 'validation-error',
+        reason: 'VISIBLE_RANGE_INVALID'
+      },
+      {
+        formId: 'create:invalid',
+        status: 'validation-error',
+        reason: 'TITLE_REQUIRED'
+      }
+    ]);
+  });
+
   it('serializes reconnect drain across duplicate online and resume events and reuses the same scoped runtime singleton', async () => {
     const { storage } = createAsyncStorage();
     const scope = createScope();

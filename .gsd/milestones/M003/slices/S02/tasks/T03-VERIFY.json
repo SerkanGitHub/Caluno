@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T03",
+  "unitId": "M003/S02/T03",
+  "timestamp": 1776768871708,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "pnpm --dir apps/mobile exec vitest run tests/mobile-sync-runtime.unit.test.ts tests/mobile-continuity.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 1246,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/mobile check",
+      "exitCode": 0,
+      "durationMs": 2350,
+      "verdict": "pass"
+    }
+  ]
+}

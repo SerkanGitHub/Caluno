@@ -2069,9 +2069,10 @@ export {
   ensure_array_like as c,
   derived as d,
   escape_html as e,
+  store_get as f,
   getContext as g,
   head as h,
   root as r,
-  store_get as s,
+  ssr_context as s,
   unsubscribe_stores as u
 };
