@@ -1,0 +1,18 @@
+{
+  "id": "a370f3b1-5447-4609-9c4e-f933db0a98a4",
+  "runtime": "bash",
+  "purpose": "TypeScript check on modified mobile-assembly spec",
+  "script_chars": 204,
+  "started_at": "2026-05-04T17:04:22.955Z",
+  "finished_at": "2026-05-04T17:04:24.023Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 1068,
+  "stdout_bytes": 173,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/a370f3b1-5447-4609-9c4e-f933db0a98a4.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/a370f3b1-5447-4609-9c4e-f933db0a98a4.stderr"
+}

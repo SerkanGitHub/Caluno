@@ -1,0 +1,18 @@
+{
+  "id": "1e0f9689-df1f-4862-b0ec-c0a9929790d5",
+  "runtime": "bash",
+  "purpose": "Check spec file TypeScript validity via playwright tsconfig",
+  "script_chars": 422,
+  "started_at": "2026-05-04T17:04:30.276Z",
+  "finished_at": "2026-05-04T17:04:31.180Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 904,
+  "stdout_bytes": 61,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/1e0f9689-df1f-4862-b0ec-c0a9929790d5.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/1e0f9689-df1f-4862-b0ec-c0a9929790d5.stderr"
+}

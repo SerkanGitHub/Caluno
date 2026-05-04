@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-05-04T16:47:12Z | Files: 500 | Described: 0/500
-<!-- gsd:codebase-meta {"generatedAt":"2026-05-04T16:47:12Z","fingerprint":"22e95205f2b38d1774968f9b57f50093c31d9a42","fileCount":500,"truncated":true} -->
+Generated: 2026-05-04T16:55:10Z | Files: 500 | Described: 0/500
+<!-- gsd:codebase-meta {"generatedAt":"2026-05-04T16:55:10Z","fingerprint":"72a36a0ff5905b5daa189f4871c4490c47f5e3dc","fileCount":500,"truncated":true} -->
 Note: Truncated to first 500 files. Run with higher --max-files to include all.
 
 ### (root)/
@@ -19,6 +19,12 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `gsd-memory-logger.js`
 - `package.json`
 - `README.md`
+
+### "apps/mobile/test-results/e2e/mobile-assembly-phase-3-\342\200\224--e8743-he-shift-lands-on-the-board/
+- `"apps/mobile/test-results/e2e/mobile-assembly-phase-3-\342\200\224--e8743-he-shift-lands-on-the-board/error-context.md"`
+- `"apps/mobile/test-results/e2e/mobile-assembly-phase-3-\342\200\224--e8743-he-shift-lands-on-the-board/test-failed-1.png"`
+- `"apps/mobile/test-results/e2e/mobile-assembly-phase-3-\342\200\224--e8743-he-shift-lands-on-the-board/trace.zip"`
+- `"apps/mobile/test-results/e2e/mobile-assembly-phase-3-\342\200\224--e8743-he-shift-lands-on-the-board/video.webm"`
 
 ### .artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/
 - `.artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/accessibility.md`
@@ -310,6 +316,11 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 
 ### apps/mobile/test-results/e2e/
 - `apps/mobile/test-results/e2e/.last-run.json`
+
+### apps/mobile/test-results/e2e/calendar-offline-trusted-w-51b05-drains-them-after-reconnect/
+- `apps/mobile/test-results/e2e/calendar-offline-trusted-w-51b05-drains-them-after-reconnect/error-context.md`
+- `apps/mobile/test-results/e2e/calendar-offline-trusted-w-51b05-drains-them-after-reconnect/trace.zip`
+- `apps/mobile/test-results/e2e/calendar-offline-trusted-w-51b05-drains-them-after-reconnect/video.webm`
 
 ### apps/mobile/tests/
 - `apps/mobile/tests/auth-bootstrap.unit.test.ts`
@@ -773,16 +784,3 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 
 ### packages/db/src/
 - `packages/db/src/client.ts`
-- `packages/db/src/index.ts`
-- `packages/db/src/tenant.ts`
-
-### packages/db/src/schema/
-- `packages/db/src/schema/index.ts`
-
-### packages/eslint-config/
-- `packages/eslint-config/base.js`
-- `packages/eslint-config/package.json`
-
-### packages/typescript-config/
-- `packages/typescript-config/base.json`
-- `packages/typescript-config/package.json`

@@ -38,7 +38,7 @@ test('trusted warm-up reopens offline, keeps multiple queued edits across reload
   await expect(page.getByTestId(`shift-card-${seededEditableShiftId}`)).toContainText('Morning intake');
 
   await setSimulatedConnectivity(page, false);
-  await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'trusted-online');
+  await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'trusted-offline');
 
   await page.getByTestId('create-shift-trigger-create-week').click();
   await expect(page.getByTestId('create-shift-editor')).toBeVisible();

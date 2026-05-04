@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "projectName": "Caluno",
+  "projectPath": "/Users/serkanyeniay/dev/Caluno",
+  "gsdVersion": "2.80.0",
+  "entries": [
+    {
+      "filename": "M003-2026-05-04T16-55-11.html",
+      "generatedAt": "2026-05-04T16:55:11.014Z",
+      "milestoneId": "M003",
+      "milestoneTitle": "Cross-platform continuity and reminders",
+      "label": "M003: Cross-platform continuity and reminders",
+      "kind": "milestone",
+      "totalCost": 0,
+      "totalTokens": 546808605,
+      "totalDuration": 100119681,
+      "doneSlices": 14,
+      "totalSlices": 14,
+      "doneMilestones": 3,
+      "totalMilestones": 4,
+      "phase": "pre-planning"
+    }
+  ]
+}
