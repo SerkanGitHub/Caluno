@@ -170,7 +170,7 @@ What remains before the milestone is truly usable end-to-end: notification contr
   - Files: `apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte`, `apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte`, `apps/mobile/src/routes/calendars/[calendarId]/+page.svelte`, `apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte`, `apps/mobile/src/app.css`, `apps/mobile/tests/mobile-create-prefill.unit.test.ts`
   - Verify: pnpm --dir apps/mobile exec vitest run tests/mobile-find-time.unit.test.ts tests/mobile-create-prefill.unit.test.ts && pnpm --dir apps/mobile check && pnpm --dir apps/mobile build
 
-- [ ] **T04: Prove the mobile Find time flow end to end and keep native wiring green** `est:90m`
+- [x] **T04: Prove the mobile Find time flow end to end and keep native wiring green** `est:90m`
   Close the slice with runnable proof. Extend the existing mobile Playwright harness so it exercises the real calendar-board entrypoint, the new mobile Find time route, explicit denied/offline states, the exact suggestion-to-create handoff, and the post-arrival reload guard. Re-run the shared web regressions and finish with mobile build plus `cap:sync` so the new route stays packaged into the native shell.
 
 ## Failure Modes

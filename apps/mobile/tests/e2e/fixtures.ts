@@ -39,6 +39,97 @@ export const seededWeekStarts = {
   alphaWarm: '2026-04-13'
 } as const;
 
+export const seededFindTime = {
+  start: '2026-04-15',
+  durationMinutes: '60',
+  alphaWindowCount: 10,
+  topPickCount: 3,
+  browseCount: 7,
+  topPicks: [
+    {
+      rank: '1',
+      startAt: '2026-04-16T15:00:00.000Z',
+      endAt: '2026-04-16T16:00:00.000Z',
+      spanStartAt: '2026-04-16T15:00:00.000Z',
+      spanEndAt: '2026-05-15T00:00:00.000Z',
+      availableMembers: ['Alice Owner', 'Bob Member', 'Dana Multi-Group'],
+      blockedMembers: [],
+      leadingConstraints: [],
+      trailingConstraints: []
+    },
+    {
+      rank: '2',
+      startAt: '2026-04-15T15:00:00.000Z',
+      endAt: '2026-04-15T16:00:00.000Z',
+      spanStartAt: '2026-04-15T15:00:00.000Z',
+      spanEndAt: '2026-04-16T08:30:00.000Z',
+      availableMembers: ['Alice Owner', 'Bob Member', 'Dana Multi-Group'],
+      blockedMembers: [],
+      leadingConstraints: [],
+      trailingConstraints: []
+    },
+    {
+      rank: '3',
+      startAt: '2026-04-15T00:00:00.000Z',
+      endAt: '2026-04-15T01:00:00.000Z',
+      spanStartAt: '2026-04-15T00:00:00.000Z',
+      spanEndAt: '2026-04-15T08:30:00.000Z',
+      availableMembers: ['Alice Owner', 'Bob Member', 'Dana Multi-Group'],
+      blockedMembers: [],
+      leadingConstraints: [],
+      trailingConstraints: []
+    }
+  ],
+  focusedBrowseWindow: {
+    rank: null,
+    startAt: '2026-04-15T08:30:00.000Z',
+    endAt: '2026-04-15T09:30:00.000Z',
+    spanStartAt: '2026-04-15T08:30:00.000Z',
+    spanEndAt: '2026-04-15T11:00:00.000Z',
+    availableMembers: ['Bob Member', 'Dana Multi-Group'],
+    blockedMembers: ['Alice Owner'],
+    leadingConstraints: ['Alice Owner:Alpha opening sweep:0'],
+    trailingConstraints: ['Alice Owner:Morning intake:0']
+  }
+} as const;
+
+export type FindTimeCardSnapshot = {
+  rank: string | null;
+  startAt: string | null;
+  endAt: string | null;
+  spanStartAt: string | null;
+  spanEndAt: string | null;
+  availableMembers: string[];
+  blockedMembers: string[];
+  leadingConstraints: string[];
+  trailingConstraints: string[];
+  handoffReady: string | null;
+};
+
+export type FindTimeSuggestionCtaSnapshot = {
+  href: string | null;
+  source: string | null;
+  targetWeekStart: string | null;
+  startAt: string | null;
+  endAt: string | null;
+  label: string | null;
+};
+
+export type CreateSheetArrivalSnapshot = {
+  routePrefillStatus: string | null;
+  routePrefillSource: string | null;
+  routePrefillStart: string | null;
+  routePrefillEnd: string | null;
+  open: boolean;
+  openOnArrival: string | null;
+  createSource: string | null;
+  prefillSource: string | null;
+  prefillStart: string | null;
+  prefillEnd: string | null;
+  startValue: string;
+  endValue: string;
+};
+
 export const test = base.extend({
   page: async ({ page }, use) => {
     await page.addInitScript(() => {
@@ -199,6 +290,168 @@ export async function waitForPendingCount(page: Page, count: number) {
 
 export async function waitForRetryableCount(page: Page, count: number) {
   await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-retryable-count', String(count));
+}
+
+export async function openFindTimeRoute(
+  page: Page,
+  params: {
+    calendarId: string;
+    durationMinutes?: string | number;
+    start?: string;
+  }
+) {
+  const searchParams = new URLSearchParams({
+    duration: String(params.durationMinutes ?? seededFindTime.durationMinutes)
+  });
+
+  if (params.start ?? seededFindTime.start) {
+    searchParams.set('start', params.start ?? seededFindTime.start);
+  }
+
+  const path = `/calendars/${params.calendarId}/find-time?${searchParams.toString()}`;
+  await page.goto(path);
+  await expect(page).toHaveURL(new RegExp(`${escapeRegExp(path)}$`));
+  await expect(page.getByTestId('find-time-route-state')).toBeVisible();
+
+  return path;
+}
+
+async function readFindTimeCardSnapshot(page: Page, testId: string): Promise<FindTimeCardSnapshot> {
+  const card = page.getByTestId(testId);
+  await expect(card).toBeVisible();
+
+  return {
+    rank: await card.getAttribute('data-top-pick-rank'),
+    startAt: await card.getAttribute('data-start-at'),
+    endAt: await card.getAttribute('data-end-at'),
+    spanStartAt: await card.getAttribute('data-span-start-at'),
+    spanEndAt: await card.getAttribute('data-span-end-at'),
+    availableMembers: ((await card.getAttribute('data-available-members')) ?? '').split('|').filter(Boolean),
+    blockedMembers: ((await card.getAttribute('data-blocked-members')) ?? '').split('|').filter(Boolean),
+    leadingConstraints: ((await card.getAttribute('data-leading-constraints')) ?? '').split('|').filter(Boolean),
+    trailingConstraints: ((await card.getAttribute('data-trailing-constraints')) ?? '').split('|').filter(Boolean),
+    handoffReady: await card.getAttribute('data-handoff-ready')
+  };
+}
+
+export async function readFindTimeTopPickSnapshot(page: Page, index: number) {
+  return readFindTimeCardSnapshot(page, `find-time-top-pick-${index}`);
+}
+
+export async function readFindTimeBrowseWindowSnapshot(page: Page, index: number) {
+  return readFindTimeCardSnapshot(page, `find-time-browse-window-${index}`);
+}
+
+async function readFindTimeSuggestionCtaSnapshot(page: Page, testId: string): Promise<FindTimeSuggestionCtaSnapshot> {
+  const cta = page.getByTestId(testId);
+  await expect(cta).toBeVisible();
+
+  return {
+    href: await cta.getAttribute('href'),
+    source: await cta.getAttribute('data-handoff-source'),
+    targetWeekStart: await cta.getAttribute('data-handoff-week-start'),
+    startAt: await cta.getAttribute('data-handoff-start-at'),
+    endAt: await cta.getAttribute('data-handoff-end-at'),
+    label: ((await cta.textContent()) ?? '').trim() || null
+  };
+}
+
+export async function readFindTimeTopPickCtaSnapshot(page: Page, index: number) {
+  return readFindTimeSuggestionCtaSnapshot(page, `find-time-top-pick-${index}-cta`);
+}
+
+export async function readFindTimeBrowseWindowCtaSnapshot(page: Page, index: number) {
+  return readFindTimeSuggestionCtaSnapshot(page, `find-time-browse-window-${index}-cta`);
+}
+
+export async function readVisibleWeekFromBoard(page: Page) {
+  await expect(page.getByTestId('mobile-calendar-board')).toBeVisible();
+  await expect(page.getByTestId('calendar-route-state')).toBeVisible();
+
+  return {
+    visibleWeekStart: await page.getByTestId('calendar-route-state').getAttribute('data-visible-week-start'),
+    boardWeekStart: await page.getByTestId('mobile-calendar-board').getAttribute('data-visible-week-start'),
+    boardWeekEnd: await page.getByTestId('mobile-calendar-board').getAttribute('data-visible-week-end')
+  };
+}
+
+function toUtcDateTimeLocalValue(value: string | null) {
+  if (!value) {
+    return null;
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+
+  const year = parsed.getUTCFullYear();
+  const month = `${parsed.getUTCMonth() + 1}`.padStart(2, '0');
+  const day = `${parsed.getUTCDate()}`.padStart(2, '0');
+  const hours = `${parsed.getUTCHours()}`.padStart(2, '0');
+  const minutes = `${parsed.getUTCMinutes()}`.padStart(2, '0');
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+export function expectedCreateShiftPrefillValues(snapshot: Pick<FindTimeSuggestionCtaSnapshot, 'startAt' | 'endAt'>) {
+  return {
+    startValue: toUtcDateTimeLocalValue(snapshot.startAt),
+    endValue: toUtcDateTimeLocalValue(snapshot.endAt)
+  };
+}
+
+export async function readCreateSheetArrivalSnapshot(page: Page): Promise<CreateSheetArrivalSnapshot> {
+  const routeState = page.getByTestId('calendar-route-state');
+  const editor = page.getByTestId('create-shift-editor');
+  await expect(routeState).toBeVisible();
+  await expect(editor).toBeVisible();
+
+  const prefillSource = page.getByTestId('create-prefill-source');
+  await expect(prefillSource).toBeVisible();
+
+  return {
+    routePrefillStatus: await routeState.getAttribute('data-create-prefill-status'),
+    routePrefillSource: await routeState.getAttribute('data-create-prefill-source'),
+    routePrefillStart: await routeState.getAttribute('data-create-prefill-start'),
+    routePrefillEnd: await routeState.getAttribute('data-create-prefill-end'),
+    open: true,
+    openOnArrival: await editor.getAttribute('data-open-on-arrival'),
+    createSource: await editor.getAttribute('data-create-source'),
+    prefillSource: await prefillSource.getAttribute('data-prefill-source'),
+    prefillStart: await prefillSource.getAttribute('data-prefill-start'),
+    prefillEnd: await prefillSource.getAttribute('data-prefill-end'),
+    startValue: await page.getByTestId('create-start-input').inputValue(),
+    endValue: await page.getByTestId('create-end-input').inputValue()
+  };
+}
+
+export async function submitHandoffBackedCreateForm(
+  page: Page,
+  values: {
+    title: string;
+    startAt?: string;
+    endAt?: string;
+  }
+) {
+  const editor = page.getByTestId('create-shift-editor');
+  await expect(editor).toBeVisible();
+
+  await page.getByTestId('create-title-input').fill(values.title);
+
+  if (typeof values.startAt === 'string') {
+    await page.getByTestId('create-start-input').fill(values.startAt);
+  }
+
+  if (typeof values.endAt === 'string') {
+    await page.getByTestId('create-end-input').fill(values.endAt);
+  }
+
+  await editor.locator('form').evaluate((form) => {
+    (form as HTMLFormElement).requestSubmit();
+  });
+
+  await expect(page.getByTestId('create-shift-editor')).toHaveCount(0);
 }
 
 export async function clearPersistedSession(page: Page) {
