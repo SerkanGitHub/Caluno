@@ -20,10 +20,10 @@
 - [x] **S03: S03** `risk:medium` `depends:[]`
   > After this: A user can run Find time on mobile, scan compact Top picks and browse windows, and hand a chosen slot directly into mobile shift creation with the right context already set.
 
-- [ ] **S04: S04** `risk:high` `depends:[]`
+- [x] **S04: S04** `risk:high` `depends:[]`
   > After this: On a device, each shared calendar has one notification toggle that truthfully controls both reminders and shared-calendar change notifications, with honest permission/subscription state.
 
-- [ ] **S05: Cross-surface notification correctness and final mobile assembly proof** `risk:medium` `depends:[S02,S03,S04]`
+- [ ] **S05: S05** `risk:medium` `depends:[]`
   > After this: Enabled calendars notify, disabled calendars stay quiet, duplicate notifications are suppressed, taps land in the right mobile context, and the assembled app proves it doesn’t feel fake.
 
 ## Boundary Map

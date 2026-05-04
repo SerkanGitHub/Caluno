@@ -330,6 +330,76 @@ describe('mobile notification contract', () => {
     });
   });
 
+  it('recovers recently written per-device preferences from cache when a reload sees an empty server list', async () => {
+    const { storage } = createAsyncStorage();
+    await seedInstallation(storage);
+    const registrationArgs = {
+      p_installation_id: installationId,
+      p_push_token: null,
+      p_push_provider: null,
+      p_device_platform: null
+    };
+
+    const writeClient = createRpcClient({
+      [`register_notification_installation|${JSON.stringify(registrationArgs)}`]: {
+        data: installationRow(),
+        error: null
+      },
+      [`set_device_calendar_notification_preference|${JSON.stringify({
+        p_installation_id: installationId,
+        p_calendar_id: alphaCalendarId,
+        p_desired_enabled: true,
+        p_remote_subscription_status: 'subscribed',
+        p_remote_subscription_reason: null
+      })}`]: {
+        data: [preferenceRow({ calendarId: alphaCalendarId, desiredEnabled: true, remoteSubscriptionStatus: 'subscribed' })],
+        error: null
+      }
+    });
+
+    await expect(
+      updateDeviceNotificationPreference({
+        client: writeClient as never,
+        installationStorage: storage,
+        permittedCalendarIds: [alphaCalendarId, betaCalendarId],
+        calendarId: alphaCalendarId,
+        desiredEnabled: true,
+        remoteSubscription: 'subscribed',
+        timeoutMs: 50
+      })
+    ).resolves.toMatchObject({
+      ok: true,
+      preference: { calendarId: alphaCalendarId, desiredEnabled: true, remoteSubscription: 'subscribed' }
+    });
+
+    const emptyReloadClient = createRpcClient({
+      [`register_notification_installation|${JSON.stringify(registrationArgs)}`]: {
+        data: installationRow(),
+        error: null
+      },
+      [`list_device_calendar_notification_preferences|${JSON.stringify({
+        p_installation_id: installationId,
+        p_calendar_ids: [alphaCalendarId, betaCalendarId]
+      })}`]: {
+        data: [],
+        error: null
+      }
+    });
+
+    await expect(
+      loadDeviceNotificationPreferences({
+        client: emptyReloadClient as never,
+        installationStorage: storage,
+        permittedCalendarIds: [alphaCalendarId, betaCalendarId],
+        timeoutMs: 50,
+        registration: {}
+      })
+    ).resolves.toMatchObject({
+      ok: true,
+      preferences: [{ calendarId: alphaCalendarId, desiredEnabled: true, remoteSubscription: 'subscribed' }]
+    });
+  });
+
   it('rejects out-of-scope writes, surfaces persistence denials and timeouts, and keeps malformed writes closed', async () => {
     const { storage } = createAsyncStorage();
     await seedInstallation(storage);

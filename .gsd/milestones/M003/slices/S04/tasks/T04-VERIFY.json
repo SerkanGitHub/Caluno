@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T04",
+  "unitId": "M003/S04/T04",
+  "timestamp": 1777895990733,
+  "passed": false,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "pnpm --dir apps/mobile exec vitest run tests/mobile-continuity.unit.test.ts tests/mobile-notification-contract.unit.test.ts tests/mobile-notification-runtime.unit.test.ts tests/mobile-notification-router.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 1395,
+      "verdict": "pass"
+    },
+    {
+      "command": "npx --yes supabase db reset --local --yes",
+      "exitCode": 0,
+      "durationMs": 25438,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/mobile exec playwright test tests/e2e/auth-scope.spec.ts tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-notifications.spec.ts",
+      "exitCode": 1,
+      "durationMs": 26637,
+      "verdict": "fail"
+    },
+    {
+      "command": "pnpm --dir apps/mobile check",
+      "exitCode": 0,
+      "durationMs": 3070,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/mobile build",
+      "exitCode": 0,
+      "durationMs": 3098,
+      "verdict": "pass"
+    }
+  ],
+  "retryAttempt": 1,
+  "maxRetries": 2
+}

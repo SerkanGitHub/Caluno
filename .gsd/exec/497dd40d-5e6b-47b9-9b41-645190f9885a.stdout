@@ -1,0 +1,54 @@
+apps/web/src/lib/server/schedule.ts: refs=False
+  mutation createScheduleShift line 341
+  mutation editScheduleShift line 565
+  mutation moveScheduleShift line 668
+  mutation deleteScheduleShift line 769
+apps/web/src/routes/(app)/calendars/[calendarId]/+page.server.ts: refs=False
+supabase/functions/notify-calendar-change/index.ts: refs=False
+apps/mobile/src/routes/+layout.svelte: refs=True
+workspace notify-calendar-change refs:
+  .gsd/state-manifest.json
+  .gsd/CODEBASE.md
+  .gsd/activity/165-research-slice-M003-S05.jsonl
+  .gsd/activity/174-research-slice-M003-S05.jsonl
+  .gsd/activity/151-research-slice-M003-S05.jsonl
+  .gsd/activity/162-research-slice-M003-S05.jsonl
+  .gsd/activity/159-research-slice-M003-S05.jsonl
+  .gsd/activity/147-research-slice-M003-S05.jsonl
+  .gsd/activity/173-research-slice-M003-S05.jsonl
+  .gsd/activity/156-research-slice-M003-S05.jsonl
+  .gsd/activity/148-research-slice-M003-S05.jsonl
+  .gsd/activity/150-research-slice-M003-S05.jsonl
+  .gsd/activity/175-research-slice-M003-S05.jsonl
+  .gsd/activity/164-research-slice-M003-S05.jsonl
+  .gsd/activity/157-research-slice-M003-S05.jsonl
+  .gsd/activity/143-execute-task-M003-S04-T04.jsonl
+  .gsd/activity/149-research-slice-M003-S05.jsonl
+  .gsd/activity/172-research-slice-M003-S05.jsonl
+  .gsd/activity/158-research-slice-M003-S05.jsonl
+  .gsd/activity/146-research-slice-M003-S05.jsonl
+  .gsd/activity/163-research-slice-M003-S05.jsonl
+  .gsd/activity/154-research-slice-M003-S05.jsonl
+  .gsd/activity/171-research-slice-M003-S05.jsonl
+  .gsd/activity/160-research-slice-M003-S05.jsonl
+  .gsd/activity/144-complete-slice-M003-S04.jsonl
+  .gsd/activity/153-research-slice-M003-S05.jsonl
+  .gsd/activity/168-research-slice-M003-S05.jsonl
+  .gsd/activity/176-research-slice-M003-S05.jsonl
+  .gsd/activity/167-research-slice-M003-S05.jsonl
+  .gsd/activity/139-plan-slice-M003-S04.jsonl
+  .gsd/activity/161-research-slice-M003-S05.jsonl
+  .gsd/activity/170-research-slice-M003-S05.jsonl
+  .gsd/activity/155-research-slice-M003-S05.jsonl
+  .gsd/activity/166-research-slice-M003-S05.jsonl
+  .gsd/activity/145-reassess-roadmap-M003-S04.jsonl
+  .gsd/activity/169-research-slice-M003-S05.jsonl
+  .gsd/activity/177-research-slice-M003-S05.jsonl
+  .gsd/activity/141-execute-task-M003-S04-T02.jsonl
+  .gsd/activity/152-research-slice-M003-S05.jsonl
+  .gsd/runtime/uok-plan-v2-graph.json
+  .gsd/audit/events.jsonl
+  .gsd/milestones/M003/slices/S04/S04-SUMMARY.md
+  .gsd/milestones/M003/slices/S04/S04-PLAN.md
+  .gsd/milestones/M003/slices/S04/tasks/T04-SUMMARY.md
+  .gsd/milestones/M003/slices/S04/tasks/T04-PLAN.md

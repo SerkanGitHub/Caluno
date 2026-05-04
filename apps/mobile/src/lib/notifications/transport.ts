@@ -1,3 +1,4 @@
+import { Preferences } from '@capacitor/preferences';
 import type { MobileSupabaseDataClient } from '$lib/supabase/client';
 import {
   getOrCreateNotificationInstallation,
@@ -65,7 +66,26 @@ type PreferenceRpcRow = {
   updated_at: string;
 };
 
+type StoredNotificationPreferenceCache = {
+  installationId: string;
+  cachedAt: string;
+  preferences: DeviceCalendarNotificationPreference[];
+};
+
 const DEFAULT_TIMEOUT_MS = 8_000;
+const NOTIFICATION_PREFERENCE_CACHE_KEY = 'caluno.mobile.notification-preferences.v1';
+const defaultPreferenceCacheStorage: DeviceInstallationStorage = {
+  async get(key) {
+    const result = await Preferences.get({ key });
+    return result.value ?? null;
+  },
+  async set(key, value) {
+    await Preferences.set({ key, value });
+  },
+  async remove(key) {
+    await Preferences.remove({ key });
+  }
+};
 
 export function createMobileNotificationTransport(options: {
   client: MobileSupabaseDataClient;
@@ -176,14 +196,34 @@ export async function loadDeviceNotificationPreferences(params: {
     });
   }
 
+  const cachedPreferences = await readCachedNotificationPreferences({
+    storage: params.installationStorage,
+    installationId: registrationResult.installation.installationId,
+    permittedCalendarIds: scope.calendarIds,
+    timeoutMs
+  });
+  const resolvedPreferences = preferences.rows.length > 0 ? preferences.rows : (cachedPreferences ?? []);
+
+  if (resolvedPreferences.length > 0) {
+    await writeCachedNotificationPreferences({
+      storage: params.installationStorage,
+      installationId: registrationResult.installation.installationId,
+      preferences: resolvedPreferences,
+      timeoutMs
+    });
+  }
+
   return {
     ok: true,
     installationStatus: 'ready',
     phase: 'ready',
     reason: null,
-    detail: 'Trusted per-device notification preferences loaded successfully.',
+    detail:
+      preferences.rows.length === 0 && resolvedPreferences.length > 0
+        ? 'Trusted per-device notification preferences were recovered from device cache after the server returned an empty preference set.'
+        : 'Trusted per-device notification preferences loaded successfully.',
     installation: registrationResult.installation,
-    preferences: preferences.rows
+    preferences: resolvedPreferences
   };
 }
 
@@ -292,6 +332,12 @@ export async function updateDeviceNotificationPreference(params: {
   }
 
   const preference = normalized.rows[0];
+  await upsertCachedNotificationPreference({
+    storage: params.installationStorage,
+    installationId: registrationResult.installation.installationId,
+    preference,
+    timeoutMs
+  });
 
   return {
     ok: true,
@@ -455,6 +501,143 @@ function normalizeNotificationPreferenceRows(
     ok: true,
     rows: normalized
   };
+}
+
+async function readCachedNotificationPreferences(params: {
+  storage?: DeviceInstallationStorage;
+  installationId: string;
+  permittedCalendarIds: string[];
+  timeoutMs: number;
+}): Promise<DeviceCalendarNotificationPreference[] | null> {
+  const storage = params.storage ?? defaultPreferenceCacheStorage;
+
+  try {
+    const raw = await withTimeout(
+      storage.get(NOTIFICATION_PREFERENCE_CACHE_KEY),
+      params.timeoutMs,
+      'Reading the device notification preference cache timed out.'
+    );
+    const record = materializeCachedNotificationPreferences(raw, params.installationId);
+    if (!record) {
+      return null;
+    }
+
+    return record.preferences
+      .filter((preference) => params.permittedCalendarIds.includes(preference.calendarId))
+      .sort((left, right) => left.calendarId.localeCompare(right.calendarId));
+  } catch {
+    return null;
+  }
+}
+
+async function upsertCachedNotificationPreference(params: {
+  storage?: DeviceInstallationStorage;
+  installationId: string;
+  preference: DeviceCalendarNotificationPreference;
+  timeoutMs: number;
+}): Promise<void> {
+  const storage = params.storage ?? defaultPreferenceCacheStorage;
+  let existing: DeviceCalendarNotificationPreference[] = [];
+
+  try {
+    const raw = await withTimeout(
+      storage.get(NOTIFICATION_PREFERENCE_CACHE_KEY),
+      params.timeoutMs,
+      'Reading the device notification preference cache timed out.'
+    );
+    existing = materializeCachedNotificationPreferences(raw, params.installationId)?.preferences ?? [];
+  } catch {
+    existing = [];
+  }
+
+  const preferences = existing.filter((candidate) => candidate.calendarId !== params.preference.calendarId);
+  preferences.push(params.preference);
+  preferences.sort((left, right) => left.calendarId.localeCompare(right.calendarId));
+
+  await writeCachedNotificationPreferences({
+    storage: params.storage,
+    installationId: params.installationId,
+    preferences,
+    timeoutMs: params.timeoutMs
+  });
+}
+
+async function writeCachedNotificationPreferences(params: {
+  storage?: DeviceInstallationStorage;
+  installationId: string;
+  preferences: DeviceCalendarNotificationPreference[];
+  timeoutMs: number;
+}): Promise<void> {
+  const storage = params.storage ?? defaultPreferenceCacheStorage;
+  const record: StoredNotificationPreferenceCache = {
+    installationId: params.installationId,
+    cachedAt: new Date().toISOString(),
+    preferences: params.preferences
+  };
+
+  try {
+    await withTimeout(
+      storage.set(NOTIFICATION_PREFERENCE_CACHE_KEY, JSON.stringify(record)),
+      params.timeoutMs,
+      'Persisting the device notification preference cache timed out.'
+    );
+  } catch {
+    // Cache failures should not block trusted preference reads or writes.
+  }
+}
+
+function materializeCachedNotificationPreferences(
+  raw: string | null,
+  installationId: string
+): StoredNotificationPreferenceCache | null {
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(raw);
+    if (!isStoredNotificationPreferenceCache(parsed) || parsed.installationId !== installationId) {
+      return null;
+    }
+
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function isStoredNotificationPreferenceCache(value: unknown): value is StoredNotificationPreferenceCache {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  const cache = value as Partial<StoredNotificationPreferenceCache>;
+  return (
+    isUuidLike(cache.installationId) &&
+    isIsoTimestamp(cache.cachedAt) &&
+    Array.isArray(cache.preferences) &&
+    cache.preferences.every(isStoredDeviceCalendarNotificationPreference)
+  );
+}
+
+function isStoredDeviceCalendarNotificationPreference(value: unknown): value is DeviceCalendarNotificationPreference {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  const preference = value as Partial<DeviceCalendarNotificationPreference>;
+  return (
+    isUuidLike(preference.installationId) &&
+    isUuidLike(preference.calendarId) &&
+    typeof preference.desiredEnabled === 'boolean' &&
+    isNotificationRemoteSubscriptionStatus(preference.remoteSubscription) &&
+    (preference.remoteSubscriptionReason === null ||
+      preference.remoteSubscriptionReason === undefined ||
+      isNotificationReasonCode(preference.remoteSubscriptionReason)) &&
+    (preference.syncedAt === null || preference.syncedAt === undefined || isIsoTimestamp(preference.syncedAt)) &&
+    isIsoTimestamp(preference.createdAt) &&
+    isIsoTimestamp(preference.updatedAt)
+  );
 }
 
 async function safeSupabaseCall<T>(

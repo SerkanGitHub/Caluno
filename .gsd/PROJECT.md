@@ -12,7 +12,7 @@ Turn chaotic schedules into shared clarity automatically.
 
 M001 and M002 are complete and validated on the web proof surface.
 
-M003 is in progress. S01, S02, and S03 are now complete, so the mobile app has moved beyond shell-only proof into a real authenticated calendar client with offline continuity and compact Find time handoff.
+M003 is still in progress, but S01 through S04 are now complete. The mobile app is a real authenticated calendar client with offline continuity, compact Find time handoff, and installation-backed notification controls wired into the phone-first surfaces.
 
 What works today:
 - trusted sign-in, group onboarding, permitted calendar access, and fail-closed denied routes on web
@@ -28,16 +28,20 @@ What works today:
 - mobile previously synced calendar reopen with local-first offline edits, reload persistence, retryable queue visibility, and trusted reconnect drain
 - compact mobile Find time with explicit ready/denied/offline/error states, Top picks ahead of browse windows, and fail-closed offline behavior
 - exact mobile Find time slot handoff into the existing `ShiftEditorSheet`, with one-shot query cleanup and visible `From Find time` attribution
-- mobile Playwright proof for sign-in, permitted scope, denied scope, offline continuity, reconnect drain, Find time handoff, offline-unavailable Find time, and malformed arrival rejection
-- successful Capacitor iOS packaging/sync for the assembled mobile scheduling + Find time surface
+- per-device, per-calendar mobile notification preferences backed by a stable installation id rather than the push token
+- one truthful notification toggle per permitted calendar on `/groups`, mirrored on `/calendars/[calendarId]`, with explicit permission/local-reminder/remote-subscription/degraded state
+- deterministic local reminder scheduling from trusted synced weeks already stored on-device
+- fail-closed notification tap routing that rejects unsafe or out-of-scope targets instead of navigating optimistically
+- provider-neutral shared-calendar change dispatch wiring with honest `provider-unconfigured` degradation
+- mobile Playwright proof for sign-in, permitted scope, denied scope, offline continuity, reconnect drain, Find time handoff, notification toggle persistence, degraded notification states, and safe notification routing
+- successful Capacitor iOS packaging/sync for the assembled mobile scheduling + notification surface
 
 What is not yet complete:
-- per-device/per-calendar notification controls and delivery wiring are still pending in M003/S04
 - final cross-surface notification correctness and assembled mobile proof are still pending in M003/S05
+- real provider-backed remote delivery, duplicate suppression proof, and delivered tap correctness still need end-to-end closure in S05
 - predictive assistance remains deferred to M004 after the cross-platform coordination loop is fully assembled
 
 What is planned next:
-- M003/S04 adds device-scoped notification controls and delivery wiring for reminders and shared-calendar changes
 - M003/S05 closes the milestone with cross-surface notification correctness and assembled mobile proof that the app does not feel fake
 - M004 builds the later predictive assistance layer and release hardening after the cross-platform core is stable
 
@@ -57,6 +61,8 @@ What is planned next:
 - M003 reuses shared product logic and backend contracts where possible, but mobile gets mobile-specific UI flows instead of a thin port of web screens
 - The mobile shell treats cached Supabase session data as untrusted until `getSession()` plus `getUser()` revalidate it client-side
 - Mobile protected routes resolve access only from one shaped trusted inventory snapshot and surface denied reason, failure phase, and attempted id explicitly in the UI
+- Notification state on mobile is rooted in a stable installation UUID, persists desired intent separately from runtime health, and exposes degraded reasons instead of hiding them behind a boolean toggle
+- Notification-open routing always normalizes target paths and checks trusted calendar scope before navigation
 - M003 notification direction remains: local reminders for a user’s own upcoming shifts, push notifications for shared-calendar changes, and per-device/per-calendar control with one calm toggle
 
 ## Capability Contract
@@ -67,5 +73,5 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 
 - [x] M001: Shared scheduling substrate — Trusted shared calendars, offline continuity, sync, realtime refresh, and baseline conflict visibility on web.
 - [x] M002: Shared free-time matching — Truthful ranked availability search, explanations, and suggestion-to-create handoff on the shared substrate.
-- [ ] M003: Cross-platform continuity and reminders — Mobile auth, offline continuity, and Find time handoff are now real; notification slices remain.
+- [ ] M003: Cross-platform continuity and reminders — Mobile auth, offline continuity, Find time, and notification control wiring are now real; final cross-surface notification correctness remains.
 - [ ] M004: Predictive assistance and release hardening — Predictive coordination help and product hardening after cross-platform continuity is real.

@@ -1,8 +1,7 @@
 # Codebase Map
 
-Generated: 2026-05-04T11:33:55Z | Files: 500 | Described: 0/500
-<!-- gsd:codebase-meta {"generatedAt":"2026-05-04T11:33:55Z","fingerprint":"0b6dcd03a0a8da672f0eca74f2e491fc315d54b9","fileCount":500,"truncated":true} -->
-Note: Truncated to first 500 files. Run with higher --max-files to include all.
+Generated: 2026-05-04T15:29:28Z | Files: 493 | Described: 0/493
+<!-- gsd:codebase-meta {"generatedAt":"2026-05-04T15:29:28Z","fingerprint":"083828baf886ace92f4b87a739f98484742ba289","fileCount":493,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -22,6 +21,7 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `pnpm-workspace.yaml`
 - `README.md`
 - `setup-agent-env.sh`
+- `turbo.json`
 
 ### .artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/
 - `.artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/accessibility.md`
@@ -87,27 +87,25 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/assets/
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/0.F8d5DQbR.css`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/2.CvqVE8tP.css`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/3.BjVniz8g.css`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/3.BBom593b.css`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/4.D9t02-tO.css`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/5.uJGzGZgV.css`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/5.BgqUIahB.css`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/6.D7V9Fcow.css`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/MobileShell.RtvhMW7e.css`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/network.RtvhMW7e.css`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/runtime.Cle6QH-8.css`
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/
-- *(21 files: 21 .js)*
-
-### apps/mobile/.svelte-kit/output/client/_app/immutable/entry/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.BShGhNaP.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.6zEaMZhc.js`
-
-### apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.hanVV1VC.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.CFOmHGFB.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.Dm3W94Tf.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.ClSQY54K.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.BmzJruxy.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.CyROzjfr.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/6.B2elEYUY.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BdGWbA3M.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BolUem1_.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/C0Rw5ZRo.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/ChEMe8CD.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CRyB-ECt.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CXXtBI0J.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DaA7Ooa8.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DGgxoOJE.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/hEQzCHA0.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/PPVm8Dsz.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/ss6mw8pm.js`
 
 ### apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/
 - `apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/env.js`
@@ -125,10 +123,11 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 ### apps/mobile/.svelte-kit/output/server/_app/immutable/assets/
 - `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_layout.YzRAIQiD.css`
 - `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_page.-fczuQlw.css`
+- `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_page.BgqUIahB.css`
 - `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_page.CoXGxDD0.css`
+- `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_page.CvEJSY6_.css`
 - `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_page.D9t02-tO.css`
-- `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_page.H1DeJkxM.css`
-- `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/_page.uJGzGZgV.css`
+- `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/CalendarNotificationToggle.Cle6QH-8.css`
 - `apps/mobile/.svelte-kit/output/server/_app/immutable/assets/MobileShell.C33lfloN.css`
 
 ### apps/mobile/.svelte-kit/output/server/chunks/
@@ -136,6 +135,7 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/mobile/.svelte-kit/output/server/chunks/environment.js`
 - `apps/mobile/.svelte-kit/output/server/chunks/exports.js`
 - `apps/mobile/.svelte-kit/output/server/chunks/false.js`
+- `apps/mobile/.svelte-kit/output/server/chunks/index-server.js`
 - `apps/mobile/.svelte-kit/output/server/chunks/index.js`
 - `apps/mobile/.svelte-kit/output/server/chunks/index2.js`
 - `apps/mobile/.svelte-kit/output/server/chunks/internal.js`
@@ -143,7 +143,9 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/mobile/.svelte-kit/output/server/chunks/mobile-session.js`
 - `apps/mobile/.svelte-kit/output/server/chunks/MobileShell.js`
 - `apps/mobile/.svelte-kit/output/server/chunks/render-context.js`
+- `apps/mobile/.svelte-kit/output/server/chunks/repository.js`
 - `apps/mobile/.svelte-kit/output/server/chunks/root.js`
+- `apps/mobile/.svelte-kit/output/server/chunks/router.js`
 - `apps/mobile/.svelte-kit/output/server/chunks/shared.js`
 - `apps/mobile/.svelte-kit/output/server/chunks/state.svelte.js`
 - `apps/mobile/.svelte-kit/output/server/chunks/utils.js`
@@ -324,6 +326,7 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 
 ### apps/mobile/tests/e2e/
 - `apps/mobile/tests/e2e/auth-scope.spec.ts`
+- `apps/mobile/tests/e2e/calendar-notifications.spec.ts`
 - `apps/mobile/tests/e2e/calendar-offline.spec.ts`
 - `apps/mobile/tests/e2e/find-time-handoff.spec.ts`
 - `apps/mobile/tests/e2e/fixtures.ts`
@@ -791,7 +794,14 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 ### supabase/
 - `supabase/.gitignore`
 - `supabase/config.toml`
+- `supabase/seed.sql`
+
+### supabase/functions/notify-calendar-change/
+- `supabase/functions/notify-calendar-change/index.ts`
 
 ### supabase/migrations/
 - `supabase/migrations/20260414_000001_auth_groups_access.sql`
 - `supabase/migrations/20260415_000002_schedule_shifts.sql`
+- `supabase/migrations/20260416_000001_schedule_realtime.sql`
+- `supabase/migrations/20260418_000001_find_time_member_availability.sql`
+- `supabase/migrations/20260422_000001_device_notifications.sql`

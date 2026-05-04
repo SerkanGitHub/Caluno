@@ -138,6 +138,8 @@ export const test = base.extend({
       const reminderSource = 'caluno-shift-reminder';
       const localListeners = new Map<string, Set<(payload: unknown) => void>>();
       const pushListeners = new Map<string, Set<(payload: unknown) => void>>();
+      const queuedLocalEvents = new Map<string, unknown[]>();
+      const queuedPushEvents = new Map<string, unknown[]>();
       const pendingLocalNotifications = new Map<number, {
         id: number;
         extra: {
@@ -167,28 +169,153 @@ export const test = base.extend({
         document.cookie = `${connectivityCookieName}=online; path=/`;
       }
 
+      try {
+        const installationStorageKey = 'CapacitorStorage.caluno.mobile.notification-installation.v1';
+        if (!window.localStorage.getItem(installationStorageKey)) {
+          window.localStorage.setItem(
+            installationStorageKey,
+            JSON.stringify({
+              installationId: '11111111-1111-4111-8111-111111111111',
+              pushToken: null,
+              pushProvider: null,
+              devicePlatform: null,
+              tokenLastRotatedAt: null,
+              createdAt: '2026-05-04T10:00:00.000Z',
+              updatedAt: '2026-05-04T10:00:00.000Z'
+            })
+          );
+        }
+      } catch {
+        // ignore notification installation seed failures; the runtime will surface them explicitly
+      }
+
+      try {
+        const fixedNow = Date.parse('2026-04-15T07:00:00.000Z');
+        const RealDate = Date;
+        class FixedDate extends RealDate {
+          constructor(...args: any[]) {
+            if (args.length === 0) {
+              super(fixedNow);
+              return;
+            }
+
+            switch (args.length) {
+              case 1:
+                super(args[0]);
+                break;
+              case 2:
+                super(args[0], args[1]);
+                break;
+              case 3:
+                super(args[0], args[1], args[2]);
+                break;
+              case 4:
+                super(args[0], args[1], args[2], args[3]);
+                break;
+              case 5:
+                super(args[0], args[1], args[2], args[3], args[4]);
+                break;
+              case 6:
+                super(args[0], args[1], args[2], args[3], args[4], args[5]);
+                break;
+              default:
+                super(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+                break;
+            }
+          }
+
+          static now() {
+            return fixedNow;
+          }
+        }
+
+        FixedDate.parse = RealDate.parse;
+        FixedDate.UTC = RealDate.UTC;
+        Object.setPrototypeOf(FixedDate, RealDate);
+        // @ts-expect-error test harness date freeze
+        window.Date = FixedDate;
+      } catch {
+        // ignore date-freeze failures; runtime behavior will remain real-time
+      }
+
       const connectivityMatch = document.cookie.match(/(?:^|;\s*)caluno-e2e-connectivity=(online|offline)\b/);
+      const notificationHarnessStorageKey = 'caluno.e2e.notifications.v1';
       let connected = connectivityMatch?.[1] !== 'offline';
-      let localPermission: 'prompt' | 'granted' | 'denied' = 'granted';
-      let pushPermission: 'prompt' | 'granted' | 'denied' = 'granted';
+
+      const readNotificationHarnessState = () => {
+        try {
+          const raw = window.localStorage.getItem(notificationHarnessStorageKey);
+          if (!raw) {
+            return null;
+          }
+
+          const parsed = JSON.parse(raw) as {
+            localPermission?: 'prompt' | 'granted' | 'denied';
+            pushPermission?: 'prompt' | 'granted' | 'denied';
+            pushRegistration?: {
+              mode?: 'success' | 'error';
+              token?: string;
+              error?: string;
+            };
+          };
+
+          return parsed;
+        } catch {
+          return null;
+        }
+      };
+
+      const persistNotificationHarnessState = (value: {
+        localPermission: 'prompt' | 'granted' | 'denied';
+        pushPermission: 'prompt' | 'granted' | 'denied';
+        pushRegistration: {
+          mode: 'success' | 'error';
+          token: string;
+          error: string;
+        };
+      }) => {
+        try {
+          window.localStorage.setItem(notificationHarnessStorageKey, JSON.stringify(value));
+        } catch {
+          // ignore harness persistence failures
+        }
+      };
+
+      const persistedNotificationState = readNotificationHarnessState();
+      let localPermission: 'prompt' | 'granted' | 'denied' = persistedNotificationState?.localPermission ?? 'granted';
+      let pushPermission: 'prompt' | 'granted' | 'denied' = persistedNotificationState?.pushPermission ?? 'granted';
       let pushRegistration: {
         mode: 'success' | 'error';
         token: string;
         error: string;
       } = {
-        mode: 'success',
-        token: 'playwright-push-token',
-        error: 'Simulated push registration failure.'
+        mode: persistedNotificationState?.pushRegistration?.mode ?? 'success',
+        token: persistedNotificationState?.pushRegistration?.token ?? 'playwright-push-token',
+        error: persistedNotificationState?.pushRegistration?.error ?? 'Simulated push registration failure.'
       };
+      persistNotificationHarnessState({
+        localPermission,
+        pushPermission,
+        pushRegistration
+      });
 
       const addListener = (
         registry: Map<string, Set<(payload: unknown) => void>>,
+        queue: Map<string, unknown[]>,
         eventName: string,
         listener: (payload: unknown) => void
       ) => {
         const listeners = registry.get(eventName) ?? new Set<(payload: unknown) => void>();
         listeners.add(listener);
         registry.set(eventName, listeners);
+
+        const queued = queue.get(eventName) ?? [];
+        if (queued.length > 0) {
+          queue.delete(eventName);
+          for (const payload of queued) {
+            listener(payload);
+          }
+        }
 
         return {
           remove: async () => {
@@ -200,8 +327,21 @@ export const test = base.extend({
         };
       };
 
-      const emit = (registry: Map<string, Set<(payload: unknown) => void>>, eventName: string, payload: unknown) => {
-        for (const listener of registry.get(eventName) ?? []) {
+      const emit = (
+        registry: Map<string, Set<(payload: unknown) => void>>,
+        queue: Map<string, unknown[]>,
+        eventName: string,
+        payload: unknown
+      ) => {
+        const listeners = registry.get(eventName);
+        if (!listeners || listeners.size === 0) {
+          const queued = queue.get(eventName) ?? [];
+          queued.push(payload);
+          queue.set(eventName, queued);
+          return;
+        }
+
+        for (const listener of listeners) {
           listener(payload);
         }
       };
@@ -262,7 +402,7 @@ export const test = base.extend({
           }
         },
         async addListener(eventName: 'localNotificationActionPerformed', listener: (event: unknown) => void) {
-          return addListener(localListeners, eventName, listener);
+          return addListener(localListeners, queuedLocalEvents, eventName, listener);
         }
       };
 
@@ -280,18 +420,18 @@ export const test = base.extend({
             }
 
             if (pushRegistration.mode === 'success') {
-              emit(pushListeners, 'registration', { value: pushRegistration.token });
+              emit(pushListeners, queuedPushEvents, 'registration', { value: pushRegistration.token });
               return;
             }
 
-            emit(pushListeners, 'registrationError', { error: pushRegistration.error });
+            emit(pushListeners, queuedPushEvents, 'registrationError', { error: pushRegistration.error });
           });
         },
         async addListener(
           eventName: 'registration' | 'registrationError' | 'pushNotificationActionPerformed' | 'pushNotificationReceived',
           listener: (event: unknown) => void
         ) {
-          return addListener(pushListeners, eventName, listener);
+          return addListener(pushListeners, queuedPushEvents, eventName, listener);
         }
       };
 
@@ -328,15 +468,30 @@ export const test = base.extend({
           notifications: {
             setLocalPermission(next: 'prompt' | 'granted' | 'denied') {
               localPermission = next;
+              persistNotificationHarnessState({
+                localPermission,
+                pushPermission,
+                pushRegistration
+              });
             },
             setPushPermission(next: 'prompt' | 'granted' | 'denied') {
               pushPermission = next;
+              persistNotificationHarnessState({
+                localPermission,
+                pushPermission,
+                pushRegistration
+              });
             },
             setPushRegistration(next: Partial<typeof pushRegistration>) {
               pushRegistration = {
                 ...pushRegistration,
                 ...next
               };
+              persistNotificationHarnessState({
+                localPermission,
+                pushPermission,
+                pushRegistration
+              });
             },
             triggerLocalAction(params: {
               actionId?: string;
@@ -360,10 +515,10 @@ export const test = base.extend({
                 }
               };
 
-              emit(localListeners, 'localNotificationActionPerformed', payload);
+              emit(localListeners, queuedLocalEvents, 'localNotificationActionPerformed', payload);
             },
             triggerPushAction(params: { actionId?: string; targetPath?: string | null }) {
-              emit(pushListeners, 'pushNotificationActionPerformed', {
+              emit(pushListeners, queuedPushEvents, 'pushNotificationActionPerformed', {
                 actionId: params.actionId ?? 'tap',
                 notification: {
                   data: {
@@ -384,6 +539,11 @@ export const test = base.extend({
                 token: 'playwright-push-token',
                 error: 'Simulated push registration failure.'
               };
+              persistNotificationHarnessState({
+                localPermission,
+                pushPermission,
+                pushRegistration
+              });
             }
           }
         }
@@ -499,6 +659,38 @@ export async function setSimulatedNotificationPermissions(
     push?: 'prompt' | 'granted' | 'denied';
   }
 ) {
+  await page.addInitScript((next) => {
+    try {
+      const key = 'caluno.e2e.notifications.v1';
+      const raw = window.localStorage.getItem(key);
+      const parsed = raw ? JSON.parse(raw) : {};
+      const pushRegistration =
+        parsed && typeof parsed === 'object' && parsed.pushRegistration && typeof parsed.pushRegistration === 'object'
+          ? parsed.pushRegistration
+          : {
+              mode: 'success',
+              token: 'playwright-push-token',
+              error: 'Simulated push registration failure.'
+            };
+
+      window.localStorage.setItem(
+        key,
+        JSON.stringify({
+          ...parsed,
+          ...(next.local ? { localPermission: next.local } : {}),
+          ...(next.push ? { pushPermission: next.push } : {}),
+          pushRegistration
+        })
+      );
+    } catch {
+      // ignore future-page harness persistence failures
+    }
+  }, params);
+
+  if (page.url() === 'about:blank') {
+    return;
+  }
+
   await page.evaluate((next) => {
     if (next.local) {
       window.__calunoE2E?.notifications?.setLocalPermission(next.local);
@@ -518,6 +710,31 @@ export async function setSimulatedPushRegistration(
     error?: string;
   }
 ) {
+  await page.addInitScript((next) => {
+    try {
+      const key = 'caluno.e2e.notifications.v1';
+      const raw = window.localStorage.getItem(key);
+      const parsed = raw ? JSON.parse(raw) : {};
+      window.localStorage.setItem(
+        key,
+        JSON.stringify({
+          ...parsed,
+          pushRegistration: {
+            mode: next.mode,
+            token: next.token ?? parsed?.pushRegistration?.token ?? 'playwright-push-token',
+            error: next.error ?? parsed?.pushRegistration?.error ?? 'Simulated push registration failure.'
+          }
+        })
+      );
+    } catch {
+      // ignore future-page harness persistence failures
+    }
+  }, params);
+
+  if (page.url() === 'about:blank') {
+    return;
+  }
+
   await page.evaluate((next) => {
     window.__calunoE2E?.notifications?.setPushRegistration(next);
   }, params);

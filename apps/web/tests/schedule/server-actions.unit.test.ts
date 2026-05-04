@@ -7,6 +7,16 @@ import {
   resolveVisibleWeek,
   validateCreateShiftForm
 } from '../../src/lib/server/schedule';
+import * as calendarChangeNotifier from '../../src/lib/server/calendar-change-notifier';
+
+// Mock the notifier seam so tests can assert dispatch behaviour without live edge-function calls.
+vi.mock('../../src/lib/server/calendar-change-notifier', () => ({
+  dispatchCalendarChange: vi.fn(async () => ({
+    ok: true,
+    calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+    changeType: 'create'
+  }))
+}));
 
 function createFormData(fields: Record<string, string>) {
   const formData = new FormData();
@@ -670,5 +680,239 @@ describe('schedule server helpers', () => {
     expect(deleteCapture.deleted).toBe(1);
     expect(deleteCapture.eq).toContainEqual(['id', 'aaaaaaaa-9999-1111-1111-111111111111']);
     expect(deleteCapture.eq).toContainEqual(['calendar_id', 'aaaaaaaa-aaaa-1111-1111-111111111111']);
+  });
+});
+
+describe('schedule server helpers — dispatch wiring', () => {
+  function resetDispatchMock() {
+    const mock = vi.mocked(calendarChangeNotifier.dispatchCalendarChange);
+    mock.mockClear();
+    mock.mockResolvedValue({
+      ok: true,
+      calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+      changeType: 'create'
+    });
+    return mock;
+  }
+
+  function makeCalendarScopeEntries() {
+    return [
+      {
+        table: 'calendars',
+        builder: createThenableBuilder({
+          data: [{ id: 'aaaaaaaa-aaaa-1111-1111-111111111111', group_id: 'group-a', name: 'Alpha shared', is_default: true }],
+          error: null
+        })
+      },
+      {
+        table: 'group_memberships',
+        builder: createThenableBuilder({ data: [{ group_id: 'group-a', role: 'owner' as const }], error: null })
+      }
+    ];
+  }
+
+  function makeShiftLookupEntry(shiftId = 'aaaaaaaa-9999-1111-1111-111111111111') {
+    return {
+      table: 'shifts',
+      builder: createThenableBuilder({
+        data: [{ id: shiftId, calendar_id: 'aaaaaaaa-aaaa-1111-1111-111111111111', series_id: null, title: 'Morning intake', start_at: '2026-04-20T09:00:00.000Z', end_at: '2026-04-20T11:00:00.000Z', occurrence_index: null, source_kind: 'single' as const }],
+        error: null
+      })
+    };
+  }
+
+  function makeShiftWriteEntry(shiftId = 'aaaaaaaa-9999-1111-1111-111111111111') {
+    return {
+      table: 'shifts',
+      builder: createThenableBuilder({
+        data: [{ id: shiftId, calendar_id: 'aaaaaaaa-aaaa-1111-1111-111111111111', series_id: null, title: 'Morning intake', start_at: '2026-04-20T09:00:00.000Z', end_at: '2026-04-20T11:00:00.000Z', occurrence_index: null, source_kind: 'single' as const }],
+        error: null
+      })
+    };
+  }
+
+  it('dispatches once with changeType create after a successful single-shift create', async () => {
+    const dispatchMock = resetDispatchMock();
+    const supabase = createQueuedSupabase([
+      ...makeCalendarScopeEntries(),
+      { table: 'shifts', builder: createThenableBuilder({ data: null, error: null }) },
+      { table: 'shift_assignments', builder: createThenableBuilder({ data: null, error: null }) }
+    ]);
+    const result = await createScheduleShift({
+      supabase: supabase as never,
+      calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+      userId: '11111111-1111-1111-1111-111111111111',
+      searchParams: new URLSearchParams('start=2026-04-20'),
+      formData: createFormData({ title: 'Morning intake', startAt: '2026-04-20T09:00:00.000Z', endAt: '2026-04-20T11:00:00.000Z', recurrenceCadence: '', recurrenceInterval: '', repeatCount: '', repeatUntil: '' })
+    });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(result.status).toBe(200);
+    expect(result.state.status).toBe('success');
+    expect(dispatchMock).toHaveBeenCalledOnce();
+    expect(dispatchMock).toHaveBeenCalledWith(expect.objectContaining({ calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111', changeType: 'create' }));
+  });
+
+  it('dispatches once with changeType edit after a successful shift edit', async () => {
+    const dispatchMock = resetDispatchMock();
+    const supabase = createQueuedSupabase([...makeCalendarScopeEntries(), makeShiftLookupEntry(), makeShiftWriteEntry()]);
+    const result = await editScheduleShift({
+      supabase: supabase as never,
+      calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+      userId: '11111111-1111-1111-1111-111111111111',
+      searchParams: new URLSearchParams('start=2026-04-20'),
+      formData: createFormData({ shiftId: 'aaaaaaaa-9999-1111-1111-111111111111', title: 'Updated title', startAt: '2026-04-20T09:00:00.000Z', endAt: '2026-04-20T11:00:00.000Z' })
+    });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(result.status).toBe(200);
+    expect(result.state.status).toBe('success');
+    expect(dispatchMock).toHaveBeenCalledOnce();
+    expect(dispatchMock).toHaveBeenCalledWith(expect.objectContaining({ changeType: 'edit' }));
+  });
+
+  it('dispatches once with changeType move after a successful shift move', async () => {
+    const dispatchMock = resetDispatchMock();
+    const supabase = createQueuedSupabase([...makeCalendarScopeEntries(), makeShiftLookupEntry(), makeShiftWriteEntry()]);
+    const result = await moveScheduleShift({
+      supabase: supabase as never,
+      calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+      userId: '11111111-1111-1111-1111-111111111111',
+      searchParams: new URLSearchParams('start=2026-04-20'),
+      formData: createFormData({ shiftId: 'aaaaaaaa-9999-1111-1111-111111111111', title: '', startAt: '2026-04-20T10:00:00.000Z', endAt: '2026-04-20T12:00:00.000Z' })
+    });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(result.status).toBe(200);
+    expect(result.state.status).toBe('success');
+    expect(dispatchMock).toHaveBeenCalledOnce();
+    expect(dispatchMock).toHaveBeenCalledWith(expect.objectContaining({ changeType: 'move' }));
+  });
+
+  it('dispatches once with changeType delete after a successful shift delete', async () => {
+    const dispatchMock = resetDispatchMock();
+    const supabase = createQueuedSupabase([...makeCalendarScopeEntries(), makeShiftLookupEntry(), makeShiftWriteEntry()]);
+    const result = await deleteScheduleShift({
+      supabase: supabase as never,
+      calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+      userId: '11111111-1111-1111-1111-111111111111',
+      searchParams: new URLSearchParams('start=2026-04-20'),
+      formData: createFormData({ shiftId: 'aaaaaaaa-9999-1111-1111-111111111111', title: '', startAt: '', endAt: '' })
+    });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(result.status).toBe(200);
+    expect(result.state.status).toBe('success');
+    expect(dispatchMock).toHaveBeenCalledOnce();
+    expect(dispatchMock).toHaveBeenCalledWith(expect.objectContaining({ changeType: 'delete' }));
+  });
+
+  it('does not dispatch when a shift write fails (write-error)', async () => {
+    const dispatchMock = resetDispatchMock();
+    const supabase = createQueuedSupabase([
+      ...makeCalendarScopeEntries(),
+      { table: 'shifts', builder: createThenableBuilder({ data: null, error: { message: 'unique constraint violation' } }) }
+    ]);
+    const result = await createScheduleShift({
+      supabase: supabase as never,
+      calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+      userId: '11111111-1111-1111-1111-111111111111',
+      searchParams: new URLSearchParams('start=2026-04-20'),
+      formData: createFormData({ title: 'Morning intake', startAt: '2026-04-20T09:00:00.000Z', endAt: '2026-04-20T11:00:00.000Z', recurrenceCadence: '', recurrenceInterval: '', repeatCount: '', repeatUntil: '' })
+    });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(result.state.status).toBe('write-error');
+    expect(dispatchMock).not.toHaveBeenCalled();
+  });
+
+  it('does not dispatch when the write is forbidden (calendar scope missing)', async () => {
+    const dispatchMock = resetDispatchMock();
+    const supabase = createQueuedSupabase([
+      { table: 'calendars', builder: createThenableBuilder({ data: [], error: null }) },
+      { table: 'group_memberships', builder: createThenableBuilder({ data: [], error: null }) }
+    ]);
+    const result = await createScheduleShift({
+      supabase: supabase as never,
+      calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+      userId: '11111111-1111-1111-1111-111111111111',
+      searchParams: new URLSearchParams('start=2026-04-20'),
+      formData: createFormData({ title: 'Morning intake', startAt: '2026-04-20T09:00:00.000Z', endAt: '2026-04-20T11:00:00.000Z', recurrenceCadence: '', recurrenceInterval: '', repeatCount: '', repeatUntil: '' })
+    });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(result.state.status).not.toBe('success');
+    expect(dispatchMock).not.toHaveBeenCalled();
+  });
+
+  it('does not dispatch when the canonical calendar id is invalid', async () => {
+    const dispatchMock = resetDispatchMock();
+    const result = await createScheduleShift({
+      supabase: {} as never,
+      calendarId: 'not-a-uuid',
+      userId: '11111111-1111-1111-1111-111111111111',
+      searchParams: new URLSearchParams('start=2026-04-20'),
+      formData: createFormData({ title: 'Morning intake', startAt: '2026-04-20T09:00:00.000Z', endAt: '2026-04-20T11:00:00.000Z', recurrenceCadence: '', recurrenceInterval: '', repeatCount: '', repeatUntil: '' })
+    });
+    expect(result.state.status).toBe('forbidden');
+    expect(dispatchMock).not.toHaveBeenCalled();
+  });
+
+  it('returns canonical success even when dispatch degrades (edge function rejects)', async () => {
+    const dispatchMock = resetDispatchMock();
+    dispatchMock.mockResolvedValue({ ok: false, degraded: true, reason: 'dispatch-error', detail: 'Edge function unavailable' });
+    const supabase = createQueuedSupabase([
+      ...makeCalendarScopeEntries(),
+      { table: 'shifts', builder: createThenableBuilder({ data: null, error: null }) },
+      { table: 'shift_assignments', builder: createThenableBuilder({ data: null, error: null }) }
+    ]);
+    const result = await createScheduleShift({
+      supabase: supabase as never,
+      calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+      userId: '11111111-1111-1111-1111-111111111111',
+      searchParams: new URLSearchParams('start=2026-04-20'),
+      formData: createFormData({ title: 'Morning intake', startAt: '2026-04-20T09:00:00.000Z', endAt: '2026-04-20T11:00:00.000Z', recurrenceCadence: '', recurrenceInterval: '', repeatCount: '', repeatUntil: '' })
+    });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(result.status).toBe(200);
+    expect(result.state.status).toBe('success');
+    expect(result.state.reason).toBe('SHIFT_CREATED');
+    expect(dispatchMock).toHaveBeenCalledOnce();
+  });
+
+  it('returns canonical success even when dispatch times out', async () => {
+    const dispatchMock = resetDispatchMock();
+    dispatchMock.mockResolvedValue({ ok: false, degraded: true, reason: 'dispatch-timeout', detail: 'Dispatch timed out after 5000ms — canonical schedule write is unaffected.' });
+    const supabase = createQueuedSupabase([
+      ...makeCalendarScopeEntries(),
+      { table: 'shifts', builder: createThenableBuilder({ data: null, error: null }) },
+      { table: 'shift_assignments', builder: createThenableBuilder({ data: null, error: null }) }
+    ]);
+    const result = await createScheduleShift({
+      supabase: supabase as never,
+      calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+      userId: '11111111-1111-1111-1111-111111111111',
+      searchParams: new URLSearchParams('start=2026-04-20'),
+      formData: createFormData({ title: 'Morning intake', startAt: '2026-04-20T09:00:00.000Z', endAt: '2026-04-20T11:00:00.000Z', recurrenceCadence: '', recurrenceInterval: '', repeatCount: '', repeatUntil: '' })
+    });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(result.status).toBe(200);
+    expect(result.state.status).toBe('success');
+  });
+
+  it('dispatches once with the first affected shift id for recurring creates', async () => {
+    const dispatchMock = resetDispatchMock();
+    const supabase = createQueuedSupabase([
+      ...makeCalendarScopeEntries(),
+      { table: 'shift_series', builder: createThenableBuilder({ data: null, error: null }) },
+      { table: 'shifts', builder: createThenableBuilder({ data: null, error: null }) },
+      { table: 'shift_assignments', builder: createThenableBuilder({ data: null, error: null }) }
+    ]);
+    const result = await createScheduleShift({
+      supabase: supabase as never,
+      calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+      userId: '11111111-1111-1111-1111-111111111111',
+      searchParams: new URLSearchParams('start=2026-04-20'),
+      formData: createFormData({ title: 'Opening sweep', startAt: '2026-04-20T08:30:00.000Z', endAt: '2026-04-20T09:00:00.000Z', recurrenceCadence: 'daily', recurrenceInterval: '1', repeatCount: '3', repeatUntil: '' })
+    });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(result.status).toBe(200);
+    expect(result.state.status).toBe('success');
+    expect(dispatchMock).toHaveBeenCalledOnce();
+    expect(dispatchMock.mock.calls[0][0]).toMatchObject({ calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111', changeType: 'create' });
   });
 });

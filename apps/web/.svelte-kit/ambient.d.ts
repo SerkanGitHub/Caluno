@@ -49,7 +49,6 @@ declare module '$env/static/private' {
 	export const NODE_OPTIONS: string;
 	export const MallocNanoZone: string;
 	export const ZDOTDIR: string;
-	export const VIPSHOME: string;
 	export const GSD_PKG_ROOT: string;
 	export const USER: string;
 	export const COMMAND_MODE: string;
@@ -72,6 +71,7 @@ declare module '$env/static/private' {
 	export const XPC_FLAGS: string;
 	export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 	export const GSD_BUNDLED_EXTENSION_PATHS: string;
+	export const GSD_CLI_PATH: string;
 	export const pnpm_config_verify_deps_before_run: string;
 	export const XPC_SERVICE_NAME: string;
 	export const VSCODE_INJECTION: string;
@@ -199,7 +199,6 @@ declare module '$env/dynamic/private' {
 		NODE_OPTIONS: string;
 		MallocNanoZone: string;
 		ZDOTDIR: string;
-		VIPSHOME: string;
 		GSD_PKG_ROOT: string;
 		USER: string;
 		COMMAND_MODE: string;
@@ -222,6 +221,7 @@ declare module '$env/dynamic/private' {
 		XPC_FLAGS: string;
 		VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 		GSD_BUNDLED_EXTENSION_PATHS: string;
+		GSD_CLI_PATH: string;
 		pnpm_config_verify_deps_before_run: string;
 		XPC_SERVICE_NAME: string;
 		VSCODE_INJECTION: string;

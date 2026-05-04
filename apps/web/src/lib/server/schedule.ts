@@ -10,6 +10,7 @@ import type {
   ScheduleValidationResult
 } from '$lib/schedule/types';
 import type { AppCalendar, AppMembership } from '$lib/server/app-shell';
+import { dispatchCalendarChange } from '$lib/server/calendar-change-notifier';
 
 const rruleModule = rrulePkg as unknown as {
   RRule?: typeof import('rrule').RRule;
@@ -455,7 +456,7 @@ export async function createScheduleShift(params: {
       });
     }
 
-    return actionSuccess({
+    const singleResult = actionSuccess({
       action: 'create',
       visibleWeek,
       reason: 'SHIFT_CREATED',
@@ -464,6 +465,17 @@ export async function createScheduleShift(params: {
       shiftId: generatedShiftId,
       affectedShiftIds: [generatedShiftId]
     });
+
+    // Best-effort dispatch — never awaited to completion inside the canonical write path.
+    void dispatchCalendarChange({
+      supabase: params.supabase,
+      calendarId: params.calendarId,
+      changeType: 'create',
+      shiftId: generatedShiftId,
+      targetPath: `/calendars/${params.calendarId}`
+    });
+
+    return singleResult;
   }
 
   const generatedSeriesId = randomUUID();
@@ -550,7 +562,7 @@ export async function createScheduleShift(params: {
     });
   }
 
-  return actionSuccess({
+  const recurringResult = actionSuccess({
     action: 'create',
     visibleWeek,
     reason: 'SHIFT_CREATED',
@@ -560,6 +572,17 @@ export async function createScheduleShift(params: {
     affectedShiftIds,
     shiftId: affectedShiftIds[0] ?? null
   });
+
+  // Best-effort dispatch — never rolls back the canonical write.
+  void dispatchCalendarChange({
+    supabase: params.supabase,
+    calendarId: params.calendarId,
+    changeType: 'create',
+    shiftId: affectedShiftIds[0] ?? null,
+    targetPath: `/calendars/${params.calendarId}`
+  });
+
+  return recurringResult;
 }
 
 export async function editScheduleShift(params: {
@@ -654,7 +677,7 @@ export async function editScheduleShift(params: {
     .eq('calendar_id', params.calendarId)
     .select('id, calendar_id, series_id, title, start_at, end_at, occurrence_index, source_kind')) as SupabaseResult<ShiftRow[]>;
 
-  return finalizeSingleShiftMutation({
+  const editResult = finalizeSingleShiftMutation({
     action: 'edit',
     visibleWeek,
     fields,
@@ -663,6 +686,18 @@ export async function editScheduleShift(params: {
     successMessage: 'The shift details were updated inside the current trusted calendar.',
     writeResult: updateResult
   });
+
+  if (editResult.state.status === 'success') {
+    void dispatchCalendarChange({
+      supabase: params.supabase,
+      calendarId: params.calendarId,
+      changeType: 'edit',
+      shiftId: editResult.state.shiftId,
+      targetPath: `/calendars/${params.calendarId}`
+    });
+  }
+
+  return editResult;
 }
 
 export async function moveScheduleShift(params: {
@@ -755,7 +790,7 @@ export async function moveScheduleShift(params: {
     .eq('calendar_id', params.calendarId)
     .select('id, calendar_id, series_id, title, start_at, end_at, occurrence_index, source_kind')) as SupabaseResult<ShiftRow[]>;
 
-  return finalizeSingleShiftMutation({
+  const moveResult = finalizeSingleShiftMutation({
     action: 'move',
     visibleWeek,
     fields,
@@ -764,6 +799,18 @@ export async function moveScheduleShift(params: {
     successMessage: 'The shift range was moved inside the current trusted calendar.',
     writeResult: updateResult
   });
+
+  if (moveResult.state.status === 'success') {
+    void dispatchCalendarChange({
+      supabase: params.supabase,
+      calendarId: params.calendarId,
+      changeType: 'move',
+      shiftId: moveResult.state.shiftId,
+      targetPath: `/calendars/${params.calendarId}`
+    });
+  }
+
+  return moveResult;
 }
 
 export async function deleteScheduleShift(params: {
@@ -825,22 +872,34 @@ export async function deleteScheduleShift(params: {
     });
   }
 
-  const deleteResult = (await params.supabase
+  const deleteWriteResult = (await params.supabase
     .from('shifts')
     .delete()
     .eq('id', fields.shiftId)
     .eq('calendar_id', params.calendarId)
     .select('id, calendar_id, series_id, title, start_at, end_at, occurrence_index, source_kind')) as SupabaseResult<ShiftRow[]>;
 
-  return finalizeSingleShiftMutation({
+  const deleteResult = finalizeSingleShiftMutation({
     action: 'delete',
     visibleWeek,
     fields,
     submittedShiftId: fields.shiftId,
     successReason: 'SHIFT_DELETED',
     successMessage: 'The shift was deleted from the current trusted calendar.',
-    writeResult: deleteResult
+    writeResult: deleteWriteResult
   });
+
+  if (deleteResult.state.status === 'success') {
+    void dispatchCalendarChange({
+      supabase: params.supabase,
+      calendarId: params.calendarId,
+      changeType: 'delete',
+      shiftId: deleteResult.state.shiftId,
+      targetPath: `/calendars/${params.calendarId}`
+    });
+  }
+
+  return deleteResult;
 }
 
 function actionSuccess(params: {

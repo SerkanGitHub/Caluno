@@ -1,8 +1,5 @@
-# M004: 
+# M004: M004
 
-## Vision
-TBD
+**Vision:** 
 
-## Slice Overview
-| ID | Slice | Risk | Depends | Done | After this |
-|----|-------|------|---------|------|------------|
+## Slices
