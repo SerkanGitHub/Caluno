@@ -1,7 +1,9 @@
 <script lang="ts">
   import type { CalendarWeekBoardModel } from '@repo/caluno-core/schedule/board';
+  import type { CreatePrefillPayload } from '@repo/caluno-core/schedule/create-prefill';
   import type { CalendarControllerActionState, CalendarScheduleView } from '@repo/caluno-core/schedule/types';
   import type { MobileCalendarControllerState, MobileOfflineRouteMode } from '$lib/offline/controller';
+  import { buildMobileFindTimeEntrypointHref, MOBILE_FIND_TIME_DEFAULT_DURATION_MINUTES } from '$lib/schedule/create-prefill-arrival';
   import ShiftCard from './ShiftCard.svelte';
   import ShiftEditorSheet, { type ShiftEditorSubmitParams } from './ShiftEditorSheet.svelte';
   import SyncStatusStrip from './SyncStatusStrip.svelte';
@@ -20,6 +22,7 @@
     refreshing: boolean;
     retrying: boolean;
     remoteFailure: { status: CalendarScheduleView['status']; reason: string | null; message: string } | null;
+    createPrefill?: CreatePrefillPayload | null;
     submitMutation: (params: ShiftEditorSubmitParams) => Promise<void>;
     refreshTrustedWeek: () => void | Promise<void>;
     retryDrain: () => void | Promise<void>;
@@ -39,6 +42,7 @@
     refreshing,
     retrying,
     remoteFailure,
+    createPrefill = null,
     submitMutation,
     refreshTrustedWeek,
     retryDrain
@@ -90,6 +94,7 @@
         {pendingActionKey}
         canSubmit={canMutate}
         triggerLabel={canMutate ? 'New shift' : 'Read-only continuity'}
+        {createPrefill}
         {submitMutation}
       />
 
@@ -98,8 +103,15 @@
         <a class="button button-secondary" href={`?start=${board.nextWeekStart}`}>Forward a week</a>
         <a
           class="button button-primary"
-          href={`/calendars/${calendarId}/find-time`}
+          href={buildMobileFindTimeEntrypointHref({
+            calendarId,
+            visibleWeekStart: board.visibleWeekStart,
+            durationMinutes: MOBILE_FIND_TIME_DEFAULT_DURATION_MINUTES
+          })}
           data-testid="find-time-entrypoint"
+          data-entry-calendar-id={calendarId}
+          data-entry-week-start={board.visibleWeekStart}
+          data-entry-duration={MOBILE_FIND_TIME_DEFAULT_DURATION_MINUTES}
         >
           Find time
         </a>

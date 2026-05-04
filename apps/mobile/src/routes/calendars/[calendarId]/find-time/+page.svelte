@@ -27,6 +27,10 @@
 
   const durationPresets = [30, 60, 90, 120] as const;
 
+  type MobileFindTimeWindow = NonNullable<MobileFindTimeSearchView>['windows'][number];
+  type MobileFindTimeConstraint = MobileFindTimeWindow['nearbyConstraints']['leading'][number];
+  type MobileFindTimeBlockedMember = MobileFindTimeWindow['blockedMembers'][number];
+
   let { data }: { data: PageData } = $props();
 
   const authState = $derived(data.authState);
@@ -187,12 +191,79 @@
     }).format(new Date(value));
   }
 
-  function availableNames(window: NonNullable<MobileFindTimeSearchView>['windows'][number]) {
-    return window.availableMembers.map((member) => member.displayName).join(' · ');
+  function serializeNames(values: string[]) {
+    return values.join('|');
   }
 
-  function blockedNames(window: NonNullable<MobileFindTimeSearchView>['windows'][number]) {
-    return window.blockedMembers.map((member) => member.displayName).join(' · ');
+  function serializeNearbyConstraints(constraints: MobileFindTimeConstraint[]) {
+    return constraints.map((constraint) => `${constraint.memberName}:${constraint.shiftTitle}:${constraint.distanceMinutes}`).join('|');
+  }
+
+  function availableNames(window: MobileFindTimeWindow) {
+    return window.availableMembers.map((member) => member.displayName);
+  }
+
+  function blockedNames(window: MobileFindTimeWindow) {
+    return window.blockedMembers.map((member) => member.displayName);
+  }
+
+  function nearbyConstraintCount(window: MobileFindTimeWindow) {
+    return window.nearbyConstraints.leading.length + window.nearbyConstraints.trailing.length;
+  }
+
+  function topPickHeadline(window: MobileFindTimeWindow) {
+    if (window.blockedMembers.length === 0) {
+      return `All ${window.availableMembers.length} named members stay free across this exact slot.`;
+    }
+
+    return `${window.availableMembers.length} named members align while ${window.blockedMembers.length} blocked member${window.blockedMembers.length === 1 ? '' : 's'} explain the nearby exclusions.`;
+  }
+
+  function browseHeadline(window: MobileFindTimeWindow) {
+    if (window.blockedMembers.length === 0) {
+      return 'Shared slot with no blocked roster members during the exact window.';
+    }
+
+    return `${window.availableMembers.length} free • ${window.blockedMembers.length} blocked nearby.`;
+  }
+
+  function describeNearbyConstraint(constraint: MobileFindTimeConstraint) {
+    const distance = constraint.overlapsBoundary
+      ? constraint.relation === 'leading'
+        ? 'touches the start edge'
+        : 'touches the end edge'
+      : `${constraint.distanceMinutes} min ${constraint.relation === 'leading' ? 'before' : 'after'} the slot`;
+
+    return `${constraint.memberName} · ${constraint.shiftTitle} · ${formatUtcClock(constraint.startAt)}–${formatUtcClock(constraint.endAt)} UTC · ${distance}`;
+  }
+
+  function summarizeBlockedMember(blockedMember: MobileFindTimeBlockedMember) {
+    const snippets = [
+      ...blockedMember.nearbyConstraints.leading.map((constraint) => summarizeConstraintEdge(constraint)),
+      ...blockedMember.nearbyConstraints.trailing.map((constraint) => summarizeConstraintEdge(constraint))
+    ];
+
+    if (snippets.length === 0) {
+      return `${blockedMember.displayName} is unavailable, but no nearby trusted shift detail was available for the adjacent edges.`;
+    }
+
+    return `${blockedMember.displayName}: ${snippets.join(' · ')}`;
+  }
+
+  function summarizeConstraintEdge(constraint: MobileFindTimeConstraint) {
+    if (constraint.overlapsBoundary) {
+      return `${constraint.shiftTitle} holds the ${constraint.relation === 'leading' ? 'start' : 'end'} edge`;
+    }
+
+    return `${constraint.shiftTitle} ${constraint.distanceMinutes} min ${constraint.relation === 'leading' ? 'before' : 'after'}`;
+  }
+
+  function shortConstraintSummary(constraints: MobileFindTimeConstraint[], emptyLabel: string) {
+    if (constraints.length === 0) {
+      return emptyLabel;
+    }
+
+    return constraints.map((constraint) => `${constraint.shiftTitle} (${constraint.memberName})`).join(' · ');
   }
 
   $effect(() => {
@@ -452,24 +523,38 @@
 
         {#if routeState?.status === 'ready'}
           <section class="summary-grid">
-            <article class="status-card framed-panel tone-neutral" data-testid="find-time-summary">
+            <article
+              class="status-card framed-panel tone-neutral"
+              data-testid="find-time-search-state"
+              data-status={routeState.status}
+            >
               <span class="status-card__label">Route status</span>
               <strong>{routeState.status}</strong>
               <p>{routeState.message}</p>
             </article>
-            <article class="status-card framed-panel tone-neutral">
+            <article class="status-card framed-panel tone-neutral" data-testid="find-time-summary">
               <span class="status-card__label">Search range</span>
-              <strong>{routeState.rangeStartAt?.slice(0, 10)} → {routeState.rangeEndAt?.slice(0, 10)}</strong>
-              <p>{routeState.durationMinutes ?? 0} minute duration over {searchView?.roster.length ?? 0} named members.</p>
+              <strong>{routeState.totalWindows} truthful window{routeState.totalWindows === 1 ? '' : 's'}</strong>
+              <p>
+                {routeState.durationMinutes ?? 0} minute duration over {searchView?.roster.length ?? 0} named members ·
+                {routeState.rangeStartAt?.slice(0, 10)} → {routeState.rangeEndAt?.slice(0, 10)}.
+              </p>
             </article>
           </section>
 
-          <section class="result-shell" data-testid="find-time-results" data-window-count={routeState.totalWindows}>
+          <section
+            class="result-shell"
+            data-testid="find-time-results"
+            data-window-count={routeState.totalWindows}
+            data-top-pick-count={routeState.topPickCount}
+            data-browse-count={routeState.browseCount}
+          >
             <section class="result-panel framed-panel" data-testid="find-time-top-picks" data-top-pick-count={routeState.topPickCount}>
               <div class="section-heading">
                 <div>
                   <p class="panel-kicker">Top picks</p>
                   <h3>Highest-confidence shared windows.</h3>
+                  <p class="panel-copy">Shortlist cards carry the heavier explanation load before the lighter browse inventory.</p>
                 </div>
                 <span class="pill">{routeState.topPickCount}</span>
               </div>
@@ -489,35 +574,106 @@
                       data-testid={`find-time-top-pick-${index}`}
                       data-start-at={window.startAt}
                       data-end-at={window.endAt}
+                      data-span-start-at={window.spanStartAt}
+                      data-span-end-at={window.spanEndAt}
                       data-top-pick-rank={window.topPickRank ?? index + 1}
-                      data-available-members={availableNames(window)}
-                      data-blocked-members={blockedNames(window)}
+                      data-available-members={serializeNames(availableNames(window))}
+                      data-blocked-members={serializeNames(blockedNames(window))}
+                      data-blocked-member-count={window.blockedMembers.length}
+                      data-leading-constraints={serializeNearbyConstraints(window.nearbyConstraints.leading)}
+                      data-trailing-constraints={serializeNearbyConstraints(window.nearbyConstraints.trailing)}
+                      data-nearby-constraint-count={nearbyConstraintCount(window)}
+                      data-handoff-ready={createHref && handoffWeekStart ? 'true' : 'false'}
                     >
                       <div class="card-header">
                         <div>
                           <p class="panel-kicker">Top pick {window.topPickRank ?? index + 1}</p>
                           <h4>{formatUtcSlot(window.startAt, window.endAt)}</h4>
                         </div>
-                        <span class="pill">{window.availableMembers.length} free</span>
+                        <span class="pill">{window.availableMembers.length} free / {window.blockedMembers.length} blocked</span>
                       </div>
-                      <p class="panel-copy">{window.topPickEligible ? 'Shared slot qualified for the shortlist.' : 'Shared slot stayed browse-only.'}</p>
-                      <p class="panel-copy"><strong>Free:</strong> {availableNames(window) || 'none'}</p>
-                      {#if window.blockedMembers.length > 0}
-                        <p class="panel-copy"><strong>Blocked:</strong> {blockedNames(window)}</p>
-                      {/if}
-                      {#if createHref && handoffWeekStart}
-                        <a
-                          class="button button-secondary"
-                          data-testid={`find-time-top-pick-${index}-cta`}
-                          data-handoff-source="find-time"
-                          data-handoff-week-start={handoffWeekStart}
-                          data-handoff-start-at={window.startAt}
-                          data-handoff-end-at={window.endAt}
-                          href={createHref}
+
+                      <p class="panel-copy">{topPickHeadline(window)}</p>
+
+                      <div class="find-time-compact-grid">
+                        <section class="detail-panel" data-testid={`find-time-top-pick-${index}-free-members`}>
+                          <p class="panel-kicker">Who is free</p>
+                          <p>{availableNames(window).join(' · ') || 'No one stayed free for this exact slot.'}</p>
+                        </section>
+
+                        <section
+                          class="detail-panel"
+                          data-testid={`find-time-top-pick-${index}-blocked-members`}
+                          data-blocked-member-count={window.blockedMembers.length}
                         >
-                          Prepare create handoff
-                        </a>
-                      {/if}
+                          <p class="panel-kicker">Who is blocked</p>
+                          {#if window.blockedMembers.length > 0}
+                            <ul class="detail-list">
+                              {#each window.blockedMembers as blockedMember}
+                                <li>{summarizeBlockedMember(blockedMember)}</li>
+                              {/each}
+                            </ul>
+                          {:else}
+                            <p class="find-time-fallback-copy">All named members stay free across this exact slot.</p>
+                          {/if}
+                        </section>
+                      </div>
+
+                      <div class="find-time-compact-grid">
+                        <section
+                          class="detail-panel"
+                          data-testid={`find-time-top-pick-${index}-nearby-leading`}
+                          data-constraint-count={window.nearbyConstraints.leading.length}
+                        >
+                          <p class="panel-kicker">Why earlier times fail</p>
+                          {#if window.nearbyConstraints.leading.length > 0}
+                            <ul class="detail-list">
+                              {#each window.nearbyConstraints.leading as constraint}
+                                <li>{describeNearbyConstraint(constraint)}</li>
+                              {/each}
+                            </ul>
+                          {:else}
+                            <p class="find-time-fallback-copy">No trusted busy interval pushes into the start edge for this shortlist slot.</p>
+                          {/if}
+                        </section>
+
+                        <section
+                          class="detail-panel"
+                          data-testid={`find-time-top-pick-${index}-nearby-trailing`}
+                          data-constraint-count={window.nearbyConstraints.trailing.length}
+                        >
+                          <p class="panel-kicker">Why nearby later times fail</p>
+                          {#if window.nearbyConstraints.trailing.length > 0}
+                            <ul class="detail-list">
+                              {#each window.nearbyConstraints.trailing as constraint}
+                                <li>{describeNearbyConstraint(constraint)}</li>
+                              {/each}
+                            </ul>
+                          {:else}
+                            <p class="find-time-fallback-copy">No trusted busy interval pushes into the trailing edge for this shortlist slot.</p>
+                          {/if}
+                        </section>
+                      </div>
+
+                      <div class="card-actions">
+                        {#if createHref && handoffWeekStart}
+                          <a
+                            class="button button-primary"
+                            data-testid={`find-time-top-pick-${index}-cta`}
+                            data-handoff-source="find-time"
+                            data-handoff-week-start={handoffWeekStart}
+                            data-handoff-start-at={window.startAt}
+                            data-handoff-end-at={window.endAt}
+                            href={createHref}
+                          >
+                            Create from this slot
+                          </a>
+                        {:else}
+                          <p class="find-time-handoff-unavailable" data-testid={`find-time-top-pick-${index}-cta-unavailable`}>
+                            Create handoff is unavailable until this card has a valid exact slot window.
+                          </p>
+                        {/if}
+                      </div>
                     </article>
                   {/each}
                 </div>
@@ -529,6 +685,7 @@
                 <div>
                   <p class="panel-kicker">Browse windows</p>
                   <h3>Compact follow-on inventory.</h3>
+                  <p class="panel-copy">Browse cards stay truthful but lighter so scanning stays phone-first.</p>
                 </div>
                 <span class="pill">{routeState.browseCount}</span>
               </div>
@@ -548,33 +705,58 @@
                       data-testid={`find-time-browse-window-${index}`}
                       data-start-at={window.startAt}
                       data-end-at={window.endAt}
-                      data-available-members={availableNames(window)}
-                      data-blocked-members={blockedNames(window)}
+                      data-span-start-at={window.spanStartAt}
+                      data-span-end-at={window.spanEndAt}
+                      data-available-members={serializeNames(availableNames(window))}
+                      data-blocked-members={serializeNames(blockedNames(window))}
+                      data-blocked-member-count={window.blockedMembers.length}
+                      data-leading-constraints={serializeNearbyConstraints(window.nearbyConstraints.leading)}
+                      data-trailing-constraints={serializeNearbyConstraints(window.nearbyConstraints.trailing)}
+                      data-nearby-constraint-count={nearbyConstraintCount(window)}
+                      data-handoff-ready={createHref && handoffWeekStart ? 'true' : 'false'}
                     >
                       <div class="card-header">
                         <div>
                           <p class="panel-kicker">Browse {index + 1}</p>
                           <h4>{formatUtcSlot(window.startAt, window.endAt)}</h4>
                         </div>
-                        <span class="pill">{window.availableMembers.length} free</span>
+                        <span class="pill">{window.availableMembers.length} free / {window.blockedMembers.length} blocked</span>
                       </div>
-                      <p class="panel-copy"><strong>Free:</strong> {availableNames(window) || 'none'}</p>
-                      {#if window.blockedMembers.length > 0}
-                        <p class="panel-copy"><strong>Blocked:</strong> {blockedNames(window)}</p>
-                      {/if}
-                      {#if createHref && handoffWeekStart}
-                        <a
-                          class="button button-secondary"
-                          data-testid={`find-time-browse-window-${index}-cta`}
-                          data-handoff-source="find-time"
-                          data-handoff-week-start={handoffWeekStart}
-                          data-handoff-start-at={window.startAt}
-                          data-handoff-end-at={window.endAt}
-                          href={createHref}
-                        >
-                          Prepare create handoff
-                        </a>
-                      {/if}
+
+                      <p class="panel-copy">{browseHeadline(window)}</p>
+
+                      <div class="find-time-compact-grid">
+                        <section class="detail-panel" data-testid={`find-time-browse-window-${index}-free-members`}>
+                          <p class="panel-kicker">Free</p>
+                          <p>{availableNames(window).join(' · ')}</p>
+                        </section>
+
+                        <section class="detail-panel" data-testid={`find-time-browse-window-${index}-nearby-summary`}>
+                          <p class="panel-kicker">Nearby edges</p>
+                          <p>Before: {shortConstraintSummary(window.nearbyConstraints.leading, 'No leading constraint summary.')}</p>
+                          <p>After: {shortConstraintSummary(window.nearbyConstraints.trailing, 'No trailing constraint summary.')}</p>
+                        </section>
+                      </div>
+
+                      <div class="card-actions">
+                        {#if createHref && handoffWeekStart}
+                          <a
+                            class="button button-secondary"
+                            data-testid={`find-time-browse-window-${index}-cta`}
+                            data-handoff-source="find-time"
+                            data-handoff-week-start={handoffWeekStart}
+                            data-handoff-start-at={window.startAt}
+                            data-handoff-end-at={window.endAt}
+                            href={createHref}
+                          >
+                            Create from this slot
+                          </a>
+                        {:else}
+                          <p class="find-time-handoff-unavailable" data-testid={`find-time-browse-window-${index}-cta-unavailable`}>
+                            Create handoff is unavailable until this card has a valid exact slot window.
+                          </p>
+                        {/if}
+                      </div>
                     </article>
                   {/each}
                 </div>
@@ -582,9 +764,12 @@
             </section>
           </section>
         {:else if routeState}
-          <article class={`status-card framed-panel ${routeState.status === 'no-results' || routeState.status === 'timeout' ? 'tone-warning' : 'tone-danger'}`} data-testid={routeState.status === 'no-results' ? 'find-time-empty-state' : 'find-time-error-state'}>
+          <article
+            class={`status-card framed-panel ${routeState.status === 'no-results' || routeState.status === 'timeout' ? 'tone-warning' : 'tone-danger'}`}
+            data-testid={routeState.status === 'no-results' ? 'find-time-empty-state' : 'find-time-error-state'}
+          >
             <span class="status-card__label">Find-time status</span>
-            <strong>{routeState.status}</strong>
+            <strong data-testid="find-time-search-state" data-status={routeState.status}>{routeState.status}</strong>
             <p>{routeState.message}</p>
             {#if routeState.reason}
               <code>{routeState.reason}</code>
@@ -619,13 +804,17 @@
 
 <style>
   .find-time-route,
+  .find-time-content,
   .inventory-card,
   .toolbar-card,
   .summary-grid,
   .result-shell,
   .result-panel,
   .card-list,
-  .query-form {
+  .query-form,
+  .find-time-compact-grid,
+  .detail-panel,
+  .card-actions {
     display: grid;
     gap: 0.95rem;
   }
@@ -710,12 +899,29 @@
   dd,
   .calendar-link span,
   .empty-panel p,
-  .status-card p {
+  .status-card p,
+  .detail-panel p,
+  .find-time-handoff-unavailable,
+  .find-time-fallback-copy,
+  .detail-list {
     color: var(--caluno-ink-muted);
     line-height: 1.55;
   }
 
-  .query-form {
+  .detail-panel {
+    gap: 0.55rem;
+    padding: 0.82rem 0.86rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(34, 31, 27, 0.08);
+  }
+
+  .detail-list {
+    margin: 0;
+    padding-left: 1rem;
+  }
+
+  .card-actions {
     align-items: start;
   }
 
@@ -828,7 +1034,8 @@
   }
 
   @media (min-width: 42rem) {
-    .summary-grid {
+    .summary-grid,
+    .find-time-compact-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }

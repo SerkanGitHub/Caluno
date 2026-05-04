@@ -1,5 +1,6 @@
 <script lang="ts">
   import { buildDefaultCreateTimes, toDateTimeLocalValue, type ShiftCardModel } from '@repo/caluno-core/schedule/board';
+  import type { CreatePrefillPayload } from '@repo/caluno-core/schedule/create-prefill';
   import type { CalendarControllerActionState } from '@repo/caluno-core/schedule/types';
 
   export type ShiftEditorSubmitParams = {
@@ -15,6 +16,7 @@
     visibleWeekStart: string;
     shift?: ShiftCardModel | null;
     defaultDayKey?: string | null;
+    createPrefill?: CreatePrefillPayload | null;
     actionStates?: CalendarControllerActionState[];
     pendingActionKey: string | null;
     canSubmit: boolean;
@@ -29,6 +31,7 @@
     visibleWeekStart,
     shift = null,
     defaultDayKey = null,
+    createPrefill = null,
     actionStates = [],
     pendingActionKey,
     canSubmit,
@@ -39,6 +42,7 @@
   let open = $state(false);
   let lastSeedKey = $state<string | null>(null);
   let handledStateId = $state<string | null>(null);
+  let lastAutoOpenedPrefillKey = $state<string | null>(null);
   let draftTitle = $state('');
   let draftStartAt = $state('');
   let draftEndAt = $state('');
@@ -61,9 +65,12 @@
     return scopedState.status === 'pending-local' || scopedState.status === 'timeout' ? 'tone-warning' : 'tone-danger';
   });
   const defaultTimes = $derived(buildDefaultCreateTimes(defaultDayKey));
+  const createPrefillKey = $derived.by(() =>
+    mode === 'create' && createPrefill ? `${createPrefill.source}:${createPrefill.startAt}:${createPrefill.endAt}` : null
+  );
   const seedKey = $derived.by(() => {
     if (mode === 'create') {
-      return `create:${defaultDayKey ?? visibleWeekStart}`;
+      return `create:${defaultDayKey ?? visibleWeekStart}:${createPrefillKey ?? 'manual'}`;
     }
 
     return `${mode}:${shift?.id ?? 'unknown'}:${shift?.startAt ?? 'none'}:${shift?.endAt ?? 'none'}`;
@@ -116,8 +123,8 @@
   function reseedDraft() {
     if (mode === 'create') {
       draftTitle = '';
-      draftStartAt = defaultTimes.startAt;
-      draftEndAt = defaultTimes.endAt;
+      draftStartAt = createPrefill?.startAtLocal ?? defaultTimes.startAt;
+      draftEndAt = createPrefill?.endAtLocal ?? defaultTimes.endAt;
       recurrenceCadence = '';
       recurrenceInterval = '';
       repeatCount = '';
@@ -188,6 +195,15 @@
   });
 
   $effect(() => {
+    if (!createPrefillKey || lastAutoOpenedPrefillKey === createPrefillKey) {
+      return;
+    }
+
+    lastAutoOpenedPrefillKey = createPrefillKey;
+    open = true;
+  });
+
+  $effect(() => {
     if (!scopedState || handledStateId === scopedState.id) {
       return;
     }
@@ -215,6 +231,7 @@
   onclick={() => (open = true)}
   disabled={!canSubmit && mode === 'create'}
   data-testid={`${mode}-shift-trigger-${formId.replace(/:/g, '-')}`}
+  data-create-source={mode === 'create' ? createPrefill?.source ?? 'manual' : ''}
 >
   {buttonLabel}
 </button>
@@ -229,6 +246,8 @@
       data-testid={`${mode}-shift-editor`}
       data-mode={mode}
       data-form-id={formId}
+      data-open-on-arrival={mode === 'create' && createPrefill ? 'true' : 'false'}
+      data-create-source={mode === 'create' ? createPrefill?.source ?? 'manual' : ''}
     >
       <header class="shift-editor-sheet__header">
         <div>
@@ -253,6 +272,19 @@
           </div>
         </dl>
       {:else}
+        {#if mode === 'create' && createPrefill}
+          <article
+            class="inline-state tone-neutral"
+            data-testid="create-prefill-source"
+            data-prefill-source={createPrefill.source}
+            data-prefill-start={createPrefill.startAt}
+            data-prefill-end={createPrefill.endAt}
+          >
+            <strong>From Find time</strong>
+            <p>The create sheet opened from a shared free-time slot and kept the exact UTC window intact.</p>
+          </article>
+        {/if}
+
         <form class="shift-editor-sheet__form" onsubmit={handleSubmit}>
           {#if mode !== 'move'}
             <label class="field">

@@ -1,5 +1,6 @@
-import { s as ssr_context, h as head, d as derived, e as escape_html, a as attr, c as ensure_array_like, b as attr_class } from "../../../../chunks/root.js";
+import { h as head, d as derived, e as escape_html, a as attr, c as ensure_array_like, b as attr_class } from "../../../../chunks/root.js";
 import { p as page } from "../../../../chunks/index2.js";
+import { o as onDestroy, d as describeDeniedCalendarReason } from "../../../../chunks/app-shell.js";
 import { M as MobileShell } from "../../../../chunks/MobileShell.js";
 import "../../../../chunks/mobile-session.js";
 import * as rrulePkg from "rrule";
@@ -7,38 +8,6 @@ import "@capacitor/network";
 import "@capacitor/app";
 import { p as primaryCalendarLandingHref } from "../../../../chunks/load-app-shell.js";
 import "@supabase/ssr";
-function onDestroy(fn) {
-  /** @type {SSRContext} */
-  ssr_context.r.on_destroy(fn);
-}
-function describeDeniedCalendarReason(reason) {
-  switch (reason) {
-    case "calendar-id-invalid":
-      return {
-        badge: "Route rejected",
-        title: "That calendar address is malformed.",
-        detail: "The route parameter was rejected before any trusted calendar lookup could run."
-      };
-    case "calendar-missing":
-      return {
-        badge: "Lookup denied",
-        title: "That calendar does not exist in your permitted scope.",
-        detail: "Caluno failed closed instead of rendering an empty calendar for a guessed or stale id."
-      };
-    case "group-membership-missing":
-      return {
-        badge: "Access denied",
-        title: "Your session is not a member of the group behind this calendar.",
-        detail: "The calendar id was recognized, but membership proof was missing, so the view stayed locked."
-      };
-    case "anonymous":
-      return {
-        badge: "Authentication required",
-        title: "Sign in before opening protected calendars.",
-        detail: "Calendar access is resolved only for trusted authenticated members."
-      };
-  }
-}
 function resolveVisibleWeek(searchParams, now = /* @__PURE__ */ new Date()) {
   const requestedStart = searchParams.get("start")?.trim() || null;
   if (requestedStart) {
@@ -106,6 +75,10 @@ function _page($$renderer, $$props) {
     const visibleWeek = derived(() => resolveVisibleWeek(page.url.searchParams, /* @__PURE__ */ new Date()));
     let shellResult = null;
     let shellBootstrapMode = "loading";
+    let createPrefillArrival = {
+      status: "none",
+      cleanedSearchParams: new URLSearchParams()
+    };
     let runtimeState = null;
     let runtime = null;
     let runtimeSubscription = null;
@@ -155,7 +128,7 @@ function _page($$renderer, $$props) {
       primaryLabel: appShell()?.primaryCalendar?.name ?? null,
       shellTestId: "calendar-shell",
       children: ($$renderer3) => {
-        $$renderer3.push(`<section class="calendar-route svelte-7ipbkm" data-testid="calendar-route-state"${attr("data-shell-bootstrap", shellBootstrapMode)}${attr("data-route-mode", routeMode())}${attr("data-shell-snapshot-origin", snapshotOrigin())}${attr("data-snapshot-origin", runtimeState?.snapshotOrigin ?? "none")}${attr("data-visible-week-source", visibleWeek().source)}${attr("data-visible-week-start", visibleWeek().start)}${attr("data-board-source", runtimeState?.boardSource ?? "none")}${attr("data-queue-state", runtimeState?.queueState ?? "idle")}${attr("data-pending-count", runtimeState?.pendingQueueLength ?? 0)}${attr("data-retryable-count", runtimeState?.retryableQueueLength ?? 0)}${attr("data-sync-phase", runtimeState?.syncPhase ?? "idle")}${attr("data-last-retryable-reason", runtimeState?.lastRetryableFailure?.reason ?? "none")}${attr("data-denied-reason", deniedState()?.reason ?? protectedEntry().denialReasonCode ?? "none")}${attr("data-failure-phase", deniedState()?.failurePhase ?? shellFailure()?.failurePhase ?? (protectedEntry().routeMode === "denied" ? "continuity" : "none"))}${attr("data-attempted-calendar-id", attemptedCalendarId())}>`);
+        $$renderer3.push(`<section class="calendar-route svelte-7ipbkm" data-testid="calendar-route-state"${attr("data-shell-bootstrap", shellBootstrapMode)}${attr("data-route-mode", routeMode())}${attr("data-shell-snapshot-origin", snapshotOrigin())}${attr("data-snapshot-origin", runtimeState?.snapshotOrigin ?? "none")}${attr("data-visible-week-source", visibleWeek().source)}${attr("data-visible-week-start", visibleWeek().start)}${attr("data-board-source", runtimeState?.boardSource ?? "none")}${attr("data-queue-state", runtimeState?.queueState ?? "idle")}${attr("data-pending-count", runtimeState?.pendingQueueLength ?? 0)}${attr("data-retryable-count", runtimeState?.retryableQueueLength ?? 0)}${attr("data-sync-phase", runtimeState?.syncPhase ?? "idle")}${attr("data-last-retryable-reason", runtimeState?.lastRetryableFailure?.reason ?? "none")}${attr("data-denied-reason", deniedState()?.reason ?? protectedEntry().denialReasonCode ?? "none")}${attr("data-failure-phase", deniedState()?.failurePhase ?? shellFailure()?.failurePhase ?? (protectedEntry().routeMode === "denied" ? "continuity" : "none"))}${attr("data-attempted-calendar-id", attemptedCalendarId())}${attr("data-create-prefill-status", createPrefillArrival.status)}${attr("data-create-prefill-source", "none")}${attr("data-create-prefill-start", "none")}${attr("data-create-prefill-end", "none")}>`);
         if (shellFailure()) {
           $$renderer3.push("<!--[1-->");
           $$renderer3.push(`<article class="hero-card framed-panel tone-danger svelte-7ipbkm" data-testid="mobile-shell-load-failure"><p class="panel-kicker svelte-7ipbkm">Shell load failed</p> <h2 class="svelte-7ipbkm">Protected content stayed hidden.</h2> <p class="panel-copy svelte-7ipbkm">${escape_html(shellFailure().detail)}</p> <div class="meta-strip svelte-7ipbkm"><code class="svelte-7ipbkm">${escape_html(shellFailure().reasonCode)}</code> <code class="svelte-7ipbkm">${escape_html(shellFailure().failurePhase)}</code></div> <button class="button button-primary svelte-7ipbkm" type="button"${attr("disabled", !shellFailure().retryable, true)}>Retry trusted load</button></article>`);

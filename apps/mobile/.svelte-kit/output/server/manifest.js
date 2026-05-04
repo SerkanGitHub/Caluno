@@ -10,14 +10,15 @@ return {
 	assets: new Set([]),
 	mimeTypes: {},
 	_: {
-		client: {start:"_app/immutable/entry/start.CSxLZAYA.js",app:"_app/immutable/entry/app.CKRdkVKg.js",imports:["_app/immutable/entry/start.CSxLZAYA.js","_app/immutable/chunks/Db6uoy2u.js","_app/immutable/chunks/BrFZ6NHt.js","_app/immutable/chunks/CWeFt6jb.js","_app/immutable/chunks/CKbkPM2I.js","_app/immutable/entry/app.CKRdkVKg.js","_app/immutable/chunks/PPVm8Dsz.js","_app/immutable/chunks/BrFZ6NHt.js","_app/immutable/chunks/D8jecx1F.js","_app/immutable/chunks/C-QreVHk.js","_app/immutable/chunks/CKbkPM2I.js","_app/immutable/chunks/aspVDWtK.js","_app/immutable/chunks/rpg3dlon.js","_app/immutable/chunks/Btw0dzQj.js","_app/immutable/chunks/TkKPizu3.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:true},
+		client: {start:"_app/immutable/entry/start.DZyGQXn7.js",app:"_app/immutable/entry/app.DkwnFbPq.js",imports:["_app/immutable/entry/start.DZyGQXn7.js","_app/immutable/chunks/DFM7M6Gy.js","_app/immutable/chunks/BpmJnM1U.js","_app/immutable/chunks/CWeFt6jb.js","_app/immutable/chunks/B-UIgRvv.js","_app/immutable/entry/app.DkwnFbPq.js","_app/immutable/chunks/PPVm8Dsz.js","_app/immutable/chunks/BpmJnM1U.js","_app/immutable/chunks/Dm6f-8yO.js","_app/immutable/chunks/BfevdSCe.js","_app/immutable/chunks/B-UIgRvv.js","_app/immutable/chunks/sJLkTBM_.js","_app/immutable/chunks/BBcdCx3g.js","_app/immutable/chunks/DHhxVyb8.js","_app/immutable/chunks/DQSIKspV.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:true},
 		nodes: [
 			__memo(() => import('./nodes/0.js')),
 			__memo(() => import('./nodes/1.js')),
 			__memo(() => import('./nodes/2.js')),
 			__memo(() => import('./nodes/3.js')),
 			__memo(() => import('./nodes/4.js')),
-			__memo(() => import('./nodes/5.js'))
+			__memo(() => import('./nodes/5.js')),
+			__memo(() => import('./nodes/6.js'))
 		],
 		remotes: {
 			
@@ -38,17 +39,24 @@ return {
 				endpoint: null
 			},
 			{
+				id: "/calendars/[calendarId]/find-time",
+				pattern: /^\/calendars\/([^/]+?)\/find-time\/?$/,
+				params: [{"name":"calendarId","optional":false,"rest":false,"chained":false}],
+				page: { layouts: [0,], errors: [1,], leaf: 4 },
+				endpoint: null
+			},
+			{
 				id: "/groups",
 				pattern: /^\/groups\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 4 },
+				page: { layouts: [0,], errors: [1,], leaf: 5 },
 				endpoint: null
 			},
 			{
 				id: "/signin",
 				pattern: /^\/signin\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 5 },
+				page: { layouts: [0,], errors: [1,], leaf: 6 },
 				endpoint: null
 			}
 		],

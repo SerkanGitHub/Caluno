@@ -5,10 +5,14 @@
   import { createEmptyCalendarScheduleView, resolveVisibleWeek, type ScheduleLoadStatus } from '@repo/caluno-core/route-contract';
   import { buildCalendarWeekBoard } from '@repo/caluno-core/schedule/board';
   import { describeDeniedCalendarReason } from '@repo/caluno-core/app-shell';
+  import type { CreatePrefillPayload } from '@repo/caluno-core/schedule/create-prefill';
   import type { CalendarScheduleView } from '@repo/caluno-core/schedule/types';
   import MobileShell from '$lib/components/MobileShell.svelte';
   import MobileCalendarBoard from '$lib/components/calendar/MobileCalendarBoard.svelte';
-  import { hasCreatePrefillSearchParams, parseCreatePrefill, stripCreatePrefillSearchParams } from '@repo/caluno-core/schedule/create-prefill';
+  import {
+    resolveMobileCreatePrefillArrival,
+    type MobileCreatePrefillArrivalState
+  } from '$lib/schedule/create-prefill-arrival';
   import { rememberSyncedCalendarWeek, createMobileOfflineRepository } from '$lib/offline/repository';
   import { createMobileOfflineRuntime, type MobileOfflineRuntime } from '$lib/offline/runtime';
   import { createTrustedMobileScheduleTransport, type MobileTrustedScheduleTransport } from '$lib/offline/transport';
@@ -42,23 +46,14 @@
   let refreshing = $state(false);
   let retrying = $state(false);
   let pendingActionKey = $state<string | null>(null);
-  let autoOpenCreateSheet = $state(false);
-  let createPrefill: ReturnType<typeof parseCreatePrefill> | null = null;
-    // Auto-open ShiftEditorSheet if navigated from Find time with prefill params
-    $effect(() => {
-      if (!browser || !activeCalendar) return;
-      const searchParams = new URLSearchParams(window.location.search);
-      if (hasCreatePrefillSearchParams(searchParams)) {
-        createPrefill = parseCreatePrefill(searchParams);
-        if (createPrefill && createPrefill.calendarId === activeCalendar.id) {
-          autoOpenCreateSheet = true;
-          // Remove prefill params from URL after opening
-          const cleanParams = stripCreatePrefillSearchParams(searchParams);
-          const newUrl = `${window.location.pathname}${cleanParams.toString() ? '?' + cleanParams.toString() : ''}`;
-          window.history.replaceState({}, '', newUrl);
-        }
-      }
-    });
+  let createPrefillArrival = $state<MobileCreatePrefillArrivalState>({
+    status: 'none',
+    createPrefill: null,
+    cleanedSearchParams: new URLSearchParams(),
+    shouldStripParams: false
+  });
+  let createPrefillObservedWeekStart = $state<string | null>(null);
+  let createPrefill = $state<CreatePrefillPayload | null>(null);
   let runtimeState = $state.raw<MobileCalendarControllerState | null>(null);
   let runtime = $state.raw<MobileOfflineRuntime | null>(null);
   let transport = $state.raw<MobileTrustedScheduleTransport | null>(null);
@@ -368,6 +363,48 @@
   });
 
   $effect(() => {
+    if (!browser || !activeCalendar) {
+      createPrefillArrival = {
+        status: 'none',
+        createPrefill: null,
+        cleanedSearchParams: new URLSearchParams(),
+        shouldStripParams: false
+      };
+      createPrefillObservedWeekStart = null;
+      createPrefill = null;
+      return;
+    }
+
+    const arrival = resolveMobileCreatePrefillArrival(page.url.searchParams);
+
+    if (arrival.status !== 'none') {
+      createPrefillArrival = arrival;
+      createPrefillObservedWeekStart = visibleWeek.start;
+      createPrefill = arrival.createPrefill;
+
+      if (arrival.shouldStripParams) {
+        const cleanedSearch = arrival.cleanedSearchParams.toString();
+        const nextUrl = `${window.location.pathname}${cleanedSearch ? `?${cleanedSearch}` : ''}`;
+        const currentUrl = `${window.location.pathname}${window.location.search}`;
+
+        if (currentUrl !== nextUrl) {
+          window.history.replaceState(window.history.state, '', nextUrl);
+        }
+      }
+
+      return;
+    }
+
+    if (createPrefillArrival.status !== 'none' && createPrefillObservedWeekStart === visibleWeek.start) {
+      return;
+    }
+
+    createPrefillArrival = arrival;
+    createPrefillObservedWeekStart = null;
+    createPrefill = null;
+  });
+
+  $effect(() => {
     void ensureCalendarRuntime();
   });
 
@@ -415,6 +452,10 @@
     data-denied-reason={deniedState?.reason ?? protectedEntry.denialReasonCode ?? 'none'}
     data-failure-phase={deniedState?.failurePhase ?? shellFailure?.failurePhase ?? (protectedEntry.routeMode === 'denied' ? 'continuity' : 'none')}
     data-attempted-calendar-id={attemptedCalendarId}
+    data-create-prefill-status={createPrefillArrival.status}
+    data-create-prefill-source={createPrefill?.source ?? 'none'}
+    data-create-prefill-start={createPrefill?.startAt ?? 'none'}
+    data-create-prefill-end={createPrefill?.endAt ?? 'none'}
   >
     {#if loading}
       <article class="hero-card framed-panel tone-neutral">
@@ -467,29 +508,11 @@
           {refreshing}
           {retrying}
           {remoteFailure}
+          {createPrefill}
           {submitMutation}
           refreshTrustedWeek={refreshTrustedWeek}
           retryDrain={retryDrain}
         />
-        {#if autoOpenCreateSheet && createPrefill}
-          <svelte:component
-            this={import('$lib/components/calendar/ShiftEditorSheet.svelte')}
-            mode="create"
-            formId="create:find-time-handoff"
-            calendarId={activeCalendar.id}
-            visibleWeekStart={createPrefill.visibleWeekStart}
-            defaultDayKey={createPrefill.visibleWeekStart}
-            canSubmit={canMutate}
-            triggerLabel="From Find time"
-            submitMutation={submitMutation}
-            actionStates={runtimeState.actionStates}
-            pendingActionKey={pendingActionKey}
-            prefillStartAt={createPrefill.startAtLocal}
-            prefillEndAt={createPrefill.endAtLocal}
-            open={true}
-            on:close={() => { autoOpenCreateSheet = false; }}
-          />
-        {/if}
       {/if}
     {:else if protectedEntry.routeMode === 'denied'}
       <article class="hero-card framed-panel tone-danger" data-testid="mobile-continuity-denied">

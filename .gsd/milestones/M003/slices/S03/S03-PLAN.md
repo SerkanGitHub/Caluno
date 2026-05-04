@@ -126,7 +126,7 @@ What remains before the milestone is truly usable end-to-end: notification contr
   - Files: `apps/mobile/src/lib/find-time/transport.ts`, `apps/mobile/src/lib/find-time/view.ts`, `apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte`, `apps/mobile/src/lib/offline/network.ts`, `apps/mobile/src/lib/shell/load-app-shell.ts`, `apps/mobile/tests/mobile-find-time.unit.test.ts`
   - Verify: pnpm --dir apps/mobile exec vitest run tests/find-time-contract.unit.test.ts tests/mobile-find-time.unit.test.ts && pnpm --dir apps/mobile check
 
-- [ ] **T03: Wire the calendar entrypoint, compact cards, and one-shot create handoff** `est:2h`
+- [x] **T03: Wire the calendar entrypoint, compact cards, and one-shot create handoff** `est:2h`
   Spend the trusted route-state contract on the actual phone-first UX. Add a contextual Find time entrypoint from the mobile calendar board, keep Top picks explanation-rich while browse cards stay lighter, and thread the selected slot back into the existing `ShiftEditorSheet.svelte` so mobile create opens once with exact values and immediately cleans up one-shot query state.
 
 ## Failure Modes
