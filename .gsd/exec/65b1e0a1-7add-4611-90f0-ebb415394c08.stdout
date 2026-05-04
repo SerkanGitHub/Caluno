@@ -1,0 +1,172 @@
+
+Running 12 tests using 1 worker
+
+  ✘   1 tests/e2e/calendar-offline.spec.ts:25:1 › trusted warm-up reopens offline, keeps multiple queued edits across reload, and drains them after reconnect (12.0s)
+  -   2 tests/e2e/calendar-offline.spec.ts:101:1 › offline continuity fails closed for unsynced calendars and corrupt cached shell snapshots
+  -   3 tests/e2e/calendar-offline.spec.ts:125:1 › invalid week params and malformed queued payloads stay attributable through explicit diagnostics
+  ✘   4 tests/e2e/find-time-handoff.spec.ts:28:1 › permitted member can enter from the real board, verify ranked results, hand a chosen slot into create, and reload without reopening (1.8s)
+  -   5 tests/e2e/find-time-handoff.spec.ts:192:1 › out-of-scope mobile find-time routes stay explicitly denied with zero result cards
+  -   6 tests/e2e/find-time-handoff.spec.ts:211:1 › offline route entry stays fail-closed as offline-unavailable with zero result cards
+  -   7 tests/e2e/find-time-handoff.spec.ts:236:1 › malformed arrival-prefill params stay attributable, do not auto-open create, and are gone after reload
+  ✓   8 tests/e2e/mobile-assembly.spec.ts:69:1 › phase 1 — sign in and open the permitted calendar with trusted-online diagnostics (1.5s)
+  ✓   9 tests/e2e/mobile-assembly.spec.ts:95:1 › phase 2 — calendar survives offline and drains queued mutations on reconnect (1.2s)
+  ✘  10 tests/e2e/mobile-assembly.spec.ts:124:1 › phase 3 — find time handoff flows into create arrival and the shift lands on the board (1.6s)
+  -  11 tests/e2e/mobile-assembly.spec.ts:228:1 › phase 4 — notification delivery reaches the enabled calendar and a safe tap lands in the permitted context
+  -  12 tests/e2e/mobile-assembly.spec.ts:338:1 › phase 5 — offline find-time stays fail-closed and out-of-scope tap is rejected
+
+
+  1) tests/e2e/calendar-offline.spec.ts:25:1 › trusted warm-up reopens offline, keeps multiple queued edits across reload, and drains them after reconnect 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoHaveAttribute[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator:  getByTestId('calendar-route-state')
+    Expected: [32m"trusted-o[7mn[27mline"[39m
+    Received: [31m"trusted-o[7mff[27mline"[39m
+    Timeout:  10000ms
+
+    Call log:
+    [2m  - Expect "toHaveAttribute" with timeout 10000ms[22m
+    [2m  - waiting for getByTestId('calendar-route-state')[22m
+    [2m    14 × locator resolved to <section data-pending-count="0" data-sync-phase="idle" data-queue-state="ready" data-retryable-count="0" data-denied-reason="none" data-failure-phase="none" data-shell-bootstrap="ready" data-create-prefill-end="none" data-board-source="server-sync" data-visible-week-source="query" data-create-prefill-start="none" data-route-mode="trusted-offline" data-last-retryable-reason="none" data-create-prefill-status="none" data-create-prefill-source="none" data-testid="calendar-route-state" data-snapshot-origin=…>…</section>[22m
+    [2m       - unexpected value "trusted-offline"[22m
+
+
+      39 |
+      40 |   await setSimulatedConnectivity(page, false);
+    > 41 |   await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'trusted-online');
+         |                                                          ^
+      42 |
+      43 |   await page.getByTestId('create-shift-trigger-create-week').click();
+      44 |   await expect(page.getByTestId('create-shift-editor')).toBeVisible();
+        at /Users/serkanyeniay/dev/Caluno/apps/mobile/tests/e2e/calendar-offline.spec.ts:41:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/calendar-offline-trusted-w-51b05-drains-them-after-reconnect/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/calendar-offline-trusted-w-51b05-drains-them-after-reconnect/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/calendar-offline-trusted-w-51b05-drains-them-after-reconnect/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/calendar-offline-trusted-w-51b05-drains-them-after-reconnect/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/calendar-offline-trusted-w-51b05-drains-them-after-reconnect/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/e2e/find-time-handoff.spec.ts:28:1 › permitted member can enter from the real board, verify ranked results, hand a chosen slot into create, and reload without reopening 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoMatchObject[2m([22m[32mexpected[39m[2m)[22m
+
+    [32m- Expected  - 3[39m
+    [31m+ Received  + 3[39m
+
+    [33m@@ -3,14 +3,14 @@[39m
+    [2m      "Alice Owner",[22m
+    [2m      "Bob Member",[22m
+    [2m      "Dana Multi-Group",[22m
+    [2m    ],[22m
+    [2m    "blockedMembers": Array [],[22m
+    [32m-   "endAt": "2026-04-16T16:00:00.000Z",[39m
+    [31m+   "endAt": "2026-04-16T17:00:00.000Z",[39m
+    [2m    "handoffReady": "true",[22m
+    [2m    "leadingConstraints": Array [],[22m
+    [2m    "rank": "1",[22m
+    [2m    "spanEndAt": "2026-05-15T00:00:00.000Z",[22m
+    [32m-   "spanStartAt": "2026-04-16T15:00:00.000Z",[39m
+    [32m-   "startAt": "2026-04-16T15:00:00.000Z",[39m
+    [31m+   "spanStartAt": "2026-04-16T16:00:00.000Z",[39m
+    [31m+   "startAt": "2026-04-16T16:00:00.000Z",[39m
+    [2m    "trailingConstraints": Array [],[22m
+    [2m  }[22m
+
+      90 |   ).resolves.toBe(true);
+      91 |
+    > 92 |   await expect(await readFindTimeTopPickSnapshot(page, 0)).toMatchObject({
+         |                                                            ^
+      93 |     ...seededFindTime.topPicks[0],
+      94 |     handoffReady: 'true'
+      95 |   });
+        at /Users/serkanyeniay/dev/Caluno/apps/mobile/tests/e2e/find-time-handoff.spec.ts:92:60
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests/e2e/mobile-assembly.spec.ts:124:1 › phase 3 — find time handoff flows into create arrival and the shift lands on the board 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoMatchObject[2m([22m[32mexpected[39m[2m)[22m
+
+    [32m- Expected  - 3[39m
+    [31m+ Received  + 3[39m
+
+    [33m@@ -3,14 +3,14 @@[39m
+    [2m      "Alice Owner",[22m
+    [2m      "Bob Member",[22m
+    [2m      "Dana Multi-Group",[22m
+    [2m    ],[22m
+    [2m    "blockedMembers": Array [],[22m
+    [32m-   "endAt": "2026-04-16T16:00:00.000Z",[39m
+    [31m+   "endAt": "2026-04-16T17:00:00.000Z",[39m
+    [2m    "handoffReady": "true",[22m
+    [2m    "leadingConstraints": Array [],[22m
+    [2m    "rank": "1",[22m
+    [2m    "spanEndAt": "2026-05-15T00:00:00.000Z",[22m
+    [32m-   "spanStartAt": "2026-04-16T15:00:00.000Z",[39m
+    [32m-   "startAt": "2026-04-16T15:00:00.000Z",[39m
+    [31m+   "spanStartAt": "2026-04-16T16:00:00.000Z",[39m
+    [31m+   "startAt": "2026-04-16T16:00:00.000Z",[39m
+    [2m    "trailingConstraints": Array [],[22m
+    [2m  }[22m
+
+      161 |   // Validate the first ranked pick contract
+      162 |   const topPick = await readFindTimeTopPickSnapshot(page, 0);
+    > 163 |   await expect(topPick).toMatchObject({ ...seededFindTime.topPicks[0], handoffReady: 'true' });
+          |                         ^
+      164 |
+      165 |   const ctaSnapshot = await readFindTimeTopPickCtaSnapshot(page, 0);
+      166 |   await expect(ctaSnapshot).toMatchObject({
+        at /Users/serkanyeniay/dev/Caluno/apps/mobile/tests/e2e/mobile-assembly.spec.ts:163:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/mobile-assembly-phase-3-—--e8743-he-shift-lands-on-the-board/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/mobile-assembly-phase-3-—--e8743-he-shift-lands-on-the-board/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/mobile-assembly-phase-3-—--e8743-he-shift-lands-on-the-board/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/mobile-assembly-phase-3-—--e8743-he-shift-lands-on-the-board/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/mobile-assembly-phase-3-—--e8743-he-shift-lands-on-the-board/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    tests/e2e/calendar-offline.spec.ts:25:1 › trusted warm-up reopens offline, keeps multiple queued edits across reload, and drains them after reconnect 
+    tests/e2e/find-time-handoff.spec.ts:28:1 › permitted member can enter from the real board, verify ranked results, hand a chosen slot into create, and reload without reopening 
+    tests/e2e/mobile-assembly.spec.ts:124:1 › phase 3 — find time handoff flows into create arrival and the shift lands on the board 
+  7 did not run
+  2 passed (23.2s)

@@ -1,0 +1,18 @@
+{
+  "id": "17bd18fb-b5c3-43a8-9b79-716cf4e26c28",
+  "runtime": "node",
+  "purpose": "Apply Fix 1 - skip unassigned shifts in find-time transport normalizeBusyIntervals",
+  "script_chars": 928,
+  "started_at": "2026-05-04T16:32:24.301Z",
+  "finished_at": "2026-05-04T16:32:24.418Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 117,
+  "stdout_bytes": 66,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/17bd18fb-b5c3-43a8-9b79-716cf4e26c28.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/17bd18fb-b5c3-43a8-9b79-716cf4e26c28.stderr"
+}

@@ -566,7 +566,7 @@
     class="calendar-route"
     data-testid="calendar-route-state"
     data-shell-bootstrap={shellBootstrapMode}
-    data-route-mode={routeMode}
+    data-route-mode={runtimeState?.routeMode ?? routeMode}
     data-shell-snapshot-origin={snapshotOrigin}
     data-snapshot-origin={runtimeState?.snapshotOrigin ?? 'none'}
     data-visible-week-source={visibleWeek.source}

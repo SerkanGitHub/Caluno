@@ -1,0 +1,18 @@
+{
+  "id": "8af9c2f1-c7c3-48e3-833e-7424e66c8e04",
+  "runtime": "node",
+  "purpose": "Apply Fix 2a - add trusted-offline to MobileOfflineRouteMode and update setNetwork in controller.ts",
+  "script_chars": 1551,
+  "started_at": "2026-05-04T16:32:33.396Z",
+  "finished_at": "2026-05-04T16:32:33.468Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 72,
+  "stdout_bytes": 98,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/8af9c2f1-c7c3-48e3-833e-7424e66c8e04.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/8af9c2f1-c7c3-48e3-833e-7424e66c8e04.stderr"
+}

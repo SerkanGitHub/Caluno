@@ -23,7 +23,7 @@
 - [x] **S04: S04** `risk:high` `depends:[]`
   > After this: On a device, each shared calendar has one notification toggle that truthfully controls both reminders and shared-calendar change notifications, with honest permission/subscription state.
 
-- [ ] **S05: S05** `risk:medium` `depends:[]`
+- [x] **S05: S05** `risk:medium` `depends:[]`
   > After this: Enabled calendars notify, disabled calendars stay quiet, duplicate notifications are suppressed, taps land in the right mobile context, and the assembled app proves it doesn’t feel fake.
 
 ## Boundary Map

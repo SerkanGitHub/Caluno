@@ -1,0 +1,80 @@
+    [2m      - unexpected value "loading"[22m
+    [2m    12 × locator resolved to <section data-network="online" data-browse-count="0" data-top-pick-count="0" data-denial-phase="none" data-status="malformed-response" data-route-mode="trusted-online" data-testid="find-time-route-state" class="find-time-route s-Y4RR_9aoBAfe" data-network-source="capacitor-network" data-reason="FIND_TIME_ASSIGNMENTS_MISSING" data-calendar-id="aaaaaaaa-aaaa-1111-1111-111111111111">…</section>[22m
+    [2m       - unexpected value "malformed-response"[22m
+
+
+      55 |   ]);
+      56 |
+    > 57 |   await expect(page.getByTestId('find-time-route-state')).toHaveAttribute('data-status', 'ready');
+         |                                                           ^
+      58 |   await expect(page.getByTestId('find-time-route-state')).toHaveAttribute('data-reason', 'none');
+      59 |   await expect(page.getByTestId('find-time-route-state')).toHaveAttribute('data-top-pick-count', String(seededFindTime.topPickCount));
+      60 |   await expect(page.getByTestId('find-time-search-state')).toHaveAttribute('data-status', 'ready');
+        at /Users/serkanyeniay/dev/Caluno/apps/mobile/tests/e2e/find-time-handoff.spec.ts:57:59
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/e2e/mobile-assembly.spec.ts:95:1 › phase 2 — calendar survives offline and drains queued mutations on reconnect 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoHaveAttribute[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator:  getByTestId('calendar-route-state')
+    Expected: [32m"trusted-o[7mff[27mline"[39m
+    Received: [31m"trusted-o[7mn[27mline"[39m
+    Timeout:  10000ms
+
+    Call log:
+    [2m  - Expect "toHaveAttribute" with timeout 10000ms[22m
+    [2m  - waiting for getByTestId('calendar-route-state')[22m
+    [2m    14 × locator resolved to <section data-pending-count="0" data-sync-phase="idle" data-queue-state="ready" data-retryable-count="0" data-denied-reason="none" data-failure-phase="none" data-shell-bootstrap="ready" data-create-prefill-end="none" data-board-source="server-sync" data-route-mode="trusted-online" data-visible-week-source="query" data-create-prefill-start="none" data-last-retryable-reason="none" data-create-prefill-status="none" data-create-prefill-source="none" data-testid="calendar-route-state" data-snapshot-origin="…>…</section>[22m
+    [2m       - unexpected value "trusted-online"[22m
+
+
+      108 |   // Go offline — calendar must switch to offline mode, not crash
+      109 |   await setSimulatedConnectivity(page, false, { waitForCalendarUi: true });
+    > 110 |   await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'trusted-offline');
+          |                                                          ^
+      111 |
+      112 |   // Go back online — sync strip must recover, queue must drain
+      113 |   await setSimulatedConnectivity(page, true, { waitForCalendarUi: true });
+        at /Users/serkanyeniay/dev/Caluno/apps/mobile/tests/e2e/mobile-assembly.spec.ts:110:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/mobile-assembly-phase-2-—--a3a8f-eued-mutations-on-reconnect/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/mobile-assembly-phase-2-—--a3a8f-eued-mutations-on-reconnect/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/mobile-assembly-phase-2-—--a3a8f-eued-mutations-on-reconnect/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/mobile-assembly-phase-2-—--a3a8f-eued-mutations-on-reconnect/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/mobile-assembly-phase-2-—--a3a8f-eued-mutations-on-reconnect/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests/e2e/find-time-handoff.spec.ts:28:1 › permitted member can enter from the real board, verify ranked results, hand a chosen slot into create, and reload without reopening 
+    tests/e2e/mobile-assembly.spec.ts:95:1 › phase 2 — calendar survives offline and drains queued mutations on reconnect 
+  6 did not run
+  17 passed (1.0m)

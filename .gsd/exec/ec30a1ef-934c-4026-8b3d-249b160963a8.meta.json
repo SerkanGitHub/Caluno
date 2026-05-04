@@ -1,0 +1,18 @@
+{
+  "id": "ec30a1ef-934c-4026-8b3d-249b160963a8",
+  "runtime": "bash",
+  "purpose": "Get full TypeScript errors from svelte-check",
+  "script_chars": 70,
+  "started_at": "2026-05-04T16:33:02.353Z",
+  "finished_at": "2026-05-04T16:33:05.679Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 3326,
+  "stdout_bytes": 3809,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/ec30a1ef-934c-4026-8b3d-249b160963a8.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/ec30a1ef-934c-4026-8b3d-249b160963a8.stderr"
+}

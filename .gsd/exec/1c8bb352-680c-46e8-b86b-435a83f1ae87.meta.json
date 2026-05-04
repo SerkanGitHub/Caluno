@@ -1,0 +1,18 @@
+{
+  "id": "1c8bb352-680c-46e8-b86b-435a83f1ae87",
+  "runtime": "bash",
+  "purpose": "Check TypeScript compilation for mobile app after fixes",
+  "script_chars": 81,
+  "started_at": "2026-05-04T16:32:54.389Z",
+  "finished_at": "2026-05-04T16:32:58.294Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 3905,
+  "stdout_bytes": 1706,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/1c8bb352-680c-46e8-b86b-435a83f1ae87.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/1c8bb352-680c-46e8-b86b-435a83f1ae87.stderr"
+}

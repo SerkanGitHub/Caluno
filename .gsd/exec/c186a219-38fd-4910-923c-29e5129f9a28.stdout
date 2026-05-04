@@ -1,0 +1,26 @@
+=== S01 files ===
+apps/mobile/src/lib/auth/mobile-session.ts
+apps/mobile/src/lib/shell/load-app-shell.ts
+packages/caluno-core/src/access.ts
+packages/caluno-core/src/app-shell.ts
+packages/caluno-core/src/route-contract.ts
+=== S02 files ===
+apps/mobile/src/lib/continuity/mobile-app-shell-cache.ts
+apps/mobile/src/lib/offline/repository.ts
+packages/caluno-core/src/offline/mutation-queue.ts
+packages/caluno-core/src/offline/sync-engine.ts
+=== S03 files ===
+apps/mobile/src/lib/find-time/transport.ts
+apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte
+packages/caluno-core/src/find-time/matcher.ts
+packages/caluno-core/src/find-time/ranking.ts
+packages/caluno-core/src/schedule/create-prefill.ts
+=== S04 files ===
+apps/mobile/src/lib/notifications/device-installation.ts
+apps/mobile/src/lib/notifications/router.ts
+apps/mobile/src/lib/notifications/runtime.ts
+supabase/migrations/20260422_000001_device_notifications.sql
+=== S05 files ===
+apps/mobile/src/lib/notifications/calendar-change-dispatch.ts
+apps/mobile/tests/e2e/mobile-assembly.spec.ts
+apps/web/src/lib/server/calendar-change-notifier.ts

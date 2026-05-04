@@ -24,7 +24,7 @@ import {
 import { getSupabaseBrowserClient, type MobileSupabaseDataClient } from '$lib/supabase/client';
 
 export type MobileShellBootstrapMode = 'idle' | 'loading' | 'ready' | 'needs-group' | 'load-failed';
-export type MobileShellRouteMode = 'trusted-online' | 'cached-offline' | 'denied' | 'public';
+export type MobileShellRouteMode = 'trusted-online' | 'trusted-offline' | 'cached-offline' | 'denied' | 'public';
 export type MobileSnapshotOrigin = 'trusted-online' | 'cached-offline' | 'none';
 export type MobileShellFailurePhase = 'viewer' | 'memberships' | 'groups' | 'calendars' | 'join-codes' | 'shape';
 export type MobileShellReasonCode =

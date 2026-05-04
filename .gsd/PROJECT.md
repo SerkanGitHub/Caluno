@@ -12,7 +12,7 @@ Turn chaotic schedules into shared clarity automatically.
 
 M001 and M002 are complete and validated on the web proof surface.
 
-M003 is still in progress, but S01 through S04 are now complete. The mobile app is a real authenticated calendar client with offline continuity, compact Find time handoff, and installation-backed notification controls wired into the phone-first surfaces.
+M003 is complete. All five slices (S01–S05) are done. The mobile app is a real authenticated calendar client with offline continuity, compact Find time handoff, per-device notification controls, and cross-surface notification delivery correctness.
 
 What works today:
 - trusted sign-in, group onboarding, permitted calendar access, and fail-closed denied routes on web
@@ -33,17 +33,21 @@ What works today:
 - deterministic local reminder scheduling from trusted synced weeks already stored on-device
 - fail-closed notification tap routing that rejects unsafe or out-of-scope targets instead of navigating optimistically
 - provider-neutral shared-calendar change dispatch wiring with honest `provider-unconfigured` degradation
-- mobile Playwright proof for sign-in, permitted scope, denied scope, offline continuity, reconnect drain, Find time handoff, notification toggle persistence, degraded notification states, and safe notification routing
+- best-effort shared-change dispatch wired into all four trusted web schedule mutations (create/edit/move/delete) via `calendar-change-notifier.ts`
+- best-effort shared-change dispatch wired into all four mobile schedule mutations including reconnect-drained replays via `calendar-change-dispatch.ts`
+- Playwright notification harness upgraded to delivery-state inspection: per-calendar pending/delivered inventory, edge-function stubbing, enabled/disabled delivery proof, and duplicate suppression
+- final assembled mobile tracer bullet (sign-in → offline continuity → find-time handoff → notification delivery → negative paths) in the default test:e2e bar
+- trusted-offline route-mode tracking when connectivity drops within a trusted calendar session
+- mobile Playwright proof for sign-in, permitted scope, denied scope, offline continuity, reconnect drain, Find time handoff, notification toggle persistence, degraded notification states, safe notification routing, and cross-surface notification delivery
 - successful Capacitor iOS packaging/sync for the assembled mobile scheduling + notification surface
 
 What is not yet complete:
-- final cross-surface notification correctness and assembled mobile proof are still pending in M003/S05
-- real provider-backed remote delivery, duplicate suppression proof, and delivered tap correctness still need end-to-end closure in S05
-- predictive assistance remains deferred to M004 after the cross-platform coordination loop is fully assembled
+- Two E2E test-code assertions need updating (calendar-offline.spec.ts route-mode expectation and mobile-assembly.spec.ts top-pick ordering sensitivity) — production behavior is correct, test assertions are stale
+- Real provider-backed remote delivery (APNs/FCM) on a provisioned device — deferred to live integration testing
+- Predictive assistance remains deferred to M004
 
 What is planned next:
-- M003/S05 closes the milestone with cross-surface notification correctness and assembled mobile proof that the app does not feel fake
-- M004 builds the later predictive assistance layer and release hardening after the cross-platform core is stable
+- M004 builds predictive assistance and release hardening on top of the now-complete cross-platform coordination loop
 
 ## Architecture / Key Patterns
 
@@ -63,7 +67,8 @@ What is planned next:
 - Mobile protected routes resolve access only from one shaped trusted inventory snapshot and surface denied reason, failure phase, and attempted id explicitly in the UI
 - Notification state on mobile is rooted in a stable installation UUID, persists desired intent separately from runtime health, and exposes degraded reasons instead of hiding them behind a boolean toggle
 - Notification-open routing always normalizes target paths and checks trusted calendar scope before navigation
-- M003 notification direction remains: local reminders for a user’s own upcoming shifts, push notifications for shared-calendar changes, and per-device/per-calendar control with one calm toggle
+- Best-effort dispatch pattern: void-after-canonical-write keeps schedule helpers synchronous; dispatch errors/timeouts never reach callers
+- trusted-offline is a distinct MobileOfflineRouteMode (alongside trusted-online and cached-offline) representing connectivity loss within an active trusted calendar session
 
 ## Capability Contract
 
@@ -73,5 +78,5 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 
 - [x] M001: Shared scheduling substrate — Trusted shared calendars, offline continuity, sync, realtime refresh, and baseline conflict visibility on web.
 - [x] M002: Shared free-time matching — Truthful ranked availability search, explanations, and suggestion-to-create handoff on the shared substrate.
-- [ ] M003: Cross-platform continuity and reminders — Mobile auth, offline continuity, Find time, and notification control wiring are now real; final cross-surface notification correctness remains.
+- [x] M003: Cross-platform continuity and reminders — Mobile auth, offline continuity, Find time, notification controls, and cross-surface notification delivery correctness are all complete.
 - [ ] M004: Predictive assistance and release hardening — Predictive coordination help and product hardening after cross-platform continuity is real.

@@ -1,0 +1,30 @@
+      action: 'edit',
+      url: `/calendars/${scheduleCalendarId}/shifts`,
+      visibleWeekStart: '2026-04-21',
+      formData: createScheduleFormData()
+    });
+
+/Users/serkanyeniay/dev/Caluno/apps/mobile/tests/mobile-notification-runtime.unit.test.ts:848:61
+Error: Type '{ action: "delete"; url: string; visibleWeekStart: string; formData: FormData; }' is missing the following properties from type 'ReconnectDrainActionRequest': entryId, actionKey, shiftId, fields 
+
+    const makeRequest = (): ReconnectDrainActionRequest => ({
+      action: 'delete',
+      url: `/calendars/${scheduleCalendarId}/shifts`,
+      visibleWeekStart: '2026-04-21',
+      formData: createScheduleFormData()
+    });
+
+/Users/serkanyeniay/dev/Caluno/apps/mobile/tests/e2e/mobile-assembly.spec.ts:259:51
+Error: Type '"granted"' has no properties in common with type '{ local?: "denied" | "granted" | "prompt" | undefined; push?: "denied" | "granted" | "prompt" | undefined; }'. 
+  await expect(page.getByTestId('groups-shell')).toHaveAttribute('data-shell-bootstrap', 'ready');
+  await setSimulatedNotificationPermissions(page, 'granted');
+  await setNotificationToggleValue(page, calendarId, true);
+
+/Users/serkanyeniay/dev/Caluno/apps/mobile/tests/e2e/mobile-assembly.spec.ts:308:41
+Error: Property 'calendarId' does not exist on type '{ id: number; extra: { calendarId: string; shiftId: string; targetPath: string | null; triggerAt: string; }; }'. 
+  expect(sharedReminders.length).toBeGreaterThan(0);
+  expect(sharedReminders.every((r) => r.calendarId === calendarId)).toBe(true);
+
+====================================
+svelte-check found 6 errors and 0 warnings in 3 files
+ ELIFECYCLE  Command failed with exit code 1.

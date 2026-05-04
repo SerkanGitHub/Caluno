@@ -1,0 +1,30 @@
+    > 163 |   await expect(topPick).toMatchObject({ ...seededFindTime.topPicks[0], handoffReady: 'true' });
+          |                         ^
+      164 |
+      165 |   const ctaSnapshot = await readFindTimeTopPickCtaSnapshot(page, 0);
+      166 |   await expect(ctaSnapshot).toMatchObject({
+        at /Users/serkanyeniay/dev/Caluno/apps/mobile/tests/e2e/mobile-assembly.spec.ts:163:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/mobile-assembly-phase-3-—--e8743-he-shift-lands-on-the-board/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/mobile-assembly-phase-3-—--e8743-he-shift-lands-on-the-board/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/mobile-assembly-phase-3-—--e8743-he-shift-lands-on-the-board/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/mobile-assembly-phase-3-—--e8743-he-shift-lands-on-the-board/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/mobile-assembly-phase-3-—--e8743-he-shift-lands-on-the-board/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests/e2e/calendar-offline.spec.ts:25:1 › trusted warm-up reopens offline, keeps multiple queued edits across reload, and drains them after reconnect 
+    tests/e2e/mobile-assembly.spec.ts:124:1 › phase 3 — find time handoff flows into create arrival and the shift lands on the board 
+  4 did not run
+  19 passed (48.7s)

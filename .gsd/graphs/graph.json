@@ -9,8 +9,8 @@
       "sourceFile": "STATE.md"
     },
     {
-      "id": "concept:phase:planning",
-      "label": "Phase: planning",
+      "id": "concept:phase:validating-milestone",
+      "label": "Phase: validating-milestone",
       "type": "concept",
       "confidence": "EXTRACTED",
       "sourceFile": "STATE.md"
@@ -415,8 +415,45 @@
       "confidence": "EXTRACTED"
     },
     {
+      "id": "slice:M003:S05",
+      "label": "S05: S05",
+      "type": "slice",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/slices/S05/S05-PLAN.md"
+    },
+    {
+      "id": "task:M003:S05:T01",
+      "label": "T01: Added best-effort shared-change dispatch to all four trusted web schedule mutations via a new calendar-change-notifier helper, with 12 new unit tests proving success-path dispatch, skip-on-failure, and degraded-dispatch semantics.",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M003:S05:T02",
+      "label": "T02: Wired best-effort shared-change dispatch into all four mobile schedule mutations (create/edit/move/delete including reconnect-drained replays) via a new calendar-change-dispatch helper, with 17 new unit tests proving payload shape, degraded dispatch safety, and replay-safe semantics.",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M003:S05:T03",
+      "label": "T03: Upgraded the Playwright notification harness with dispatch interception, per-calendar reminder inventory, and delivery-proof specs covering enabled delivery, disabled quietness, duplicate suppression, and fail-closed routing.",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M003:S05:T04",
+      "label": "T04: Added final assembled mobile tracer-bullet spec (5 phases: sign-in, offline continuity, find-time handoff, notification delivery, negative paths) and promoted calendar-notifications + mobile-assembly into the default test:e2e bar.",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M003:S05:T05",
+      "label": "T05: Fix find-time unassigned-shift error and add trusted-offline route-mode tracking",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
       "id": "milestone:M004",
-      "label": "M004: ## Vision",
+      "label": "M004: M004",
       "type": "milestone",
       "confidence": "EXTRACTED",
       "sourceFile": "milestones/M004/M004-ROADMAP.md"
@@ -794,7 +831,43 @@
       "to": "task:M003:S04:T04",
       "type": "contains",
       "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "slice:M003:S05",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M003:S05",
+      "to": "task:M003:S05:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M003:S05",
+      "to": "task:M003:S05:T02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M003:S05",
+      "to": "task:M003:S05:T03",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M003:S05",
+      "to": "task:M003:S05:T04",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M003:S05",
+      "to": "task:M003:S05:T05",
+      "type": "contains",
+      "confidence": "EXTRACTED"
     }
   ],
-  "builtAt": "2026-05-04T12:18:20.623Z"
+  "builtAt": "2026-05-04T16:46:31.889Z"
 }

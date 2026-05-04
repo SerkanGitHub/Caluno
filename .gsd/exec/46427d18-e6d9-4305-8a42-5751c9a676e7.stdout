@@ -1,0 +1,16 @@
+ RUN  v3.2.4 /Users/serkanyeniay/dev/Caluno/apps/mobile
+
+ ✓ tests/mobile-notification-contract.unit.test.ts (17 tests) 27ms
+ ✓ tests/mobile-notification-runtime.unit.test.ts (8 tests) 87ms
+
+ Test Files  2 passed (2)
+      Tests  25 passed (25)
+   Start at  18:44:42
+   Duration  484ms (transform 150ms, setup 0ms, collect 223ms, tests 114ms, environment 0ms, prepare 109ms)
+
+---WEB---
+ Test Files  1 passed (1)
+      Tests  21 passed (21)
+   Start at  18:44:43
+   Duration  375ms (transform 80ms, setup 0ms, collect 95ms, tests 24ms, environment 0ms, prepare 48ms)
+

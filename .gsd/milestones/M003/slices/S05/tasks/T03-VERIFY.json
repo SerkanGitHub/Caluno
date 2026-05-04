@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T03",
+  "unitId": "M003/S05/T03",
+  "timestamp": 1777911518019,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "npx --yes supabase db reset --local --yes",
+      "exitCode": 0,
+      "durationMs": 25854,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/mobile exec playwright test tests/e2e/calendar-notifications.spec.ts",
+      "exitCode": 0,
+      "durationMs": 23953,
+      "verdict": "pass"
+    }
+  ],
+  "postExecutionChecks": [
+    {
+      "category": "pattern",
+      "target": "apps/mobile/tests/e2e/calendar-notifications.spec.ts",
+      "passed": true,
+      "message": "File apps/mobile/tests/e2e/calendar-notifications.spec.ts mixes async/await with .then() promise chaining — consider using consistent async style",
+      "blocking": false
+    }
+  ]
+}

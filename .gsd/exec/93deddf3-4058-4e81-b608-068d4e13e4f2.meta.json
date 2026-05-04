@@ -1,0 +1,18 @@
+{
+  "id": "93deddf3-4058-4e81-b608-068d4e13e4f2",
+  "runtime": "bash",
+  "purpose": "Run full mobile E2E bar after db reset",
+  "script_chars": 271,
+  "started_at": "2026-05-04T16:43:16.580Z",
+  "finished_at": "2026-05-04T16:44:06.642Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 50062,
+  "stdout_bytes": 2823,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/93deddf3-4058-4e81-b608-068d4e13e4f2.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/93deddf3-4058-4e81-b608-068d4e13e4f2.stderr"
+}

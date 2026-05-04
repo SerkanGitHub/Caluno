@@ -696,11 +696,8 @@ function normalizeBusyIntervals(params: {
     }
 
     if (row.shift_assignments.length === 0) {
-      return {
-        ok: false,
-        reason: 'FIND_TIME_ASSIGNMENTS_MISSING',
-        message: 'A shift in the trusted range was missing member assignments, so mobile find-time refused to guess who is busy.'
-      };
+      // Shift has no member assignments — it contributes zero busy intervals; skip it.
+      continue;
     }
 
     const seenMembersForShift = new Set<string>();

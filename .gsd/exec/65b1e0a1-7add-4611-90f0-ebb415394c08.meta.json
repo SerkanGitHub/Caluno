@@ -1,0 +1,18 @@
+{
+  "id": "65b1e0a1-7add-4611-90f0-ebb415394c08",
+  "runtime": "bash",
+  "purpose": "Get full output of failing E2E tests for diagnosis",
+  "script_chars": 190,
+  "started_at": "2026-05-04T16:34:38.069Z",
+  "finished_at": "2026-05-04T16:35:02.294Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 24225,
+  "stdout_bytes": 13552,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/65b1e0a1-7add-4611-90f0-ebb415394c08.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/65b1e0a1-7add-4611-90f0-ebb415394c08.stderr"
+}

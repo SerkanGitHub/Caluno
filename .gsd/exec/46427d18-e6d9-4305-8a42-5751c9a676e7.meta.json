@@ -1,0 +1,18 @@
+{
+  "id": "46427d18-e6d9-4305-8a42-5751c9a676e7",
+  "runtime": "bash",
+  "purpose": "Run all mobile unit tests for S05",
+  "script_chars": 303,
+  "started_at": "2026-05-04T16:44:41.076Z",
+  "finished_at": "2026-05-04T16:44:43.999Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 2923,
+  "stdout_bytes": 570,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/46427d18-e6d9-4305-8a42-5751c9a676e7.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/46427d18-e6d9-4305-8a42-5751c9a676e7.stderr"
+}

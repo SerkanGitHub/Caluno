@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T04",
+  "unitId": "M003/S05/T04",
+  "timestamp": 1777911827464,
+  "passed": false,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "npx --yes supabase db reset --local --yes",
+      "exitCode": 0,
+      "durationMs": 25718,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/mobile exec playwright test tests/e2e/auth-scope.spec.ts tests/e2e/calendar-offline.spec.ts tests/e2e/find-time-handoff.spec.ts tests/e2e/calendar-notifications.spec.ts tests/e2e/mobile-assembly.spec.ts",
+      "exitCode": 1,
+      "durationMs": 51712,
+      "verdict": "fail"
+    },
+    {
+      "command": "pnpm --dir apps/mobile test:e2e",
+      "exitCode": 1,
+      "durationMs": 54785,
+      "verdict": "fail"
+    }
+  ],
+  "retryAttempt": 1,
+  "maxRetries": 2
+}

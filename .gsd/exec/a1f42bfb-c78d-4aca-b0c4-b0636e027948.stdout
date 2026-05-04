@@ -1,0 +1,9 @@
+Saved working directory and index state WIP on main: 9f5e452 test: Added final assembled mobile tracer-bullet spec (5 phases: sign-i…
+  expect(sharedReminders.every((r) => r.calendarId === calendarId)).toBe(true);
+
+====================================
+svelte-check found 6 errors and 0 warnings in 3 files
+ ELIFECYCLE  Command failed with exit code 1.
+
+no changes added to commit (use "git add" and/or "git commit -a")
+Dropped refs/stash@{0} (01b85c032fced2ef933db93b621d2b2c4976b77d)

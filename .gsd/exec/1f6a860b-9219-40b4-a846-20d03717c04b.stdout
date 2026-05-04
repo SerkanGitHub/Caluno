@@ -1,0 +1,16 @@
+.gsd/CODEBASE.md
+.gsd/milestones/M003/slices/S05/S05-PLAN.md
+.gsd/milestones/M003/slices/S05/tasks/T01-PLAN.md
+.gsd/milestones/M003/slices/S05/tasks/T02-PLAN.md
+.gsd/milestones/M003/slices/S05/tasks/T03-PLAN.md
+.gsd/milestones/M003/slices/S05/tasks/T04-PLAN.md
+.gsd/notifications.jsonl
+.gsd/safety/evidence-M003-S05-T01.json
+apps/mobile/.svelte-kit/ambient.d.ts
+apps/mobile/.svelte-kit/generated/server/internal.js
+apps/mobile/src/lib/find-time/transport.ts
+apps/mobile/src/lib/offline/controller.ts
+apps/mobile/src/lib/shell/load-app-shell.ts
+apps/mobile/src/routes/calendars/[calendarId]/+page.svelte
+apps/mobile/test-results/e2e/.last-run.json
+apps/web/.svelte-kit/generated/server/internal.js

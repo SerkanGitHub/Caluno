@@ -1,0 +1,18 @@
+{
+  "id": "83d75e13-4f17-4a75-86e2-bc6c0e4f259c",
+  "runtime": "node",
+  "purpose": "Apply Fix 2b - add trusted-offline to MobileShellRouteMode in load-app-shell.ts",
+  "script_chars": 683,
+  "started_at": "2026-05-04T16:32:42.199Z",
+  "finished_at": "2026-05-04T16:32:42.275Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 76,
+  "stdout_bytes": 62,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/83d75e13-4f17-4a75-86e2-bc6c0e4f259c.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/83d75e13-4f17-4a75-86e2-bc6c0e4f259c.stderr"
+}

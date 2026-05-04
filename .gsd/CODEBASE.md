@@ -1,7 +1,8 @@
 # Codebase Map
 
-Generated: 2026-05-04T15:29:28Z | Files: 493 | Described: 0/493
-<!-- gsd:codebase-meta {"generatedAt":"2026-05-04T15:29:28Z","fingerprint":"083828baf886ace92f4b87a739f98484742ba289","fileCount":493,"truncated":false} -->
+Generated: 2026-05-04T16:47:12Z | Files: 500 | Described: 0/500
+<!-- gsd:codebase-meta {"generatedAt":"2026-05-04T16:47:12Z","fingerprint":"22e95205f2b38d1774968f9b57f50093c31d9a42","fileCount":500,"truncated":true} -->
+Note: Truncated to first 500 files. Run with higher --max-files to include all.
 
 ### (root)/
 - `.dockerignore`
@@ -17,11 +18,7 @@ Generated: 2026-05-04T15:29:28Z | Files: 493 | Described: 0/493
 - `docker-compose.yml`
 - `gsd-memory-logger.js`
 - `package.json`
-- `pnpm-lock.yaml`
-- `pnpm-workspace.yaml`
 - `README.md`
-- `setup-agent-env.sh`
-- `turbo.json`
 
 ### .artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/
 - `.artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/accessibility.md`
@@ -95,17 +92,20 @@ Generated: 2026-05-04T15:29:28Z | Files: 493 | Described: 0/493
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/runtime.Cle6QH-8.css`
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BdGWbA3M.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BolUem1_.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/C0Rw5ZRo.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/ChEMe8CD.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CRyB-ECt.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CXXtBI0J.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DaA7Ooa8.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/DGgxoOJE.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/hEQzCHA0.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/PPVm8Dsz.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/ss6mw8pm.js`
+- *(22 files: 22 .js)*
+
+### apps/mobile/.svelte-kit/output/client/_app/immutable/entry/
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.Crrsefz9.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.DHAP3SHc.js`
+
+### apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.DBLsLoiC.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.CAqjGLLW.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.2zICW7tC.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.B19kwawS.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.SNszQ2yf.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.BmKBCQ37.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/6.nsStIG07.js`
 
 ### apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/
 - `apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/env.js`
@@ -261,6 +261,7 @@ Generated: 2026-05-04T15:29:28Z | Files: 493 | Described: 0/493
 - `apps/mobile/src/lib/find-time/view.ts`
 
 ### apps/mobile/src/lib/notifications/
+- `apps/mobile/src/lib/notifications/calendar-change-dispatch.ts`
 - `apps/mobile/src/lib/notifications/device-installation.ts`
 - `apps/mobile/src/lib/notifications/local-notifications.ts`
 - `apps/mobile/src/lib/notifications/presentation.ts`
@@ -330,6 +331,7 @@ Generated: 2026-05-04T15:29:28Z | Files: 493 | Described: 0/493
 - `apps/mobile/tests/e2e/calendar-offline.spec.ts`
 - `apps/mobile/tests/e2e/find-time-handoff.spec.ts`
 - `apps/mobile/tests/e2e/fixtures.ts`
+- `apps/mobile/tests/e2e/mobile-assembly.spec.ts`
 
 ### apps/web/
 - `apps/web/package.json`
@@ -659,6 +661,7 @@ Generated: 2026-05-04T15:29:28Z | Files: 493 | Described: 0/493
 ### apps/web/src/lib/server/
 - `apps/web/src/lib/server/app-shell.ts`
 - `apps/web/src/lib/server/auth-flow.ts`
+- `apps/web/src/lib/server/calendar-change-notifier.ts`
 - `apps/web/src/lib/server/find-time.ts`
 - `apps/web/src/lib/server/schedule.ts`
 
@@ -783,25 +786,3 @@ Generated: 2026-05-04T15:29:28Z | Files: 493 | Described: 0/493
 ### packages/typescript-config/
 - `packages/typescript-config/base.json`
 - `packages/typescript-config/package.json`
-
-### packages/ui/
-- `packages/ui/package.json`
-
-### packages/ui/src/
-- `packages/ui/src/globals.css`
-- `packages/ui/src/index.ts`
-
-### supabase/
-- `supabase/.gitignore`
-- `supabase/config.toml`
-- `supabase/seed.sql`
-
-### supabase/functions/notify-calendar-change/
-- `supabase/functions/notify-calendar-change/index.ts`
-
-### supabase/migrations/
-- `supabase/migrations/20260414_000001_auth_groups_access.sql`
-- `supabase/migrations/20260415_000002_schedule_shifts.sql`
-- `supabase/migrations/20260416_000001_schedule_realtime.sql`
-- `supabase/migrations/20260418_000001_find_time_member_availability.sql`
-- `supabase/migrations/20260422_000001_device_notifications.sql`

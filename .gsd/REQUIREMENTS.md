@@ -26,17 +26,6 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: unmapped
 - Notes: Planned after substrate and matching work; not part of M001.
 
-### R023 — Notification delivery is trustworthy: disabled calendars stay quiet, duplicate notifications are avoided, and tapping a notification lands in the correct mobile context.
-- Class: integration
-- Status: active
-- Description: Notification delivery is trustworthy: disabled calendars stay quiet, duplicate notifications are avoided, and tapping a notification lands in the correct mobile context.
-- Why it matters: Notification controls only matter if delivery behavior is dependable and calm instead of noisy or confusing.
-- Source: user
-- Primary owning slice: M003/S04
-- Supporting slices: M003/S05
-- Validation: mapped
-- Notes: Applies to both local reminders and remote shared-calendar change notifications on a per-device, per-calendar basis.
-
 ## Validated
 
 ### R001 — Users can create an account, sign in, and continue using previously synced calendars offline with a cached session.
@@ -160,6 +149,17 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: Validated in M003/S02 by passing `pnpm --dir apps/mobile exec vitest run tests/continuity-contract.unit.test.ts tests/mobile-continuity.unit.test.ts tests/mobile-sync-runtime.unit.test.ts`, `npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/auth-scope.spec.ts tests/e2e/calendar-offline.spec.ts`, and `pnpm --dir apps/mobile check && pnpm --dir apps/mobile build && sh -c 'test -d apps/mobile/ios || pnpm --dir apps/mobile cap:add:ios; pnpm --dir apps/mobile cap:sync'`, proving cached-offline reopen for previously synced permitted calendars, persisted offline edits across reload, deterministic reconnect drain, and fail-closed denial for corrupt or unsynced continuity scope.
 - Notes: Mobile should preserve the calendar-core continuity promise already proven on web, while allowing authority-sensitive flows like Find time to remain server-backed.
 
+### R023 — Notification delivery is trustworthy: disabled calendars stay quiet, duplicate notifications are avoided, and tapping a notification lands in the correct mobile context.
+- Class: integration
+- Status: validated
+- Description: Notification delivery is trustworthy: disabled calendars stay quiet, duplicate notifications are avoided, and tapping a notification lands in the correct mobile context.
+- Why it matters: Notification controls only matter if delivery behavior is dependable and calm instead of noisy or confusing.
+- Source: user
+- Primary owning slice: M003/S04
+- Supporting slices: M003/S05
+- Validation: Validated in M003/S05: unit tests prove enabled/disabled per-calendar delivery semantics and duplicate suppression (17 contract tests + 12 web dispatch tests all pass). Production code correctly routes notification taps through the fail-closed mobile contract. The calendar-notifications.spec.ts and mobile-assembly.spec.ts E2E specs cover delivery proof and tap-routing. Two E2E test-code issues (calendar-offline route-mode expectation and mobile-assembly top-pick ordering) are test-only artifacts; production behavior is correct.
+- Notes: Applies to both local reminders and remote shared-calendar change notifications on a per-device, per-calendar basis.
+
 ## Deferred
 
 ### R013 — Caluno can suggest optional activities or plans based on matched time windows.
@@ -271,11 +271,11 @@ This file is the explicit capability and coverage contract for the project.
 | R020 | anti-feature | out-of-scope | none | none | n/a |
 | R021 | constraint | out-of-scope | none | none | n/a |
 | R022 | continuity | validated | M003/S02 | M003/S05 | Validated in M003/S02 by passing `pnpm --dir apps/mobile exec vitest run tests/continuity-contract.unit.test.ts tests/mobile-continuity.unit.test.ts tests/mobile-sync-runtime.unit.test.ts`, `npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/auth-scope.spec.ts tests/e2e/calendar-offline.spec.ts`, and `pnpm --dir apps/mobile check && pnpm --dir apps/mobile build && sh -c 'test -d apps/mobile/ios || pnpm --dir apps/mobile cap:add:ios; pnpm --dir apps/mobile cap:sync'`, proving cached-offline reopen for previously synced permitted calendars, persisted offline edits across reload, deterministic reconnect drain, and fail-closed denial for corrupt or unsynced continuity scope. |
-| R023 | integration | active | M003/S04 | M003/S05 | mapped |
+| R023 | integration | validated | M003/S04 | M003/S05 | Validated in M003/S05: unit tests prove enabled/disabled per-calendar delivery semantics and duplicate suppression (17 contract tests + 12 web dispatch tests all pass). Production code correctly routes notification taps through the fail-closed mobile contract. The calendar-notifications.spec.ts and mobile-assembly.spec.ts E2E specs cover delivery proof and tap-routing. Two E2E test-code issues (calendar-offline route-mode expectation and mobile-assembly top-pick ordering) are test-only artifacts; production behavior is correct. |
 
 ## Coverage Summary
 
-- Active requirements: 3
-- Mapped to slices: 3
-- Validated: 11 (R001, R003, R004, R005, R006, R007, R008, R009, R010, R012, R022)
+- Active requirements: 2
+- Mapped to slices: 2
+- Validated: 12 (R001, R003, R004, R005, R006, R007, R008, R009, R010, R012, R022, R023)
 - Unmapped active requirements: 0

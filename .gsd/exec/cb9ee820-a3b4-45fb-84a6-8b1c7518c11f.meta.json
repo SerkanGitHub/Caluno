@@ -1,0 +1,18 @@
+{
+  "id": "cb9ee820-a3b4-45fb-84a6-8b1c7518c11f",
+  "runtime": "bash",
+  "purpose": "Run all E2E tests to verify fixes work",
+  "script_chars": 271,
+  "started_at": "2026-05-04T16:33:34.128Z",
+  "finished_at": "2026-05-04T16:34:25.414Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 51286,
+  "stdout_bytes": 2897,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/cb9ee820-a3b4-45fb-84a6-8b1c7518c11f.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/cb9ee820-a3b4-45fb-84a6-8b1c7518c11f.stderr"
+}

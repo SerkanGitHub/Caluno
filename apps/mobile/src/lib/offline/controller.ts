@@ -38,7 +38,7 @@ import {
   type ReconnectDrainResult
 } from '@repo/caluno-core/offline/sync-engine';
 
-export type MobileOfflineRouteMode = 'trusted-online' | 'cached-offline';
+export type MobileOfflineRouteMode = 'trusted-online' | 'trusted-offline' | 'cached-offline';
 
 export type MobileCalendarControllerState = {
   schedule: CalendarScheduleView;
@@ -401,9 +401,16 @@ export function createMobileCalendarController(options: {
     },
 
     setNetwork(isOnline) {
+      const nextRouteMode: MobileOfflineRouteMode =
+        state.routeMode === 'cached-offline'
+          ? 'cached-offline'
+          : isOnline
+            ? 'trusted-online'
+            : 'trusted-offline';
       state = {
         ...state,
-        network: isOnline ? 'online' : 'offline'
+        network: isOnline ? 'online' : 'offline',
+        routeMode: nextRouteMode
       };
       refreshDiagnostics();
       emit();

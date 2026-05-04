@@ -1,0 +1,18 @@
+{
+  "id": "bed66942-7284-46a5-b89e-6109a9a2e0cb",
+  "runtime": "bash",
+  "purpose": "reset local DB before E2E run",
+  "script_chars": 117,
+  "started_at": "2026-05-04T16:42:38.109Z",
+  "finished_at": "2026-05-04T16:43:03.891Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 25782,
+  "stdout_bytes": 346,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/bed66942-7284-46a5-b89e-6109a9a2e0cb.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/bed66942-7284-46a5-b89e-6109a9a2e0cb.stderr"
+}
