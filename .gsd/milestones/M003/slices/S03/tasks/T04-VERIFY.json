@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T04",
+  "unitId": "M003/S03/T04",
+  "timestamp": 1777890984197,
+  "passed": false,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "pnpm --dir apps/mobile exec vitest run tests/find-time-contract.unit.test.ts tests/mobile-find-time.unit.test.ts tests/mobile-create-prefill.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 1170,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/web exec vitest run tests/find-time/matcher.unit.test.ts tests/routes/find-time-routes.unit.test.ts tests/schedule/create-prefill.unit.test.ts tests/routes/protected-routes.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 1348,
+      "verdict": "pass"
+    },
+    {
+      "command": "npx --yes supabase db reset --local --yes",
+      "exitCode": 1,
+      "durationMs": 241,
+      "verdict": "fail"
+    },
+    {
+      "command": "pnpm --dir apps/mobile exec playwright test tests/e2e/auth-scope.spec.ts tests/e2e/calendar-offline.spec.ts tests/e2e/find-time-handoff.spec.ts",
+      "exitCode": 1,
+      "durationMs": 1190,
+      "verdict": "fail"
+    },
+    {
+      "command": "pnpm --dir apps/mobile check",
+      "exitCode": 0,
+      "durationMs": 2674,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/mobile build",
+      "exitCode": 0,
+      "durationMs": 2800,
+      "verdict": "pass"
+    }
+  ],
+  "retryAttempt": 1,
+  "maxRetries": 2,
+  "runtimeErrors": [
+    {
+      "source": "bg-shell",
+      "severity": "crash",
+      "message": "[mobile-preview] signal=SIGTERM errors: ELIFECYCLE  Command failed.",
+      "blocking": true
+    }
+  ]
+}

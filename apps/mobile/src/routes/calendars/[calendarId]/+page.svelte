@@ -1,7 +1,7 @@
 <script lang="ts">
   import { browser } from '$app/environment';
   import { page } from '$app/state';
-  import { onDestroy } from 'svelte';
+  import { onDestroy, untrack } from 'svelte';
   import { createEmptyCalendarScheduleView, resolveVisibleWeek, type ScheduleLoadStatus } from '@repo/caluno-core/route-contract';
   import { buildCalendarWeekBoard } from '@repo/caluno-core/schedule/board';
   import { describeDeniedCalendarReason } from '@repo/caluno-core/app-shell';
@@ -376,6 +376,9 @@
     }
 
     const arrival = resolveMobileCreatePrefillArrival(page.url.searchParams);
+    const previousArrivalStatus = untrack(() => createPrefillArrival.status);
+    const previousObservedWeekStart = untrack(() => createPrefillObservedWeekStart);
+    const previousPrefill = untrack(() => createPrefill);
 
     if (arrival.status !== 'none') {
       createPrefillArrival = arrival;
@@ -395,7 +398,11 @@
       return;
     }
 
-    if (createPrefillArrival.status !== 'none' && createPrefillObservedWeekStart === visibleWeek.start) {
+    if (previousArrivalStatus === 'none' && previousObservedWeekStart === null && previousPrefill === null) {
+      return;
+    }
+
+    if (previousArrivalStatus !== 'none' && previousObservedWeekStart === visibleWeek.start) {
       return;
     }
 

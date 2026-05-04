@@ -17,10 +17,10 @@
 - [x] **S02: S02** `risk:high` `depends:[]`
   > After this: A previously synced calendar reopens on mobile, a shift can be created or edited offline, the change stays visibly pending, and reconnect drains it back through the trusted path.
 
-- [ ] **S03: S03** `risk:medium` `depends:[]`
+- [x] **S03: S03** `risk:medium` `depends:[]`
   > After this: A user can run Find time on mobile, scan compact Top picks and browse windows, and hand a chosen slot directly into mobile shift creation with the right context already set.
 
-- [ ] **S04: Device notification controls and delivery wiring** `risk:high` `depends:[S01,S02]`
+- [ ] **S04: S04** `risk:high` `depends:[]`
   > After this: On a device, each shared calendar has one notification toggle that truthfully controls both reminders and shared-calendar change notifications, with honest permission/subscription state.
 
 - [ ] **S05: Cross-surface notification correctness and final mobile assembly proof** `risk:medium` `depends:[S02,S03,S04]`

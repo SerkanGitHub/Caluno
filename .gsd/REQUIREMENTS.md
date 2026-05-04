@@ -15,17 +15,6 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: mapped
 - Notes: M003 extends the trusted shared-calendar permission boundary onto mobile surfaces and keeps create/edit/find-time flows inside permitted calendar scope.
 
-### R009 — Mobile is a real first-class Caluno client on the same scheduling substrate and domain model, with mobile-specific UI flows rather than a thin wrapper around web screens.
-- Class: launchability
-- Status: active
-- Description: Mobile is a real first-class Caluno client on the same scheduling substrate and domain model, with mobile-specific UI flows rather than a thin wrapper around web screens.
-- Why it matters: Caluno is intended to work where coordination actually happens, across both browser and phone contexts.
-- Source: user
-- Primary owning slice: M003/S01
-- Supporting slices: M003/S02, M003/S03
-- Validation: mapped
-- Notes: M003 must make mobile feel real for the core loop: sign in, open shared calendars, create/edit shifts, and use Find time with native-feeling navigation.
-
 ### R010 — Users control reminders and shared-calendar change notifications per device and per shared calendar, including while the app is closed, without undermining the calmness of the product.
 - Class: continuity
 - Status: active
@@ -137,6 +126,17 @@ This file is the explicit capability and coverage contract for the project.
 - Supporting slices: M002/S02, M002/S03
 - Validation: Validated in M002 by passing `pnpm --dir apps/web exec vitest run tests/find-time/member-availability.unit.test.ts tests/find-time/matcher.unit.test.ts tests/routes/find-time-routes.unit.test.ts`, `pnpm --dir apps/web exec vitest run tests/schedule/create-prefill.unit.test.ts tests/routes/protected-routes.unit.test.ts`, `pnpm --dir apps/web check`, and `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/find-time.spec.ts tests/e2e/calendar-shifts.spec.ts`, which together proved truthful ranked shared windows, explanation-rich Top picks, explicit denial/offline fail-closed behavior, and exact suggestion-to-create handoff into the real calendar flow.
 - Notes: M002/S01 delivered truthful browseable windows; M002/S02 validated the full differentiator by ranking suggestions before truncation and explaining why suggested windows work without widening calendar scope.
+
+### R009 — Mobile is a real first-class Caluno client on the same scheduling substrate and domain model, with mobile-specific UI flows rather than a thin wrapper around web screens.
+- Class: launchability
+- Status: validated
+- Description: Mobile is a real first-class Caluno client on the same scheduling substrate and domain model, with mobile-specific UI flows rather than a thin wrapper around web screens.
+- Why it matters: Caluno is intended to work where coordination actually happens, across both browser and phone contexts.
+- Source: user
+- Primary owning slice: M003/S01
+- Supporting slices: M003/S02, M003/S03
+- Validation: Validated in M003/S03 by passing `pnpm --dir apps/mobile exec vitest run tests/find-time-contract.unit.test.ts tests/mobile-find-time.unit.test.ts tests/mobile-create-prefill.unit.test.ts`, `pnpm --dir apps/web exec vitest run tests/find-time/matcher.unit.test.ts tests/routes/find-time-routes.unit.test.ts tests/schedule/create-prefill.unit.test.ts tests/routes/protected-routes.unit.test.ts`, `npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/auth-scope.spec.ts tests/e2e/calendar-offline.spec.ts tests/e2e/find-time-handoff.spec.ts`, and `pnpm --dir apps/mobile check && pnpm --dir apps/mobile build && sh -c 'test -d apps/mobile/ios || pnpm --dir apps/mobile cap:add:ios; pnpm --dir apps/mobile cap:sync'`, proving the mobile app now supports trusted sign-in/scope, offline continuity, compact live-backed Find time, exact slot handoff into create, and packaged native build closure on the shared scheduling substrate.
+- Notes: M003 must make mobile feel real for the core loop: sign in, open shared calendars, create/edit shifts, and use Find time with native-feeling navigation.
 
 ### R012 — Authentication, row-level policies, and sharing rules prevent cross-group data leakage and limit each user to calendars they are permitted to access.
 - Class: compliance/security
@@ -257,7 +257,7 @@ This file is the explicit capability and coverage contract for the project.
 | R006 | failure-visibility | validated | M001/S05 | M001/S02, M001/S04 | Validated by M001 combined clean-reset preview-backed browser proof plus conflict/unit coverage, proving board/day/shift overlap warnings remain visible across offline reload, reconnect drain, and collaborator refresh without becoming authoritative write blockers. |
 | R007 | quality-attribute | validated | M002/S02 | M002/S01, M002/S03 | Validated in M001/S02 by the custom week-board/browser proof and unit coverage: `pnpm --dir apps/web check`, `pnpm --dir apps/web exec vitest run tests/schedule/board.unit.test.ts tests/routes/protected-routes.unit.test.ts tests/schedule/server-actions.unit.test.ts`, and `pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts` confirmed the stress-friendly week board, accessible create/edit/move/delete controls, clear denied state, and visible week/action diagnostics. |
 | R008 | differentiator | validated | M002/S01 | M002/S02, M002/S03 | Validated in M002 by passing `pnpm --dir apps/web exec vitest run tests/find-time/member-availability.unit.test.ts tests/find-time/matcher.unit.test.ts tests/routes/find-time-routes.unit.test.ts`, `pnpm --dir apps/web exec vitest run tests/schedule/create-prefill.unit.test.ts tests/routes/protected-routes.unit.test.ts`, `pnpm --dir apps/web check`, and `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/find-time.spec.ts tests/e2e/calendar-shifts.spec.ts`, which together proved truthful ranked shared windows, explanation-rich Top picks, explicit denial/offline fail-closed behavior, and exact suggestion-to-create handoff into the real calendar flow. |
-| R009 | launchability | active | M003/S01 | M003/S02, M003/S03 | mapped |
+| R009 | launchability | validated | M003/S01 | M003/S02, M003/S03 | Validated in M003/S03 by passing `pnpm --dir apps/mobile exec vitest run tests/find-time-contract.unit.test.ts tests/mobile-find-time.unit.test.ts tests/mobile-create-prefill.unit.test.ts`, `pnpm --dir apps/web exec vitest run tests/find-time/matcher.unit.test.ts tests/routes/find-time-routes.unit.test.ts tests/schedule/create-prefill.unit.test.ts tests/routes/protected-routes.unit.test.ts`, `npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/auth-scope.spec.ts tests/e2e/calendar-offline.spec.ts tests/e2e/find-time-handoff.spec.ts`, and `pnpm --dir apps/mobile check && pnpm --dir apps/mobile build && sh -c 'test -d apps/mobile/ios || pnpm --dir apps/mobile cap:add:ios; pnpm --dir apps/mobile cap:sync'`, proving the mobile app now supports trusted sign-in/scope, offline continuity, compact live-backed Find time, exact slot handoff into create, and packaged native build closure on the shared scheduling substrate. |
 | R010 | continuity | active | M003/S04 | M003/S05 | mapped |
 | R011 | differentiator | active | M004 (provisional) | none | unmapped |
 | R012 | compliance/security | validated | M002/S01 | M002/S02 | Validated by the M001 auth/policy/browser proof surfaces: `tests/access/policy-contract.unit.test.ts`, protected-route/unit coverage, denied-route browser proof, and the combined offline+sync browser verification together proved auth, RLS, and sharing rules keep cross-group calendar access fail-closed. |
@@ -275,7 +275,7 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Coverage Summary
 
-- Active requirements: 5
-- Mapped to slices: 5
-- Validated: 9 (R001, R003, R004, R005, R006, R007, R008, R012, R022)
+- Active requirements: 4
+- Mapped to slices: 4
+- Validated: 10 (R001, R003, R004, R005, R006, R007, R008, R009, R012, R022)
 - Unmapped active requirements: 0

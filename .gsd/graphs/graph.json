@@ -1,0 +1,751 @@
+{
+  "nodes": [
+    {
+      "id": "milestone:M003",
+      "label": "M003: Cross-platform continuity and reminders",
+      "type": "milestone",
+      "description": "Active milestone: M003",
+      "confidence": "EXTRACTED",
+      "sourceFile": "STATE.md"
+    },
+    {
+      "id": "concept:phase:planning",
+      "label": "Phase: planning",
+      "type": "concept",
+      "confidence": "EXTRACTED",
+      "sourceFile": "STATE.md"
+    },
+    {
+      "id": "milestone:M001",
+      "label": "M001: Shared scheduling substrate",
+      "type": "milestone",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M001/M001-ROADMAP.md"
+    },
+    {
+      "id": "slice:M001:S01",
+      "label": "S01: Auth, groups, and secure shared-calendar access",
+      "type": "slice",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M001/slices/S01/S01-PLAN.md"
+    },
+    {
+      "id": "task:M001:S01:T01",
+      "label": "T01: Establish the Supabase SSR auth boundary and typed session contract",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M001:S01:T02",
+      "label": "T02: Model groups, join onboarding, and calendar access in Supabase SQL",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M001:S01:T03",
+      "label": "T03: Build the protected auth, group onboarding, and permitted-calendar routes",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M001:S01:T04",
+      "label": "T04: Prove the end-to-end auth and secure-access flow with browser tests",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "slice:M001:S02",
+      "label": "S02: Multi-shift calendar model and browser editing flows",
+      "type": "slice",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M001/slices/S02/S02-PLAN.md"
+    },
+    {
+      "id": "task:M001:S02:T01",
+      "label": "T01: Model concrete shifts, bounded recurrence, and deterministic schedule fixtures",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M001:S02:T02",
+      "label": "T02: Add page-scoped schedule loading and trusted server actions on the calendar route",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M001:S02:T03",
+      "label": "T03: Build the custom week-view board and browser editing flows",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M001:S02:T04",
+      "label": "T04: Prove multi-shift browser editing and denied access with Playwright diagnostics",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "slice:M001:S03",
+      "label": "S03: Offline local persistence with cached-session continuity",
+      "type": "slice",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M001/slices/S03/S03-PLAN.md"
+    },
+    {
+      "id": "task:M001:S03:T01",
+      "label": "T01: Wire the offline runtime substrate and preview proof surface",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M001:S03:T02",
+      "label": "T02: Build the browser-local schedule repository and cached-shell snapshot contract",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M001:S03:T03",
+      "label": "T03: Add fail-closed cached-shell routing for offline protected pages",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M001:S03:T04",
+      "label": "T04: Move calendar reads and writes to a local-first controller with pending-state UI",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M001:S03:T05",
+      "label": "T05: Prove offline reopen, local persistence, and online-regression safety in Playwright",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "slice:M001:S04",
+      "label": "S04: Sync engine and realtime shared updates",
+      "type": "slice",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M001/slices/S04/S04-PLAN.md"
+    },
+    {
+      "id": "task:M001:S04:T01",
+      "label": "T01: Build deterministic queue replay and protect trusted refreshes from clobbering local state",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M001:S04:T02",
+      "label": "T02: Drain reconnect work through trusted route actions and surface sync diagnostics",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M001:S04:T03",
+      "label": "T03: Subscribe to shared shift changes and refresh the visible week safely",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M001:S04:T04",
+      "label": "T04: Prove reconnect reconciliation and multi-user live propagation in Playwright",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "slice:M001:S05",
+      "label": "S05: Baseline conflict detection and milestone assembly proof",
+      "type": "slice",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M001/slices/S05/S05-PLAN.md"
+    },
+    {
+      "id": "task:M001:S05:T01",
+      "label": "T01: Derive visible-week conflict warnings and render them in the calm board UI",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M001:S05:T02",
+      "label": "T02: Prove conflict visibility through trusted, offline reconnect, and realtime collaborator flows",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "slice:M001:S06",
+      "label": "S06: S06",
+      "type": "slice",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M001/slices/S06/S06-PLAN.md"
+    },
+    {
+      "id": "task:M001:S06:T01",
+      "label": "T01: Reworked the offline Playwright proof to re-resolve the created shift’s rendered id across reload and reconnect so post-drain conflict assertions follow the server-confirmed shift id.",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M001:S06:T02",
+      "label": "T02: Hardened the sync proof around remote-refresh diagnostics, added realtime auth ordering coverage, and captured a blocker: collaborator sessions still never receive the shared shift refresh signal in preview proof.",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M001:S06:T03",
+      "label": "T03: Root-cause and fix collaborator realtime delivery in preview proof",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M001:S06:T04",
+      "label": "T04: Rerun full browser proof and close validation artifacts after realtime repair",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "milestone:M002",
+      "label": "M002: Shared free-time matching",
+      "type": "milestone",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M002/M002-ROADMAP.md"
+    },
+    {
+      "id": "slice:M002:S01",
+      "label": "S01: Truthful availability search route",
+      "type": "slice",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M002/slices/S01/S01-PLAN.md"
+    },
+    {
+      "id": "task:M002:S01:T01",
+      "label": "T01: Add member-attributed busy scope and a safe calendar roster contract",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M002:S01:T02",
+      "label": "T02: Build the 30-day availability matcher and protected server route contract",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M002:S01:T03",
+      "label": "T03: Ship the browseable `/find-time` UI, calendar entrypoint, and offline fail-closed browser proof",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "slice:M002:S02",
+      "label": "S02: Ranked suggestions and explanation quality",
+      "type": "slice",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M002/slices/S02/S02-PLAN.md"
+    },
+    {
+      "id": "task:M002:S02:T01",
+      "label": "T01: Build the ranked candidate contract and nearby-constraint proof",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M002:S02:T02",
+      "label": "T02: Return ranked shortlist and browse payloads from the protected route",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M002:S02:T03",
+      "label": "T03: Render Top picks explanations and prove the ranked flow in the browser",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "slice:M002:S03",
+      "label": "S03: Suggestion-to-create handoff",
+      "type": "slice",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M002/slices/S03/S03-PLAN.md"
+    },
+    {
+      "id": "task:M002:S03:T01",
+      "label": "T01: Build the create-prefill contract and fail-closed validation proof",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M002:S03:T02",
+      "label": "T02: Wire calendar-route prefill consumption, visible cue, and one-shot cleanup",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M002:S03:T03",
+      "label": "T03: Add suggestion CTA wiring and prove the end-to-end handoff in the browser",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "slice:M003:S01",
+      "label": "S01: Mobile shell, auth, and trusted calendar scope",
+      "type": "slice",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/slices/S01/S01-PLAN.md"
+    },
+    {
+      "id": "task:M003:S01:T01",
+      "label": "T01: Extract shared trusted-scope contracts and stand up mobile tests",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M003:S01:T02",
+      "label": "T02: Implement client-validated Supabase auth bootstrap and sign-in entry",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M003:S01:T03",
+      "label": "T03: Ship the mobile-first shell and trusted calendar denial states",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M003:S01:T04",
+      "label": "T04: Add mobile browser proof and Capacitor packaging checks",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "slice:M003:S02",
+      "label": "S02: Mobile calendar continuity and editing",
+      "type": "slice",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/slices/S02/S02-PLAN.md"
+    },
+    {
+      "id": "task:M003:S02:T01",
+      "label": "T01: Extract the shared mobile continuity and schedule contract",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M003:S02:T02",
+      "label": "T02: Add durable trusted shell continuity and offline route reopening on mobile",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M003:S02:T03",
+      "label": "T03: Wire mobile local-first schedule storage, trusted writes, and reconnect drain",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M003:S02:T04",
+      "label": "T04: Ship the phone-first calendar board and shift editor with explicit sync diagnostics",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M003:S02:T05",
+      "label": "T05: Prove mobile offline continuity end to end and sync native plugins",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "slice:M003:S03",
+      "label": "S03: Mobile Find time and compact create handoff",
+      "type": "slice",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/slices/S03/S03-PLAN.md"
+    },
+    {
+      "id": "task:M003:S03:T01",
+      "label": "T01: Extract shared find-time matching and create-prefill contracts",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M003:S03:T02",
+      "label": "T02: Build the trusted mobile Find time route and status model",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M003:S03:T03",
+      "label": "T03: Wire the calendar entrypoint, compact cards, and one-shot create handoff",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M003:S03:T04",
+      "label": "T04: Prove the mobile Find time flow end to end and keep native wiring green",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "slice:M003:S04",
+      "label": "M003/S04",
+      "type": "slice",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "milestone:M004",
+      "label": "M004: ## Vision",
+      "type": "milestone",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M004/M004-ROADMAP.md"
+    }
+  ],
+  "edges": [
+    {
+      "from": "milestone:M001",
+      "to": "slice:M001:S01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S01",
+      "to": "task:M001:S01:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S01",
+      "to": "task:M001:S01:T02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S01",
+      "to": "task:M001:S01:T03",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S01",
+      "to": "task:M001:S01:T04",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M001",
+      "to": "slice:M001:S02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S02",
+      "to": "task:M001:S02:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S02",
+      "to": "task:M001:S02:T02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S02",
+      "to": "task:M001:S02:T03",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S02",
+      "to": "task:M001:S02:T04",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M001",
+      "to": "slice:M001:S03",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S03",
+      "to": "task:M001:S03:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S03",
+      "to": "task:M001:S03:T02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S03",
+      "to": "task:M001:S03:T03",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S03",
+      "to": "task:M001:S03:T04",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S03",
+      "to": "task:M001:S03:T05",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M001",
+      "to": "slice:M001:S04",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S04",
+      "to": "task:M001:S04:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S04",
+      "to": "task:M001:S04:T02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S04",
+      "to": "task:M001:S04:T03",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S04",
+      "to": "task:M001:S04:T04",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M001",
+      "to": "slice:M001:S05",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S05",
+      "to": "task:M001:S05:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S05",
+      "to": "task:M001:S05:T02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M001",
+      "to": "slice:M001:S06",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S06",
+      "to": "task:M001:S06:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S06",
+      "to": "task:M001:S06:T02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S06",
+      "to": "task:M001:S06:T03",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M001:S06",
+      "to": "task:M001:S06:T04",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M002",
+      "to": "slice:M002:S01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M002:S01",
+      "to": "task:M002:S01:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M002:S01",
+      "to": "task:M002:S01:T02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M002:S01",
+      "to": "task:M002:S01:T03",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M002",
+      "to": "slice:M002:S02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M002:S02",
+      "to": "task:M002:S02:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M002:S02",
+      "to": "task:M002:S02:T02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M002:S02",
+      "to": "task:M002:S02:T03",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M002",
+      "to": "slice:M002:S03",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M002:S03",
+      "to": "task:M002:S03:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M002:S03",
+      "to": "task:M002:S03:T02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M002:S03",
+      "to": "task:M002:S03:T03",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "slice:M003:S01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M003:S01",
+      "to": "task:M003:S01:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M003:S01",
+      "to": "task:M003:S01:T02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M003:S01",
+      "to": "task:M003:S01:T03",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M003:S01",
+      "to": "task:M003:S01:T04",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "slice:M003:S02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M003:S02",
+      "to": "task:M003:S02:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M003:S02",
+      "to": "task:M003:S02:T02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M003:S02",
+      "to": "task:M003:S02:T03",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M003:S02",
+      "to": "task:M003:S02:T04",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M003:S02",
+      "to": "task:M003:S02:T05",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "slice:M003:S03",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M003:S03",
+      "to": "task:M003:S03:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M003:S03",
+      "to": "task:M003:S03:T02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M003:S03",
+      "to": "task:M003:S03:T03",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M003:S03",
+      "to": "task:M003:S03:T04",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "slice:M003:S04",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    }
+  ],
+  "builtAt": "2026-05-04T10:50:05.367Z"
+}

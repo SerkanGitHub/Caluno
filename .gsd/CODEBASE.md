@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-05-04T10:28:54Z | Files: 489 | Described: 0/489
-<!-- gsd:codebase-meta {"generatedAt":"2026-05-04T10:28:54Z","fingerprint":"ce58b5e3b03091cace4d91b9077306fc98734ae4","fileCount":489,"truncated":false} -->
+Generated: 2026-05-04T10:50:22Z | Files: 490 | Described: 0/490
+<!-- gsd:codebase-meta {"generatedAt":"2026-05-04T10:50:22Z","fingerprint":"929636ac2c33ed92fb68d2cd425b9c0f64854dc0","fileCount":490,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -97,17 +97,17 @@ Generated: 2026-05-04T10:28:54Z | Files: 489 | Described: 0/489
 - *(21 files: 21 .js)*
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/entry/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.DkwnFbPq.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.DZyGQXn7.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.74gIFL4I.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.C6xJaI76.js`
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.aLOGgvEa.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.CEgYTtfu.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.eJn5TBGo.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.DffM9m4c.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.C60ToVTS.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.BdIO-f73.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/6.OHPeUW6J.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.BKziIbAu.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.BmIrfWgg.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.D5WCwsY7.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.DSGVKUOK.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.CKLUfJgV.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.Bx3iLM7Z.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/6.Dv-F_Eah.js`
 
 ### apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/
 - `apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/env.js`
@@ -307,6 +307,7 @@ Generated: 2026-05-04T10:28:54Z | Files: 489 | Described: 0/489
 ### apps/mobile/tests/e2e/
 - `apps/mobile/tests/e2e/auth-scope.spec.ts`
 - `apps/mobile/tests/e2e/calendar-offline.spec.ts`
+- `apps/mobile/tests/e2e/find-time-handoff.spec.ts`
 - `apps/mobile/tests/e2e/fixtures.ts`
 
 ### apps/web/
