@@ -161,7 +161,7 @@ Spend the control-plane contract on the real mobile runtime seams. This task sho
   - Files: `apps/mobile/package.json`, `apps/mobile/src/lib/offline/repository.ts`, `apps/mobile/src/lib/notifications/local-notifications.ts`, `apps/mobile/src/lib/notifications/push-notifications.ts`, `apps/mobile/src/lib/notifications/scheduler.ts`, `apps/mobile/src/lib/notifications/runtime.ts`, `apps/mobile/src/lib/offline/app-lifecycle.ts`, `apps/mobile/tests/mobile-notification-runtime.unit.test.ts`
   - Verify: pnpm --dir apps/mobile exec vitest run tests/mobile-continuity.unit.test.ts tests/mobile-notification-contract.unit.test.ts tests/mobile-notification-runtime.unit.test.ts && pnpm --dir apps/mobile check
 
-- [ ] **T03: Surface one truthful notification toggle per calendar and safe tap routing** `est:90m`
+- [x] **T03: Surface one truthful notification toggle per calendar and safe tap routing** `est:90m`
   ---
 estimated_steps: 18
 estimated_files: 6

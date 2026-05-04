@@ -1,7 +1,8 @@
 # Codebase Map
 
-Generated: 2026-05-04T11:07:49Z | Files: 496 | Described: 0/496
-<!-- gsd:codebase-meta {"generatedAt":"2026-05-04T11:07:49Z","fingerprint":"ca8d84276385147484f363742d622f9568e64b3c","fileCount":496,"truncated":false} -->
+Generated: 2026-05-04T11:22:49Z | Files: 500 | Described: 0/500
+<!-- gsd:codebase-meta {"generatedAt":"2026-05-04T11:22:49Z","fingerprint":"f6cc6e303f28f7af67a5c2092368a7df976a41bf","fileCount":500,"truncated":true} -->
+Note: Truncated to first 500 files. Run with higher --max-files to include all.
 
 ### (root)/
 - `.dockerignore`
@@ -21,7 +22,6 @@ Generated: 2026-05-04T11:07:49Z | Files: 496 | Described: 0/496
 - `pnpm-workspace.yaml`
 - `README.md`
 - `setup-agent-env.sh`
-- `turbo.json`
 
 ### .artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/
 - `.artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/accessibility.md`
@@ -257,6 +257,10 @@ Generated: 2026-05-04T11:07:49Z | Files: 496 | Described: 0/496
 
 ### apps/mobile/src/lib/notifications/
 - `apps/mobile/src/lib/notifications/device-installation.ts`
+- `apps/mobile/src/lib/notifications/local-notifications.ts`
+- `apps/mobile/src/lib/notifications/push-notifications.ts`
+- `apps/mobile/src/lib/notifications/runtime.ts`
+- `apps/mobile/src/lib/notifications/scheduler.ts`
 - `apps/mobile/src/lib/notifications/state.ts`
 - `apps/mobile/src/lib/notifications/transport.ts`
 - `apps/mobile/src/lib/notifications/types.ts`
@@ -307,6 +311,7 @@ Generated: 2026-05-04T11:07:49Z | Files: 496 | Described: 0/496
 - `apps/mobile/tests/mobile-create-prefill.unit.test.ts`
 - `apps/mobile/tests/mobile-find-time.unit.test.ts`
 - `apps/mobile/tests/mobile-notification-contract.unit.test.ts`
+- `apps/mobile/tests/mobile-notification-runtime.unit.test.ts`
 - `apps/mobile/tests/mobile-sync-runtime.unit.test.ts`
 - `apps/mobile/tests/shell-scope.unit.test.ts`
 - `apps/mobile/tests/trusted-core.unit.test.ts`

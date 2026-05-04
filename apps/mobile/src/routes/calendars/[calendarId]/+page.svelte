@@ -9,6 +9,7 @@
   import type { CalendarScheduleView } from '@repo/caluno-core/schedule/types';
   import MobileShell from '$lib/components/MobileShell.svelte';
   import MobileCalendarBoard from '$lib/components/calendar/MobileCalendarBoard.svelte';
+  import CalendarNotificationToggle from '$lib/components/notifications/CalendarNotificationToggle.svelte';
   import {
     resolveMobileCreatePrefillArrival,
     type MobileCreatePrefillArrivalState
@@ -29,11 +30,19 @@
     type MobileSnapshotOrigin
   } from '$lib/shell/load-app-shell';
   import { getSupabaseBrowserClient } from '$lib/supabase/client';
+  import {
+    clearTrustedNotificationCalendarScope,
+    notificationRouteDiagnostics,
+    setTrustedNotificationCalendarScope
+  } from '$lib/notifications/router';
+  import { createMobileNotificationTransport } from '$lib/notifications/transport';
+  import { createMobileNotificationRuntime, type MobileNotificationRuntime, type MobileNotificationRuntimeState } from '$lib/notifications/runtime';
 
   const authState = $derived(page.data.authState);
   const protectedEntry = $derived(page.data.protectedEntry);
   const attemptedCalendarId = $derived(page.params.calendarId ?? '');
   const visibleWeek = $derived(resolveVisibleWeek(page.url.searchParams, new Date()));
+  const routeDiagnostics = $derived($notificationRouteDiagnostics);
 
   let shellResult = $state<MobileShellLoadResult | null>(null);
   let routeResult = $state<MobileCalendarRouteResult | null>(null);
@@ -60,6 +69,13 @@
   let runtimeScopeKey = $state<string | null>(null);
   let runtimeSubscription: (() => void) | null = null;
   let runtimeSequence = 0;
+  let notificationLoading = $state(false);
+  let notificationPendingCalendarId = $state<string | null>(null);
+  let notificationFailure = $state<{ reason: string; detail: string } | null>(null);
+  let notificationState = $state<MobileNotificationRuntimeState | null>(null);
+  let notificationRuntime = $state.raw<MobileNotificationRuntime | null>(null);
+  let notificationScopeKey = $state<string | null>(null);
+  let notificationSubscription: (() => void) | null = null;
 
   const shellFailure = $derived(shellResult?.ok === false ? shellResult : null);
   const appShell = $derived(shellResult?.ok ? shellResult.appShell : null);
@@ -113,6 +129,10 @@
     });
   });
   const trustedCalendars = $derived(appShell?.calendars ?? []);
+  const permittedCalendarIds = $derived(trustedCalendars.map((calendar) => calendar.id));
+  const canManageNotifications = $derived(
+    Boolean(authState.phase === 'authenticated' && authState.user && permittedCalendarIds.length > 0)
+  );
 
   async function destroyRuntime() {
     runtimeSubscription?.();
@@ -123,6 +143,20 @@
     transport = null;
     runtimeState = null;
     runtimeScopeKey = null;
+
+    if (activeRuntime) {
+      await activeRuntime.destroy();
+    }
+  }
+
+  async function destroyNotificationRuntime() {
+    notificationSubscription?.();
+    notificationSubscription = null;
+
+    const activeRuntime = notificationRuntime;
+    notificationRuntime = null;
+    notificationScopeKey = null;
+    notificationState = null;
 
     if (activeRuntime) {
       await activeRuntime.destroy();
@@ -254,6 +288,83 @@
       if (sequence === runtimeSequence) {
         runtimeLoading = false;
       }
+    }
+  }
+
+  async function ensureNotificationRuntime() {
+    if (!browser || authState.phase !== 'authenticated' || !authState.user || permittedCalendarIds.length === 0) {
+      await destroyNotificationRuntime();
+      notificationLoading = false;
+      return;
+    }
+
+    const nextScopeKey = `${authState.user.id}:${permittedCalendarIds.join(',')}`;
+    if (notificationScopeKey === nextScopeKey && notificationState) {
+      return;
+    }
+
+    notificationLoading = true;
+    notificationFailure = null;
+    await destroyNotificationRuntime();
+
+    try {
+      const nextRuntime = createMobileNotificationRuntime({
+        scope: { userId: authState.user.id },
+        permittedCalendarIds,
+        repository: createMobileOfflineRepository(),
+        transport: createMobileNotificationTransport({
+          client: getSupabaseBrowserClient(),
+          permittedCalendarIds
+        })
+      });
+
+      notificationRuntime = nextRuntime;
+      notificationScopeKey = nextScopeKey;
+      notificationSubscription = nextRuntime.subscribe((nextState) => {
+        notificationState = nextState;
+        if (nextState.initialized) {
+          notificationLoading = false;
+        }
+      });
+      notificationState = nextRuntime.getState();
+      await nextRuntime.initialize();
+    } catch (error) {
+      notificationFailure = {
+        reason: 'scope-unavailable',
+        detail: error instanceof Error ? error.message : 'The calendar notification runtime could not bootstrap.'
+      };
+      notificationLoading = false;
+      await destroyNotificationRuntime();
+    }
+  }
+
+  async function toggleCalendarNotification(calendarId: string, desiredEnabled: boolean) {
+    if (!notificationRuntime) {
+      notificationFailure = {
+        reason: 'save-failed',
+        detail: 'The notification runtime is unavailable, so this control stayed read only.'
+      };
+      return;
+    }
+
+    notificationPendingCalendarId = calendarId;
+    notificationFailure = null;
+
+    try {
+      const nextState = await notificationRuntime.setCalendarEnabled({ calendarId, desiredEnabled });
+      if (!nextState) {
+        notificationFailure = {
+          reason: 'save-failed',
+          detail: 'The requested calendar fell outside the trusted scope before the preference write completed.'
+        };
+      }
+    } catch (error) {
+      notificationFailure = {
+        reason: 'save-failed',
+        detail: error instanceof Error ? error.message : 'Saving the calendar notification preference failed.'
+      };
+    } finally {
+      notificationPendingCalendarId = null;
     }
   }
 
@@ -412,11 +523,21 @@
   });
 
   $effect(() => {
+    setTrustedNotificationCalendarScope(permittedCalendarIds);
+  });
+
+  $effect(() => {
     void ensureCalendarRuntime();
   });
 
+  $effect(() => {
+    void ensureNotificationRuntime();
+  });
+
   onDestroy(() => {
+    clearTrustedNotificationCalendarScope();
     void destroyRuntime();
+    void destroyNotificationRuntime();
   });
 </script>
 
@@ -463,6 +584,8 @@
     data-create-prefill-source={createPrefill?.source ?? 'none'}
     data-create-prefill-start={createPrefill?.startAt ?? 'none'}
     data-create-prefill-end={createPrefill?.endAt ?? 'none'}
+    data-notification-route-result={routeDiagnostics.code}
+    data-notification-route-reason={routeDiagnostics.reason ?? 'none'}
   >
     {#if loading}
       <article class="hero-card framed-panel tone-neutral">
@@ -494,33 +617,60 @@
         </div>
       </article>
     {:else if routeResult?.kind === 'calendar' && activeCalendar}
-      {#if runtimeLoading || !runtimeState || !board}
-        <article class="hero-card framed-panel tone-neutral" data-testid="calendar-board-loading">
-          <p class="panel-kicker">Preparing week board</p>
-          <h2>Shaping the mobile schedule surface.</h2>
-          <p class="panel-copy">The local-first controller is opening the visible week, replaying any queued edits, and restoring cached continuity if needed.</p>
-        </article>
-      {:else}
-        <MobileCalendarBoard
+      <div class="calendar-panel-stack">
+        <CalendarNotificationToggle
           calendarId={activeCalendar.id}
           calendarName={activeCalendar.name}
-          {board}
-          schedule={runtimeState.schedule}
-          routeMode={runtimeState.routeMode}
-          controllerState={runtimeState}
-          actionStates={runtimeState.actionStates}
-          {pendingActionKey}
-          {canMutate}
-          {canRefresh}
-          {refreshing}
-          {retrying}
-          {remoteFailure}
-          {createPrefill}
-          {submitMutation}
-          refreshTrustedWeek={refreshTrustedWeek}
-          retryDrain={retryDrain}
+          state={notificationState?.calendars[activeCalendar.id] ?? null}
+          interactive={canManageNotifications}
+          saving={notificationPendingCalendarId === activeCalendar.id}
+          fallbackDetail={notificationFailure?.detail ?? (routeMode === 'cached-offline'
+            ? 'Trusted continuity reopened this calendar, but live notification writes require a trusted session.'
+            : 'Notification state is still bootstrapping for this calendar.')}
+          surface="calendar-panel"
+          onToggle={(desiredEnabled) => toggleCalendarNotification(activeCalendar.id, desiredEnabled)}
         />
-      {/if}
+
+        {#if notificationFailure}
+          <article class="hero-card framed-panel tone-warning" data-testid="mobile-calendar-notification-failure">
+            <p class="panel-kicker">Notification runtime</p>
+            <h2>Calendar notification state stayed explicit.</h2>
+            <p class="panel-copy">{notificationFailure.detail}</p>
+            <div class="meta-strip">
+              <code>{notificationFailure.reason}</code>
+              <code>{activeCalendar.id}</code>
+            </div>
+          </article>
+        {/if}
+
+        {#if runtimeLoading || !runtimeState || !board}
+          <article class="hero-card framed-panel tone-neutral" data-testid="calendar-board-loading">
+            <p class="panel-kicker">Preparing week board</p>
+            <h2>Shaping the mobile schedule surface.</h2>
+            <p class="panel-copy">The local-first controller is opening the visible week, replaying any queued edits, and restoring cached continuity if needed.</p>
+          </article>
+        {:else}
+          <MobileCalendarBoard
+            calendarId={activeCalendar.id}
+            calendarName={activeCalendar.name}
+            {board}
+            schedule={runtimeState.schedule}
+            routeMode={runtimeState.routeMode}
+            controllerState={runtimeState}
+            actionStates={runtimeState.actionStates}
+            {pendingActionKey}
+            {canMutate}
+            {canRefresh}
+            {refreshing}
+            {retrying}
+            {remoteFailure}
+            {createPrefill}
+            {submitMutation}
+            refreshTrustedWeek={refreshTrustedWeek}
+            retryDrain={retryDrain}
+          />
+        {/if}
+      </div>
     {:else if protectedEntry.routeMode === 'denied'}
       <article class="hero-card framed-panel tone-danger" data-testid="mobile-continuity-denied">
         <p class="panel-kicker">Continuity denied</p>
@@ -602,7 +752,8 @@
 
 <style>
   .calendar-route,
-  .inventory-card {
+  .inventory-card,
+  .calendar-panel-stack {
     display: grid;
     gap: 0.95rem;
   }
@@ -748,6 +899,10 @@
 
   .tone-neutral {
     background: rgba(247, 244, 236, 0.9);
+  }
+
+  .tone-warning {
+    background: rgba(255, 244, 214, 0.92);
   }
 
   .tone-danger {

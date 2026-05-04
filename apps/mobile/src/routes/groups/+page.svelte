@@ -2,7 +2,9 @@
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
+  import { onDestroy } from 'svelte';
   import MobileShell from '$lib/components/MobileShell.svelte';
+  import CalendarNotificationToggle from '$lib/components/notifications/CalendarNotificationToggle.svelte';
   import {
     loadCachedMobileAppShell,
     loadMobileAppShell,
@@ -12,16 +14,33 @@
     type MobileShellRouteMode,
     type MobileSnapshotOrigin
   } from '$lib/shell/load-app-shell';
+  import {
+    clearTrustedNotificationCalendarScope,
+    notificationRouteDiagnostics,
+    setTrustedNotificationCalendarScope
+  } from '$lib/notifications/router';
+  import { createMobileNotificationTransport } from '$lib/notifications/transport';
+  import { createMobileNotificationRuntime, type MobileNotificationRuntime, type MobileNotificationRuntimeState } from '$lib/notifications/runtime';
+  import { createMobileOfflineRepository } from '$lib/offline/repository';
+  import { getSupabaseBrowserClient } from '$lib/supabase/client';
 
   const authState = $derived(page.data.authState);
   const protectedEntry = $derived(page.data.protectedEntry);
   const landingIntent = $derived(page.url.searchParams.get('landing')?.trim() ?? null);
+  const routeDiagnostics = $derived($notificationRouteDiagnostics);
 
   let shellResult = $state<MobileShellLoadResult | null>(null);
   let shellBootstrapMode = $state<MobileShellBootstrapMode>('loading');
   let loading = $state(false);
   let currentUserId = $state<string | null>(null);
   let landingRedirected = $state(false);
+  let notificationLoading = $state(false);
+  let notificationPendingCalendarId = $state<string | null>(null);
+  let notificationFailure = $state<{ reason: string; detail: string } | null>(null);
+  let notificationState = $state<MobileNotificationRuntimeState | null>(null);
+  let notificationRuntime = $state.raw<MobileNotificationRuntime | null>(null);
+  let notificationScopeKey = $state<string | null>(null);
+  let notificationSubscription: (() => void) | null = null;
 
   const shellFailure = $derived(shellResult?.ok === false ? shellResult : null);
   const appShell = $derived(shellResult?.ok ? shellResult.appShell : null);
@@ -35,6 +54,103 @@
   const lastTrustedRefreshAt = $derived(
     shellResult?.ok ? shellResult.continuity.lastTrustedRefreshAt : protectedEntry.lastTrustedRefreshAt
   );
+  const permittedCalendarIds = $derived(appShell?.calendars.map((calendar) => calendar.id) ?? null);
+  const canManageNotifications = $derived(
+    Boolean(authState.phase === 'authenticated' && authState.user && permittedCalendarIds && permittedCalendarIds.length > 0)
+  );
+
+  async function destroyNotificationRuntime() {
+    notificationSubscription?.();
+    notificationSubscription = null;
+
+    const activeRuntime = notificationRuntime;
+    notificationRuntime = null;
+    notificationScopeKey = null;
+    notificationState = null;
+
+    if (activeRuntime) {
+      await activeRuntime.destroy();
+    }
+  }
+
+  async function ensureNotificationRuntime() {
+    const scope = permittedCalendarIds;
+
+    if (!browser || authState.phase !== 'authenticated' || !authState.user || !scope || scope.length === 0) {
+      await destroyNotificationRuntime();
+      notificationLoading = false;
+      return;
+    }
+
+    const nextScopeKey = `${authState.user.id}:${scope.join(',')}`;
+    if (notificationScopeKey === nextScopeKey && notificationState) {
+      return;
+    }
+
+    notificationLoading = true;
+    notificationFailure = null;
+    await destroyNotificationRuntime();
+
+    try {
+      const nextRuntime = createMobileNotificationRuntime({
+        scope: { userId: authState.user.id },
+        permittedCalendarIds: scope,
+        repository: createMobileOfflineRepository(),
+        transport: createMobileNotificationTransport({
+          client: getSupabaseBrowserClient(),
+          permittedCalendarIds: scope
+        })
+      });
+
+      notificationRuntime = nextRuntime;
+      notificationScopeKey = nextScopeKey;
+      notificationSubscription = nextRuntime.subscribe((nextState) => {
+        notificationState = nextState;
+        if (nextState.initialized) {
+          notificationLoading = false;
+        }
+      });
+      notificationState = nextRuntime.getState();
+      await nextRuntime.initialize();
+    } catch (error) {
+      notificationFailure = {
+        reason: 'scope-unavailable',
+        detail: error instanceof Error ? error.message : 'The groups notification runtime could not bootstrap.'
+      };
+      notificationLoading = false;
+      await destroyNotificationRuntime();
+    }
+  }
+
+  async function toggleCalendarNotification(calendarId: string, desiredEnabled: boolean) {
+    if (!notificationRuntime) {
+      notificationFailure = {
+        reason: 'scope-unavailable',
+        detail: 'The notification runtime is unavailable, so this toggle stayed read only.'
+      };
+      return;
+    }
+
+    notificationPendingCalendarId = calendarId;
+    notificationFailure = null;
+
+    try {
+      const nextState = await notificationRuntime.setCalendarEnabled({ calendarId, desiredEnabled });
+      if (!nextState) {
+        notificationFailure = {
+          reason: 'save-failed',
+          detail: 'The requested calendar fell outside the trusted scope before the preference write completed.'
+        };
+      }
+    } catch (error) {
+      notificationFailure = {
+        reason: 'save-failed',
+        detail: error instanceof Error ? error.message : 'Saving the calendar notification preference failed.'
+      };
+    } finally {
+      notificationPendingCalendarId = null;
+    }
+  }
 
   async function loadShell(force = false) {
     if (!browser || authState.phase !== 'authenticated' || !authState.user) {
@@ -85,6 +201,14 @@
   });
 
   $effect(() => {
+    setTrustedNotificationCalendarScope(permittedCalendarIds);
+  });
+
+  $effect(() => {
+    void ensureNotificationRuntime();
+  });
+
+  $effect(() => {
     if (
       !browser ||
       landingIntent !== 'primary' ||
@@ -98,6 +222,11 @@
 
     landingRedirected = true;
     void goto(`/calendars/${appShell.primaryCalendar.id}`, { replaceState: true });
+  });
+
+  onDestroy(() => {
+    clearTrustedNotificationCalendarScope();
+    void destroyNotificationRuntime();
   });
 </script>
 
@@ -130,6 +259,8 @@
     data-continuity-reason={continuityReason ?? 'none'}
     data-last-trusted-refresh-at={lastTrustedRefreshAt ?? 'none'}
     data-onboarding-state={appShell?.onboardingState ?? 'unknown'}
+    data-notification-route-result={routeDiagnostics.code}
+    data-notification-route-reason={routeDiagnostics.reason ?? 'none'}
   >
     <article class="hero-card framed-panel">
       <div>
@@ -212,6 +343,14 @@
         </p>
       </article>
     {/if}
+
+    {#if appShell && notificationFailure}
+      <article class="signal-card framed-panel tone-warning" data-testid="mobile-notification-runtime-failure">
+        <span class="signal-card__label">Notification state</span>
+        <strong>{notificationFailure.reason}</strong>
+        <p>{notificationFailure.detail}</p>
+      </article>
+    {/if}
   </section>
 
   <section class="group-stack">
@@ -235,10 +374,24 @@
 
           <div class="calendar-list">
             {#each group.calendars as calendar}
-              <a class="calendar-link" href={`/calendars/${calendar.id}`}>
-                <strong>{calendar.name}</strong>
-                <span>{calendar.isDefault ? 'Default calendar' : 'Secondary calendar'}</span>
-              </a>
+              <article class="calendar-card" data-testid="mobile-group-calendar-card" data-calendar-id={calendar.id}>
+                <a class="calendar-link" href={`/calendars/${calendar.id}`}>
+                  <strong>{calendar.name}</strong>
+                  <span>{calendar.isDefault ? 'Default calendar' : 'Secondary calendar'}</span>
+                </a>
+
+                <CalendarNotificationToggle
+                  calendarId={calendar.id}
+                  calendarName={calendar.name}
+                  state={notificationState?.calendars[calendar.id] ?? null}
+                  interactive={canManageNotifications}
+                  saving={notificationPendingCalendarId === calendar.id}
+                  fallbackDetail={notificationFailure?.detail ?? (routeMode === 'cached-offline'
+                    ? 'Trusted continuity reopened this calendar inventory, but live notification writes require a trusted session.'
+                    : 'Notification state is still bootstrapping for this calendar.')}
+                  onToggle={(desiredEnabled) => toggleCalendarNotification(calendar.id, desiredEnabled)}
+                />
+              </article>
             {/each}
           </div>
         </article>
@@ -420,7 +573,12 @@
 
   .calendar-list {
     display: grid;
-    gap: 0.7rem;
+    gap: 0.8rem;
+  }
+
+  .calendar-card {
+    display: grid;
+    gap: 0.6rem;
   }
 
   .calendar-link {
