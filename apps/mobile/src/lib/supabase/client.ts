@@ -26,7 +26,23 @@ export type MobileSupabaseAuthClient = {
   };
 };
 
-export type MobileSupabaseDataClient = MobileSupabaseAuthClient & Pick<SupabaseClient, 'from' | 'rpc'>;
+/**
+ * Minimal function-invocation seam for best-effort edge-function dispatch.
+ * Only the subset of `SupabaseClient.functions` required by the mobile dispatch
+ * helper is exposed so the type boundary stays narrow.
+ */
+export type MobileSupabaseFunctionsSeam = {
+  functions: {
+    invoke(
+      fn: string,
+      options?: { body?: unknown }
+    ): Promise<{ data: unknown; error: { message: string } | null }>;
+  };
+};
+
+export type MobileSupabaseDataClient = MobileSupabaseAuthClient &
+  Pick<SupabaseClient, 'from' | 'rpc'> &
+  MobileSupabaseFunctionsSeam;
 
 let browserClient: MobileSupabaseDataClient | undefined;
 

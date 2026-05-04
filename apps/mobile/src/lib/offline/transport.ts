@@ -10,6 +10,7 @@ import type {
 } from '@repo/caluno-core/schedule/types';
 import type { ReconnectDrainActionRequest, CalendarControllerServerOutcome } from '@repo/caluno-core/offline/sync-engine';
 import type { MobileSupabaseDataClient } from '$lib/supabase/client';
+import { dispatchMobileCalendarChange } from '$lib/notifications/calendar-change-dispatch';
 import * as rrulePkg from 'rrule';
 
 const rruleModule = rrulePkg as unknown as {
@@ -283,7 +284,7 @@ async function submitCreateAction(
       });
     }
 
-    return successOutcome({
+    const createOutcome = successOutcome({
       action: 'create',
       request,
       reason: 'SHIFT_CREATED',
@@ -292,6 +293,8 @@ async function submitCreateAction(
       shiftId,
       affectedShiftIds: [shiftId]
     });
+    void dispatchMobileCalendarChange({ client, calendarId, changeType: 'create', shiftId });
+    return createOutcome;
   }
 
   const seriesId = createId();
@@ -387,7 +390,7 @@ async function submitCreateAction(
     });
   }
 
-  return successOutcome({
+  const recurringCreateOutcome = successOutcome({
     action: 'create',
     request,
     reason: 'SHIFT_CREATED',
@@ -397,6 +400,8 @@ async function submitCreateAction(
     shiftId: affectedShiftIds[0] ?? null,
     affectedShiftIds
   });
+  void dispatchMobileCalendarChange({ client, calendarId, changeType: 'create', shiftId: affectedShiftIds[0] ?? null });
+  return recurringCreateOutcome;
 }
 
 async function submitEditAction(
@@ -486,7 +491,7 @@ async function submitEditAction(
     'SCHEDULE_EDIT_TIMEOUT'
   );
 
-  return finalizeSingleShiftMutation({
+  const editResult = finalizeSingleShiftMutation({
     action: 'edit',
     request,
     fields,
@@ -495,6 +500,10 @@ async function submitEditAction(
     successMessage: 'The shift details were updated inside the current trusted calendar.',
     writeResult
   });
+  if (editResult.type === 'success') {
+    void dispatchMobileCalendarChange({ client, calendarId, changeType: 'edit', shiftId: editResult.state.shiftId });
+  }
+  return editResult;
 }
 
 async function submitMoveAction(
@@ -581,7 +590,7 @@ async function submitMoveAction(
     'SCHEDULE_MOVE_TIMEOUT'
   );
 
-  return finalizeSingleShiftMutation({
+  const moveResult = finalizeSingleShiftMutation({
     action: 'move',
     request,
     fields,
@@ -590,6 +599,10 @@ async function submitMoveAction(
     successMessage: 'The shift range was moved inside the current trusted calendar.',
     writeResult
   });
+  if (moveResult.type === 'success') {
+    void dispatchMobileCalendarChange({ client, calendarId, changeType: 'move', shiftId: moveResult.state.shiftId });
+  }
+  return moveResult;
 }
 
 async function submitDeleteAction(
@@ -655,7 +668,7 @@ async function submitDeleteAction(
     'SCHEDULE_DELETE_TIMEOUT'
   );
 
-  return finalizeSingleShiftMutation({
+  const deleteResult = finalizeSingleShiftMutation({
     action: 'delete',
     request,
     fields,
@@ -664,6 +677,10 @@ async function submitDeleteAction(
     successMessage: 'The shift was deleted from the current trusted calendar.',
     writeResult
   });
+  if (deleteResult.type === 'success') {
+    void dispatchMobileCalendarChange({ client, calendarId, changeType: 'delete', shiftId: deleteResult.state.shiftId });
+  }
+  return deleteResult;
 }
 
 async function resolveCalendarWriteScope(params: {

@@ -613,3 +613,254 @@ describe('mobile notification runtime', () => {
     await runtime.destroy();
   });
 });
+
+
+import { vi } from 'vitest';
+import { createTrustedMobileScheduleTransport } from '../src/lib/offline/transport';
+import type { ReconnectDrainActionRequest } from '@repo/caluno-core/offline/sync-engine';
+
+const scheduleCalendarId = 'ffffffff-ffff-4111-8111-111111111111';
+const scheduleShiftId = 'aaaaaaaa-1111-4111-8111-111111111111';
+const scheduleUserId = 'bbbbbbbb-2222-4222-8222-222222222222';
+
+function createScheduleFormData(overrides: Record<string, string> = {}): FormData {
+  const fd = new FormData();
+  fd.set('shiftId', scheduleShiftId);
+  fd.set('title', 'Morning shift');
+  fd.set('startAt', '2026-04-22T08:00:00.000Z');
+  fd.set('endAt', '2026-04-22T16:00:00.000Z');
+  for (const [k, v] of Object.entries(overrides)) {
+    fd.set(k, v);
+  }
+  return fd;
+}
+
+function buildSuccessShiftRow() {
+  return [
+    {
+      id: scheduleShiftId,
+      calendar_id: scheduleCalendarId,
+      series_id: null,
+      title: 'Morning shift',
+      start_at: '2026-04-22T08:00:00.000Z',
+      end_at: '2026-04-22T16:00:00.000Z',
+      occurrence_index: null,
+      source_kind: 'single' as const
+    }
+  ];
+}
+
+/**
+ * Build a mock Supabase client for the mobile schedule transport.
+ *
+ * The transport uses these query chains:
+ *   1. resolveCalendarWriteScope:
+ *        .from('calendars').select(...).eq('id', calendarId)        → resolves
+ *        .from('group_memberships').select(...).eq(...).eq(...)      → resolves
+ *   2. resolveShiftWriteAuthority:
+ *        .from('shifts').select(...).eq('id', shiftId)              → resolves
+ *   3. delete/update write:
+ *        .from('shifts').delete().eq().eq().select()                 → resolves
+ *        .from('shifts').update({}).eq().eq().select()              → resolves
+ */
+function createTransportClient(options: {
+  shiftRow: ReturnType<typeof buildSuccessShiftRow>;
+  dispatchResult: { data: unknown; error: { message: string } | null } | 'throw';
+  calendarFail?: boolean;
+}) {
+  const dispatchInvoke = vi.fn(async () => {
+    if (options.dispatchResult === 'throw') {
+      throw new Error('network unavailable');
+    }
+    return options.dispatchResult;
+  });
+
+  const calendarRow = [{ id: scheduleCalendarId, group_id: 'group-1', name: 'Cal', is_default: false }];
+  const membershipRow = [{ group_id: 'group-1', role: 'owner' as const }];
+  const shiftRow = options.shiftRow;
+
+  function makeCalendarChain() {
+    return {
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockResolvedValue({ data: calendarRow, error: null })
+    };
+  }
+
+  function makeMembershipChain() {
+    // .select().eq('user_id',...).eq('group_id',...) → resolves on 2nd eq
+    let eqCount = 0;
+    const chain: { select: ReturnType<typeof vi.fn>; eq: ReturnType<typeof vi.fn> } = {
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockImplementation(() => {
+        eqCount++;
+        return eqCount >= 2 ? Promise.resolve({ data: membershipRow, error: null }) : chain;
+      })
+    };
+    return chain;
+  }
+
+  function makeShiftsChain() {
+    // This chain handles TWO patterns:
+    // A) Read (resolveShiftWriteAuthority): .select(...).eq('id', shiftId)
+    //    → second call resolves
+    // B) Write (delete/update): .<op>().eq(...).eq(...).select(...)
+    //    → select() at end resolves
+
+    // We track "mode" based on whether delete/update was called first.
+    let mode: 'read' | 'write' = 'read';
+    let readEqCount = 0;
+
+    const writeInner: { eq: ReturnType<typeof vi.fn>; select: ReturnType<typeof vi.fn> } = {
+      eq: vi.fn().mockReturnThis(),
+      select: vi.fn().mockResolvedValue({ data: shiftRow, error: null })
+    };
+    // Make writeInner.eq return writeInner for chaining
+    writeInner.eq.mockReturnValue(writeInner);
+
+    const chain: {
+      select: ReturnType<typeof vi.fn>;
+      eq: ReturnType<typeof vi.fn>;
+      delete: ReturnType<typeof vi.fn>;
+      update: ReturnType<typeof vi.fn>;
+      order: ReturnType<typeof vi.fn>;
+      lt: ReturnType<typeof vi.fn>;
+      gt: ReturnType<typeof vi.fn>;
+    } = {
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockImplementation(() => {
+        if (mode === 'read') {
+          readEqCount++;
+          return readEqCount >= 1 ? Promise.resolve({ data: shiftRow, error: null }) : chain;
+        }
+        // write mode eq chains back
+        return writeInner;
+      }),
+      delete: vi.fn().mockImplementation(() => {
+        mode = 'write';
+        return writeInner;
+      }),
+      update: vi.fn().mockImplementation(() => {
+        mode = 'write';
+        return writeInner;
+      }),
+      order: vi.fn().mockReturnThis(),
+      lt: vi.fn().mockReturnThis(),
+      gt: vi.fn().mockReturnThis()
+    };
+
+    return chain;
+  }
+
+  return {
+    client: {
+      auth: { getSession: vi.fn(), getUser: vi.fn(), signInWithPassword: vi.fn(), signOut: vi.fn(), onAuthStateChange: vi.fn() },
+      from: vi.fn((table: string) => {
+        if (table === 'calendars') {
+          if (options.calendarFail) {
+            return { select: vi.fn().mockReturnThis(), eq: vi.fn().mockResolvedValue({ data: null, error: { message: 'forbidden' } }) };
+          }
+          return makeCalendarChain();
+        }
+        if (table === 'group_memberships') {
+          return makeMembershipChain();
+        }
+        // shifts and everything else
+        return makeShiftsChain();
+      }),
+      rpc: vi.fn(),
+      functions: { invoke: dispatchInvoke }
+    },
+    dispatchInvoke
+  };
+}
+
+describe('mobile schedule transport — dispatch wiring', () => {
+  it('dispatch degrades without affecting a successful write outcome (degraded dispatch preserves canonical result)', async () => {
+    const { client, dispatchInvoke } = createTransportClient({
+      shiftRow: buildSuccessShiftRow(),
+      dispatchResult: 'throw'
+    });
+
+    const transport = createTrustedMobileScheduleTransport({
+      client: client as never,
+      userId: scheduleUserId,
+      calendarId: scheduleCalendarId,
+      timeoutMs: 100
+    });
+
+    const outcome = await transport.submitAction({
+      action: 'delete',
+      url: `/calendars/${scheduleCalendarId}/shifts`,
+      visibleWeekStart: '2026-04-21',
+      formData: createScheduleFormData()
+    });
+
+    // Canonical write outcome must be success even though dispatch threw
+    expect(outcome.type).toBe('success');
+    if (outcome.type === 'success') {
+      expect(outcome.state.reason).toBe('SHIFT_DELETED');
+    }
+
+    // Allow dispatch promise to settle then verify it was attempted
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(dispatchInvoke).toHaveBeenCalledOnce();
+  });
+
+  it('failed mobile writes never dispatch', async () => {
+    const { client, dispatchInvoke } = createTransportClient({
+      shiftRow: buildSuccessShiftRow(),
+      dispatchResult: { data: {}, error: null },
+      calendarFail: true
+    });
+
+    const transport = createTrustedMobileScheduleTransport({
+      client: client as never,
+      userId: scheduleUserId,
+      calendarId: scheduleCalendarId,
+      timeoutMs: 100
+    });
+
+    const outcome = await transport.submitAction({
+      action: 'edit',
+      url: `/calendars/${scheduleCalendarId}/shifts`,
+      visibleWeekStart: '2026-04-21',
+      formData: createScheduleFormData()
+    });
+
+    expect(outcome.type).toBe('failure');
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(dispatchInvoke).not.toHaveBeenCalled();
+  });
+
+  it('reconnect-drained writes dispatch exactly once per canonical success path (replay-safe)', async () => {
+    const { client, dispatchInvoke } = createTransportClient({
+      shiftRow: buildSuccessShiftRow(),
+      dispatchResult: { data: {}, error: null }
+    });
+
+    const transport = createTrustedMobileScheduleTransport({
+      client: client as never,
+      userId: scheduleUserId,
+      calendarId: scheduleCalendarId,
+      timeoutMs: 100
+    });
+
+    const makeRequest = (): ReconnectDrainActionRequest => ({
+      action: 'delete',
+      url: `/calendars/${scheduleCalendarId}/shifts`,
+      visibleWeekStart: '2026-04-21',
+      formData: createScheduleFormData()
+    });
+
+    const outcome1 = await transport.submitAction(makeRequest());
+    const outcome2 = await transport.submitAction(makeRequest());
+
+    expect(outcome1.type).toBe('success');
+    expect(outcome2.type).toBe('success');
+
+    await new Promise((resolve) => setTimeout(resolve, 20));
+
+    // Each successful write dispatches exactly once — two writes = two dispatches
+    expect(dispatchInvoke).toHaveBeenCalledTimes(2);
+  });
+});

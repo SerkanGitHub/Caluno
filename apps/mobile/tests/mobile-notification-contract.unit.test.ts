@@ -660,3 +660,203 @@ describe('mobile notification contract', () => {
     });
   });
 });
+
+import { dispatchMobileCalendarChange } from '../src/lib/notifications/calendar-change-dispatch';
+
+const validCalendarId = 'dddddddd-dddd-4111-8111-111111111111';
+const validShiftId = 'eeeeeeee-eeee-4222-8222-222222222222';
+
+function createFunctionsClient(response: { data: unknown; error: { message: string } | null }) {
+  return {
+    functions: {
+      invoke: vi.fn(async () => response)
+    }
+  };
+}
+
+function createTimeoutFunctionsClient(delayMs: number) {
+  return {
+    functions: {
+      invoke: vi.fn(
+        () =>
+          new Promise<{ data: unknown; error: null }>((resolve) =>
+            setTimeout(() => resolve({ data: {}, error: null }), delayMs)
+          )
+      )
+    }
+  };
+}
+
+describe('mobile calendar-change dispatch contract', () => {
+  it('dispatches with correct payload on a successful create and returns ok', async () => {
+    const client = createFunctionsClient({ data: { dispatched: true }, error: null });
+
+    const result = await dispatchMobileCalendarChange({
+      client,
+      calendarId: validCalendarId,
+      changeType: 'create',
+      shiftId: validShiftId,
+      timeoutMs: 50
+    });
+
+    expect(result).toEqual({ ok: true, calendarId: validCalendarId, changeType: 'create' });
+    expect(client.functions.invoke).toHaveBeenCalledOnce();
+    expect(client.functions.invoke).toHaveBeenCalledWith(
+      'notify-calendar-change',
+      expect.objectContaining({
+        body: expect.objectContaining({
+          calendarId: validCalendarId,
+          changeType: 'create',
+          shiftId: validShiftId
+        })
+      })
+    );
+  });
+
+  it('dispatches for edit, move, and delete with correct changeType', async () => {
+    for (const changeType of ['edit', 'move', 'delete'] as const) {
+      const client = createFunctionsClient({ data: {}, error: null });
+      const result = await dispatchMobileCalendarChange({
+        client,
+        calendarId: validCalendarId,
+        changeType,
+        shiftId: validShiftId,
+        timeoutMs: 50
+      });
+
+      expect(result).toMatchObject({ ok: true, changeType });
+    }
+  });
+
+  it('degrades gracefully when invoke rejects without mutating any canonical state', async () => {
+    const client = {
+      functions: {
+        invoke: vi.fn(async () => {
+          throw new Error('network unavailable');
+        })
+      }
+    };
+
+    const result = await dispatchMobileCalendarChange({
+      client,
+      calendarId: validCalendarId,
+      changeType: 'edit',
+      shiftId: validShiftId,
+      timeoutMs: 50
+    });
+
+    expect(result).toMatchObject({
+      ok: false,
+      degraded: true,
+      reason: 'dispatch-error'
+    });
+  });
+
+  it('degrades gracefully when invoke times out without mutating any canonical state', async () => {
+    const client = createTimeoutFunctionsClient(100);
+
+    const result = await dispatchMobileCalendarChange({
+      client,
+      calendarId: validCalendarId,
+      changeType: 'move',
+      shiftId: validShiftId,
+      timeoutMs: 10
+    });
+
+    expect(result).toMatchObject({
+      ok: false,
+      degraded: true,
+      reason: 'dispatch-timeout'
+    });
+  });
+
+  it('degrades when invoke returns a server-side error object', async () => {
+    const client = createFunctionsClient({ data: null, error: { message: 'edge function error' } });
+
+    const result = await dispatchMobileCalendarChange({
+      client,
+      calendarId: validCalendarId,
+      changeType: 'delete',
+      shiftId: null,
+      timeoutMs: 50
+    });
+
+    expect(result).toMatchObject({
+      ok: false,
+      degraded: true,
+      reason: 'dispatch-error'
+    });
+  });
+
+  it('degrades when invoke returns a malformed response shape', async () => {
+    const client = {
+      functions: {
+        invoke: vi.fn(async () => 'not-an-object' as unknown)
+      }
+    };
+
+    const result = await dispatchMobileCalendarChange({
+      client,
+      calendarId: validCalendarId,
+      changeType: 'create',
+      shiftId: null,
+      timeoutMs: 50
+    });
+
+    expect(result).toMatchObject({
+      ok: false,
+      degraded: true,
+      reason: 'dispatch-malformed'
+    });
+  });
+
+  it('fails closed before any network call when calendarId is malformed', async () => {
+    const client = createFunctionsClient({ data: {}, error: null });
+
+    const result = await dispatchMobileCalendarChange({
+      client,
+      calendarId: 'not-a-uuid',
+      changeType: 'create',
+      shiftId: null,
+      timeoutMs: 50
+    });
+
+    expect(result).toMatchObject({ ok: false, degraded: true, reason: 'invalid-calendar-id' });
+    expect(client.functions.invoke).not.toHaveBeenCalled();
+  });
+
+  it('fails closed before any network call when shiftId is malformed', async () => {
+    const client = createFunctionsClient({ data: {}, error: null });
+
+    const result = await dispatchMobileCalendarChange({
+      client,
+      calendarId: validCalendarId,
+      changeType: 'edit',
+      shiftId: 'bad-shift-id',
+      timeoutMs: 50
+    });
+
+    expect(result).toMatchObject({ ok: false, degraded: true, reason: 'invalid-shift-id' });
+    expect(client.functions.invoke).not.toHaveBeenCalled();
+  });
+
+  it('accepts null shiftId for deletions and recurring creates without dispatching a shift id', async () => {
+    const client = createFunctionsClient({ data: {}, error: null });
+
+    const result = await dispatchMobileCalendarChange({
+      client,
+      calendarId: validCalendarId,
+      changeType: 'delete',
+      shiftId: null,
+      timeoutMs: 50
+    });
+
+    expect(result).toEqual({ ok: true, calendarId: validCalendarId, changeType: 'delete' });
+    expect(client.functions.invoke).toHaveBeenCalledWith(
+      'notify-calendar-change',
+      expect.objectContaining({
+        body: expect.objectContaining({ shiftId: null })
+      })
+    );
+  });
+});
