@@ -62,12 +62,16 @@ export type MobilePushNotificationsAdapter = {
 
 const DEFAULT_TIMEOUT_MS = 8_000;
 
+type PushNotificationsE2EHarness = {
+  pushNotificationsPlugin?: MobilePushNotificationsPlugin;
+};
+
 export function createMobilePushNotificationsAdapter(options: {
   plugin?: MobilePushNotificationsPlugin;
   timeoutMs?: number;
   platform?: () => string;
 } = {}): MobilePushNotificationsAdapter {
-  const plugin = options.plugin ?? (PushNotifications as MobilePushNotificationsPlugin);
+  const plugin = options.plugin ?? readE2EPushNotificationsPlugin() ?? (PushNotifications as MobilePushNotificationsPlugin);
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const platform = options.platform ?? (() => Capacitor.getPlatform());
 
@@ -198,6 +202,15 @@ export function createMobilePushNotificationsAdapter(options: {
 
 export function getMobilePushNotificationsAdapter() {
   return createMobilePushNotificationsAdapter();
+}
+
+function readE2EPushNotificationsPlugin(): MobilePushNotificationsPlugin | null {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  const harness = (window as Window & { __calunoE2ENotifications?: PushNotificationsE2EHarness }).__calunoE2ENotifications;
+  return harness?.pushNotificationsPlugin ?? null;
 }
 
 async function readPushPermission(
@@ -372,11 +385,12 @@ function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
-function withTimeout<T>(promise: Promise<T>, timeoutMs: number, detail: string): Promise<T> {
+function withTimeout<T>(promise: PromiseLike<T>, timeoutMs: number, detail: string): Promise<T> {
   let timer: ReturnType<typeof setTimeout> | undefined;
+  const settled = Promise.resolve(promise);
 
   return Promise.race([
-    promise.finally(() => {
+    settled.finally(() => {
       if (timer) {
         clearTimeout(timer);
       }

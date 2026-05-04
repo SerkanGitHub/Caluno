@@ -1,4 +1,5 @@
-import { r as readMobileCachedAppShellSnapshot, h as hasSyncedCalendarContinuity } from "./mobile-session.js";
+import { r as readMobileCachedAppShellSnapshot } from "./mobile-session.js";
+import { h as hasSyncedCalendarContinuity } from "./repository.js";
 import "@supabase/ssr";
 function primaryCalendarLandingHref(appShell) {
   return appShell.primaryCalendar ? `/calendars/${appShell.primaryCalendar.id}` : null;

@@ -221,7 +221,7 @@ Turn the notification runtime into the actual phone-first control surface the us
   - Files: `apps/mobile/src/lib/components/notifications/CalendarNotificationToggle.svelte`, `apps/mobile/src/lib/notifications/router.ts`, `apps/mobile/src/routes/groups/+page.svelte`, `apps/mobile/src/routes/calendars/[calendarId]/+page.svelte`, `apps/mobile/src/routes/+layout.ts`, `apps/mobile/tests/mobile-notification-router.unit.test.ts`
   - Verify: pnpm --dir apps/mobile exec vitest run tests/mobile-notification-contract.unit.test.ts tests/mobile-notification-runtime.unit.test.ts tests/mobile-notification-router.unit.test.ts && pnpm --dir apps/mobile check
 
-- [ ] **T04: Wire shared-change dispatch and prove notification state end to end** `est:2h`
+- [x] **T04: Wire shared-change dispatch and prove notification state end to end** `est:2h`
   ---
 estimated_steps: 20
 estimated_files: 7

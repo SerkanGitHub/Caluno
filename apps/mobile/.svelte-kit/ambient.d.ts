@@ -38,6 +38,7 @@
  * The above values will be the same _even if_ different values for `ENVIRONMENT` or `PUBLIC_BASE_URL` are set at runtime, as they are statically replaced in your code with their build time values.
  */
 declare module '$env/static/private' {
+	export const MANPATH: string;
 	export const TERM_PROGRAM: string;
 	export const NODE: string;
 	export const INIT_CWD: string;
@@ -46,12 +47,14 @@ declare module '$env/static/private' {
 	export const GSD_UOK_AUDIT_UNIFIED: string;
 	export const HOMEBREW_REPOSITORY: string;
 	export const TMPDIR: string;
+	export const LIBRARY_PATH: string;
 	export const VSCODE_PYTHON_AUTOACTIVATE_GUARD: string;
 	export const TERM_PROGRAM_VERSION: string;
 	export const npm_config_npm_globalconfig: string;
 	export const NODE_OPTIONS: string;
 	export const ZDOTDIR: string;
 	export const MallocNanoZone: string;
+	export const SDKROOT: string;
 	export const VIPSHOME: string;
 	export const npm_config_registry: string;
 	export const GSD_PKG_ROOT: string;
@@ -61,6 +64,7 @@ declare module '$env/static/private' {
 	export const npm_config_globalconfig: string;
 	export const PNPM_SCRIPT_SRC_DIR: string;
 	export const SSH_AUTH_SOCK: string;
+	export const CPATH: string;
 	export const VSCODE_PROFILE_INITIALIZED: string;
 	export const __CF_USER_TEXT_ENCODING: string;
 	export const npm_config_dir: string;
@@ -198,6 +202,7 @@ declare module '$env/static/public' {
  */
 declare module '$env/dynamic/private' {
 	export const env: {
+		MANPATH: string;
 		TERM_PROGRAM: string;
 		NODE: string;
 		INIT_CWD: string;
@@ -206,12 +211,14 @@ declare module '$env/dynamic/private' {
 		GSD_UOK_AUDIT_UNIFIED: string;
 		HOMEBREW_REPOSITORY: string;
 		TMPDIR: string;
+		LIBRARY_PATH: string;
 		VSCODE_PYTHON_AUTOACTIVATE_GUARD: string;
 		TERM_PROGRAM_VERSION: string;
 		npm_config_npm_globalconfig: string;
 		NODE_OPTIONS: string;
 		ZDOTDIR: string;
 		MallocNanoZone: string;
+		SDKROOT: string;
 		VIPSHOME: string;
 		npm_config_registry: string;
 		GSD_PKG_ROOT: string;
@@ -221,6 +228,7 @@ declare module '$env/dynamic/private' {
 		npm_config_globalconfig: string;
 		PNPM_SCRIPT_SRC_DIR: string;
 		SSH_AUTH_SOCK: string;
+		CPATH: string;
 		VSCODE_PROFILE_INITIALIZED: string;
 		__CF_USER_TEXT_ENCODING: string;
 		npm_config_dir: string;

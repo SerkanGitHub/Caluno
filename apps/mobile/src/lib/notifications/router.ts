@@ -180,11 +180,12 @@ function buildNotificationRouteDiagnostics(diagnostics: NotificationRouteDiagnos
   return diagnostics;
 }
 
-function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
+function withTimeout<T>(promise: PromiseLike<T>, timeoutMs: number): Promise<T> {
   let timer: ReturnType<typeof setTimeout> | undefined;
+  const settled = Promise.resolve(promise);
 
   return Promise.race([
-    promise.finally(() => {
+    settled.finally(() => {
       if (timer) {
         clearTimeout(timer);
       }

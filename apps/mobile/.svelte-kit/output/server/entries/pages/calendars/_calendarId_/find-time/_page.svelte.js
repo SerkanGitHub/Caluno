@@ -1,10 +1,11 @@
 import { h as head, d as derived, e as escape_html, a as attr, c as ensure_array_like, b as attr_class } from "../../../../../chunks/root.js";
 import { p as page } from "../../../../../chunks/index2.js";
-import { d as describeDeniedCalendarReason, o as onDestroy } from "../../../../../chunks/app-shell.js";
+import { o as onDestroy } from "../../../../../chunks/index-server.js";
 import { M as MobileShell } from "../../../../../chunks/MobileShell.js";
 import "@capacitor/network";
 import { p as primaryCalendarLandingHref } from "../../../../../chunks/load-app-shell.js";
 import "@supabase/ssr";
+import { d as describeDeniedCalendarReason } from "../../../../../chunks/app-shell.js";
 const CREATE_PREFILL_FLAG = "1";
 const CREATE_PREFILL_SOURCE = "find-time";
 function buildCreatePrefillHref(params) {

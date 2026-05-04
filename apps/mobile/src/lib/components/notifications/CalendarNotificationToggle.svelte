@@ -67,13 +67,12 @@
       : 'This calendar will stay quiet until you enable both reminder and shared-change delivery.';
   });
 
-  function handleChange(event: Event) {
-    if (!onToggle) {
+  function handleToggle() {
+    if (!onToggle || presentation.readOnly) {
       return;
     }
 
-    const nextValue = (event.currentTarget as HTMLInputElement).checked;
-    void onToggle(nextValue);
+    void onToggle(!presentation.desiredEnabled);
   }
 </script>
 
@@ -98,21 +97,24 @@
       <p>{statusCopy}</p>
     </div>
 
-    <label class={`switch ${presentation.readOnly ? 'is-readonly' : ''}`} for={toggleId}>
-      <input
+    <div class={`switch ${presentation.readOnly ? 'is-readonly' : ''}`}>
+      <button
         id={toggleId}
         data-testid="calendar-notification-switch"
-        type="checkbox"
+        type="button"
         role="switch"
-        checked={presentation.desiredEnabled}
+        aria-checked={presentation.desiredEnabled}
+        aria-label={`Toggle calm notifications for ${calendarName}`}
+        class="switch-button"
         disabled={presentation.readOnly || !onToggle}
-        onchange={handleChange}
-      />
-      <span class="switch-track" aria-hidden="true">
-        <span class="switch-thumb"></span>
-      </span>
+        onclick={handleToggle}
+      >
+        <span class="switch-track" aria-hidden="true">
+          <span class="switch-thumb"></span>
+        </span>
+      </button>
       <span class="switch-label">{presentation.desiredEnabled ? 'On' : 'Off'}</span>
-    </label>
+    </div>
   </div>
 
   <div class="state-grid">
@@ -222,12 +224,13 @@
     min-width: 5.5rem;
   }
 
-  .switch input {
-    position: absolute;
-    inline-size: 1px;
-    block-size: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
+  .switch-button {
+    appearance: none;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
   }
 
   .switch-track {
@@ -238,6 +241,7 @@
     background: rgba(122, 112, 100, 0.2);
     border: 1px solid rgba(34, 31, 27, 0.08);
     transition: background 160ms ease;
+    display: inline-block;
   }
 
   .switch-thumb {
@@ -250,12 +254,21 @@
     transition: transform 160ms ease;
   }
 
-  .switch input:checked + .switch-track {
+  .switch-button[aria-checked='true'] .switch-track {
     background: linear-gradient(135deg, #114e55, #2a8279);
   }
 
-  .switch input:checked + .switch-track .switch-thumb {
+  .switch-button[aria-checked='true'] .switch-thumb {
     transform: translateX(1.45rem);
+  }
+
+  .switch-button:focus-visible .switch-track {
+    outline: 2px solid rgba(17, 78, 85, 0.4);
+    outline-offset: 3px;
+  }
+
+  .switch-button:disabled {
+    cursor: not-allowed;
   }
 
   .switch-label {
@@ -264,7 +277,8 @@
     color: var(--caluno-ink-strong);
   }
 
-  .is-readonly {
+  .is-readonly,
+  .is-readonly .switch-button {
     opacity: 0.72;
   }
 

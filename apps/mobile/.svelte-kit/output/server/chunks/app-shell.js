@@ -1,8 +1,3 @@
-import { s as ssr_context } from "./root.js";
-function onDestroy(fn) {
-  /** @type {SSRContext} */
-  ssr_context.r.on_destroy(fn);
-}
 function describeDeniedCalendarReason(reason) {
   switch (reason) {
     case "calendar-id-invalid":
@@ -32,6 +27,5 @@ function describeDeniedCalendarReason(reason) {
   }
 }
 export {
-  describeDeniedCalendarReason as d,
-  onDestroy as o
+  describeDeniedCalendarReason as d
 };

@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-05-04T11:22:49Z | Files: 500 | Described: 0/500
-<!-- gsd:codebase-meta {"generatedAt":"2026-05-04T11:22:49Z","fingerprint":"f6cc6e303f28f7af67a5c2092368a7df976a41bf","fileCount":500,"truncated":true} -->
+Generated: 2026-05-04T11:33:55Z | Files: 500 | Described: 0/500
+<!-- gsd:codebase-meta {"generatedAt":"2026-05-04T11:33:55Z","fingerprint":"0b6dcd03a0a8da672f0eca74f2e491fc315d54b9","fileCount":500,"truncated":true} -->
 Note: Truncated to first 500 files. Run with higher --max-files to include all.
 
 ### (root)/
@@ -248,6 +248,9 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte`
 - `apps/mobile/src/lib/components/calendar/SyncStatusStrip.svelte`
 
+### apps/mobile/src/lib/components/notifications/
+- `apps/mobile/src/lib/components/notifications/CalendarNotificationToggle.svelte`
+
 ### apps/mobile/src/lib/continuity/
 - `apps/mobile/src/lib/continuity/mobile-app-shell-cache.ts`
 
@@ -258,7 +261,9 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 ### apps/mobile/src/lib/notifications/
 - `apps/mobile/src/lib/notifications/device-installation.ts`
 - `apps/mobile/src/lib/notifications/local-notifications.ts`
+- `apps/mobile/src/lib/notifications/presentation.ts`
 - `apps/mobile/src/lib/notifications/push-notifications.ts`
+- `apps/mobile/src/lib/notifications/router.ts`
 - `apps/mobile/src/lib/notifications/runtime.ts`
 - `apps/mobile/src/lib/notifications/scheduler.ts`
 - `apps/mobile/src/lib/notifications/state.ts`
@@ -311,6 +316,7 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/mobile/tests/mobile-create-prefill.unit.test.ts`
 - `apps/mobile/tests/mobile-find-time.unit.test.ts`
 - `apps/mobile/tests/mobile-notification-contract.unit.test.ts`
+- `apps/mobile/tests/mobile-notification-router.unit.test.ts`
 - `apps/mobile/tests/mobile-notification-runtime.unit.test.ts`
 - `apps/mobile/tests/mobile-sync-runtime.unit.test.ts`
 - `apps/mobile/tests/shell-scope.unit.test.ts`
@@ -785,11 +791,7 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 ### supabase/
 - `supabase/.gitignore`
 - `supabase/config.toml`
-- `supabase/seed.sql`
 
 ### supabase/migrations/
 - `supabase/migrations/20260414_000001_auth_groups_access.sql`
 - `supabase/migrations/20260415_000002_schedule_shifts.sql`
-- `supabase/migrations/20260416_000001_schedule_realtime.sql`
-- `supabase/migrations/20260418_000001_find_time_member_availability.sql`
-- `supabase/migrations/20260422_000001_device_notifications.sql`

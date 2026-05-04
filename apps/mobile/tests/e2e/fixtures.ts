@@ -135,6 +135,20 @@ export const test = base.extend({
     await page.addInitScript(() => {
       const clearedMarker = 'caluno-e2e-cleared=1';
       const connectivityCookieName = 'caluno-e2e-connectivity';
+      const reminderSource = 'caluno-shift-reminder';
+      const localListeners = new Map<string, Set<(payload: unknown) => void>>();
+      const pushListeners = new Map<string, Set<(payload: unknown) => void>>();
+      const pendingLocalNotifications = new Map<number, {
+        id: number;
+        extra: {
+          source: string;
+          calendarId: string;
+          shiftId: string;
+          targetPath: string | null;
+          triggerAt: string;
+        };
+        schedule?: { at?: string };
+      }>();
 
       if (!document.cookie.includes(clearedMarker)) {
         try {
@@ -155,6 +169,131 @@ export const test = base.extend({
 
       const connectivityMatch = document.cookie.match(/(?:^|;\s*)caluno-e2e-connectivity=(online|offline)\b/);
       let connected = connectivityMatch?.[1] !== 'offline';
+      let localPermission: 'prompt' | 'granted' | 'denied' = 'granted';
+      let pushPermission: 'prompt' | 'granted' | 'denied' = 'granted';
+      let pushRegistration: {
+        mode: 'success' | 'error';
+        token: string;
+        error: string;
+      } = {
+        mode: 'success',
+        token: 'playwright-push-token',
+        error: 'Simulated push registration failure.'
+      };
+
+      const addListener = (
+        registry: Map<string, Set<(payload: unknown) => void>>,
+        eventName: string,
+        listener: (payload: unknown) => void
+      ) => {
+        const listeners = registry.get(eventName) ?? new Set<(payload: unknown) => void>();
+        listeners.add(listener);
+        registry.set(eventName, listeners);
+
+        return {
+          remove: async () => {
+            listeners.delete(listener);
+            if (listeners.size === 0) {
+              registry.delete(eventName);
+            }
+          }
+        };
+      };
+
+      const emit = (registry: Map<string, Set<(payload: unknown) => void>>, eventName: string, payload: unknown) => {
+        for (const listener of registry.get(eventName) ?? []) {
+          listener(payload);
+        }
+      };
+
+      const localNotificationsPlugin = {
+        async checkPermissions() {
+          return { display: localPermission };
+        },
+        async requestPermissions() {
+          return { display: localPermission };
+        },
+        async getPending() {
+          return {
+            notifications: Array.from(pendingLocalNotifications.values()).sort((left, right) => left.id - right.id)
+          };
+        },
+        async schedule(options: { notifications?: Array<{ id?: number; extra?: Record<string, unknown>; schedule?: { at?: Date | string } }> }) {
+          for (const notification of options?.notifications ?? []) {
+            if (typeof notification?.id !== 'number' || !notification.extra || typeof notification.extra !== 'object') {
+              continue;
+            }
+
+            const extra = notification.extra as {
+              source?: string;
+              calendarId?: string;
+              shiftId?: string;
+              targetPath?: string | null;
+              triggerAt?: string;
+            };
+
+            pendingLocalNotifications.set(notification.id, {
+              id: notification.id,
+              extra: {
+                source: typeof extra.source === 'string' ? extra.source : reminderSource,
+                calendarId: typeof extra.calendarId === 'string' ? extra.calendarId : 'unknown-calendar',
+                shiftId: typeof extra.shiftId === 'string' ? extra.shiftId : 'unknown-shift',
+                targetPath: typeof extra.targetPath === 'string' ? extra.targetPath : null,
+                triggerAt: typeof extra.triggerAt === 'string' ? extra.triggerAt : new Date().toISOString()
+              },
+              schedule: {
+                at:
+                  notification.schedule?.at instanceof Date
+                    ? notification.schedule.at.toISOString()
+                    : typeof notification.schedule?.at === 'string'
+                      ? notification.schedule.at
+                      : undefined
+              }
+            });
+          }
+
+          return {};
+        },
+        async cancel(options: { notifications?: Array<{ id?: number }> }) {
+          for (const notification of options?.notifications ?? []) {
+            if (typeof notification?.id === 'number') {
+              pendingLocalNotifications.delete(notification.id);
+            }
+          }
+        },
+        async addListener(eventName: 'localNotificationActionPerformed', listener: (event: unknown) => void) {
+          return addListener(localListeners, eventName, listener);
+        }
+      };
+
+      const pushNotificationsPlugin = {
+        async checkPermissions() {
+          return { receive: pushPermission };
+        },
+        async requestPermissions() {
+          return { receive: pushPermission };
+        },
+        async register() {
+          queueMicrotask(() => {
+            if (pushPermission !== 'granted') {
+              return;
+            }
+
+            if (pushRegistration.mode === 'success') {
+              emit(pushListeners, 'registration', { value: pushRegistration.token });
+              return;
+            }
+
+            emit(pushListeners, 'registrationError', { error: pushRegistration.error });
+          });
+        },
+        async addListener(
+          eventName: 'registration' | 'registrationError' | 'pushNotificationActionPerformed' | 'pushNotificationReceived',
+          listener: (event: unknown) => void
+        ) {
+          return addListener(pushListeners, eventName, listener);
+        }
+      };
 
       try {
         Object.defineProperty(window.navigator, 'onLine', {
@@ -167,6 +306,14 @@ export const test = base.extend({
         // ignore navigator override failures and rely on emitted events instead
       }
 
+      Object.defineProperty(window, '__calunoE2ENotifications', {
+        configurable: true,
+        value: {
+          localNotificationsPlugin,
+          pushNotificationsPlugin
+        }
+      });
+
       Object.defineProperty(window, '__calunoE2E', {
         configurable: true,
         value: {
@@ -177,6 +324,67 @@ export const test = base.extend({
             connected = next;
             document.cookie = `caluno-e2e-connectivity=${next ? 'online' : 'offline'}; path=/`;
             window.dispatchEvent(new Event(next ? 'online' : 'offline'));
+          },
+          notifications: {
+            setLocalPermission(next: 'prompt' | 'granted' | 'denied') {
+              localPermission = next;
+            },
+            setPushPermission(next: 'prompt' | 'granted' | 'denied') {
+              pushPermission = next;
+            },
+            setPushRegistration(next: Partial<typeof pushRegistration>) {
+              pushRegistration = {
+                ...pushRegistration,
+                ...next
+              };
+            },
+            triggerLocalAction(params: {
+              actionId?: string;
+              notificationId?: number;
+              targetPath?: string | null;
+              calendarId?: string;
+              shiftId?: string;
+            }) {
+              const notificationId = params.notificationId ?? 9001;
+              const payload = {
+                actionId: params.actionId ?? 'tap',
+                notification: {
+                  id: notificationId,
+                  extra: {
+                    source: reminderSource,
+                    calendarId: params.calendarId ?? 'aaaaaaaa-aaaa-1111-1111-111111111111',
+                    shiftId: params.shiftId ?? 'eeeeeeee-eeee-4444-8444-444444444444',
+                    targetPath: params.targetPath ?? null,
+                    triggerAt: new Date().toISOString()
+                  }
+                }
+              };
+
+              emit(localListeners, 'localNotificationActionPerformed', payload);
+            },
+            triggerPushAction(params: { actionId?: string; targetPath?: string | null }) {
+              emit(pushListeners, 'pushNotificationActionPerformed', {
+                actionId: params.actionId ?? 'tap',
+                notification: {
+                  data: {
+                    path: params.targetPath ?? null
+                  }
+                }
+              });
+            },
+            getPendingLocalNotificationCount() {
+              return pendingLocalNotifications.size;
+            },
+            reset() {
+              pendingLocalNotifications.clear();
+              localPermission = 'granted';
+              pushPermission = 'granted';
+              pushRegistration = {
+                mode: 'success',
+                token: 'playwright-push-token',
+                error: 'Simulated push registration failure.'
+              };
+            }
           }
         }
       });
@@ -282,6 +490,165 @@ export async function setSimulatedConnectivity(
   if (options.waitForCalendarUi ?? true) {
     await expect(page.getByTestId('calendar-sync-strip')).toHaveAttribute('data-network', connected ? 'online' : 'offline');
   }
+}
+
+export async function setSimulatedNotificationPermissions(
+  page: Page,
+  params: {
+    local?: 'prompt' | 'granted' | 'denied';
+    push?: 'prompt' | 'granted' | 'denied';
+  }
+) {
+  await page.evaluate((next) => {
+    if (next.local) {
+      window.__calunoE2E?.notifications?.setLocalPermission(next.local);
+    }
+
+    if (next.push) {
+      window.__calunoE2E?.notifications?.setPushPermission(next.push);
+    }
+  }, params);
+}
+
+export async function setSimulatedPushRegistration(
+  page: Page,
+  params: {
+    mode: 'success' | 'error';
+    token?: string;
+    error?: string;
+  }
+) {
+  await page.evaluate((next) => {
+    window.__calunoE2E?.notifications?.setPushRegistration(next);
+  }, params);
+}
+
+export async function triggerSimulatedLocalNotificationAction(
+  page: Page,
+  params: {
+    actionId?: string;
+    notificationId?: number;
+    targetPath?: string | null;
+    calendarId?: string;
+    shiftId?: string;
+  }
+) {
+  await page.evaluate((next) => {
+    window.__calunoE2E?.notifications?.triggerLocalAction(next);
+  }, params);
+}
+
+export async function triggerSimulatedPushNotificationAction(
+  page: Page,
+  params: {
+    actionId?: string;
+    targetPath?: string | null;
+  }
+) {
+  await page.evaluate((next) => {
+    window.__calunoE2E?.notifications?.triggerPushAction(next);
+  }, params);
+}
+
+export async function getSimulatedPendingNotificationCount(page: Page) {
+  return page.evaluate(() => window.__calunoE2E?.notifications?.getPendingLocalNotificationCount() ?? 0);
+}
+
+export async function stubSupabaseRpc(
+  page: Page,
+  rpcName: string,
+  handler: (body: unknown) => { data?: unknown; error?: { message: string; code?: string } | null; status?: number }
+) {
+  const pattern = `${supabaseApiOrigin}/rest/v1/rpc/${rpcName}`;
+  const routeHandler = async (route: Route) => {
+    const request = route.request();
+    const bodyText = request.postData() ?? '';
+    let parsedBody: unknown = null;
+
+    try {
+      parsedBody = bodyText ? JSON.parse(bodyText) : null;
+    } catch {
+      parsedBody = bodyText;
+    }
+
+    const result = handler(parsedBody);
+    if (result.error) {
+      await route.fulfill({
+        status: result.status ?? 400,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          message: result.error.message,
+          code: result.error.code ?? 'PGRST301'
+        })
+      });
+      return;
+    }
+
+    await route.fulfill({
+      status: result.status ?? 200,
+      contentType: 'application/json',
+      body: JSON.stringify(result.data ?? null)
+    });
+  };
+
+  await page.route(pattern, routeHandler);
+  return async () => {
+    await page.unroute(pattern, routeHandler);
+  };
+}
+
+export async function waitForNotificationToggleState(
+  page: Page,
+  calendarId: string,
+  expected: Partial<{
+    enabled: 'true' | 'false';
+    permission: string;
+    localReminders: string;
+    remoteSubscription: string;
+    phase: string;
+    reason: string;
+  }>
+) {
+  const toggle = page.locator(`[data-testid="calendar-notification-toggle"][data-calendar-id="${calendarId}"]`).first();
+  await expect(toggle).toBeVisible();
+
+  if (expected.enabled) {
+    await expect(toggle).toHaveAttribute('data-notification-enabled', expected.enabled);
+  }
+
+  if (expected.permission) {
+    await expect(toggle).toHaveAttribute('data-notification-permission', expected.permission);
+  }
+
+  if (expected.localReminders) {
+    await expect(toggle).toHaveAttribute('data-local-reminders', expected.localReminders);
+  }
+
+  if (expected.remoteSubscription) {
+    await expect(toggle).toHaveAttribute('data-remote-subscription', expected.remoteSubscription);
+  }
+
+  if (expected.phase) {
+    await expect(toggle).toHaveAttribute('data-notification-phase', expected.phase);
+  }
+
+  if (expected.reason) {
+    await expect(toggle).toHaveAttribute('data-notification-reason', expected.reason);
+  }
+}
+
+export async function setNotificationToggleValue(page: Page, calendarId: string, checked: boolean) {
+  const control = page
+    .locator(`[data-testid="calendar-notification-toggle"][data-calendar-id="${calendarId}"]`)
+    .getByTestId('calendar-notification-switch');
+  await expect(control).toBeVisible();
+
+  const current = await control.getAttribute('aria-checked');
+  if ((current === 'true') === checked) {
+    return;
+  }
+
+  await control.click();
 }
 
 export async function waitForPendingCount(page: Page, count: number) {
@@ -617,9 +984,50 @@ function escapeRegExp(value: string) {
 
 declare global {
   interface Window {
+    __calunoE2ENotifications?: {
+      localNotificationsPlugin?: {
+        checkPermissions: () => Promise<unknown>;
+        requestPermissions: () => Promise<unknown>;
+        getPending: () => Promise<unknown>;
+        schedule: (options: unknown) => Promise<unknown>;
+        cancel: (options: unknown) => Promise<void>;
+        addListener?: (
+          eventName: 'localNotificationActionPerformed',
+          listener: (event: unknown) => void
+        ) => Promise<{ remove: () => Promise<void> }> | { remove: () => Promise<void> };
+      };
+      pushNotificationsPlugin?: {
+        checkPermissions: () => Promise<unknown>;
+        requestPermissions: () => Promise<unknown>;
+        register: () => Promise<void>;
+        addListener: (
+          eventName:
+            | 'registration'
+            | 'registrationError'
+            | 'pushNotificationActionPerformed'
+            | 'pushNotificationReceived',
+          listener: (event: unknown) => void
+        ) => Promise<{ remove: () => Promise<void> }> | { remove: () => Promise<void> };
+      };
+    };
     __calunoE2E?: {
       getConnectivity: () => boolean;
       setConnectivity: (connected: boolean) => void;
+      notifications?: {
+        setLocalPermission: (permission: 'prompt' | 'granted' | 'denied') => void;
+        setPushPermission: (permission: 'prompt' | 'granted' | 'denied') => void;
+        setPushRegistration: (params: { mode?: 'success' | 'error'; token?: string; error?: string }) => void;
+        triggerLocalAction: (params: {
+          actionId?: string;
+          notificationId?: number;
+          targetPath?: string | null;
+          calendarId?: string;
+          shiftId?: string;
+        }) => void;
+        triggerPushAction: (params: { actionId?: string; targetPath?: string | null }) => void;
+        getPendingLocalNotificationCount: () => number;
+        reset: () => void;
+      };
     };
   }
 }

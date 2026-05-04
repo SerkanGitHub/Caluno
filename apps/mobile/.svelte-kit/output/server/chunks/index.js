@@ -52,12 +52,19 @@ function writable(value, start = noop) {
   }
   return { set, update, subscribe };
 }
+function readonly(store) {
+  return {
+    // @ts-expect-error TODO i suspect the bind is unnecessary
+    subscribe: store.subscribe.bind(store)
+  };
+}
 function get(store) {
   let value;
   subscribe_to_store(store, (_) => value = _)();
   return value;
 }
 export {
+  readonly as a,
   get as g,
   readable as r,
   writable as w

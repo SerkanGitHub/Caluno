@@ -95,11 +95,15 @@ export type MobileLocalNotificationsAdapter = {
 const DEFAULT_TIMEOUT_MS = 8_000;
 const REMINDER_SOURCE = 'caluno-shift-reminder';
 
+type LocalNotificationsE2EHarness = {
+  localNotificationsPlugin?: MobileLocalNotificationsPlugin;
+};
+
 export function createMobileLocalNotificationsAdapter(options: {
   plugin?: MobileLocalNotificationsPlugin;
   timeoutMs?: number;
 } = {}): MobileLocalNotificationsAdapter {
-  const plugin = options.plugin ?? (LocalNotifications as MobileLocalNotificationsPlugin);
+  const plugin = options.plugin ?? readE2ELocalNotificationsPlugin() ?? (LocalNotifications as MobileLocalNotificationsPlugin);
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
 
   return {
@@ -230,6 +234,15 @@ export function createMobileLocalNotificationsAdapter(options: {
 
 export function getMobileLocalNotificationsAdapter() {
   return createMobileLocalNotificationsAdapter();
+}
+
+function readE2ELocalNotificationsPlugin(): MobileLocalNotificationsPlugin | null {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  const harness = (window as Window & { __calunoE2ENotifications?: LocalNotificationsE2EHarness }).__calunoE2ENotifications;
+  return harness?.localNotificationsPlugin ?? null;
 }
 
 async function readPermissionState(
@@ -491,11 +504,12 @@ function isIsoTimestamp(value: unknown): value is string {
   return isNonEmptyString(value) && !Number.isNaN(Date.parse(value));
 }
 
-function withTimeout<T>(promise: Promise<T>, timeoutMs: number, detail: string): Promise<T> {
+function withTimeout<T>(promise: PromiseLike<T>, timeoutMs: number, detail: string): Promise<T> {
   let timer: ReturnType<typeof setTimeout> | undefined;
+  const settled = Promise.resolve(promise);
 
   return Promise.race([
-    promise.finally(() => {
+    settled.finally(() => {
       if (timer) {
         clearTimeout(timer);
       }

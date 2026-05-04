@@ -381,11 +381,12 @@ function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
-function withTimeout<T>(promise: Promise<T>, timeoutMs: number, detail: string): Promise<T> {
+function withTimeout<T>(promise: PromiseLike<T>, timeoutMs: number, detail: string): Promise<T> {
   let timer: ReturnType<typeof setTimeout> | undefined;
+  const settled = Promise.resolve(promise);
 
   return Promise.race([
-    promise.finally(() => {
+    settled.finally(() => {
       if (timer) {
         clearTimeout(timer);
       }

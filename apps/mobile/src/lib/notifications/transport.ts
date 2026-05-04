@@ -573,10 +573,7 @@ function isPreferenceRpcRow(value: unknown): value is PreferenceRpcRow {
 }
 
 function isUuidLike(value: unknown): value is string {
-  return (
-    typeof value === 'string' &&
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)
-  );
+  return typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
 }
 
 function isIsoTimestamp(value: unknown): value is string {
@@ -587,11 +584,12 @@ function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
-function withTimeout<T>(promise: Promise<T>, timeoutMs: number, detail: string): Promise<T> {
+function withTimeout<T>(promise: PromiseLike<T>, timeoutMs: number, detail: string): Promise<T> {
   let timer: ReturnType<typeof setTimeout> | undefined;
+  const settled = Promise.resolve(promise);
 
   return Promise.race([
-    promise.finally(() => {
+    settled.finally(() => {
       if (timer) {
         clearTimeout(timer);
       }
