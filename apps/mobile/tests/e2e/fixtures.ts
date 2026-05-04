@@ -17,7 +17,7 @@ const OFFLINE_QUEUE_PREFIX = 'caluno.mobile.mutation-queue.v1';
 const APP_SHELL_CACHE_STORAGE_KEY = 'caluno.offline.app-shell.v1';
 const CAPACITOR_PREFERENCES_GROUP = 'CapacitorStorage';
 const connectivityRouteHandlers = new WeakMap<Page, (route: Route) => Promise<void>>();
-const supabaseApiOrigin = readLocalSupabaseApiOrigin();
+export const supabaseApiOrigin = readLocalSupabaseApiOrigin();
 
 export const seededUsers = {
   alphaMember: {
@@ -530,6 +530,11 @@ export const test = base.extend({
             getPendingLocalNotificationCount() {
               return pendingLocalNotifications.size;
             },
+            getPendingRemindersForCalendar(calendarId: string) {
+              return Array.from(pendingLocalNotifications.values())
+                .filter((n) => n.extra.calendarId === calendarId)
+                .sort((a, b) => a.id - b.id);
+            },
             reset() {
               pendingLocalNotifications.clear();
               localPermission = 'granted';
@@ -561,6 +566,99 @@ export const test = base.extend({
 });
 
 export { expect };
+
+export type CapturedCalendarChangeDispatch = {
+  calendarId: string;
+  changeType: string;
+  shiftId: string | null;
+  occurredAt: string | null;
+  targetPath: string | null;
+  capturedAt: string;
+};
+
+/**
+ * Intercept `functions/v1/notify-calendar-change` requests, capture request
+ * bodies grouped by calendarId, and respond with an empty success so the
+ * runtime's best-effort dispatch completes without error.
+ *
+ * Returns a cleanup function that removes the route and exposes two helpers:
+ * - `getDelivered(calendarId)` — list of captured dispatch bodies for that calendar
+ * - `reset()` — clears the in-memory inbox (does NOT re-route)
+ */
+export async function interceptCalendarChangeDispatch(page: Page): Promise<{
+  getDelivered: (calendarId: string) => CapturedCalendarChangeDispatch[];
+  getAllDelivered: () => CapturedCalendarChangeDispatch[];
+  reset: () => void;
+  unroute: () => Promise<void>;
+}> {
+  const inbox: CapturedCalendarChangeDispatch[] = [];
+  const pattern = `${supabaseApiOrigin}/functions/v1/notify-calendar-change`;
+
+  const handler = async (route: Route) => {
+    const request = route.request();
+    const bodyText = request.postData() ?? '';
+    let parsed: Record<string, unknown> = {};
+
+    try {
+      parsed = bodyText ? (JSON.parse(bodyText) as Record<string, unknown>) : {};
+    } catch {
+      parsed = {};
+    }
+
+    const calendarId = typeof parsed.calendarId === 'string' ? parsed.calendarId : 'unknown';
+    const changeType = typeof parsed.changeType === 'string' ? parsed.changeType : 'unknown';
+    const shiftId = typeof parsed.shiftId === 'string' ? parsed.shiftId : null;
+    const occurredAt = typeof parsed.occurredAt === 'string' ? parsed.occurredAt : null;
+    const targetPath = typeof parsed.targetPath === 'string' ? parsed.targetPath : null;
+
+    inbox.push({
+      calendarId,
+      changeType,
+      shiftId,
+      occurredAt,
+      targetPath,
+      capturedAt: new Date().toISOString()
+    });
+
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ dispatched: true })
+    });
+  };
+
+  await page.route(pattern, handler);
+
+  return {
+    getDelivered(calendarId: string) {
+      return inbox.filter((entry) => entry.calendarId === calendarId);
+    },
+    getAllDelivered() {
+      return inbox.slice();
+    },
+    reset() {
+      inbox.length = 0;
+    },
+    async unroute() {
+      await page.unroute(pattern, handler);
+    }
+  };
+}
+
+/**
+ * Read the per-calendar pending reminder inventory from the in-browser harness.
+ * Returns the array of pending reminders for the given calendarId.
+ */
+export async function getPendingRemindersForCalendar(
+  page: Page,
+  calendarId: string
+): Promise<Array<{ id: number; extra: { calendarId: string; shiftId: string; targetPath: string | null; triggerAt: string } }>> {
+  return page.evaluate((cid) => {
+    const result = (window.__calunoE2E?.notifications as { getPendingRemindersForCalendar?: (id: string) => unknown[] } | undefined)
+      ?.getPendingRemindersForCalendar?.(cid);
+    return Array.isArray(result) ? result : [];
+  }, calendarId) as Promise<Array<{ id: number; extra: { calendarId: string; shiftId: string; targetPath: string | null; triggerAt: string } }>>;
+}
 
 export function buildCalendarPath(calendarId: string, weekStart?: string) {
   return weekStart ? `/calendars/${calendarId}?start=${weekStart}` : `/calendars/${calendarId}`;
@@ -1243,6 +1341,10 @@ declare global {
         }) => void;
         triggerPushAction: (params: { actionId?: string; targetPath?: string | null }) => void;
         getPendingLocalNotificationCount: () => number;
+        getPendingRemindersForCalendar: (calendarId: string) => Array<{
+          id: number;
+          extra: { calendarId: string; shiftId: string; targetPath: string | null; triggerAt: string };
+        }>;
         reset: () => void;
       };
     };
