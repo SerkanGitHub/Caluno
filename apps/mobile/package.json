@@ -21,8 +21,10 @@
   "dependencies": {
     "@capacitor/app": "^8.0.1",
     "@capacitor/core": "^8.0.1",
+    "@capacitor/local-notifications": "^8.0.2",
     "@capacitor/network": "^8.0.1",
     "@capacitor/preferences": "^8.0.1",
+    "@capacitor/push-notifications": "^8.0.3",
     "@repo/caluno-core": "workspace:*",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.58.0",

@@ -14,10 +14,18 @@ export type MobileAppLifecycleAdapter = {
   subscribe: (listener: MobileAppLifecycleListener) => Promise<() => Promise<void>>;
 };
 
+const noopPlugin: MobileAppPlugin = {
+  addListener: async () => ({
+    remove: async () => {
+      // No-op outside a native/browser app lifecycle host.
+    }
+  })
+};
+
 export function createMobileAppLifecycleAdapter(options: {
   plugin?: MobileAppPlugin;
 } = {}): MobileAppLifecycleAdapter {
-  const plugin = options.plugin ?? (App as MobileAppPlugin);
+  const plugin = options.plugin ?? (typeof document === 'undefined' ? noopPlugin : (App as MobileAppPlugin));
 
   return {
     async subscribe(listener) {

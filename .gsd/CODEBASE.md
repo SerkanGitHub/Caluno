@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-05-04T10:50:22Z | Files: 490 | Described: 0/490
-<!-- gsd:codebase-meta {"generatedAt":"2026-05-04T10:50:22Z","fingerprint":"929636ac2c33ed92fb68d2cd425b9c0f64854dc0","fileCount":490,"truncated":false} -->
+Generated: 2026-05-04T11:07:49Z | Files: 496 | Described: 0/496
+<!-- gsd:codebase-meta {"generatedAt":"2026-05-04T11:07:49Z","fingerprint":"ca8d84276385147484f363742d622f9568e64b3c","fileCount":496,"truncated":false} -->
 
 ### (root)/
 - `.dockerignore`
@@ -97,17 +97,17 @@ Generated: 2026-05-04T10:50:22Z | Files: 490 | Described: 0/490
 - *(21 files: 21 .js)*
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/entry/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.74gIFL4I.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.C6xJaI76.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.BShGhNaP.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.6zEaMZhc.js`
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.BKziIbAu.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.BmIrfWgg.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.D5WCwsY7.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.DSGVKUOK.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.CKLUfJgV.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.Bx3iLM7Z.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/6.Dv-F_Eah.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.hanVV1VC.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.CFOmHGFB.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.Dm3W94Tf.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.ClSQY54K.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.BmzJruxy.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.CyROzjfr.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/6.B2elEYUY.js`
 
 ### apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/
 - `apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/env.js`
@@ -255,6 +255,12 @@ Generated: 2026-05-04T10:50:22Z | Files: 490 | Described: 0/490
 - `apps/mobile/src/lib/find-time/transport.ts`
 - `apps/mobile/src/lib/find-time/view.ts`
 
+### apps/mobile/src/lib/notifications/
+- `apps/mobile/src/lib/notifications/device-installation.ts`
+- `apps/mobile/src/lib/notifications/state.ts`
+- `apps/mobile/src/lib/notifications/transport.ts`
+- `apps/mobile/src/lib/notifications/types.ts`
+
 ### apps/mobile/src/lib/offline/
 - `apps/mobile/src/lib/offline/app-lifecycle.ts`
 - `apps/mobile/src/lib/offline/controller.ts`
@@ -300,6 +306,7 @@ Generated: 2026-05-04T10:50:22Z | Files: 490 | Described: 0/490
 - `apps/mobile/tests/mobile-continuity.unit.test.ts`
 - `apps/mobile/tests/mobile-create-prefill.unit.test.ts`
 - `apps/mobile/tests/mobile-find-time.unit.test.ts`
+- `apps/mobile/tests/mobile-notification-contract.unit.test.ts`
 - `apps/mobile/tests/mobile-sync-runtime.unit.test.ts`
 - `apps/mobile/tests/shell-scope.unit.test.ts`
 - `apps/mobile/tests/trusted-core.unit.test.ts`
@@ -780,3 +787,4 @@ Generated: 2026-05-04T10:50:22Z | Files: 490 | Described: 0/490
 - `supabase/migrations/20260415_000002_schedule_shifts.sql`
 - `supabase/migrations/20260416_000001_schedule_realtime.sql`
 - `supabase/migrations/20260418_000001_find_time_member_availability.sql`
+- `supabase/migrations/20260422_000001_device_notifications.sql`

@@ -101,7 +101,7 @@ Build the durable substrate behind the single mobile notification toggle before 
   - Files: `supabase/migrations/20260422_000001_device_notifications.sql`, `apps/mobile/src/lib/notifications/types.ts`, `apps/mobile/src/lib/notifications/device-installation.ts`, `apps/mobile/src/lib/notifications/transport.ts`, `apps/mobile/src/lib/notifications/state.ts`, `apps/mobile/tests/mobile-notification-contract.unit.test.ts`
   - Verify: pnpm --dir apps/mobile exec vitest run tests/mobile-notification-contract.unit.test.ts && npx --yes supabase db reset --local --yes
 
-- [ ] **T02: Add native notification adapters and deterministic reminder resync runtime** `est:2h`
+- [x] **T02: Add native notification adapters and deterministic reminder resync runtime** `est:2h`
   ---
 estimated_steps: 22
 estimated_files: 8

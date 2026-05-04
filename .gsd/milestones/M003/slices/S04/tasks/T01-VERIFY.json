@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T01",
+  "unitId": "M003/S04/T01",
+  "timestamp": 1777892843129,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "pnpm --dir apps/mobile exec vitest run tests/mobile-notification-contract.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 1183,
+      "verdict": "pass"
+    },
+    {
+      "command": "npx --yes supabase db reset --local --yes",
+      "exitCode": 0,
+      "durationMs": 25098,
+      "verdict": "pass"
+    }
+  ]
+}

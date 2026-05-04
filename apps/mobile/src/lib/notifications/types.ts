@@ -25,7 +25,9 @@ export const NOTIFICATION_REASON_CODES = [
   'persistence-denied',
   'provider-unconfigured',
   'permission-denied',
-  'schedule-unavailable'
+  'registration-failed',
+  'schedule-unavailable',
+  'path-rejected'
 ] as const;
 
 export type NotificationReasonCode = (typeof NOTIFICATION_REASON_CODES)[number];

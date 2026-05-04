@@ -29,10 +29,14 @@ export type MobileNotificationTransport = {
 };
 
 export type NotificationPreferenceWriteResult =
-  | (NotificationTransportSnapshot & {
+  | ({
+      ok: true;
+    } & Omit<NotificationTransportSnapshot, 'ok'> & {
       preference: DeviceCalendarNotificationPreference;
     })
-  | (NotificationTransportSnapshot & {
+  | ({
+      ok: false;
+    } & Omit<NotificationTransportSnapshot, 'ok'> & {
       preference: null;
     });
 

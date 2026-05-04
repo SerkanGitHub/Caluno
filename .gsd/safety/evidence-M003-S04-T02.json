@@ -1,0 +1,266 @@
+[
+  {
+    "kind": "bash",
+    "toolCallId": "call_G2PiZ16W5nTrtAcvEoLDJ9lw|JzwGzgbtdl6dCltS9MPsXjYo5lSz2rzjdJvmRaEoQCm5ELa8Yw89mlrppz4B2XFF8T4wkWZR1fVCLMosREBlJ4xWnfPPJWgOx6dHfjEvWbIdKmddmhy91U3V0ww8KrxeJS1w/HJHCedr3lCR6WFwW5mDh18cbx4jX5Il0YdB0wXfo/pH0aYRzLUPDkBi5WmnI2yKl0Z/zYk4ita2AuAPPPVL7lzeRW82e3yiMKjmSym89gtSCDwu+JDiXC1Wwq1fS+osmPw/BDCjbgTA849BpVO93BcyJV+hZcE3JAU04ZRr3yFcIX6kMTUk7HU7xTiuzXETfdoyUXAsyuO5VIT9OsKirRDy4AIy7o1C4xRYC06n9f27z0qHtyTL2gGy8vAATMh+yOVrV9k4+860NFe/Jg==",
+    "command": "rg -n \"Notification|notification|offline\" apps/mobile/src/lib apps/mobile/tests -g '!**/node_modules/**'",
+    "exitCode": 0,
+    "outputSnippet": "apps/mobile/src/lib/offline/controller.ts:21:} from '@repo/caluno-core/offline/types';\napps/mobile/src/lib/offline/controller.ts:28:} from '@repo/caluno-core/offline/mutation-queue';\napps/mobile/src/lib/offline/controller.ts:39:} from '@repo/caluno-core/offline/sync-engine';\napps/mobile/src/lib/offline/controller.ts:41:export type MobileOfflineRouteMode = 'trusted-online' | 'cached-offline';\napps/mobile/src/lib/offline/controller.ts:46:  network: 'online' | 'offline';\napps/mobile/src/lib/offline",
+    "timestamp": 1777892894843
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_bJgqtOWNl6fGSQifJ6gQpzEO|LURBC1wEA/JdfBXJJ8YyrfB+N6BAalSXC8El1xXECv774RF+0qV9Fc8Ln3J0sMKUWskFbMDNmDWmBv+1cSbYjwaTZr69wO14s80DnC9DmgU7ZrNqVkDYjP//ur5cTT7dCCKeuN+yBXuQk3BPgUQRbWbs5XkejGbwIFvhLTTyDwFnWzcp3qTLxYT5mSZ22iBd3+tt/+nWeRLsX7MalvgXOwWOMzzNgOm60K/MxhYhkPSkvCZWmWLLwKWOAvTZ63mglDvK6pLn6qEzkFZGZLXOnFoW3ILaNvoxB5xB6SABdfFeUwFpwPkhjeEyNE+Jt5yxTs7e/ZA3lrDSIKLsDuxTZdu0VjU5FrMZ9tQNet0faEgGZCVMlRoN93GAusuazcQhCcT5PddOQpPUzhzTVqk8ew==",
+    "command": "rg -n \"reminder|notification|notify|local notification|push notification\" packages apps/mobile/src -g '!**/node_modules/**'",
+    "exitCode": 0,
+    "outputSnippet": "apps/mobile/src/lib/notifications/transport.ts:5:} from '$lib/notifications/device-installation';\napps/mobile/src/lib/notifications/transport.ts:14:} from '$lib/notifications/types';\napps/mobile/src/lib/notifications/transport.ts:148:    params.client.rpc('list_device_calendar_notification_preferences', {\napps/mobile/src/lib/notifications/transport.ts:153:    'The device notification preference load timed out before trusted per-calendar state could be returned.'\napps/mobile/src/lib/notifications",
+    "timestamp": 1777892902399
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_eg6j71n8XvvF54uv9Kzd8pwo|w6Cb0viXBVFSjEg7T3Or8VCiqyDQHPIEeLcdRDDBaDcU8HfFShOsr3BTeYWXoK30VEdlBlqyuQ8NwLy3OyrvMIRleMPdt+VPOl0PdIVQ2A8xJnXrfESV/75Q9j28gtkZKe7mtb1s6HYqAZ7kcqisN8GWsZZk9g94pR+QqhiYEAEifX4fQl7BtxnU13TGCjbvKy40pQu3POvo2R7QFCdMmY+/N2aD/cpBATCAiUjcGPjOCkucscVgAxTFDDI7z3GglCRN5S+qxBvN4kLzxWjmlj99k00zmuNA/MVNV3YSw2JltugFZwDH1sy4bqQjmdWeiIW85qbsNkPac7mIg6t6AdS6rmrASL9HD6+uaEGsjcdUgQM/mM6HRLmAPFpJTjhWwH/AFl9mWRx0laaEfQMtew==",
+    "command": "rg -n \"shift reminder|reminder|notification toggle|local reminders|remote subscription|data-notification\" . -g '!**/node_modules/**' -g '!**/.git/**'",
+    "exitCode": 0,
+    "outputSnippet": "./apps/mobile/src/lib/notifications/transport.ts:221:      'The requested remote subscription status was invalid, so the notification preference write was rejected.'\n./apps/mobile/tests/mobile-notification-contract.unit.test.ts:458:  it('shapes combined state without collapsing desired intent, permission, local reminders, and remote subscription', async () => {\n",
+    "timestamp": 1777892910244
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_vm22klLIUCRmsy6lint0sCUm|dg3HZa8VvSBTaV1xffRVXcGLzoh272f/iXRKNpZ8DN08GTMdZ2Yc/TVbctk+LGZ/+iDZj94lReEWg+bOhddjiKKUvtetoLB5wycQL/i3N9VnCpFl4siJJFYLHoLWPGy3CsyOF32bPNlCgh+DRYZqGrfpIckvg12KakB1GeR9qMRq148gp3/JdYIm/mTXo+feWvaTQ+XqKDE/IwWgT0wEptdlmBt6Y7SvuI7kdGvpM2dcI3Zs8mSMWEcVE0Z/L77xnI93fQtfKHpm3MSWAcWGcXFfy0ro+Ps1EZY+qiI9cvn8a+Ij3KxOsTJZqbjy/6vEDmJQs3kIoH8agP9wIdcnEgDfqdXN35eMtrnphepRISAnGW3cU7Rww1Sgyl9AsLxLbb7WhpctaFc8E7gk1VXlJQ==",
+    "command": "test -f pnpm-lock.yaml && echo yes || echo no",
+    "exitCode": 0,
+    "outputSnippet": "yes\n",
+    "timestamp": 1777892937180
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_7B807pROQwH5smhJa8TqzGER|iMXLPZ1L+X1HhOH9x9RWJB6+KBHW+hWZ7ISkuyJ6+8vjLQW/cFmMfSVlr2CkyJtdxk6pSxUT3Yl3mjUEDs/LnYKW2KSop7iOqnokZHLZP+pxRW8h5sKceq9JJJM+Owi55HDkngGEsnzyb/Om5CmmEi1xHHMP+CwQGiTFKQjvv0DXDrc4W+9upNya/tk+T2Mx2ZMWEYpirPjj0ojpAX2Xy0TTUE4ePDgaTFYANN7V7yhuXD4vJSd73+459WHvVFgU7+GDa7HkYMdIsjqTPR9p2HZGvkwgxaau2hg/hH8UnIFKTwzQm42sPnA35foCVmDPV+p4N+qiscEV1sFF5N2yPG7JRAY0ANt3NZqBVFKRfbc6GH3ifothnbXd6uoOU9PymgT4i1g/uhmspF91Fi4hiQ==",
+    "command": "ls apps/mobile/src/lib/notifications && ls apps/mobile/tests | sort",
+    "exitCode": 0,
+    "outputSnippet": "device-installation.ts\nstate.ts\ntransport.ts\ntypes.ts\nauth-bootstrap.unit.test.ts\ncontinuity-contract.unit.test.ts\ne2e\nfind-time-contract.unit.test.ts\nmobile-continuity.unit.test.ts\nmobile-create-prefill.unit.test.ts\nmobile-find-time.unit.test.ts\nmobile-notification-contract.unit.test.ts\nmobile-sync-runtime.unit.test.ts\nshell-scope.unit.test.ts\ntrusted-core.unit.test.ts\n",
+    "timestamp": 1777892937181
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_WobBWUcnAmtdmB21KCatyQpL|9TVXBAXnxUVnWCtJIe9Ew1/sxUrQnqHfzSQCHxM/Z16Cq8uW8LiprTJyGihIQheHDrhkxp4Bf9UhxPQYOAKkJ80SZTTzmjpAvdcjOUEXjSEpEWjzFejwF045++PBU+Zid20+K6k/koUFRqzPqT44/5qKPk2fEuvDQS5d4wSXieBQdq4UzsaEgggxleH+T9YmMVdTtvJc8ji32aBWwOFb8gpbX0vjrnNe/Vo0OQywiHlv9/OfCiqqxIWqZ8969ynnnZA3a6AcWYqFZyv1YFkbandHrooxi64kzh6+SnoFwbChvb1X4NblUv8YQmz9kGOkcsh96trZ6L7gQKqhUL1+WQhMTOAqUoGQRFndeuiF1NYmv8LLutvW7gQvBKICGClXoSpObVUgWwklyeCshpucPQ==",
+    "command": "find .gsd/milestones/M003/slices/S04/tasks -maxdepth 1 -type f | sort",
+    "exitCode": 0,
+    "outputSnippet": ".gsd/milestones/M003/slices/S04/tasks/T01-PLAN.md\n.gsd/milestones/M003/slices/S04/tasks/T01-SUMMARY.md\n.gsd/milestones/M003/slices/S04/tasks/T01-VERIFY.json\n.gsd/milestones/M003/slices/S04/tasks/T02-PLAN.md\n.gsd/milestones/M003/slices/S04/tasks/T03-PLAN.md\n.gsd/milestones/M003/slices/S04/tasks/T04-PLAN.md\n",
+    "timestamp": 1777892949987
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_Nh6VG7iPmCugW5Mw7oHGYZXq|sqEvjkZbC0bI9QvqK1o59PVcDaXRXEL8iNljiEyhDK+yABKBvr8jDdt26yYEzqRaanNCCyUKWd6XGYmwuYM7Xvl2nMV/713cltpxItFJAXN6+c+z2Aii37Nm7NZ/4iTYd1AItGKMb4UAJygMHnGj0i2FcZsCnDwFrzFGXnhnCVMLfYdIy2dloyTtXdu/SglVs6P+TBX/502OHNQ5rxcLRRmLzhTfk0W9FgI7qH9zIw1I7wQUfYfUyo3YJ71D8SEAc9N9oinPfzkIklzIjK/RrY1Ocwjs+hWirj0DrSrWVZIrKxkupOSf9cxJAt4HGZF1QCy/beS69pQg7lQ2E8tGCLfHN5Opj6u3wb18fI7XfdYZllVWetJu+02+oUtUmgrBgf0hKHXXdrQS+Kwj1YQBlA==",
+    "command": "for f in apps/mobile/src/lib/notifications/local-notifications.ts apps/mobile/src/lib/notifications/push-notifications.ts apps/mobile/src/lib/notifications/scheduler.ts apps/mobile/src/lib/notifications/runtime.ts apps/mobile/tests/mobile-notification-runtime.unit.test.ts; do if [ -f \"$f\" ]; then echo \"EXISTS $f\"; else echo \"MISSING $f\"; fi; done",
+    "exitCode": 0,
+    "outputSnippet": "MISSING apps/mobile/src/lib/notifications/local-notifications.ts\nMISSING apps/mobile/src/lib/notifications/push-notifications.ts\nMISSING apps/mobile/src/lib/notifications/scheduler.ts\nMISSING apps/mobile/src/lib/notifications/runtime.ts\nMISSING apps/mobile/tests/mobile-notification-runtime.unit.test.ts\n",
+    "timestamp": 1777892978154
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_jXngXi5KFzjQ6K020TpL9EUQ|IFZ66AbVYrRHSfkjHlRh3IckYyktiqZ+iaiJ5FeUAPVTB8mILJxf9XxtXEOkUc2/L+XiPAT5eKDwtYKU6YIuyMieoFCHJJLKj2w1BvV7ASiMXPVEfl5JwaUYgggBZh+VlW0u4Ayd30JhjP+GG6+PTnf/NAwEw8jikPHNdkrvxJo0VYdAapZ7781lLNbaeGknO6UPglohldKRorxSXmcz9y+foyDoQY/cWog4jexQZSUI80rFREbgPAL9BfdMF8qhji8rjpn0VJbQDeJU/k5RN2HgkszSlqewC26pJ70S8jDTlRnsbyvGia2m96Z46lMhjxU2RdYz4EXGyXltyLDhS8DUZUXkA06td9aljo7NdPGbyO+gNISujiO81LmOuNHlr7epSPB2FviWhvlXSewMkw==",
+    "path": "apps/mobile/src/lib/notifications/types.ts",
+    "timestamp": 1777893121770
+  },
+  {
+    "kind": "write",
+    "toolCallId": "call_UQAZ4TjyU7zWp31LpylgxQNp|2xJXn3QMHHQm5tCjBKscWqDxKeCNMMZ9GDLtJAm1RqdMT9lbesq6YtQdE/rCz/BSRM7YO54XdPM475iF/neUPnx4NLrgyuMTurvrz8NQbIYAVWCDGjQKzcfy6buN1UJpJFKuE9WvFCeTjIL9+xpfkds/X0M3wPQBFzEYWfx3GXjBoKnAj1cIv9B+1+vwS3XXzf6tnd2J0Wgsfmr8sNzwMIq+Z7gSQkF0KLyjiTXcLjR+UIi+0GFkioziPlCbu2D2OZwjl/mNiOprEXOaFZltUbN4HM3cCj81u3tbW1sKVomh1xoINWsK3CYQY4odAqfpgg2I0GN+Cd18s6yGeiLTEvwdRhqZfZ5tehFKdltWBlutiV9VjHzVKy2RzxXNoKivmZRCjLGYy4AyO6usRMzZ7Q==",
+    "path": "apps/mobile/src/lib/offline/repository.ts",
+    "timestamp": 1777893199743
+  },
+  {
+    "kind": "write",
+    "toolCallId": "call_LZXCsVjZsqIXwLLBhVicKSDC|4XNeT3+EpyCI0nBns8EbnRTTXOrBUc10CDpU6+WSyB33+eLdn6h/F2grhBoVSOXGrtSpFm93uu5LGYGdBAlmxszjWoKb2WVM6tLp/GBFLwzOZEtf9q/sAtt6gRXcETUXVhrXnxldPHjRB1Ka28pspz34Yld+WpPeCrS9js/4SRAfiYNKU5ZMugFsQHbhGczqedFX5OE85AokuG8lnmtsLkYk69O1db8Mmh0IYMPEsW0gGC9apVSb/6Sm9gN7BffO9yNwHEfBgKEaPwNHsmaItjhLwUjd4gec6kdDglmGnTGiwS9Wpf/zK9Ttpu9Z23alefer24SQhSe0NUK9l0C9BcpzcQXgraEGrv/1GetiyMc5STSSuTPNzahXH8+vjARNgQmdx9VnfuL2Cbf0VlWbRQ==",
+    "path": "apps/mobile/src/lib/notifications/local-notifications.ts",
+    "timestamp": 1777893243414
+  },
+  {
+    "kind": "write",
+    "toolCallId": "call_2trZmBnmD0n7DQqYwGPpYFoU|f/tbBnyyn8iM1aUZJiOSod6G3k7HaP0J8puYM8o3PhM0feumvnWpd14EZthfQ7OwylDK+cPMu686AFQ7A4qFKSeljb11hhJxcWnI9A6dd6v0pruq7dFGIcZc+4cHDHcWcbvBk/2qtlwSDzi/Ixp1zDYEGzL1dVuzoWwOnd5CRby5tQzXIE86fKWI4uNI1qKp4aoYZTggJYEm4kv66xtcKuEabf9rsGRvYKDhuQZIkwiLelrEPcLXYxQOOlawAodx9UlXjjc4TkxDauHPej9erzmrBEBWf83UGYnpqvGdIxoBaL5JkVA2YGEcWY+2Ttm9T9NNGzWW3S4TothWdL6huS/3to/upBInNwAC+YCr0AcvzqX1EMAOxKzwzpI+gO0e31Xe+z9fv8JubxCJ4XvLcg==",
+    "path": "apps/mobile/src/lib/notifications/push-notifications.ts",
+    "timestamp": 1777893279493
+  },
+  {
+    "kind": "write",
+    "toolCallId": "call_WyCHPy8VOKAqH9AVa31XA2jb|Ca/PeSB7nFD2Jl5i90/ZmShMjhNqMqCfawUtuX6cH1j7WFuY5Vp7gkHgNHx1btV0sQM0sFujxgCiFUczHfAyeYNuW4k7E9U9F+8gVHnK9uRhEvC2W3D6WeaXHX6ZKEat9a6Gfn377he/J38+SsbTQtDEjQIGk1V1vKk0Yk/n8Ia/i597yG6P1pJyXpCrfISrsXAwuqRMA7piS66wBadQXvMO9jNHw/Cs5W0LQPGcm/7050izQW+eH7XvGjDSPkUts6eF4oDrv0DBuLo/39GYdCUhFUo2bhaLkjEo9Jdxsbsm8IzS233PTa87dIz1ibgOaWVuDmDa9qWv988KDsmVcuPrUgZnaRGzeTOxikf7V5DMCDsuKtbt9lSJgDNDknvBZhqWr9zwmelaKUf2KXUqKQ==",
+    "path": "apps/mobile/src/lib/notifications/scheduler.ts",
+    "timestamp": 1777893295077
+  },
+  {
+    "kind": "write",
+    "toolCallId": "call_DKSd6g4USS7nzz6oksN2UFJv|VABKkaWsvbMHgLKtrKqpmnFQQViRhvUpZAKfJ9aWe++I8ntepBzeWkYoyZDgozvNrgvAR4Peu1i7ny2TM76j1HLjFjIjwkjD6/OUSzW0J7veCH6OcMXxGRB0QDVJpK89M12vELiewodS5OYMlN97qFb2/b/XALuKXewvkXue2JZaArVPz8WUP4y0k2LNueXZG9rsH8mhdiWlufpPCvFALSBDnp5aDKuMaSYanmboPZxT836A3nyzQ/Avz9ELKoBHa0+f2Cq6a/vHzZ8Z5/fC/b2egoBL2VKneuPFq0BXdwssXim6idsS/AJLzWEJfwy/mheAmTxo81OI7x4kOFATtiiL/fI/WCQJ7+ecl1psvaMpv+nbvxpaWUVXhAhIHvjiHbzRCzAKSqCdkhUI+IwNyw==",
+    "path": "apps/mobile/src/lib/notifications/runtime.ts",
+    "timestamp": 1777893397277
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_ZuHtSf0YF528cN8zcz3EIy3t|jrNhi/mSFJt2rREpd5yslFs1z/RZcpVT4XoJjgtX3fDqfKky2x1ee1S6U0/xL+UJoZN+O6RZd8imtNDh5rcLROObCuqO6wOgWxNAovE4Dgd6rJgPdaSeukHkizmTh8/bbaec9ePoyjRGqaCnNNkIXq2r+uobdWBHyKwMt/hYLJxXRbTlFEDVmtUa3VXoVMDQN6hhKEMpMHeFCruAIWrzzltz15zSa7B2YBqPkKhzo5e1z9TOa0fgflUkF8n6LKUUBMeAlh0YFrow1H6gKcbWulxQyBZZwhhMPz46On2kkzrlZ+cP3I0eRivissG+ntc8AlerCIO0S/MCQcVlIzBVPpvlKdTbXHfCjZBk1CGmz8EboKQwB0Aude38CZVtZC65i/rGeupP/RSV3OsctVFn5A==",
+    "path": "apps/mobile/src/lib/offline/repository.ts",
+    "timestamp": 1777893421154
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_l5o1HAvlwsEXdCvCoTgRL2VY|zA1/s0GNe/ZTO9EiJ9eXhwb9Mt8O+Og04VcgsX/vjfTd09tURuVQg42ZuyrYHy5u4TuG7vjVuDl81s+cmmvufAI5fs5HwdO9UjFox5k2WnPRqOSJFICdhxQawVGbgtKQzfS5n07AmxNCoRNwrEht0kHSFY+7kZLylAO95ntuIlIYXyr9iS6RCjUF9JqjBQdi54PxMTFQj42liXGv8Bqbf7Ie2D9aAOvhD6UphK5OvGavIe9owpzI7B8c+Hzhsp0eLjdefpg1b+XOjyM6fFFiy/P0cQwUewSn7sZqt6eJoO8B3cXRtMIeytDA6oE5bUfpNEcGS8oh18PvprFd7Ovrm2j0ChtP5Rl4JyOLFrR/4X3KT5pfZtDtgb7n6OqolSmKk3Jj9Jn6v0vo/9gC5XNGoQ==",
+    "path": "apps/mobile/src/lib/offline/repository.ts",
+    "timestamp": 1777893425594
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_PhNrFlFg6QAYRRg9YftOeF5n|vn/EOUKnJSwhsvKSBnDY44IqDlYGFvJWfiT2uL6j5Nd1uphzPDvChMBzICFt5xk2KDMjr7Rsp46Dv2HslZd5oPF9oWqFK5U5+J2XPWM8IsE4dlkcyrTIiB7sKWwW155okMdBgcK8wbYnLthAQ9S1k+ACDdCSNEGGgmS+cxeM4RO5XxEk5xwbSQaYJ9XTm36cvTnk2uou7P6QA704oGzYc8RNUlzT6RAaEIWl2ZJNQd7WMXNlv/DGAeKB4MfTN0+7RtA9oDcnWlInICK3B7oOvgSetwn+PP47JkpkC2ui0m1HrP7PRusoxIpuupt/8uqgjRRQEr2lkVmHrht/P99E+kxHbuVZKNdYSeLS2hm6dalOWSuiz4f6tWu8kZLDqHOaQkUO6zOmqHwWm0c1Sw5B6Q==",
+    "path": "apps/mobile/src/lib/offline/repository.ts",
+    "timestamp": 1777893429724
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_58p828YfwXgQGyM9HKTTJvue|QULAeBcWjqfxoSSvNnSv9GgP5HfunZAOIu+QSajYkyy0ygVEkQiSSqG/GbOd54XVU7A8f8hUmpFwpXDnNkRhbWaYxyNAfA2s9/k1E7w6MtI6kmyLg1iaD6RbyrzYlVzim2e9XfRv00w2MnxuIxQAI6o+kLd4cflOXqlpYp9Yew+IzOPhiMpptVaWXPmavbuAfmtlcY/HSa/ry2Ck3p/qPJxUKYo11ZV2n/8UpEuSrmLbZZbwJDIPEPpWdz4R6m0X6pqU6z+BFA8tYCqzbwKM+qzdJ51YntjREjc399GbwZho2rEQODHLPn2MbH6RYjHMlJ4UUdeWGXG4mXWIHpU4JcgI47fs8r9XaELggqx0kzMiKdO7cJgUNzkEEcKUddoUhR/3Wnv5EldX5gK3Xp63Ug==",
+    "path": "apps/mobile/src/lib/offline/repository.ts",
+    "timestamp": 1777893437202
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_7KX7dNNsZEV8BmbmpBfA0zpl|2jVIIJP/0SMK7i47UaFcK3nKAVAcoi+r+xEwsQHNjrqhmRFOwAP/RrfodoQE1bMJRmFEyqzfJt0jmNlgARnTq5TFZDuWHtK1KthA8Br5KrXpo6nfuras4HesH1vK8EwU3RldY9vSVJUQUhh4MlsV9KA8z9k/ivB6i8Hw8ZRtBWBeeegDSdMRw6fhdQmYeuqYRua2mVNnOuVLY/D7A6aChiEaQKzJrDAXb7dg/A/PJgXLWwGxWYLqpFdjgtlt7T9rJvRs3PIL9Ghd3VfBz2XmqB/JTeUxYiR55oc16OkyhLcgJNlltNnmeC9cXjenbnybHMIX/XlziPIDpdLywwBacY65evCQFXa/5wt1gSsuVYWDPg4LsXumDgAfzsuct4CIupr8MQ0n3knZCKeS3AfdNQ==",
+    "path": "apps/mobile/src/lib/offline/repository.ts",
+    "timestamp": 1777893441406
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_Ulm2bHAPhlnzSB5j0pedh5Rp|sX1JNDYjGQBkWjsqPDTfXbc1Cn4+0AXpltXcZQoZRP3q5fE2OFnX9BPz7jfdmEMTSXyHxpVahCnWLjIHFOqG1aJNJq6cNfwOjL/PhyUxZLC6mDg0SYNv/fm59pv5Wdf0T/eETRaJWbgLJbWUcby4002Sy1GIGre+v6FXJj3q7x4ohnQOQ8D+6bkz6RfDmj2sLZLAHIOJF3KFn+qs28rI0ikyvi9nuUCbvxjaIYpu/6/AiiARaC3cOIKUFXzJmKRlb2VYD1dZsUqaF0xiCQ0N5EiTbnf4IauLTdj50nGerIgEbk2XWd8SNtPtrQL3jpA+qTrzYgeOfFH9esRf5dKwzks8jMFDXyJWppeRwtNf6PTsgbFXqDUdYQ894qyFoJ7J0Tale9QVpEy3uiFFMG95bA==",
+    "path": "apps/mobile/src/lib/offline/repository.ts",
+    "timestamp": 1777893446311
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_2Ibv6MzZeTRrGRsEHcDsrN1d|Vri55KQ2mmmKsObYVyUYKVt5c1XWhMswXkpTHMDA2/MZnQ8ULaN+4aHfIfVirpCgddA0Aq7tkoUvPlXA24bEz2xM3E6CzCFGHO8C1BZvLH/yPMwMRnZeNnBNOwmuyMapcwkGW6d7rdUcUyDgLAt4r9ZP0sZ5sfiS4fkI3wonY9LSggn0s75Xsyg2G8Fg3oxDs4P53+XNxQCUKO2B93exCIc24vshUYvZasCqODV0dzh+SfOduPgHkBkNIC8k3m2nxZ5hak4/7Pumd4OomhPBZ0+07gdGLtbf7SnFntxOWcWsoL2Ne9o3C7alh64AQEzbYEHLUukzq1vKTaMr1wqjt/TFpU1NgIICBoWEkrj0jUdvhRddwIWn1cb7sQZHMCam1R5YFoqwqlKzktIDAG5FmA==",
+    "path": "apps/mobile/src/lib/notifications/runtime.ts",
+    "timestamp": 1777893452058
+  },
+  {
+    "kind": "write",
+    "toolCallId": "call_nr3yAvX87Z2mWmIopaInKpQR|G9PeJVrkoi9f0VV6DlOisBtg6+JvyIBgiFEaXFvfWEEUV82cWI5PHzplFG2eBTnDyI6rTSTUg2JVnwELNkwV36GW7E1VfuqP4QE3gqP/ju1yvfbhYG2SryO0jkxA76zPTGG7HJ/oD0oKZrSyZOUBzspwzuUtChYcJiRi5evHqtufLXApgl9d3zPg1Zdd3hUEsFDOtgqvVFCoPvh+VNknp3dJszO1ALe/i5hoQcLYy1oPQmU0FTKh2j1wCz87512B2eWek7T10IfnO/QnFkmDr4jo2NksOTdoI+sf3y+tkVp1s4byXs7dYWUrPt0Bum3fF4MbBXW8xjvEyhgXafWrhqjBptC+iwyhw5ym4btxRozUB9Vp/NRyA8dqaAfKhgCc5Pzy7KSzzg+k8r7QDUVXmA==",
+    "path": "apps/mobile/tests/mobile-notification-runtime.unit.test.ts",
+    "timestamp": 1777893523905
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_k3haHjL94cePM9Fg5daH0Zar|CU9alP19jU7WW/5Nm+LJ15/pELA5bctuKs+1ufCqzybJ2bFAK8ZGi/4wW42DWhtorpH0jy6kHHxxK4NArb2A7/JdOTTxBb1BlxJlHhgJPAeUa0Z1LNHTzd4QIlhyLuayJ4KO7c4WFujpI/WJfJ4etpKgEPEEAiWG/zhqs8mt1QJtAM2MxfbaMv0WkkOwIBUXbx7yM6K8UuY7P312Gijfyu+x2G7QNTn2yUxjI6QlxGvJDaA2EhgINTnU2NHmUFg/bhaepppS3OrFKICqGVIbwQCJqgoaTzYykIbA7EvlHSU+RwAXHr2pa4oDJ5uA4eLftuJ4QkjQLyIBbS1360MuxoM1o6N0ukRoEiKn74Me0SJEdG7wSDgGoiUhc8iYyh1RWBvwSvruK8m1BHz6bqYb7g==",
+    "command": "pnpm add --filter mobile @capacitor/local-notifications@^8.0.1 @capacitor/push-notifications@^8.0.1",
+    "exitCode": 0,
+    "outputSnippet": "Progress: resolved 1, reused 0, downloaded 0, added 0\n\n   ╭──────────────────────────────────────────╮\n   │                                          │\n   │   Update available! 10.32.1 → 10.33.2.   │\n   │   Changelog: https://pnpm.io/v/10.33.2   │\n   │     To update, run: pnpm add -g pnpm     │\n   │                                          │\n   ╰──────────────────────────────────────────╯\n\nProgress: resolved 392, reused 0, downloaded 0, added 0, done\n.                                        |   +",
+    "timestamp": 1777893529620
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_5800sRkBBXhO6u4zMQ8EhhLB|FGA1f/TCABZ5W0USjiwWgIHzCm8pTu167M2EgA3lbqyALQnE7KnN/4eVqrrXVkyBKLYxbaRXFRCdQ5YyqNxcFfPYfBHHHA4+0J27TFX4K+cVm/oDjoe0igeOC87tI+K4+P+Z9fM7pwBk5T8sw0EznwLJH2Ey8eC1xvdE5UEsDL9uWaS2T2ln0WxwTtwOY+haYz7ia0f4DuPcvpNl/uQAy87iQS9Qc0MfM6Viyj+l8E9GorLSkUqMP3idshKA4hbeaRFq3guXO4PMNYQ2DfG7or/Z1wcsjIwwVy9Vn+BfWiVvWSNoB5QdhvD67B6/6QSznzDvz5loRbP3d+G8kLG3i26VXs7AyRvowc/z4s8CM7Bz4se9qxD1ekLEcPhRu8Ma7CltCJiS8Nzk9jk7UGDHnQ==",
+    "command": "pnpm --dir apps/mobile exec vitest run tests/mobile-notification-runtime.unit.test.ts",
+    "exitCode": 1,
+    "outputSnippet": "\n RUN  v3.2.4 /Users/serkanyeniay/dev/Caluno/apps/mobile\n\n ❯ tests/mobile-notification-runtime.unit.test.ts (5 tests | 4 failed) 24ms\n   ✓ mobile notification runtime > resyncs deterministic reminder ids on resume without duplicating scheduled notifications 16ms\n   × mobile notification runtime > keeps desired intent explicit when permission is denied 6ms\n     → document is not defined\n   × mobile notification runtime > preserves local reminder readiness when push registration fails 0ms\n     → d",
+    "timestamp": 1777893549616
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_ZTmKOHZIcRT2n2s3HmOU7vTb|9ViV8CyfpNxlYBQ+ntjzFzX1EF3sIkYqynxgsleMRR4Txnb9eWYF6SMpn9tvUKxm3qINsvu2YtmabEeGkxTKZq0AE28PKWk7y2ryR0mvxcNvl0DRMHrTQd/sJPuFvCdAPw1Fcf/wwI+1TLwYZp9yqYoKQGXaOpTXv5gbpYRmfmVXwGDO1BjlfKa3zL6li+wQmwGT+YOUOUVwJeEiwZWrWUxIOWffqzY22Ayf6S8ATTjtnJzXjJqVt7BfBEVHHxjN+qfOLfnFIT97GiVTlFCs84gtV7Nhjh59JQWT9DdzRtYVCxHNdJdwG32700CVIunM0F2r5EnYDYkaw2xpIcmeUCcH+/npQ/RueC5yv/L0F/MzkVlQfZp94N12I7fyZ3Z05RMp6Xu/k4Pd353ga08gzw==",
+    "path": "apps/mobile/src/lib/offline/app-lifecycle.ts",
+    "timestamp": 1777893562542
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_eLUYlXu4ogMTrMrOic8gYNM2|BCt3rJ3d0JNcpNKrk4BNsCBAx8MsXVDtr6V5VIkxNc6kqjGntq15O9FbbW32zJsG2NDz8e36TQZyywGIuNR54cycWn21wBOhq9Z6ueHr4igtHL6NYJWsxQFJtZ6HYl6pUZjaF83M6IVBs9Rud3OV3fC8zMGpXlTk0p5BVWgukCLOa4vIVqfP+s3am1z/cMe5XysylcsLAvEloplwIptmETNgpxrhow2TqZ01McrQplSdPmNZLbw4hrd2JzqhL1E+8JDyz9RnTb/kvO7OGRFbxS6ab5sx4Ppx2c5imecDRoom76jG4bJzmVgOkG0b/mYPsUTDJfbYEfk1ehKBr7TwgSt5Ix6HFO/UeP1zQk+UnxFOE6PQneu9SzDoqE2ZpWtclF/6dJy6xBVrL6HlMKjfkA==",
+    "command": "pnpm --dir apps/mobile exec vitest run tests/mobile-notification-runtime.unit.test.ts",
+    "exitCode": 1,
+    "outputSnippet": "\n RUN  v3.2.4 /Users/serkanyeniay/dev/Caluno/apps/mobile\n\n ❯ tests/mobile-notification-runtime.unit.test.ts (5 tests | 2 failed) 25ms\n   ✓ mobile notification runtime > resyncs deterministic reminder ids on resume without duplicating scheduled notifications 16ms\n   × mobile notification runtime > keeps desired intent explicit when permission is denied 6ms\n     → expected { …(15) } to match object { desiredEnabled: true, …(6) }\n(8 matching properties omitted from actual)\n   × mobile notification ",
+    "timestamp": 1777893572163
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_1KerPBKpZNcQlbh85HQTBPlm|dAstTvMTdMsJXCCtrmOG7tPJURgU+BFODV6MLLmKd84NIKzhu9l2wcIovWdyiBr4Pr9uBTjYPDKtOrqtPdFJyp5KKXXANT1nfVGHCQvU+UEtlhT83HJwqbPGWK6+TsTL2HwZGHpT1XLfNk5n2yottvH40ggY5+/HVjb3C247o5NYAL5audGPzXMt46VUOOshFjurax0Kv73Yfnd/WB20MqagzJ+gABJxTNkn8mTM8hqOs3YLMypK4iyVYnhFnlakRDNGBXXCQTfnSrTnkUsyBSDw2sB8atEqkyrOIYHyg4O7uUhZzyojqts7fN6Iqt/NCstalQ9376Hfbkdxxb7wbp02pNNxtG5PxY7seGPuQEbdPUGM8QN6b8VLmTSBV59wC5ieWDShfj+j267XKD7e7A==",
+    "path": "apps/mobile/tests/mobile-notification-runtime.unit.test.ts",
+    "timestamp": 1777893612211
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_2FQQz8KqlbBUsrGIVuRCiZGF|tHAu3h+PLCql7PBgNFvo0PeQy1naQj4jyNiBUdBexAe4fJwIkGgs9cC2cA92/sYBuUglewq/ZQHZIuFq0ZNshd50MWac7l9r6Yd26MpUTEHXC2SQUfK7FugkcXbQzwOL/qUVUzL7wJ5D8Cybhyz3GIaC1B/pkzfv4tE5N8l6kRx09RmapR02jrS6FOavybrGYlDkjo5GSiSS7YepWTqGNJkXWqhco8o0EMLG0xPi+0MzNmLaf+Cu9ZWWF1Tulubf65E0G4xPgJyBZnEZugYxf7u9NZp82MSYcOSk4K4ebTS6yRsNhAh2AlkjZkrdAt1WcI+dv8A0ARvPf5zejJK2qh79sBpbiShUggBrW54KJSyHcekE4ukRRRa+zQZfSFK/KbNH7fXi0cARgmOdkt7UlQ==",
+    "command": "pnpm --dir apps/mobile exec vitest run tests/mobile-notification-runtime.unit.test.ts",
+    "exitCode": 0,
+    "outputSnippet": "\n RUN  v3.2.4 /Users/serkanyeniay/dev/Caluno/apps/mobile\n\n ✓ tests/mobile-notification-runtime.unit.test.ts (5 tests) 18ms\n\n Test Files  1 passed (1)\n      Tests  5 passed (5)\n   Start at  13:20:20\n   Duration  365ms (transform 63ms, setup 0ms, collect 81ms, tests 18ms, environment 0ms, prepare 43ms)\n\n",
+    "timestamp": 1777893619470
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_S1imNEALE1EYyWr1PDPbHXf0|jwWNoFu5qT1dcL1XXKUDD6EZXzctrjyXPoDnWlH3lHcwMdcgpZ0WwnURYbWfzWkeZIzySKUMTrWkalMRHTXEv0OJbqR2Y5KSOmYYPnniLQdPgbsiP/99ELu7w51wMtj29Ww1d1bfi63iGlUl9Nh9N4/L0MTwt1MS2hztbl4GfniphzWTcppj9+2sebvRCxvj/sSVuDMhRG4SiwrWbvclzYU6YuRL+UeoNMAQicHQyEB33dfnchcIYsHOkQe+XnRkhJklzDhJzMoJ6/Po36JR1z8CC7sErvn5PbBtHOgLgiZw1kOXXcEb+1s8epxy4T0q4wxGsajJrCVvxw77DEpmRdkGbX3LIdZvMHQYDSngHEIE7nSq/BRPjoauLB0y96BkAbXbxwZe0aTFgZGPiJFCEg==",
+    "command": "pnpm --dir apps/mobile exec vitest run tests/mobile-continuity.unit.test.ts tests/mobile-notification-contract.unit.test.ts tests/mobile-notification-runtime.unit.test.ts",
+    "exitCode": 0,
+    "outputSnippet": "\n RUN  v3.2.4 /Users/serkanyeniay/dev/Caluno/apps/mobile\n\n ✓ tests/mobile-notification-contract.unit.test.ts (7 tests) 14ms\n ✓ tests/mobile-notification-runtime.unit.test.ts (5 tests) 20ms\n ✓ tests/mobile-continuity.unit.test.ts (3 tests) 6ms\n\n Test Files  3 passed (3)\n      Tests  15 passed (15)\n   Start at  13:20:27\n   Duration  422ms (transform 188ms, setup 0ms, collect 328ms, tests 40ms, environment 0ms, prepare 153ms)\n\n",
+    "timestamp": 1777893627151
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_muvvBuY7vMKVMPyp9lMB4pEt|ATZDqAwhM4gS3bcfD+Bn6jHZn8h+2CebsFrjiSWYCvoEpnY+hSGMemBLeCn7gYVNUL5oIg9sOs0XbvVdpL8xfWD2OZ5EaRg+wlOS5ZsSvTYtF0ylPHKf0a4+LHIAsh91gAEJvzyFqDykv3R0G8KQ27RQK9dLBMwP4Xm+uDz9fdCEg/IeElj2chnq4BqjmkXaLRC/yw2HN96vssxGp67NfMh3pRY3BE64Z03Guf9Lawf9Er5IjQzLT8+AWMUbmFn67IdcGGlBbN0rM5wb6R/zRCguZh+0aSMKDLj7zrqoxU+6QTqiYye0/JdvWOUgq9RadiFaveAlxYdSY8LNM6RJuzlNFZTHmCegZPwjKCapnJb4GJjStCgdK28+lgBFc2bmJHFQTo18AQKfAsdq5F99vg==",
+    "command": "pnpm --dir apps/mobile check",
+    "exitCode": 1,
+    "outputSnippet": "\n> mobile@0.0.1 check /Users/serkanyeniay/dev/Caluno/apps/mobile\n> svelte-kit sync && svelte-check --tsconfig ./tsconfig.json\n\nLoading svelte-check in workspace: /Users/serkanyeniay/dev/Caluno/apps/mobile\nGetting Svelte diagnostics...\n\n/Users/serkanyeniay/dev/Caluno/apps/mobile/src/lib/notifications/runtime.ts:290:71\nError: Argument of type 'NotificationPreferenceWriteResult' is not assignable to parameter of type 'never'.\n  Type 'NotificationTransportSnapshot & { preference: DeviceCalendarNotif",
+    "timestamp": 1777893632731
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_u8tXaPSLg0r8Te5eXP6ebC59|MVEB2IKs9ZzNXFPOwkxT0YLfDg5qXuI8Ej04uY2HpOL9c46YXy1+Qpw8IZ41r6eclgmUeLZmMJqwZBrjMbdJNu2WyjLEMAhJGzSavWwnwcAA+qc2BfOH1V885QhbcRVzi5n5JUcqd/RecLSY544GuRrOyMuXW+r65EmhCSaoTVO8AgSAhTYw93DgifE+Kr6dkVC2aA8BmwlG5Ckh4v1C+LFajF2QRxILqdDE9ED9tSurFuYDWTPrA7vMnuj6moiUiuxpEWNN3VVzT+JOIl/wIOta24lqEi5BuO3pXizRsxMlKs+gu+fPCdmbBoHkxt9Z0LEIkMrd0hGrO5RzCijQDIn59OIix6SALSr1cBzNIYwZB+Zodoy3fUAhOL1vtpSxP5W+rDildnFkBtJHk74+pg==",
+    "path": "apps/mobile/src/lib/notifications/transport.ts",
+    "timestamp": 1777893645285
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_4mmgn292mwgyi1IWcZkmSjki|kYJG/dyxTu34vP5nSIReDdhfgntJJAXaf8QSxPaqA4SaSZZlrO92+gSxA7Mn6LrbMptuaGGcpPYlbb2yDUbxJ4Ifplnp2lnANCSvn3ImGwrUne4m9YkD9mkQ6JSnkp0mVjbh8t7Vruzaoj1H1b6WzgJ2kVJ31+qY/LM5FpRFqrkII+gPWbGCPosALs0kM7Rqhsz8YxdW8T5XHUwt6+jEEcVXmyM4CxBgvx3qOmZMpe19MmtQPWjEq7iuY58U6qIfPJpK6IO3l+E1zJ1o5TMPaCqwb2xhqhGvO/36onW9uo2uk4/EGGeL3hRjxGBLjvCQcSWbnBLTWUA/3AaiDo/jyLA0XY7Iw+uS/ERCuD/Ss7FfSVsh5ePnFLUpwXaVKQ4rV5uXLqoxV5w2Y7yBfnOSSA==",
+    "command": "pnpm --dir apps/mobile check",
+    "exitCode": 1,
+    "outputSnippet": "\n> mobile@0.0.1 check /Users/serkanyeniay/dev/Caluno/apps/mobile\n> svelte-kit sync && svelte-check --tsconfig ./tsconfig.json\n\nLoading svelte-check in workspace: /Users/serkanyeniay/dev/Caluno/apps/mobile\nGetting Svelte diagnostics...\n\n/Users/serkanyeniay/dev/Caluno/apps/mobile/tests/mobile-notification-runtime.unit.test.ts:179:9\nError: Property 'updatePreference' in type 'FakeTransport' is not assignable to the same property in base type 'MobileNotificationTransport'.\n  Type '(params: { calenda",
+    "timestamp": 1777893652643
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_xGXLHI4RwzGWrOwN7dqM7pz1|47JgJrid1nM3lRnSP2P6/2FqUo9+oWNBbG79n3cco3cPmE8q/UkDsk2sll2d2I57d0cOPUdjEB1YMyuRlAMy03ox1eAgE997Jlv4B40nnUvH+EH1s0+P6QFZSV+lZzC84K3IfWzafqAYlJDyQ8lgZtnaDUyNYiTChjqidtoBMR5AGeUtCxN72rHxZW0GrmMN9VtTt5lZq5wFIkDiS1h/aKrmGwJmU5pBf1QxuY7D3pJdq8ZDzlu5a2oYitKaPLUm3EaJXse8TVRBiOQkhbsH+ktslSY4dcV3JJpNBB/CfH+665rxTFqzIb+mhvzTLfvGh23eYM8/1Kl4NM7R3+619ROF9uGTRwBKxAXIfnwe51BZEz5D4aWEk6vpNjEveeaD7JU5er4wkufHIeDz0nvTQQ==",
+    "path": "apps/mobile/tests/mobile-notification-runtime.unit.test.ts",
+    "timestamp": 1777893664230
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_ZEvvm2Uioe4ZJvwe5NYkVlCJ|Y9Z3P9iNLddM5SOviRoawLHAJUuLyjpxN7/gR1g+tFdaDZicA217jztBKPO8j775eCTc1yQv1i/6WLBPNQPg5OvtE+PP+CtAF+mMzohzCj8JRkVx2dC1yeofheEmbUzh5OoMrojGksgxRQ1QQX3rQB+4zxnNMfZtw8m+8cdNEH3qwqnrurNn+hKNn1nbH6KI1OFnXLqgaGAFnILbZgOhnb8vkIH52p6Vhx+XUQsdWqjxA4DpE622H7vAlIeaCjXgHZ/TkdCqRDXMuJv+zZoBbE5yAtFgUrf3LMU+MiwBLch0o5t/RWE9gamLo9dVPXYKyoTLFsCxf2S2Ax82yTLZvfmgOeqhtuEUKk50xKuQtQqdTs+Meh03YPd11bsl9KFF6McjcdyXSJOVIQzprjUWNg==",
+    "path": "apps/mobile/tests/mobile-notification-runtime.unit.test.ts",
+    "timestamp": 1777893670773
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_DbXXYeZaVxfAtHrDXxhh8RqW|P4e9488Te7sXOZMKFuuGvFYwsOYRqDmOxzMqXjPN+EOptY9LK6NQ2ZcyRl0OkXtCw0q2p3Kfsl6SWfnCtj+cBBgt2ZiTKodpGEbAP/afAyfQs4L/9msDnuQhS91TrkJviB632b90T7PPhgxqHldbEnJdFCmKZJv7t23EdvnflGTRN3fdo7y/YgdeIaiuGPBY+QhEopSH0ssK7+RA21q+THQCo3SYNV6qZTZbdfvSE9T4Kn8hZzae3hrHg7tVXUzM4d+KbpSlH/HD/pveqo9UjXt/UfIRmc8Pr9QWukMlMqV1jN3mOdaaMESXeEJjVjljqtGFRC8IDm/fn790tuGb1lkpo2YDw+YGA6w5TXUZZqvtjWMqIqv6nzEfgwu0+lCT4cmsYLSfNCKyEVDQukP98w==",
+    "command": "pnpm --dir apps/mobile check",
+    "exitCode": 1,
+    "outputSnippet": "\n> mobile@0.0.1 check /Users/serkanyeniay/dev/Caluno/apps/mobile\n> svelte-kit sync && svelte-check --tsconfig ./tsconfig.json\n\nLoading svelte-check in workspace: /Users/serkanyeniay/dev/Caluno/apps/mobile\nGetting Svelte diagnostics...\n\n/Users/serkanyeniay/dev/Caluno/apps/mobile/tests/mobile-notification-runtime.unit.test.ts:179:9\nError: Property 'updatePreference' in type 'FakeTransport' is not assignable to the same property in base type 'MobileNotificationTransport'.\n  Type '(params: { calenda",
+    "timestamp": 1777893675024
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_f0PqahDMcQcSy5ZEQOQvXGZG|ZqRMSP9hy6RhaMd3r+DuyZI31fbpVIrl9RXmWnI3PjURoTL89/s0dx8pmbAEJQzJ5hlKHLczYBnhU7oFiEeYgLeh+LqbEZAcCkWA+oUyAsOcoaSC73ihxNNQXqWrduom7h22r+n8mywIQP0S81+rIUtO7P88csqbKBbnMMRjqvZfaWSs7Gn2pgXt93XPhHtIGJ+Po7VT4+UtB6sIYS45VlwC7L4PbPx3/5sXudk3KNLNqBAWpxrJIM1NHM1hwl1ticzlxZeZgj5c45kaDhIIZEIRMhuZdFme+sLJAc1WItOTigJqYk7UVLXmDcs835uNP5B8cD+6fmGzRpr5EipdbPSw7pPmTh+TRPFosFFyPuQ5jZZoHMEvK7tTyEQjOHmsxSoNhlW4K4qPB0NnmBfCLw==",
+    "path": "apps/mobile/tests/mobile-notification-runtime.unit.test.ts",
+    "timestamp": 1777893682938
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_I5b11ghkekTYZ86z4SAvwtK1|rpwVZN6CkyOojGDXXlTUwCJH/6pI46LRVgv2gz11XuHSFIMfgPZJ7FU9Hi3FQ8r7xPTq4/TcElH5/L5xHcSascNflcxz3OgqMH1kA0pObEy1h+6Xoew23iUsACkfesjWRHvJUKQUbJgsCLiky7R7NGqd8Z5XLgq+V73j6k1ALC6+Bp2uIp+Y36P1M1CMbZfxBqqpdid5LfCQjB5DAoPIpLJyynu1s8mhP5ht2U+9GMq4SR2yZKsIOFQTNJASQlrT1nh7Z10raTWlvAluSsbe8IrerD9t656vwUdROWTPDMAMusf4DYb/lEpGCm2qjmkzdv9tlzZK7en2RrPLT0akQaXHkYFmU/vS5HCgaq08bCttf/obdB+2m3RUmooR8RIhDN66JhWYncpO/ul+I/b+qQ==",
+    "command": "pnpm --dir apps/mobile check",
+    "exitCode": 0,
+    "outputSnippet": "\n> mobile@0.0.1 check /Users/serkanyeniay/dev/Caluno/apps/mobile\n> svelte-kit sync && svelte-check --tsconfig ./tsconfig.json\n\nLoading svelte-check in workspace: /Users/serkanyeniay/dev/Caluno/apps/mobile\nGetting Svelte diagnostics...\n\nsvelte-check found 0 errors and 0 warnings\n",
+    "timestamp": 1777893688390
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_sd04ZgQFUXorfmSdlXuClAek|kBQpTA5K5XVGgT04eATgkvBNkKwM1IxdGuQUJrRLUrgmTpXPAwzAnXtw9x0AAn6t/4W5ryn/ipmx3J42d2WtN/5HS3l4ZkCyPWhCuvr+JtUovHe6cbaSaz/Wq1tuFO/gIBbrQYUHqPyndbjiJk8yJavKD4FdccTEn0dFiH1IXIF1E6WP77pSQDBGix8r7sLfNaylOjMPT0nLeLerLb7CuMiPmVo4cnwFsFDEgxjzLIR2XglU3BGmGrHoS7Jyqr+Wb7fsbvkOZftRPj+qF4pqS0s992RX3YfEGnvHU04R72p7v5YoQPp18+sTCs4Xwz+49lxLR0hGyzLILH7VJ4CFXUS0THqDdF2OZGsoP5KOz3MNVOQASc0c9zHaHkRewF1xqwZ3/8qDPcwsw3Ebmmetyg==",
+    "command": "start=$(python3 - <<'PY'\nimport time\nprint(int(time.time()*1000))\nPY\n)\npnpm --dir apps/mobile exec vitest run tests/mobile-continuity.unit.test.ts tests/mobile-notification-contract.unit.test.ts tests/mobile-notification-runtime.unit.test.ts\nstatus=$?\nend=$(python3 - <<'PY'\nimport time\nprint(int(time.time()*1000))\nPY\n)\necho \"__RESULT__ exit=$status duration_ms=$((end-start))\"\nexit $status",
+    "exitCode": 0,
+    "outputSnippet": "\n RUN  v3.2.4 /Users/serkanyeniay/dev/Caluno/apps/mobile\n\n ✓ tests/mobile-notification-contract.unit.test.ts (7 tests) 12ms\n ✓ tests/mobile-notification-runtime.unit.test.ts (5 tests) 21ms\n ✓ tests/mobile-continuity.unit.test.ts (3 tests) 6ms\n\n Test Files  3 passed (3)\n      Tests  15 passed (15)\n   Start at  13:21:41\n   Duration  428ms (transform 182ms, setup 0ms, collect 331ms, tests 39ms, environment 0ms, prepare 165ms)\n\n__RESULT__ exit=0 duration_ms=1365\n",
+    "timestamp": 1777893700776
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_7bKX6HAyZeaAyscx7QqxWGb8|LEsYaBrhdo/7axCfiQs1LzrFw9nOaTQRjKt1yk5fY2+J7n57arrag/f+M72A00cDJoUOcOR6QwxBOomgMoXHj3CaPejUvIfl1bQHBUG4yI9sbpM3kBPd2cNXVGXdmvQroc63FEYnyVObTYf3NDJ9kBINz7tD1pWFBPop75gWbI7rVRp0fcDCDHHbMRPKH8yNPzipdySQ9gw70B8u4dFjgmvukQSpM5TZ6FaXrIzkNyDRmJ6+rNixZwaA8Sv0qMYW6sF8ALa8+2TKnE74OY0Tyh6/tO/Lp3MFcJ20gSahiSSjUCSK7ihpFftIvzoLMJeLI//YQ/a1RSh5KkhgbXUCtKMmUxS/WeMwTXo+ARPQsZLyxaSz0OG0YYo+JW4apXwfSqwAeu68Zq+XJQ/51njYSA==",
+    "command": "start=$(python3 - <<'PY'\nimport time\nprint(int(time.time()*1000))\nPY\n)\npnpm --dir apps/mobile check\nstatus=$?\nend=$(python3 - <<'PY'\nimport time\nprint(int(time.time()*1000))\nPY\n)\necho \"__RESULT__ exit=$status duration_ms=$((end-start))\"\nexit $status",
+    "exitCode": 0,
+    "outputSnippet": "\n> mobile@0.0.1 check /Users/serkanyeniay/dev/Caluno/apps/mobile\n> svelte-kit sync && svelte-check --tsconfig ./tsconfig.json\n\nLoading svelte-check in workspace: /Users/serkanyeniay/dev/Caluno/apps/mobile\nGetting Svelte diagnostics...\n\nsvelte-check found 0 errors and 0 warnings\n__RESULT__ exit=0 duration_ms=2842\n",
+    "timestamp": 1777893708660
+  }
+]

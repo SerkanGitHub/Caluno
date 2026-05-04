@@ -18,11 +18,28 @@ export type MobileOfflineWeekMetadata = {
   source: 'trusted-online' | 'server-sync' | 'local-write';
 };
 
+export type MobileTrustedWeekSnapshotsResult =
+  | {
+      status: 'available';
+      metadata: MobileOfflineWeekMetadata[];
+      snapshots: OfflineScheduleWeekSnapshot[];
+      discardedWeekCount: number;
+    }
+  | {
+      status: 'unavailable';
+      reason: 'repository-unavailable';
+      detail: string;
+    };
+
 export type MobileOfflineStorage = {
   get: (key: string) => Promise<string | null>;
   set: (key: string, value: string) => Promise<void>;
   remove: (key: string) => Promise<void>;
   keys: () => Promise<string[]>;
+};
+
+export type MobileOfflineRepository = OfflineScheduleRepository & {
+  listTrustedWeekSnapshots: (params: { userId: string; calendarId: string }) => Promise<MobileTrustedWeekSnapshotsResult>;
 };
 
 const STORAGE_TIMEOUT_MS = 750;
@@ -50,7 +67,7 @@ const defaultStorage: MobileOfflineStorage = {
 export function createMobileOfflineRepository(options: {
   storage?: MobileOfflineStorage;
   timeoutMs?: number;
-} = {}): OfflineScheduleRepository {
+} = {}): MobileOfflineRepository {
   const storage = options.storage ?? defaultStorage;
   const timeoutMs = options.timeoutMs ?? STORAGE_TIMEOUT_MS;
 
@@ -81,7 +98,7 @@ export function createMobileOfflineRepository(options: {
     }
   }
 
-  return {
+  const repository: MobileOfflineRepository = {
     initialize,
     inspect() {
       return state;
@@ -257,10 +274,117 @@ export function createMobileOfflineRepository(options: {
         return unavailableWrite('repository-unavailable', error, 'Clearing the mobile offline mutation queue failed.');
       }
     },
+    async listTrustedWeekSnapshots(params) {
+      if (!isNonEmptyString(params.userId) || !isNonEmptyString(params.calendarId)) {
+        return {
+          status: 'unavailable',
+          reason: 'repository-unavailable',
+          detail: 'The requested trusted week enumeration scope was malformed, so reminder resync failed closed.'
+        } satisfies MobileTrustedWeekSnapshotsResult;
+      }
+
+      let keys: string[];
+      try {
+        keys = await withTimeout(storage.keys(), timeoutMs, 'Listing stored mobile week metadata timed out during reminder resync.');
+      } catch (error) {
+        return {
+          status: 'unavailable',
+          reason: 'repository-unavailable',
+          detail: error instanceof Error ? error.message : 'Listing stored mobile week metadata failed during reminder resync.'
+        } satisfies MobileTrustedWeekSnapshotsResult;
+      }
+
+      const metadataKeys = keys.filter((key) => key.startsWith(buildWeekMetadataPrefix(params.userId, params.calendarId)));
+      const metadataEntries: MobileOfflineWeekMetadata[] = [];
+      const snapshots: OfflineScheduleWeekSnapshot[] = [];
+      let discardedWeekCount = 0;
+
+      for (const key of metadataKeys.sort()) {
+        let raw: string | null;
+        try {
+          raw = await withTimeout(storage.get(key), timeoutMs, 'Reading stored mobile week metadata timed out during reminder resync.');
+        } catch (error) {
+          return {
+            status: 'unavailable',
+            reason: 'repository-unavailable',
+            detail: error instanceof Error ? error.message : 'Reading stored mobile week metadata failed during reminder resync.'
+          } satisfies MobileTrustedWeekSnapshotsResult;
+        }
+
+        if (!raw) {
+          discardedWeekCount += 1;
+          await safeRemove(storage, key, timeoutMs);
+          continue;
+        }
+
+        let parsed: MobileOfflineWeekMetadata | null = null;
+        try {
+          const candidate = JSON.parse(raw);
+          if (
+            isMobileOfflineWeekMetadata(candidate) &&
+            candidate.userId === params.userId &&
+            candidate.calendarId === params.calendarId
+          ) {
+            parsed = candidate;
+          }
+        } catch {
+          parsed = null;
+        }
+
+        if (!parsed) {
+          discardedWeekCount += 1;
+          await safeRemove(storage, key, timeoutMs);
+          continue;
+        }
+
+        metadataEntries.push(parsed);
+        const snapshotScope = {
+          userId: parsed.userId,
+          calendarId: parsed.calendarId,
+          weekStart: parsed.weekStart
+        } satisfies OfflineScheduleScope;
+        const snapshotResult = await repository.getWeekSnapshot(snapshotScope);
+
+        if (snapshotResult.status === 'available') {
+          snapshots.push(snapshotResult.snapshot);
+          continue;
+        }
+
+        if (snapshotResult.status === 'missing' || snapshotResult.status === 'malformed') {
+          discardedWeekCount += 1;
+          await safeRemove(storage, key, timeoutMs);
+          continue;
+        }
+
+        return {
+          status: 'unavailable',
+          reason: 'repository-unavailable',
+          detail: snapshotResult.detail
+        } satisfies MobileTrustedWeekSnapshotsResult;
+      }
+
+      metadataEntries.sort((left, right) => left.weekStart.localeCompare(right.weekStart) || left.syncedAt.localeCompare(right.syncedAt));
+      snapshots.sort((left, right) => {
+        return (
+          left.scope.weekStart.localeCompare(right.scope.weekStart) ||
+          left.cachedAt.localeCompare(right.cachedAt) ||
+          left.scope.calendarId.localeCompare(right.scope.calendarId)
+        );
+      });
+
+      return {
+        status: 'available',
+        metadata: metadataEntries,
+        snapshots,
+        discardedWeekCount
+      } satisfies MobileTrustedWeekSnapshotsResult;
+    },
     async close() {
       state = null;
     }
   };
+
+  return repository;
 }
 
 const mobileOfflineRepository = createMobileOfflineRepository();
