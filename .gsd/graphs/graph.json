@@ -472,6 +472,19 @@
       "confidence": "EXTRACTED"
     },
     {
+      "id": "slice:M004:S02",
+      "label": "S02: Rescope M004 to delivered work and defer R011",
+      "type": "slice",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M004/slices/S02/S02-PLAN.md"
+    },
+    {
+      "id": "task:M004:S02:T01",
+      "label": "T01: Update M004 roadmap vision and defer R011",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
       "id": "decision:M003:1",
       "label": "**@repo/caluno-core as the shared product-contract boundary.** Kept all shared rules — trust contracts, offline helpers, schedule logic, find-time matching/ranking, notification contracts — in a pure workspace package. App-local wrappers own only Svelte/runtime integration. Chose this over duplicating logic in each app or importing across app boundaries.",
       "type": "decision",
@@ -1390,6 +1403,18 @@
       "confidence": "EXTRACTED"
     },
     {
+      "from": "milestone:M004",
+      "to": "slice:M004:S02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M004:S02",
+      "to": "task:M004:S02:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
       "from": "milestone:M003",
       "to": "decision:M003:1",
       "type": "relates_to",
@@ -1762,5 +1787,5 @@
       "confidence": "EXTRACTED"
     }
   ],
-  "builtAt": "2026-05-05T19:03:39.712Z"
+  "builtAt": "2026-05-06T16:02:08.079Z"
 }
