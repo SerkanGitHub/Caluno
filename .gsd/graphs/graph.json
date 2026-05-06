@@ -1,10 +1,10 @@
 {
   "nodes": [
     {
-      "id": "milestone:M003",
-      "label": "M003: Cross-platform continuity and reminders",
+      "id": "milestone:M004",
+      "label": "M004: M004",
       "type": "milestone",
-      "description": "Active milestone: M003",
+      "description": "Active milestone: M004",
       "confidence": "EXTRACTED",
       "sourceFile": "STATE.md"
     },
@@ -285,6 +285,13 @@
       "confidence": "EXTRACTED"
     },
     {
+      "id": "milestone:M003",
+      "label": "M003: Cross-platform continuity and reminders",
+      "type": "milestone",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-ROADMAP.md"
+    },
+    {
       "id": "slice:M003:S01",
       "label": "S01: Mobile shell, auth, and trusted calendar scope",
       "type": "slice",
@@ -452,11 +459,513 @@
       "confidence": "EXTRACTED"
     },
     {
-      "id": "milestone:M004",
-      "label": "M004: M004",
-      "type": "milestone",
+      "id": "slice:M004:S01",
+      "label": "S01: S01",
+      "type": "slice",
       "confidence": "EXTRACTED",
-      "sourceFile": "milestones/M004/M004-ROADMAP.md"
+      "sourceFile": "milestones/M004/slices/S01/S01-PLAN.md"
+    },
+    {
+      "id": "task:M004:S01:T01",
+      "label": "T01: Fixed stale route-mode assertion in apps/mobile/tests/e2e/calendar-offline.spec.ts line 41: changed 'trusted-online' to 'trusted-offline' to match the production mode introduced in M003/S05.",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "decision:M003:1",
+      "label": "**@repo/caluno-core as the shared product-contract boundary.** Kept all shared rules — trust contracts, offline helpers, schedule logic, find-time matching/ranking, notification contracts — in a pure workspace package. App-local wrappers own only Svelte/runtime integration. Chose this over duplicating logic in each app or importing across app boundaries.",
+      "type": "decision",
+      "description": "Source: S01-SUMMARY.md/Key Decisions (D050, D055)",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:2",
+      "label": "**Singleton client-side mobile session store for auth bootstrap.** Used a single session store as the authority for one-time cached-session validation with explicit auth entry states (signed-out, invalid-session, config-error, loading) rather than ad hoc per-route probes. Prevents race conditions and supports test observability.",
+      "type": "decision",
+      "description": "Source: S01-SUMMARY.md/Key Decisions (D051)",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:3",
+      "label": "**Cache one app-shell snapshot per user; adjacent routes reuse it.** Rather than re-fetching permitted inventory on each route, one shaped trusted inventory snapshot is cached and shared across protected routes. Reduces backend load and prevents partial-inventory inconsistencies.",
+      "type": "decision",
+      "description": "Source: S01-SUMMARY.md/Key Decisions (D052)",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:4",
+      "label": "**Sign-out inside the protected shell; surface invalid-session via explicit sign-in metadata.** Sign-out is collocated with the protected shell rather than in a global header. Invalid-session flows through explicit sign-in metadata rather than a runtime exception, making failure observable via data-* attributes.",
+      "type": "decision",
+      "description": "Source: S01-SUMMARY.md/Key Decisions (D053)",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:5",
+      "label": "**Dual validation before mobile cached-offline reopen: shell snapshot + per-calendar synced-week metadata.** Accepting a cached shell snapshot alone is insufficient. Requiring both trusted-shell and per-calendar synced-week metadata before offline reopen prevents stale scope from leaking into the UI.",
+      "type": "decision",
+      "description": "Source: S02-SUMMARY.md/Key Decisions (D056)",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:6",
+      "label": "**Client-side mobile offline runtime + direct trusted Supabase transport for schedule mutations.** Used mobile-local controller/runtime/transport instead of server-form actions, enabling deterministic offline queue management and reconnect drain without a server round-trip for each mutation.",
+      "type": "decision",
+      "description": "Source: S02-SUMMARY.md/Key Decisions (D057)",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:7",
+      "label": "**Mobile Find time stays live-backed and fail-closed offline; never replays stale matching answers.** Cached-offline continuity must never surface guessed availability. Mobile Find time is intentionally transport-only — if trusted connectivity is absent, the route shows an explicit offline/denied state.",
+      "type": "decision",
+      "description": "Source: S03-SUMMARY.md/Key Decisions",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:8",
+      "label": "**Stable installation UUID as the durable mobile notification identity; persist desiredEnabled before permission reconciliation.** Treating the push token as the primary key creates fragility when tokens rotate. Using an app-generated UUID decouples preference persistence from ephemeral provider state. Persisting intent before native permission/registration ensures the toggle remains truthful under degraded conditions.",
+      "type": "decision",
+      "description": "Source: S04-SUMMARY.md/Key Decisions",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:9",
+      "label": "**void-dispatch pattern for shared-change dispatch at call sites.** Firing dispatch as a void call after the canonical write (not inside the mutation helper) keeps sync helpers synchronous and clean. Dispatch errors never affect write results, and no async coupling is introduced into schedule helpers.",
+      "type": "decision",
+      "description": "Source: S05-SUMMARY.md/Key Decisions",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:10",
+      "label": "**MobileSupabaseFunctionsSeam as a narrow interface for edge-function invocation.** Exported separately from the transport layer to enable isolated unit testing without importing a real SupabaseClient. Narrow interface pattern reduces coupling and keeps test setup lightweight.",
+      "type": "decision",
+      "description": "Source: S05-SUMMARY.md/Key Decisions",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:11",
+      "label": "**Mobile auth bootstrap needs fail-closed explicit states, not ad hoc probes.** Allowing components to probe auth or calendar scope ad hoc leads to partial-loaded states and hard-to-reproduce race conditions. Modeling the full state machine (signed-out, invalid-session, config-error, loading, ready) as explicit values eliminates this class of bug and makes test assertions deterministic.",
+      "type": "decision",
+      "description": "Source: S01-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:12",
+      "label": "**Capacitor Preferences payloads must be validated through the shared continuity contract.** Raw Capacitor Preferences reads return untyped JSON. Validating payloads through the shared continuity schema at read time prevents type drift between what was written and what the runtime assumes — a common source of silent offline reopening failures.",
+      "type": "decision",
+      "description": "Source: S02-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:13",
+      "label": "**Local Supabase storage health can generate transient 502s that invalidate test runs.** During S02 verification, a local Supabase storage health-check 502 required a stack restart before re-running the unchanged verification command. The final verification passed. Always restart the local stack before treating a storage-layer failure as a code bug.",
+      "type": "decision",
+      "description": "Source: S02-SUMMARY.md/Deviations",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:14",
+      "label": "**Brittle E2E inventory assertions break when earlier tests mutate seeded data.** Mobile Playwright specs that assert exact calendar/shift inventories fail non-deterministically when earlier specs create or modify the same seeded data. Prefer contract-focused assertions (metadata presence, fail-closed states, handoff behavior) and per-spec DB resets over exact count/id assertions.",
+      "type": "decision",
+      "description": "Source: S03-SUMMARY.md/Patterns Established, S05-SUMMARY.md/Known Limitations",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:15",
+      "label": "**The trusted-offline route mode must be distinct from cached-offline.** Connectivity loss within an already-trusted calendar session is semantically different from an initial cached-offline reopen. Conflating them produced a false-positive 'trusted-online' signal in E2E tests. Introducing trusted-offline as its own MobileOfflineRouteMode fixed the signal and enabled honest UI differentiation.",
+      "type": "decision",
+      "description": "Source: S05-SUMMARY.md/Deviations, S05-SUMMARY.md/Key Decisions",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:16",
+      "label": "**OS-level notification delivery cannot be polled in test environments.** Attempting to inspect device notification state in Playwright is not feasible. The reliable pattern is to intercept edge-function calls and capture per-calendar delivery inventory in a Playwright fixture, then assert on that captured state.",
+      "type": "decision",
+      "description": "Source: S04-SUMMARY.md/Patterns Established, S05-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:17",
+      "label": "**E2E test repro plans should include a per-spec DB reset for order-sensitive flows.** The mobile-assembly spec phase 3 top-pick assertion is sensitive to whether find-time-handoff.spec.ts runs first. Adding a beforeAll Supabase db reset in each spec that creates or modifies seeded shifts eliminates the cross-test pollution class.",
+      "type": "decision",
+      "description": "Source: S05-SUMMARY.md/Known Limitations, S05-SUMMARY.md/Follow-ups",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:18",
+      "label": "**Shared notification dispatch must surface missing provider configuration as an explicit degraded state.** Fabricating success when the notification provider is absent creates false observability. Surfacing 'provider-unconfigured' explicitly lets operators and tests distinguish healthy delivery from unset infrastructure.",
+      "type": "decision",
+      "description": "Source: S04-SUMMARY.md/Key Decisions",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:19",
+      "label": "**@repo/caluno-core as the single source of truth for shared product contracts.** Any rule that must behave identically on web and mobile belongs in a pure workspace package with zero Svelte/Capacitor imports. App-local wrappers import from core and add only runtime-specific glue. Avoids cross-app imports and keeps contracts testable with plain vitest.",
+      "type": "decision",
+      "description": "Source: S01-SUMMARY.md/Patterns Established, S02-SUMMARY.md/Patterns Established, S03-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:20",
+      "label": "**Mobile protected routes resolve access from one shaped trusted inventory snapshot.** Load the trusted inventory once at shell level; downstream routes consume it without re-querying. Denied states surface the reason, failure phase, and attempted id explicitly in the UI via data-* attributes.",
+      "type": "decision",
+      "description": "Source: S01-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:21",
+      "label": "**Shared offline/schedule contract in core; mobile/web adapters local.** The offline queue, mutation replay, continuity rules, and reconnect drain logic live in @repo/caluno-core. The mobile adapter wires Capacitor Preferences + the core contract; the web adapter wires browser localStorage + the same contract. No cross-app schema drift.",
+      "type": "decision",
+      "description": "Source: S02-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:22",
+      "label": "**One-shot arrival parsing + immediate query cleanup for URL-based mobile handoffs.** Read handoff query params exactly once on mount, apply them to the create sheet, then immediately replace the URL without them. Prevents duplicate application on re-render and keeps URL state clean for back navigation.",
+      "type": "decision",
+      "description": "Source: S03-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:23",
+      "label": "**Contract-focused E2E assertions over brittle inventories.** In mobile Playwright flows, assert metadata presence, fail-closed states, handoff shape, and UI behavior. Never assert exact item counts or ids that earlier specs may have changed. Use per-spec DB resets (beforeAll db reset) to eliminate cross-test state pollution.",
+      "type": "decision",
+      "description": "Source: S03-SUMMARY.md/Patterns Established, S05-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:24",
+      "label": "**Typed mobile notification adapters isolate Capacitor plugin parsing from UI/runtime code.** Parse all Capacitor notification plugin outputs in a dedicated adapter layer with explicit types. UI and runtime code never import Capacitor plugin objects directly — they consume typed domain values. Keeps UI code testable without Capacitor mock setup.",
+      "type": "decision",
+      "description": "Source: S04-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:25",
+      "label": "**Delivery-state harness pattern for notification E2E.** Stub edge functions in Playwright fixtures to capture per-calendar notification inventory. Assert on the captured delivery inventory (pending, delivered, suppressed) rather than polling OS APIs. Works reliably in CI without device provisioning.",
+      "type": "decision",
+      "description": "Source: S05-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:26",
+      "label": "**Best-effort dispatch via void-after-canonical-write.** Post-write side effects (shared-change notifications, telemetry) should be fired as void calls immediately after the canonical write succeeds — never awaited, never inside the mutation helper. Errors and timeouts in the side effect never affect the write result.",
+      "type": "decision",
+      "description": "Source: S05-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:27",
+      "label": "**S05 required a mid-slice replan.** The original 4-task S05 plan left 3 E2E tests failing after T04. A new task T05 was added targeting the specific trusted-offline route mode bug. The replan was clean and contained but the original plan did not anticipate that the trusted-online/trusted-offline distinction would require retrofitting existing E2E assertions in other specs.",
+      "type": "decision",
+      "description": "Source: S05-SUMMARY.md/Deviations",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:28",
+      "label": "**Two E2E test-code assertions remain stale at milestone close.** calendar-offline.spec.ts line 41 expects 'trusted-online' but production now correctly emits 'trusted-offline'. mobile-assembly.spec.ts phase 3 top-pick is execution-order sensitive when find-time-handoff.spec.ts runs first. Both are test-code issues only; production behavior is correct. These were known and accepted as follow-ups rather than blocking S05.",
+      "type": "decision",
+      "description": "Source: S05-SUMMARY.md/Known Limitations",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "decision:M003:29",
+      "label": "**The @repo/caluno-core extraction pattern paid off across all five slices.** Initially scoped to auth/scope contracts in S01, the pattern was applied in S02 (offline/schedule), S03 (find-time/ranking/prefill), and S04 (notification contracts) without friction. The pattern proved more broadly applicable than anticipated, removing the need for any cross-app imports across the entire milestone.",
+      "type": "decision",
+      "description": "Source: S01-SUMMARY.md through S04-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "lesson:M003:1",
+      "label": "**Mobile auth bootstrap needs fail-closed explicit states, not ad hoc probes.** Allowing components to probe auth or calendar scope ad hoc leads to partial-loaded states and hard-to-reproduce race conditions. Modeling the full state machine (signed-out, invalid-session, config-error, loading, ready) as explicit values eliminates this class of bug and makes test assertions deterministic.",
+      "type": "lesson",
+      "description": "Source: S01-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "lesson:M003:2",
+      "label": "**Capacitor Preferences payloads must be validated through the shared continuity contract.** Raw Capacitor Preferences reads return untyped JSON. Validating payloads through the shared continuity schema at read time prevents type drift between what was written and what the runtime assumes — a common source of silent offline reopening failures.",
+      "type": "lesson",
+      "description": "Source: S02-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "lesson:M003:3",
+      "label": "**Local Supabase storage health can generate transient 502s that invalidate test runs.** During S02 verification, a local Supabase storage health-check 502 required a stack restart before re-running the unchanged verification command. The final verification passed. Always restart the local stack before treating a storage-layer failure as a code bug.",
+      "type": "lesson",
+      "description": "Source: S02-SUMMARY.md/Deviations",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "lesson:M003:4",
+      "label": "**Brittle E2E inventory assertions break when earlier tests mutate seeded data.** Mobile Playwright specs that assert exact calendar/shift inventories fail non-deterministically when earlier specs create or modify the same seeded data. Prefer contract-focused assertions (metadata presence, fail-closed states, handoff behavior) and per-spec DB resets over exact count/id assertions.",
+      "type": "lesson",
+      "description": "Source: S03-SUMMARY.md/Patterns Established, S05-SUMMARY.md/Known Limitations",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "lesson:M003:5",
+      "label": "**The trusted-offline route mode must be distinct from cached-offline.** Connectivity loss within an already-trusted calendar session is semantically different from an initial cached-offline reopen. Conflating them produced a false-positive 'trusted-online' signal in E2E tests. Introducing trusted-offline as its own MobileOfflineRouteMode fixed the signal and enabled honest UI differentiation.",
+      "type": "lesson",
+      "description": "Source: S05-SUMMARY.md/Deviations, S05-SUMMARY.md/Key Decisions",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "lesson:M003:6",
+      "label": "**OS-level notification delivery cannot be polled in test environments.** Attempting to inspect device notification state in Playwright is not feasible. The reliable pattern is to intercept edge-function calls and capture per-calendar delivery inventory in a Playwright fixture, then assert on that captured state.",
+      "type": "lesson",
+      "description": "Source: S04-SUMMARY.md/Patterns Established, S05-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "lesson:M003:7",
+      "label": "**E2E test repro plans should include a per-spec DB reset for order-sensitive flows.** The mobile-assembly spec phase 3 top-pick assertion is sensitive to whether find-time-handoff.spec.ts runs first. Adding a beforeAll Supabase db reset in each spec that creates or modifies seeded shifts eliminates the cross-test pollution class.",
+      "type": "lesson",
+      "description": "Source: S05-SUMMARY.md/Known Limitations, S05-SUMMARY.md/Follow-ups",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "lesson:M003:8",
+      "label": "**Shared notification dispatch must surface missing provider configuration as an explicit degraded state.** Fabricating success when the notification provider is absent creates false observability. Surfacing 'provider-unconfigured' explicitly lets operators and tests distinguish healthy delivery from unset infrastructure.",
+      "type": "lesson",
+      "description": "Source: S04-SUMMARY.md/Key Decisions",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "lesson:M003:9",
+      "label": "**@repo/caluno-core as the single source of truth for shared product contracts.** Any rule that must behave identically on web and mobile belongs in a pure workspace package with zero Svelte/Capacitor imports. App-local wrappers import from core and add only runtime-specific glue. Avoids cross-app imports and keeps contracts testable with plain vitest.",
+      "type": "lesson",
+      "description": "Source: S01-SUMMARY.md/Patterns Established, S02-SUMMARY.md/Patterns Established, S03-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "lesson:M003:10",
+      "label": "**Mobile protected routes resolve access from one shaped trusted inventory snapshot.** Load the trusted inventory once at shell level; downstream routes consume it without re-querying. Denied states surface the reason, failure phase, and attempted id explicitly in the UI via data-* attributes.",
+      "type": "lesson",
+      "description": "Source: S01-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "lesson:M003:11",
+      "label": "**Shared offline/schedule contract in core; mobile/web adapters local.** The offline queue, mutation replay, continuity rules, and reconnect drain logic live in @repo/caluno-core. The mobile adapter wires Capacitor Preferences + the core contract; the web adapter wires browser localStorage + the same contract. No cross-app schema drift.",
+      "type": "lesson",
+      "description": "Source: S02-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "lesson:M003:12",
+      "label": "**One-shot arrival parsing + immediate query cleanup for URL-based mobile handoffs.** Read handoff query params exactly once on mount, apply them to the create sheet, then immediately replace the URL without them. Prevents duplicate application on re-render and keeps URL state clean for back navigation.",
+      "type": "lesson",
+      "description": "Source: S03-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "lesson:M003:13",
+      "label": "**Contract-focused E2E assertions over brittle inventories.** In mobile Playwright flows, assert metadata presence, fail-closed states, handoff shape, and UI behavior. Never assert exact item counts or ids that earlier specs may have changed. Use per-spec DB resets (beforeAll db reset) to eliminate cross-test state pollution.",
+      "type": "lesson",
+      "description": "Source: S03-SUMMARY.md/Patterns Established, S05-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "lesson:M003:14",
+      "label": "**Typed mobile notification adapters isolate Capacitor plugin parsing from UI/runtime code.** Parse all Capacitor notification plugin outputs in a dedicated adapter layer with explicit types. UI and runtime code never import Capacitor plugin objects directly — they consume typed domain values. Keeps UI code testable without Capacitor mock setup.",
+      "type": "lesson",
+      "description": "Source: S04-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "lesson:M003:15",
+      "label": "**Delivery-state harness pattern for notification E2E.** Stub edge functions in Playwright fixtures to capture per-calendar notification inventory. Assert on the captured delivery inventory (pending, delivered, suppressed) rather than polling OS APIs. Works reliably in CI without device provisioning.",
+      "type": "lesson",
+      "description": "Source: S05-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "lesson:M003:16",
+      "label": "**Best-effort dispatch via void-after-canonical-write.** Post-write side effects (shared-change notifications, telemetry) should be fired as void calls immediately after the canonical write succeeds — never awaited, never inside the mutation helper. Errors and timeouts in the side effect never affect the write result.",
+      "type": "lesson",
+      "description": "Source: S05-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "lesson:M003:17",
+      "label": "**S05 required a mid-slice replan.** The original 4-task S05 plan left 3 E2E tests failing after T04. A new task T05 was added targeting the specific trusted-offline route mode bug. The replan was clean and contained but the original plan did not anticipate that the trusted-online/trusted-offline distinction would require retrofitting existing E2E assertions in other specs.",
+      "type": "lesson",
+      "description": "Source: S05-SUMMARY.md/Deviations",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "lesson:M003:18",
+      "label": "**Two E2E test-code assertions remain stale at milestone close.** calendar-offline.spec.ts line 41 expects 'trusted-online' but production now correctly emits 'trusted-offline'. mobile-assembly.spec.ts phase 3 top-pick is execution-order sensitive when find-time-handoff.spec.ts runs first. Both are test-code issues only; production behavior is correct. These were known and accepted as follow-ups rather than blocking S05.",
+      "type": "lesson",
+      "description": "Source: S05-SUMMARY.md/Known Limitations",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "lesson:M003:19",
+      "label": "**The @repo/caluno-core extraction pattern paid off across all five slices.** Initially scoped to auth/scope contracts in S01, the pattern was applied in S02 (offline/schedule), S03 (find-time/ranking/prefill), and S04 (notification contracts) without friction. The pattern proved more broadly applicable than anticipated, removing the need for any cross-app imports across the entire milestone.",
+      "type": "lesson",
+      "description": "Source: S01-SUMMARY.md through S04-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "pattern:M003:1",
+      "label": "**@repo/caluno-core as the single source of truth for shared product contracts.** Any rule that must behave identically on web and mobile belongs in a pure workspace package with zero Svelte/Capacitor imports. App-local wrappers import from core and add only runtime-specific glue. Avoids cross-app imports and keeps contracts testable with plain vitest.",
+      "type": "pattern",
+      "description": "Source: S01-SUMMARY.md/Patterns Established, S02-SUMMARY.md/Patterns Established, S03-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "pattern:M003:2",
+      "label": "**Mobile protected routes resolve access from one shaped trusted inventory snapshot.** Load the trusted inventory once at shell level; downstream routes consume it without re-querying. Denied states surface the reason, failure phase, and attempted id explicitly in the UI via data-* attributes.",
+      "type": "pattern",
+      "description": "Source: S01-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "pattern:M003:3",
+      "label": "**Shared offline/schedule contract in core; mobile/web adapters local.** The offline queue, mutation replay, continuity rules, and reconnect drain logic live in @repo/caluno-core. The mobile adapter wires Capacitor Preferences + the core contract; the web adapter wires browser localStorage + the same contract. No cross-app schema drift.",
+      "type": "pattern",
+      "description": "Source: S02-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "pattern:M003:4",
+      "label": "**One-shot arrival parsing + immediate query cleanup for URL-based mobile handoffs.** Read handoff query params exactly once on mount, apply them to the create sheet, then immediately replace the URL without them. Prevents duplicate application on re-render and keeps URL state clean for back navigation.",
+      "type": "pattern",
+      "description": "Source: S03-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "pattern:M003:5",
+      "label": "**Contract-focused E2E assertions over brittle inventories.** In mobile Playwright flows, assert metadata presence, fail-closed states, handoff shape, and UI behavior. Never assert exact item counts or ids that earlier specs may have changed. Use per-spec DB resets (beforeAll db reset) to eliminate cross-test state pollution.",
+      "type": "pattern",
+      "description": "Source: S03-SUMMARY.md/Patterns Established, S05-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "pattern:M003:6",
+      "label": "**Typed mobile notification adapters isolate Capacitor plugin parsing from UI/runtime code.** Parse all Capacitor notification plugin outputs in a dedicated adapter layer with explicit types. UI and runtime code never import Capacitor plugin objects directly — they consume typed domain values. Keeps UI code testable without Capacitor mock setup.",
+      "type": "pattern",
+      "description": "Source: S04-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "pattern:M003:7",
+      "label": "**Delivery-state harness pattern for notification E2E.** Stub edge functions in Playwright fixtures to capture per-calendar notification inventory. Assert on the captured delivery inventory (pending, delivered, suppressed) rather than polling OS APIs. Works reliably in CI without device provisioning.",
+      "type": "pattern",
+      "description": "Source: S05-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "pattern:M003:8",
+      "label": "**Best-effort dispatch via void-after-canonical-write.** Post-write side effects (shared-change notifications, telemetry) should be fired as void calls immediately after the canonical write succeeds — never awaited, never inside the mutation helper. Errors and timeouts in the side effect never affect the write result.",
+      "type": "pattern",
+      "description": "Source: S05-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "pattern:M003:9",
+      "label": "**S05 required a mid-slice replan.** The original 4-task S05 plan left 3 E2E tests failing after T04. A new task T05 was added targeting the specific trusted-offline route mode bug. The replan was clean and contained but the original plan did not anticipate that the trusted-online/trusted-offline distinction would require retrofitting existing E2E assertions in other specs.",
+      "type": "pattern",
+      "description": "Source: S05-SUMMARY.md/Deviations",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "pattern:M003:10",
+      "label": "**Two E2E test-code assertions remain stale at milestone close.** calendar-offline.spec.ts line 41 expects 'trusted-online' but production now correctly emits 'trusted-offline'. mobile-assembly.spec.ts phase 3 top-pick is execution-order sensitive when find-time-handoff.spec.ts runs first. Both are test-code issues only; production behavior is correct. These were known and accepted as follow-ups rather than blocking S05.",
+      "type": "pattern",
+      "description": "Source: S05-SUMMARY.md/Known Limitations",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "pattern:M003:11",
+      "label": "**The @repo/caluno-core extraction pattern paid off across all five slices.** Initially scoped to auth/scope contracts in S01, the pattern was applied in S02 (offline/schedule), S03 (find-time/ranking/prefill), and S04 (notification contracts) without friction. The pattern proved more broadly applicable than anticipated, removing the need for any cross-app imports across the entire milestone.",
+      "type": "pattern",
+      "description": "Source: S01-SUMMARY.md through S04-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "surprise:M003:1",
+      "label": "**S05 required a mid-slice replan.** The original 4-task S05 plan left 3 E2E tests failing after T04. A new task T05 was added targeting the specific trusted-offline route mode bug. The replan was clean and contained but the original plan did not anticipate that the trusted-online/trusted-offline distinction would require retrofitting existing E2E assertions in other specs.",
+      "type": "lesson",
+      "description": "Source: S05-SUMMARY.md/Deviations",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "surprise:M003:2",
+      "label": "**Two E2E test-code assertions remain stale at milestone close.** calendar-offline.spec.ts line 41 expects 'trusted-online' but production now correctly emits 'trusted-offline'. mobile-assembly.spec.ts phase 3 top-pick is execution-order sensitive when find-time-handoff.spec.ts runs first. Both are test-code issues only; production behavior is correct. These were known and accepted as follow-ups rather than blocking S05.",
+      "type": "lesson",
+      "description": "Source: S05-SUMMARY.md/Known Limitations",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
+    },
+    {
+      "id": "surprise:M003:3",
+      "label": "**The @repo/caluno-core extraction pattern paid off across all five slices.** Initially scoped to auth/scope contracts in S01, the pattern was applied in S02 (offline/schedule), S03 (find-time/ranking/prefill), and S04 (notification contracts) without friction. The pattern proved more broadly applicable than anticipated, removing the need for any cross-app imports across the entire milestone.",
+      "type": "lesson",
+      "description": "Source: S01-SUMMARY.md through S04-SUMMARY.md/Patterns Established",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M003/M003-LEARNINGS.md"
     }
   ],
   "edges": [
@@ -867,7 +1376,391 @@
       "to": "task:M003:S05:T05",
       "type": "contains",
       "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M004",
+      "to": "slice:M004:S01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M004:S01",
+      "to": "task:M004:S01:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:1",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:2",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:3",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:4",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:5",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:6",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:7",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:8",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:9",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:10",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:11",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:12",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:13",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:14",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:15",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:16",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:17",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:18",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:19",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:20",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:21",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:22",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:23",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:24",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:25",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:26",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:27",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:28",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "decision:M003:29",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "lesson:M003:1",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "lesson:M003:2",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "lesson:M003:3",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "lesson:M003:4",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "lesson:M003:5",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "lesson:M003:6",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "lesson:M003:7",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "lesson:M003:8",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "lesson:M003:9",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "lesson:M003:10",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "lesson:M003:11",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "lesson:M003:12",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "lesson:M003:13",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "lesson:M003:14",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "lesson:M003:15",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "lesson:M003:16",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "lesson:M003:17",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "lesson:M003:18",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "lesson:M003:19",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "pattern:M003:1",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "pattern:M003:2",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "pattern:M003:3",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "pattern:M003:4",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "pattern:M003:5",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "pattern:M003:6",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "pattern:M003:7",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "pattern:M003:8",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "pattern:M003:9",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "pattern:M003:10",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "pattern:M003:11",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "surprise:M003:1",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "surprise:M003:2",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M003",
+      "to": "surprise:M003:3",
+      "type": "relates_to",
+      "confidence": "EXTRACTED"
     }
   ],
-  "builtAt": "2026-05-04T16:46:31.889Z"
+  "builtAt": "2026-05-05T19:03:39.712Z"
 }

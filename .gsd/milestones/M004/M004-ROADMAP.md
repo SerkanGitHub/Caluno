@@ -4,5 +4,5 @@
 
 ## Slices
 
-- [ ] **S01: S01** `risk:medium` `depends:[]`
+- [x] **S01: S01** `risk:medium` `depends:[]`
   > After this:

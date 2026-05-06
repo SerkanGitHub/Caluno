@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-05-04T16:55:10Z | Files: 500 | Described: 0/500
-<!-- gsd:codebase-meta {"generatedAt":"2026-05-04T16:55:10Z","fingerprint":"72a36a0ff5905b5daa189f4871c4490c47f5e3dc","fileCount":500,"truncated":true} -->
+Generated: 2026-05-05T19:03:42Z | Files: 500 | Described: 0/500
+<!-- gsd:codebase-meta {"generatedAt":"2026-05-05T19:03:42Z","fingerprint":"c566b554425d357978bfc4188b5a77f213833270","fileCount":500,"truncated":true} -->
 Note: Truncated to first 500 files. Run with higher --max-files to include all.
 
 ### (root)/
@@ -20,11 +20,11 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `package.json`
 - `README.md`
 
-### "apps/mobile/test-results/e2e/mobile-assembly-phase-3-\342\200\224--e8743-he-shift-lands-on-the-board/
-- `"apps/mobile/test-results/e2e/mobile-assembly-phase-3-\342\200\224--e8743-he-shift-lands-on-the-board/error-context.md"`
-- `"apps/mobile/test-results/e2e/mobile-assembly-phase-3-\342\200\224--e8743-he-shift-lands-on-the-board/test-failed-1.png"`
-- `"apps/mobile/test-results/e2e/mobile-assembly-phase-3-\342\200\224--e8743-he-shift-lands-on-the-board/trace.zip"`
-- `"apps/mobile/test-results/e2e/mobile-assembly-phase-3-\342\200\224--e8743-he-shift-lands-on-the-board/video.webm"`
+### "apps/mobile/test-results/e2e/mobile-assembly-phase-4-\342\200\224--264e1-ds-in-the-permitted-context/
+- `"apps/mobile/test-results/e2e/mobile-assembly-phase-4-\342\200\224--264e1-ds-in-the-permitted-context/error-context.md"`
+- `"apps/mobile/test-results/e2e/mobile-assembly-phase-4-\342\200\224--264e1-ds-in-the-permitted-context/test-failed-1.png"`
+- `"apps/mobile/test-results/e2e/mobile-assembly-phase-4-\342\200\224--264e1-ds-in-the-permitted-context/trace.zip"`
+- `"apps/mobile/test-results/e2e/mobile-assembly-phase-4-\342\200\224--264e1-ds-in-the-permitted-context/video.webm"`
 
 ### .artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/
 - `.artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/accessibility.md`
@@ -317,10 +317,10 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 ### apps/mobile/test-results/e2e/
 - `apps/mobile/test-results/e2e/.last-run.json`
 
-### apps/mobile/test-results/e2e/calendar-offline-trusted-w-51b05-drains-them-after-reconnect/
-- `apps/mobile/test-results/e2e/calendar-offline-trusted-w-51b05-drains-them-after-reconnect/error-context.md`
-- `apps/mobile/test-results/e2e/calendar-offline-trusted-w-51b05-drains-them-after-reconnect/trace.zip`
-- `apps/mobile/test-results/e2e/calendar-offline-trusted-w-51b05-drains-them-after-reconnect/video.webm`
+### apps/mobile/test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/
+- `apps/mobile/test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/error-context.md`
+- `apps/mobile/test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/trace.zip`
+- `apps/mobile/test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/video.webm`
 
 ### apps/mobile/tests/
 - `apps/mobile/tests/auth-bootstrap.unit.test.ts`
@@ -720,6 +720,11 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 ### apps/web/test-results/e2e-offline/
 - `apps/web/test-results/e2e-offline/.last-run.json`
 
+### apps/web/test-results/e2e/calendar-offline-preview-p-92077-e-offline-continuity-begins/
+- `apps/web/test-results/e2e/calendar-offline-preview-p-92077-e-offline-continuity-begins/error-context.md`
+- `apps/web/test-results/e2e/calendar-offline-preview-p-92077-e-offline-continuity-begins/trace.zip`
+- `apps/web/test-results/e2e/calendar-offline-preview-p-92077-e-offline-continuity-begins/video.webm`
+
 ### apps/web/tests/access/
 - `apps/web/tests/access/policy-contract.unit.test.ts`
 
@@ -760,7 +765,6 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `packages/caluno-core/src/app-shell.ts`
 - `packages/caluno-core/src/index.ts`
 - `packages/caluno-core/src/route-contract.ts`
-- `packages/caluno-core/src/supabase.ts`
 
 ### packages/caluno-core/src/find-time/
 - `packages/caluno-core/src/find-time/matcher.ts`
@@ -778,9 +782,3 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `packages/caluno-core/src/schedule/create-prefill.ts`
 - `packages/caluno-core/src/schedule/recurrence.ts`
 - `packages/caluno-core/src/schedule/types.ts`
-
-### packages/db/
-- `packages/db/package.json`
-
-### packages/db/src/
-- `packages/db/src/client.ts`
