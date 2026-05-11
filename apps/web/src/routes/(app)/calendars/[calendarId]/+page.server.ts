@@ -10,6 +10,7 @@ import {
   createScheduleShift,
   deleteScheduleShift,
   editScheduleShift,
+  loadCalendarRecurrenceSuggestion,
   loadCalendarScheduleView,
   moveScheduleShift,
   type ScheduleActionKind,
@@ -106,6 +107,11 @@ export const load: PageServerLoad = async ({ params, parent, url, locals }) => {
     calendarId: calendarState.calendar.id,
     searchParams: url.searchParams
   });
+  const recurrenceSuggestion = await loadCalendarRecurrenceSuggestion({
+    supabase: locals.supabase,
+    calendarId: calendarState.calendar.id,
+    visibleWeek: schedule.visibleWeek
+  });
   const createPrefill = parseCreatePrefill(url.searchParams);
 
   return {
@@ -116,6 +122,7 @@ export const load: PageServerLoad = async ({ params, parent, url, locals }) => {
       welcome: url.searchParams.get('welcome'),
       visibleWeek: schedule.visibleWeek,
       schedule,
+      recurrenceSuggestion,
       createPrefill
     }
   };

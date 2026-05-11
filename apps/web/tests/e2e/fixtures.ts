@@ -207,6 +207,21 @@ export const seededSchedule = {
   series: {
     alphaOpeningSweep: 'aaaaaaaa-5555-1111-1111-111111111111'
   },
+  recurrenceSuggestion: {
+    cadence: 'weekly',
+    weekday: 1,
+    startTime: '08:30',
+    endTime: '09:00',
+    lookbackStart: '2026-03-21T00:00:00.000Z',
+    visibleWeekEndAt: '2026-04-20T00:00:00.000Z',
+    exemplarShiftId: 'aaaaaaaa-8888-1111-1111-666666666666',
+    matchingShiftIds: [
+      'aaaaaaaa-8888-1111-1111-111111111111',
+      'aaaaaaaa-8888-1111-1111-222222222222',
+      'aaaaaaaa-8888-1111-1111-555555555555',
+      'aaaaaaaa-8888-1111-1111-666666666666'
+    ]
+  },
   shifts: {
     morningIntake: {
       id: 'aaaaaaaa-6666-1111-1111-111111111111',
@@ -281,6 +296,16 @@ export const seededSchedule = {
 } as const satisfies {
   visibleWeek: VisibleWeekFixture;
   series: Record<string, string>;
+  recurrenceSuggestion: {
+    cadence: 'weekly';
+    weekday: number;
+    startTime: string;
+    endTime: string;
+    lookbackStart: string;
+    visibleWeekEndAt: string;
+    exemplarShiftId: string;
+    matchingShiftIds: string[];
+  };
   shifts: Record<string, SeededShiftFixture>;
   recurringCreate: {
     title: string;

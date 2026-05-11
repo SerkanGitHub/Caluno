@@ -134,6 +134,7 @@ function createThenableBuilder<T>(
   result: { data: T; error: { message: string } | null },
   capture?: {
     eq?: Array<[string, unknown]>;
+    gte?: Array<[string, unknown]>;
     lt?: Array<[string, unknown]>;
     gt?: Array<[string, unknown]>;
     order?: Array<[string, unknown]>;
@@ -146,6 +147,10 @@ function createThenableBuilder<T>(
     delete: vi.fn(() => builder),
     eq: vi.fn((column: string, value: unknown) => {
       capture?.eq?.push([column, value]);
+      return builder;
+    }),
+    gte: vi.fn((column: string, value: unknown) => {
+      capture?.gte?.push([column, value]);
       return builder;
     }),
     lt: vi.fn((column: string, value: unknown) => {
@@ -165,6 +170,17 @@ function createThenableBuilder<T>(
   };
 
   return builder;
+}
+
+function createSupabaseFromSequence(...builders: unknown[]) {
+  let callIndex = 0;
+
+  return vi.fn((table: string) => {
+    expect(table).toBe('shifts');
+    const nextBuilder = builders[callIndex] ?? builders[builders.length - 1];
+    callIndex += 1;
+    return nextBuilder;
+  });
 }
 
 describe('auth-flow helpers', () => {
@@ -333,15 +349,23 @@ describe('calendar route resolution', () => {
     expect(shiftsFrom).not.toHaveBeenCalled();
   });
 
-  it('shapes one validated visible week for a permitted calendar route', async () => {
-    const capture = {
+  it('shapes one validated visible week for a permitted calendar route and threads a bounded weekly recurrence suggestion', async () => {
+    const scheduleCapture = {
       eq: [] as Array<[string, unknown]>,
+      gte: [] as Array<[string, unknown]>,
+      lt: [] as Array<[string, unknown]>,
+      gt: [] as Array<[string, unknown]>,
+      order: [] as Array<[string, unknown]>
+    };
+    const suggestionCapture = {
+      eq: [] as Array<[string, unknown]>,
+      gte: [] as Array<[string, unknown]>,
       lt: [] as Array<[string, unknown]>,
       gt: [] as Array<[string, unknown]>,
       order: [] as Array<[string, unknown]>
     };
 
-    const shiftsBuilder = createThenableBuilder(
+    const scheduleBuilder = createThenableBuilder(
       {
         data: [
           {
@@ -367,17 +391,63 @@ describe('calendar route resolution', () => {
         ],
         error: null
       },
-      capture
+      scheduleCapture
     );
+    const suggestionBuilder = createThenableBuilder(
+      {
+        data: [
+          {
+            id: 'suggestion-1',
+            calendar_id: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+            series_id: null,
+            title: 'Alpha opening sweep',
+            start_at: '2026-03-30T08:30:00.000Z',
+            end_at: '2026-03-30T09:00:00.000Z',
+            occurrence_index: null,
+            source_kind: 'single' as const
+          },
+          {
+            id: 'suggestion-2',
+            calendar_id: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+            series_id: null,
+            title: 'Alpha opening sweep',
+            start_at: '2026-04-06T08:30:00.000Z',
+            end_at: '2026-04-06T09:00:00.000Z',
+            occurrence_index: null,
+            source_kind: 'single' as const
+          },
+          {
+            id: 'suggestion-3',
+            calendar_id: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+            series_id: null,
+            title: 'Alpha opening sweep',
+            start_at: '2026-04-13T08:30:00.000Z',
+            end_at: '2026-04-13T09:00:00.000Z',
+            occurrence_index: null,
+            source_kind: 'single' as const
+          },
+          {
+            id: 'suggestion-other',
+            calendar_id: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+            series_id: null,
+            title: 'Supplier call',
+            start_at: '2026-04-22T13:00:00.000Z',
+            end_at: '2026-04-22T15:00:00.000Z',
+            occurrence_index: null,
+            source_kind: 'single' as const
+          }
+        ],
+        error: null
+      },
+      suggestionCapture
+    );
+    const consoleInfo = vi.spyOn(console, 'info').mockImplementation(() => undefined);
 
     const result = (await calendarPageLoad({
       params: { calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111' },
       locals: {
         supabase: {
-          from: vi.fn((table: string) => {
-            expect(table).toBe('shifts');
-            return shiftsBuilder;
-          })
+          from: createSupabaseFromSequence(scheduleBuilder, suggestionBuilder)
         }
       },
       parent: vi.fn().mockResolvedValue({
@@ -416,9 +486,35 @@ describe('calendar route resolution', () => {
     expect(
       result.calendarView.schedule.days.find((day: { dayKey: string }) => day.dayKey === '2026-04-22')?.shifts
     ).toHaveLength(1);
-    expect(capture.eq).toContainEqual(['calendar_id', 'aaaaaaaa-aaaa-1111-1111-111111111111']);
-    expect(capture.lt).toContainEqual(['start_at', '2026-04-27T00:00:00.000Z']);
-    expect(capture.gt).toContainEqual(['end_at', '2026-04-20T00:00:00.000Z']);
+    expect(result.calendarView.recurrenceSuggestion).toEqual({
+      cadence: 'weekly',
+      interval: 1,
+      weekday: 1,
+      startTime: '08:30',
+      endTime: '09:00',
+      exemplarShiftId: 'suggestion-3',
+      exemplarStartAt: '2026-04-13T08:30:00.000Z',
+      exemplarEndAt: '2026-04-13T09:00:00.000Z',
+      matchCount: 3,
+      matchingShiftIds: ['suggestion-1', 'suggestion-2', 'suggestion-3']
+    });
+    expect(scheduleCapture.eq).toContainEqual(['calendar_id', 'aaaaaaaa-aaaa-1111-1111-111111111111']);
+    expect(scheduleCapture.lt).toContainEqual(['start_at', '2026-04-27T00:00:00.000Z']);
+    expect(scheduleCapture.gt).toContainEqual(['end_at', '2026-04-20T00:00:00.000Z']);
+    expect(suggestionCapture.eq).toContainEqual(['calendar_id', 'aaaaaaaa-aaaa-1111-1111-111111111111']);
+    expect(suggestionCapture.gte).toContainEqual(['start_at', '2026-03-28T00:00:00.000Z']);
+    expect(suggestionCapture.lt).toContainEqual(['start_at', '2026-04-27T00:00:00.000Z']);
+    expect(consoleInfo).toHaveBeenCalledWith('calendar.recurrence-suggestion.computed', {
+      calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+      visibleWeekStart: '2026-04-20',
+      visibleWeekEndAt: '2026-04-27T00:00:00.000Z',
+      lookbackStartAt: '2026-03-28T00:00:00.000Z',
+      exemplarShiftId: 'suggestion-3',
+      matchCount: 3,
+      matchingShiftIds: ['suggestion-1', 'suggestion-2', 'suggestion-3']
+    });
+
+    consoleInfo.mockRestore();
   });
 
   it('threads a valid create-prefill handoff into the permitted calendar view for the exact visible week', async () => {
@@ -495,6 +591,101 @@ describe('calendar route resolution', () => {
       expect(result.calendarView.createPrefill).toBeNull();
       expect(result.calendarView.schedule.reason).toBeNull();
     }
+  });
+
+  it('fails closed to a null recurrence suggestion when the bounded history query errors or times out', async () => {
+    const scheduleBuilder = createThenableBuilder({ data: [], error: null });
+    const suggestionBuilder = createThenableBuilder({ data: null, error: { message: 'statement timeout' } });
+    const consoleInfo = vi.spyOn(console, 'info').mockImplementation(() => undefined);
+
+    const result = (await calendarPageLoad({
+      params: { calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111' },
+      locals: {
+        supabase: {
+          from: createSupabaseFromSequence(scheduleBuilder, suggestionBuilder)
+        }
+      },
+      parent: vi.fn().mockResolvedValue({
+        user: { id: 'user-a' },
+        appShell: {
+          memberships: [{ groupId: 'group-a', userId: 'user-a', role: 'owner' }],
+          calendars: [{ id: 'aaaaaaaa-aaaa-1111-1111-111111111111', groupId: 'group-a', name: 'Alpha shared', isDefault: true }],
+          groups: [],
+          primaryCalendar: null
+        }
+      }),
+      url: new URL('http://localhost/calendars/aaaaaaaa-aaaa-1111-1111-111111111111?start=2026-04-27')
+    } as unknown as Parameters<typeof calendarPageLoad>[0])) as Exclude<
+      Awaited<ReturnType<typeof calendarPageLoad>>,
+      void
+    >;
+
+    expect(result.calendarView.kind).toBe('calendar');
+    if (result.calendarView.kind === 'calendar') {
+      expect(result.calendarView.schedule.status).toBe('ready');
+      expect(result.calendarView.recurrenceSuggestion).toBeNull();
+    }
+    expect(consoleInfo).not.toHaveBeenCalled();
+    consoleInfo.mockRestore();
+  });
+
+  it('fails closed to a null recurrence suggestion when the bounded history rows are malformed', async () => {
+    const scheduleBuilder = createThenableBuilder({ data: [], error: null });
+    const suggestionBuilder = createThenableBuilder({
+      data: [
+        {
+          id: 'suggestion-bad',
+          calendar_id: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+          series_id: null,
+          title: 'Broken row',
+          start_at: 'not-an-iso',
+          end_at: '2026-04-13T09:00:00.000Z',
+          occurrence_index: null,
+          source_kind: 'single' as const
+        },
+        {
+          id: 'suggestion-missing-end',
+          calendar_id: 'aaaaaaaa-aaaa-1111-1111-111111111111',
+          series_id: null,
+          title: 'Missing end',
+          start_at: '2026-04-06T08:30:00.000Z',
+          end_at: null,
+          occurrence_index: null,
+          source_kind: 'single' as const
+        }
+      ],
+      error: null
+    });
+    const consoleInfo = vi.spyOn(console, 'info').mockImplementation(() => undefined);
+
+    const result = (await calendarPageLoad({
+      params: { calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111' },
+      locals: {
+        supabase: {
+          from: createSupabaseFromSequence(scheduleBuilder, suggestionBuilder)
+        }
+      },
+      parent: vi.fn().mockResolvedValue({
+        user: { id: 'user-a' },
+        appShell: {
+          memberships: [{ groupId: 'group-a', userId: 'user-a', role: 'owner' }],
+          calendars: [{ id: 'aaaaaaaa-aaaa-1111-1111-111111111111', groupId: 'group-a', name: 'Alpha shared', isDefault: true }],
+          groups: [],
+          primaryCalendar: null
+        }
+      }),
+      url: new URL('http://localhost/calendars/aaaaaaaa-aaaa-1111-1111-111111111111?start=2026-04-27')
+    } as unknown as Parameters<typeof calendarPageLoad>[0])) as Exclude<
+      Awaited<ReturnType<typeof calendarPageLoad>>,
+      void
+    >;
+
+    expect(result.calendarView.kind).toBe('calendar');
+    if (result.calendarView.kind === 'calendar') {
+      expect(result.calendarView.recurrenceSuggestion).toBeNull();
+    }
+    expect(consoleInfo).not.toHaveBeenCalled();
+    consoleInfo.mockRestore();
   });
 
   it('strips one-shot prefill params from follow-on actions while preserving the week context', () => {
@@ -667,13 +858,21 @@ describe('calendar route resolution', () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-04-15T12:00:00.000Z'));
 
-    const shiftsBuilder = createThenableBuilder({ data: [], error: null });
+    const suggestionCapture = {
+      eq: [] as Array<[string, unknown]>,
+      gte: [] as Array<[string, unknown]>,
+      lt: [] as Array<[string, unknown]>,
+      gt: [] as Array<[string, unknown]>,
+      order: [] as Array<[string, unknown]>
+    };
+    const scheduleBuilder = createThenableBuilder({ data: [], error: null });
+    const suggestionBuilder = createThenableBuilder({ data: [], error: null }, suggestionCapture);
 
     const result = (await calendarPageLoad({
       params: { calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111' },
       locals: {
         supabase: {
-          from: vi.fn(() => shiftsBuilder)
+          from: createSupabaseFromSequence(scheduleBuilder, suggestionBuilder)
         }
       },
       parent: vi.fn().mockResolvedValue({
@@ -696,6 +895,9 @@ describe('calendar route resolution', () => {
     expect(result.calendarView.visibleWeek.reason).toBe('VISIBLE_WEEK_START_INVALID');
     expect(result.calendarView.visibleWeek.start).toBe('2026-04-13');
     expect(result.calendarView.schedule.reason).toBe('VISIBLE_WEEK_START_INVALID');
+    expect(result.calendarView.recurrenceSuggestion).toBeNull();
+    expect(suggestionCapture.gte).toContainEqual(['start_at', '2026-03-21T00:00:00.000Z']);
+    expect(suggestionCapture.lt).toContainEqual(['start_at', '2026-04-20T00:00:00.000Z']);
 
     vi.useRealTimers();
   });

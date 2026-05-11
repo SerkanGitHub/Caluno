@@ -491,7 +491,7 @@ describe('schedule sql contract', () => {
 });
 
 describe('schedule seed contract', () => {
-  it('provides deterministic Alpha fixtures for same-day, overlapping, and recurring browser proof', () => {
+  it('provides deterministic Alpha fixtures for same-day, overlapping, and truthful weekly recurrence browser proof', () => {
     expect(seedSql).toContain('Alpha opening sweep');
     expect(seedSql).toContain('Morning intake');
     expect(seedSql).toContain('Afternoon handoff');
@@ -499,6 +499,12 @@ describe('schedule seed contract', () => {
     expect(seedSql).toContain('Supplier call');
     expect(seedSql).toContain('aaaaaaaa-5555-1111-1111-111111111111');
     expect(seedSql).toContain('aaaaaaaa-8888-1111-1111-444444444444');
+    expect(seedSql).toContain('aaaaaaaa-8888-1111-1111-666666666666');
+    expect(seedSql).toContain("'weekly'");
+    expect(seedSql).toContain("'2026-03-23T08:30:00Z'");
+    expect(seedSql).toContain("'2026-03-30T08:30:00Z'");
+    expect(seedSql).toContain("'2026-04-06T08:30:00Z'");
+    expect(seedSql).toContain("'2026-04-13T08:30:00Z'");
     expect(seedSql).toContain("'2026-04-15T09:00:00Z'");
     expect(seedSql).toContain("'2026-04-16T13:00:00Z'");
   });

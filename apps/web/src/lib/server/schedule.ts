@@ -2,7 +2,12 @@ import { randomUUID } from 'node:crypto';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import * as rrulePkg from 'rrule';
 import { resolveCalendarAccess, type GroupMembership } from '$lib/access/contract';
-import { normalizeShiftDraft, normalizeVisibleRange } from '$lib/schedule/recurrence';
+import {
+  detectRecurrencePattern,
+  normalizeShiftDraft,
+  normalizeVisibleRange,
+  type DetectedRecurrencePattern
+} from '$lib/schedule/recurrence';
 import type {
   NormalizedScheduleShiftDraft,
   ScheduleRecurrenceCadence,
@@ -69,6 +74,8 @@ export type CalendarScheduleView = {
   totalShifts: number;
   shiftIds: string[];
 };
+
+export type ScheduleRecurrenceSuggestion = DetectedRecurrencePattern;
 
 export type ScheduleActionState = {
   action: ScheduleActionKind;
@@ -222,6 +229,46 @@ export async function loadCalendarScheduleView(params: {
     totalShifts: mappedShifts.length,
     shiftIds: mappedShifts.map((shift) => shift.id)
   };
+}
+
+export async function loadCalendarRecurrenceSuggestion(params: {
+  supabase: SupabaseClient;
+  calendarId: string;
+  visibleWeek: VisibleWeek;
+}): Promise<ScheduleRecurrenceSuggestion | null> {
+  const lookbackStartAt = addUtcDays(new Date(params.visibleWeek.endAt), -RECURRENCE_LOOKBACK_DAYS).toISOString();
+  const result = (await params.supabase
+    .from('shifts')
+    .select('id, calendar_id, series_id, title, start_at, end_at, occurrence_index, source_kind')
+    .eq('calendar_id', params.calendarId)
+    .gte('start_at', lookbackStartAt)
+    .lt('start_at', params.visibleWeek.endAt)
+    .order('start_at', { ascending: true })
+    .order('end_at', { ascending: true })) as unknown as SupabaseResult<ShiftRow[]>;
+
+  if (result.error || !Array.isArray(result.data)) {
+    return null;
+  }
+
+  if (result.data.some((row) => !isShiftRow(row))) {
+    return null;
+  }
+
+  const suggestion = detectRecurrencePattern(result.data.map(mapShiftRow));
+
+  if (suggestion) {
+    console.info('calendar.recurrence-suggestion.computed', {
+      calendarId: params.calendarId,
+      visibleWeekStart: params.visibleWeek.start,
+      visibleWeekEndAt: params.visibleWeek.endAt,
+      lookbackStartAt,
+      exemplarShiftId: suggestion.exemplarShiftId,
+      matchCount: suggestion.matchCount,
+      matchingShiftIds: suggestion.matchingShiftIds
+    });
+  }
+
+  return suggestion;
 }
 
 export function resolveTrustedCalendarFromAppShell(params: {
@@ -1391,3 +1438,4 @@ function isUuidLike(value: string): boolean {
 }
 
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
+const RECURRENCE_LOOKBACK_DAYS = 30;
