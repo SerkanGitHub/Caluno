@@ -431,6 +431,17 @@ export type CreateShiftRecurrenceSnapshot = {
   fieldSuggestionState: string | null;
 };
 
+export type ClashAdvisorySnapshot = {
+  visible: boolean;
+  overlapCount: number | null;
+  conflictingShiftIds: string[];
+  label: string | null;
+  detail: string | null;
+  warningTone: string | null;
+  items: string[];
+  text: string | null;
+};
+
 async function readFlowSurfaceSnapshot(page: Page): Promise<FlowSurfaceSnapshot> {
   return page.evaluate(() => {
     const text = (selector: string) => document.querySelector<HTMLElement>(selector)?.textContent?.trim() ?? null;
@@ -1505,6 +1516,52 @@ export async function readCreateShiftRecurrenceSnapshot(page: Page): Promise<Cre
     fieldStateRepeatCount: await fieldState.getAttribute('data-repeat-count'),
     fieldStateRepeatUntil: await fieldState.getAttribute('data-repeat-until'),
     fieldSuggestionState: await fieldState.getAttribute('data-suggestion-state')
+  };
+}
+
+export async function readCreateShiftClashAdvisory(page: Page): Promise<ClashAdvisorySnapshot> {
+  const editor = page.getByTestId('create-shift-editor');
+  await expect(editor).toBeVisible();
+
+  const isOpen = await editor.evaluate((element) => (element instanceof HTMLDetailsElement ? element.open : false));
+  if (!isOpen) {
+    await editor.locator('summary').click();
+  }
+
+  const advisory = editor.getByTestId('clash-advisory');
+  if ((await advisory.count()) === 0) {
+    return {
+      visible: false,
+      overlapCount: null,
+      conflictingShiftIds: [],
+      label: null,
+      detail: null,
+      warningTone: null,
+      items: [],
+      text: null
+    };
+  }
+
+  const overlapCountRaw = await advisory.getAttribute('data-overlap-count');
+  const overlapCount = overlapCountRaw ? Number.parseInt(overlapCountRaw, 10) : null;
+  const conflictingShiftIds = ((await advisory.getAttribute('data-conflicting-shift-ids')) ?? '')
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean);
+
+  return {
+    visible: await advisory.isVisible(),
+    overlapCount: Number.isFinite(overlapCount) ? overlapCount : null,
+    conflictingShiftIds,
+    label: ((await advisory.locator('strong').first().textContent()) ?? '').trim() || null,
+    detail: ((await advisory.locator('p').last().textContent()) ?? '').trim() || null,
+    warningTone: ((await advisory.locator('.pill').first().textContent()) ?? '').trim() || null,
+    items: await advisory.locator('li').evaluateAll((items) =>
+      items
+        .map((item) => item.textContent?.replace(/\s+/g, ' ').trim() ?? '')
+        .filter(Boolean)
+    ),
+    text: ((await advisory.textContent()) ?? '').replace(/\s+/g, ' ').trim() || null
   };
 }
 

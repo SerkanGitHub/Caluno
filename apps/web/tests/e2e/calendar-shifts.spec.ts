@@ -4,12 +4,14 @@ import {
   openCalendarWeek,
   openFindTimeRoute,
   readBoardConflictSummary,
+  readCreateShiftClashAdvisory,
   readCreateShiftPrefillSnapshot,
   readCreateShiftRecurrenceSnapshot,
   readDayConflictSummary,
   readFindTimeBrowseWindowCtaSnapshot,
   readShiftConflictSummary,
   readVisibleWeekFromBoard,
+  resolveVisibleShiftCardIdentity,
   seededCalendars,
   seededFindTime,
   seededSchedule,
@@ -39,6 +41,223 @@ async function openCreateShiftEditor(page: import('@playwright/test').Page) {
   await expect(editor).toHaveAttribute('open', '');
   return editor;
 }
+
+async function setShiftEditorDraft(
+  editor: import('@playwright/test').Locator,
+  values: {
+    title?: string;
+    startAt?: string;
+    endAt?: string;
+  }
+) {
+  const form = editor.locator('form');
+
+  await form.evaluate((formElement, nextValues) => {
+    if (!(formElement instanceof HTMLFormElement)) {
+      throw new Error('Shift editor form element not found.');
+    }
+
+    const setTextInput = (selector: string, value: string) => {
+      const input = formElement.querySelector(selector);
+      if (!(input instanceof HTMLInputElement)) {
+        throw new Error(`Missing input for selector: ${selector}`);
+      }
+
+      input.value = value;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    };
+
+    if (typeof nextValues.title === 'string') {
+      setTextInput('input[name="title"]', nextValues.title);
+    }
+
+    if (typeof nextValues.startAt === 'string') {
+      setTextInput('input[name="startAt"]', nextValues.startAt);
+    }
+
+    if (typeof nextValues.endAt === 'string') {
+      setTextInput('input[name="endAt"]', nextValues.endAt);
+    }
+  }, values);
+}
+
+test('overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully', async ({
+  page,
+  flow
+}) => {
+  const createdTitle = 'Overlap advisory proof';
+  const overlapDayKey = '2026-04-16';
+  const overlapStartLocal = '2026-04-16T13:30';
+  const overlapEndLocal = '2026-04-16T14:30';
+  let savedShiftId: string | null = null;
+
+  await test.step('phase: sign in and open the seeded Alpha week', async () => {
+    flow.mark('login', seededUsers.alphaMember.email);
+    await signInThroughUi(page, seededUsers.alphaMember);
+
+    await openCalendarWeek({
+      page,
+      flow,
+      calendarId: seededCalendars.alphaShared,
+      visibleWeekStart: seededSchedule.visibleWeek.start,
+      focusShiftIds: [seededSchedule.shifts.kitchenPrep.id, seededSchedule.shifts.supplierCall.id],
+      phase: 'overlap-advisory-create'
+    });
+
+    await expect(page.getByRole('heading', { name: 'Alpha shared' })).toBeVisible();
+    await expect(page.getByTestId('schedule-load-state')).toHaveCount(0);
+  });
+
+  await test.step('phase: enter an overlapping Thursday window and prove the advisory appears before submit while save stays enabled', async () => {
+    flow.mark('draft-overlap-window', `${overlapStartLocal} → ${overlapEndLocal}`);
+    const editor = await openCreateShiftEditor(page);
+    const form = editor.locator('form');
+
+    await expect(form.locator('input[name="title"]')).toHaveValue('');
+    await expect(form.locator('input[name="startAt"]')).toHaveValue('2026-04-13T09:00');
+    await expect(form.locator('input[name="endAt"]')).toHaveValue('2026-04-13T13:00');
+
+    await setShiftEditorDraft(editor, {
+      title: createdTitle,
+      startAt: overlapStartLocal,
+      endAt: overlapEndLocal
+    });
+
+    await expect(form.locator('input[name="title"]')).toHaveValue(createdTitle);
+    await expect(form.locator('input[name="startAt"]')).toHaveValue(overlapStartLocal);
+    await expect(form.locator('input[name="endAt"]')).toHaveValue(overlapEndLocal);
+
+    await expect
+      .poll(
+        async () => {
+          const advisory = await readCreateShiftClashAdvisory(page);
+          return advisory.overlapCount != null && advisory.overlapCount >= 2;
+        },
+        {
+          message: 'expected the create dialog to render the pre-submit clash advisory for the seeded Thursday overlap'
+        }
+      )
+      .toBe(true);
+
+    const advisory = await readCreateShiftClashAdvisory(page);
+    expect(advisory.visible).toBe(true);
+    expect(advisory.overlapCount).not.toBeNull();
+    expect(advisory.overlapCount ?? 0).toBeGreaterThanOrEqual(2);
+    expect(advisory.conflictingShiftIds).toEqual(
+      expect.arrayContaining([seededSchedule.shifts.kitchenPrep.id, seededSchedule.shifts.supplierCall.id])
+    );
+    expect(advisory.label).toContain('overlapping shift');
+    expect(advisory.warningTone).toBe('Warning only');
+    expect(advisory.detail).toContain('You can still save it');
+    expect(advisory.items).toEqual(
+      expect.arrayContaining(['Kitchen prep Apr 16 · 12:00–14:00 UTC', 'Supplier call Apr 16 · 13:00–15:00 UTC'])
+    );
+    expect(advisory.text).toContain('Heads up');
+
+    await expect(form.getByRole('button', { name: 'Save shift' })).toBeEnabled();
+    await syncCalendarFlowContext(page, flow, {
+      focusShiftIds: [seededSchedule.shifts.kitchenPrep.id, seededSchedule.shifts.supplierCall.id],
+      note: 'create draft showed the pre-submit clash advisory for the seeded Thursday overlap while save remained enabled'
+    });
+  });
+
+  await test.step('phase: submit the warned draft and confirm the overlapping shift still saves', async () => {
+    const editor = page.getByTestId('create-shift-editor');
+    const form = editor.locator('form');
+    await form.getByRole('button', { name: 'Save shift' }).click();
+
+    await expect(dayColumn(page, overlapDayKey)).toContainText(createdTitle);
+    const savedCard = await resolveVisibleShiftCardIdentity({
+      page,
+      title: createdTitle,
+      dayKey: overlapDayKey,
+      windowLabel: '13:30 → 14:30'
+    });
+    savedShiftId = savedCard.shiftId;
+    await expect(savedCard.locator).toBeVisible();
+    await expect(editor).not.toHaveAttribute('open', '');
+  });
+
+  await test.step('phase: delete the proof shift so later serial scenarios return to the seeded week state', async () => {
+    if (!savedShiftId) {
+      throw new Error('Expected the saved proof shift id before cleanup.');
+    }
+
+    const savedCard = page.getByTestId(`shift-card-${savedShiftId}`);
+    await expect(savedCard).toBeVisible();
+    await savedCard.getByRole('button', { name: 'Delete shift' }).click();
+    await expect(savedCard).toHaveCount(0);
+
+    await page.reload();
+    await expect(page.getByTestId('calendar-shell')).toBeVisible();
+    await expect(page.getByTestId(`shift-card-${savedShiftId}`)).toHaveCount(0);
+  });
+});
+
+test('touching-boundary create drafts stay advisory-free before submit', async ({ page, flow }) => {
+  const clearTitle = 'Boundary clear advisory proof';
+  const clearStartLocal = '2026-04-15T11:00';
+  const clearEndLocal = '2026-04-15T12:00';
+
+  await test.step('phase: sign in and open the seeded Alpha week', async () => {
+    flow.mark('login', seededUsers.alphaMember.email);
+    await signInThroughUi(page, seededUsers.alphaMember);
+
+    await openCalendarWeek({
+      page,
+      flow,
+      calendarId: seededCalendars.alphaShared,
+      visibleWeekStart: seededSchedule.visibleWeek.start,
+      focusShiftIds: [seededSchedule.shifts.morningIntake.id, seededSchedule.shifts.afternoonHandoff.id],
+      phase: 'clear-advisory-create'
+    });
+
+    await expect(page.getByRole('heading', { name: 'Alpha shared' })).toBeVisible();
+    await expect(page.getByTestId('schedule-load-state')).toHaveCount(0);
+  });
+
+  await test.step('phase: enter a touching Wednesday boundary window and prove the advisory stays absent before submit', async () => {
+    flow.mark('draft-clear-window', `${clearStartLocal} → ${clearEndLocal}`);
+    const editor = await openCreateShiftEditor(page);
+    const form = editor.locator('form');
+
+    await expect(form.locator('input[name="title"]')).toHaveValue('');
+    await expect(form.locator('input[name="startAt"]')).toHaveValue('2026-04-13T09:00');
+    await expect(form.locator('input[name="endAt"]')).toHaveValue('2026-04-13T13:00');
+
+    await setShiftEditorDraft(editor, {
+      title: clearTitle,
+      startAt: clearStartLocal,
+      endAt: clearEndLocal
+    });
+
+    await expect(form.locator('input[name="title"]')).toHaveValue(clearTitle);
+    await expect(form.locator('input[name="startAt"]')).toHaveValue(clearStartLocal);
+    await expect(form.locator('input[name="endAt"]')).toHaveValue(clearEndLocal);
+
+    await expect
+      .poll(async () => (await readCreateShiftClashAdvisory(page)).overlapCount, {
+        message: 'expected the create dialog to stay advisory-free for the Wednesday touch boundary draft'
+      })
+      .toBeNull();
+
+    const advisory = await readCreateShiftClashAdvisory(page);
+    expect(advisory.visible).toBe(false);
+    expect(advisory.overlapCount).toBeNull();
+    expect(advisory.conflictingShiftIds).toEqual([]);
+    expect(advisory.label).toBeNull();
+    expect(advisory.detail).toBeNull();
+    expect(advisory.items).toEqual([]);
+    expect(advisory.text).toBeNull();
+
+    await expect(form.getByRole('button', { name: 'Save shift' })).toBeEnabled();
+    await syncCalendarFlowContext(page, flow, {
+      focusShiftIds: [seededSchedule.shifts.morningIntake.id, seededSchedule.shifts.afternoonHandoff.id],
+      note: 'create draft stayed advisory-free for the Wednesday touch boundary before submit'
+    });
+  });
+});
 
 test('seeded member can prove the trusted-online Thursday overlap warning while the Wednesday touch boundary stays clean', async ({
   page,
