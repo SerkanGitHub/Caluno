@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
+  detectRecurrencePattern,
   expandShiftOccurrences,
   materializeShiftOccurrences,
   normalizeShiftDraft,
@@ -246,6 +247,232 @@ describe('expandShiftOccurrences', () => {
     expect(sameDay).toHaveLength(2);
     expect(sameDay.map((occurrence) => occurrence.dayKey)).toEqual(['2026-04-15', '2026-04-15']);
     expect(sameDay.map((occurrence) => occurrence.title)).toEqual(['Morning intake', 'Afternoon handoff']);
+  });
+});
+
+describe('detectRecurrencePattern', () => {
+  it('detects a deterministic weekly suggestion from three same-weekday time matches inside the anchored 30-day window', () => {
+    expect(
+      detectRecurrencePattern([
+        {
+          id: 'shift-old',
+          calendarId: 'calendar-alpha',
+          seriesId: null,
+          title: 'Old Monday opening',
+          startAt: '2023-12-11T09:00:00Z',
+          endAt: '2023-12-11T13:00:00Z',
+          occurrenceIndex: null,
+          sourceKind: 'single'
+        },
+        {
+          id: 'shift-1',
+          calendarId: 'calendar-alpha',
+          seriesId: null,
+          title: 'Monday opening 1',
+          startAt: '2024-01-08T09:00:00Z',
+          endAt: '2024-01-08T13:00:00Z',
+          occurrenceIndex: null,
+          sourceKind: 'single'
+        },
+        {
+          id: 'shift-2',
+          calendarId: 'calendar-alpha',
+          seriesId: null,
+          title: 'Monday opening 2',
+          startAt: '2024-01-15T09:00:00Z',
+          endAt: '2024-01-15T13:00:00Z',
+          occurrenceIndex: null,
+          sourceKind: 'single'
+        },
+        {
+          id: 'shift-3',
+          calendarId: 'calendar-alpha',
+          seriesId: null,
+          title: 'Monday opening 3',
+          startAt: '2024-01-22T09:00:00Z',
+          endAt: '2024-01-22T13:00:00Z',
+          occurrenceIndex: null,
+          sourceKind: 'single'
+        },
+        {
+          id: 'shift-other',
+          calendarId: 'calendar-alpha',
+          seriesId: null,
+          title: 'Tuesday opening',
+          startAt: '2024-01-23T09:00:00Z',
+          endAt: '2024-01-23T13:00:00Z',
+          occurrenceIndex: null,
+          sourceKind: 'single'
+        }
+      ])
+    ).toEqual({
+      cadence: 'weekly',
+      interval: 1,
+      weekday: 1,
+      startTime: '09:00',
+      endTime: '13:00',
+      exemplarShiftId: 'shift-3',
+      exemplarStartAt: '2024-01-22T09:00:00.000Z',
+      exemplarEndAt: '2024-01-22T13:00:00.000Z',
+      matchCount: 3,
+      matchingShiftIds: ['shift-1', 'shift-2', 'shift-3']
+    });
+  });
+
+  it('returns null when the evidence is under threshold, outside the anchored window, or split across different time windows', () => {
+    expect(
+      detectRecurrencePattern([
+        {
+          id: 'shift-1',
+          calendarId: 'calendar-alpha',
+          seriesId: null,
+          title: 'Monday opening 1',
+          startAt: '2024-01-08T09:00:00Z',
+          endAt: '2024-01-08T13:00:00Z',
+          occurrenceIndex: null,
+          sourceKind: 'single'
+        },
+        {
+          id: 'shift-2',
+          calendarId: 'calendar-alpha',
+          seriesId: null,
+          title: 'Monday opening 2',
+          startAt: '2024-01-15T09:00:00Z',
+          endAt: '2024-01-15T13:00:00Z',
+          occurrenceIndex: null,
+          sourceKind: 'single'
+        }
+      ])
+    ).toBeNull();
+
+    expect(
+      detectRecurrencePattern([
+        {
+          id: 'shift-old-1',
+          calendarId: 'calendar-alpha',
+          seriesId: null,
+          title: 'Old Monday opening 1',
+          startAt: '2023-11-13T09:00:00Z',
+          endAt: '2023-11-13T13:00:00Z',
+          occurrenceIndex: null,
+          sourceKind: 'single'
+        },
+        {
+          id: 'shift-old-2',
+          calendarId: 'calendar-alpha',
+          seriesId: null,
+          title: 'Old Monday opening 2',
+          startAt: '2023-11-20T09:00:00Z',
+          endAt: '2023-11-20T13:00:00Z',
+          occurrenceIndex: null,
+          sourceKind: 'single'
+        },
+        {
+          id: 'shift-anchor',
+          calendarId: 'calendar-alpha',
+          seriesId: null,
+          title: 'Anchor Monday opening',
+          startAt: '2024-01-22T09:00:00Z',
+          endAt: '2024-01-22T13:00:00Z',
+          occurrenceIndex: null,
+          sourceKind: 'single'
+        }
+      ])
+    ).toBeNull();
+
+    expect(
+      detectRecurrencePattern([
+        {
+          id: 'shift-1',
+          calendarId: 'calendar-alpha',
+          seriesId: null,
+          title: 'Monday opening 1',
+          startAt: '2024-01-08T09:00:00Z',
+          endAt: '2024-01-08T13:00:00Z',
+          occurrenceIndex: null,
+          sourceKind: 'single'
+        },
+        {
+          id: 'shift-2',
+          calendarId: 'calendar-alpha',
+          seriesId: null,
+          title: 'Monday opening 2',
+          startAt: '2024-01-15T09:00:00Z',
+          endAt: '2024-01-15T13:00:00Z',
+          occurrenceIndex: null,
+          sourceKind: 'single'
+        },
+        {
+          id: 'shift-3',
+          calendarId: 'calendar-alpha',
+          seriesId: null,
+          title: 'Long Monday opening',
+          startAt: '2024-01-22T09:00:00Z',
+          endAt: '2024-01-22T17:00:00Z',
+          occurrenceIndex: null,
+          sourceKind: 'single'
+        }
+      ])
+    ).toBeNull();
+  });
+
+  it('fails closed for malformed, inverted, duplicate, and empty inputs', () => {
+    expect(detectRecurrencePattern([])).toBeNull();
+
+    expect(
+      detectRecurrencePattern([
+        {
+          id: 'shift-1',
+          calendarId: 'calendar-alpha',
+          seriesId: null,
+          title: 'Monday opening 1',
+          startAt: '2024-01-08T09:00:00Z',
+          endAt: '2024-01-08T13:00:00Z',
+          occurrenceIndex: null,
+          sourceKind: 'single'
+        },
+        {
+          id: 'shift-2',
+          calendarId: 'calendar-alpha',
+          seriesId: null,
+          title: 'Broken timestamp',
+          startAt: 'not-a-date',
+          endAt: '2024-01-15T13:00:00Z',
+          occurrenceIndex: null,
+          sourceKind: 'single'
+        },
+        {
+          id: 'shift-3',
+          calendarId: 'calendar-alpha',
+          seriesId: null,
+          title: 'Inverted shift',
+          startAt: '2024-01-22T13:00:00Z',
+          endAt: '2024-01-22T09:00:00Z',
+          occurrenceIndex: null,
+          sourceKind: 'single'
+        },
+        {
+          id: 'shift-duplicate',
+          calendarId: 'calendar-alpha',
+          seriesId: null,
+          title: 'Duplicate A',
+          startAt: '2024-01-29T09:00:00Z',
+          endAt: '2024-01-29T13:00:00Z',
+          occurrenceIndex: null,
+          sourceKind: 'single'
+        },
+        {
+          id: 'shift-duplicate',
+          calendarId: 'calendar-alpha',
+          seriesId: null,
+          title: 'Duplicate B',
+          startAt: '2024-02-05T09:00:00Z',
+          endAt: '2024-02-05T13:00:00Z',
+          occurrenceIndex: null,
+          sourceKind: 'single'
+        }
+      ])
+    ).toBeNull();
   });
 });
 

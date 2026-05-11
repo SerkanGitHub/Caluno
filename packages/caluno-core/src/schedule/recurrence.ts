@@ -1,6 +1,7 @@
 import * as rrulePkg from 'rrule';
 import {
   scheduleRecurrenceCadences,
+  type CalendarShift,
   type ExpandedScheduleOccurrence,
   type NormalizedScheduleRecurrence,
   type NormalizedScheduleShiftDraft,
@@ -203,6 +204,88 @@ export function materializeShiftOccurrences(params: {
   };
 }
 
+export type DetectedRecurrencePattern = {
+  cadence: 'weekly';
+  interval: 1;
+  weekday: number;
+  startTime: string;
+  endTime: string;
+  exemplarShiftId: string;
+  exemplarStartAt: string;
+  exemplarEndAt: string;
+  matchCount: number;
+  matchingShiftIds: string[];
+};
+
+export function detectRecurrencePattern(shifts: CalendarShift[]): DetectedRecurrencePattern | null {
+  const duplicateShiftIds = findDuplicateShiftIds(shifts);
+  const validShifts = sortCalendarShifts(shifts)
+    .filter((shift) => !duplicateShiftIds.has(shift.id))
+    .map((shift) => normalizeShiftForPattern(shift))
+    .filter((shift): shift is NormalizedPatternShift => shift != null);
+
+  if (validShifts.length < RECURRENCE_MATCH_THRESHOLD) {
+    return null;
+  }
+
+  const anchorShift = validShifts[validShifts.length - 1];
+  const windowStartAt = anchorShift.startAt.getTime() - RECURRENCE_LOOKBACK_DAYS * DAY_IN_MS;
+  const recentShifts = validShifts.filter((shift) => {
+    const startAt = shift.startAt.getTime();
+    return startAt >= windowStartAt && startAt <= anchorShift.startAt.getTime();
+  });
+
+  if (recentShifts.length < RECURRENCE_MATCH_THRESHOLD) {
+    return null;
+  }
+
+  const groups = new Map<string, NormalizedPatternShift[]>();
+
+  for (const shift of recentShifts) {
+    const key = `${shift.weekday}|${shift.startTime}|${shift.endTime}`;
+    const existing = groups.get(key) ?? [];
+    existing.push(shift);
+    groups.set(key, existing);
+  }
+
+  const candidates = [...groups.entries()]
+    .map(([key, matchingShifts]) => ({
+      key,
+      matchingShifts: sortPatternShifts(matchingShifts)
+    }))
+    .filter((candidate) => candidate.matchingShifts.length >= RECURRENCE_MATCH_THRESHOLD)
+    .sort((left, right) => {
+      const leftExemplar = left.matchingShifts[left.matchingShifts.length - 1];
+      const rightExemplar = right.matchingShifts[right.matchingShifts.length - 1];
+
+      return (
+        right.matchingShifts.length - left.matchingShifts.length ||
+        rightExemplar.startAt.getTime() - leftExemplar.startAt.getTime() ||
+        left.key.localeCompare(right.key)
+      );
+    });
+
+  const suggestion = candidates[0];
+  if (!suggestion) {
+    return null;
+  }
+
+  const exemplar = suggestion.matchingShifts[suggestion.matchingShifts.length - 1];
+
+  return {
+    cadence: 'weekly',
+    interval: 1,
+    weekday: exemplar.weekday,
+    startTime: exemplar.startTime,
+    endTime: exemplar.endTime,
+    exemplarShiftId: exemplar.id,
+    exemplarStartAt: exemplar.startAt.toISOString(),
+    exemplarEndAt: exemplar.endAt.toISOString(),
+    matchCount: suggestion.matchingShifts.length,
+    matchingShiftIds: suggestion.matchingShifts.map((shift) => shift.id)
+  };
+}
+
 function normalizeRecurrence(
   input: ScheduleShiftDraftInput['recurrence'],
   shiftEndAt: Date
@@ -336,8 +419,72 @@ function parseIsoDate(value: string): Date | null {
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
+function normalizeShiftForPattern(shift: CalendarShift): NormalizedPatternShift | null {
+  const startAt = parseIsoDate(shift.startAt);
+  const endAt = parseIsoDate(shift.endAt);
+
+  if (!startAt || !endAt || endAt.getTime() <= startAt.getTime()) {
+    return null;
+  }
+
+  return {
+    id: shift.id,
+    startAt,
+    endAt,
+    weekday: startAt.getUTCDay(),
+    startTime: toTimeOfDay(startAt),
+    endTime: toTimeOfDay(endAt)
+  };
+}
+
+function sortCalendarShifts(shifts: CalendarShift[]): CalendarShift[] {
+  return [...shifts].sort((left, right) => {
+    return (
+      left.startAt.localeCompare(right.startAt) ||
+      left.endAt.localeCompare(right.endAt) ||
+      left.title.localeCompare(right.title) ||
+      left.id.localeCompare(right.id)
+    );
+  });
+}
+
+function sortPatternShifts(shifts: NormalizedPatternShift[]): NormalizedPatternShift[] {
+  return [...shifts].sort((left, right) => {
+    return (
+      left.startAt.getTime() - right.startAt.getTime() ||
+      left.endAt.getTime() - right.endAt.getTime() ||
+      left.id.localeCompare(right.id)
+    );
+  });
+}
+
+function findDuplicateShiftIds(shifts: CalendarShift[]): Set<string> {
+  const counts = new Map<string, number>();
+
+  for (const shift of shifts) {
+    counts.set(shift.id, (counts.get(shift.id) ?? 0) + 1);
+  }
+
+  return new Set([...counts.entries()].filter(([, count]) => count > 1).map(([shiftId]) => shiftId));
+}
+
+function toTimeOfDay(date: Date): string {
+  return `${`${date.getUTCHours()}`.padStart(2, '0')}:${`${date.getUTCMinutes()}`.padStart(2, '0')}`;
+}
+
 function isScheduleRecurrenceCadence(value: string): value is ScheduleRecurrenceCadence {
   return scheduleRecurrenceCadences.includes(value as ScheduleRecurrenceCadence);
 }
 
+type NormalizedPatternShift = {
+  id: string;
+  startAt: Date;
+  endAt: Date;
+  weekday: number;
+  startTime: string;
+  endTime: string;
+};
+
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
+const RECURRENCE_LOOKBACK_DAYS = 30;
+const RECURRENCE_MATCH_THRESHOLD = 3;
