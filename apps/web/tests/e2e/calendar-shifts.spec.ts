@@ -32,19 +32,26 @@ async function deleteVisibleShiftCardsByTitle(page: import('@playwright/test').P
   let deletedCount = 0;
 
   while (true) {
-    const card = page.locator('[data-testid^="shift-card-"]').filter({ hasText: title }).first();
-    if ((await card.count()) === 0) {
+    let cardIdentity: Awaited<ReturnType<typeof resolveVisibleShiftCardIdentity>>;
+
+    try {
+      cardIdentity = await resolveVisibleShiftCardIdentity({
+        page,
+        title,
+        timeout: 1_000
+      });
+    } catch {
       return deletedCount;
     }
 
-    const testId = await card.getAttribute('data-testid');
-    if (!testId) {
-      throw new Error(`Expected a shift card test id while cleaning up proof shift \"${title}\".`);
-    }
-
-    await expect(card).toBeVisible();
-    await card.getByRole('button', { name: 'Delete shift' }).click();
-    await expect(page.getByTestId(testId)).toHaveCount(0);
+    await expect(cardIdentity.locator).toBeVisible();
+    await cardIdentity.locator.getByRole('button', { name: 'Delete shift' }).click();
+    await expect
+      .poll(async () => page.getByTestId(cardIdentity.testId).count(), {
+        timeout: 20_000,
+        message: `expected proof shift \"${title}\" (${cardIdentity.shiftId}) to disappear after cleanup`
+      })
+      .toBe(0);
     deletedCount += 1;
   }
 }
