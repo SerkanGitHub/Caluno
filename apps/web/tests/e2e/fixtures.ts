@@ -499,8 +499,12 @@ async function readFlowSurfaceSnapshot(page: Page): Promise<FlowSurfaceSnapshot>
       runtimeIsolationState: document.querySelector<HTMLElement>('[data-testid="offline-runtime-surface"]')?.dataset.crossOriginIsolated ?? null,
       serviceWorkerStatus: document.querySelector<HTMLElement>('[data-testid="offline-runtime-surface"]')?.dataset.serviceWorkerStatus ?? null,
       serviceWorkerDetail: document.querySelector<HTMLElement>('[data-testid="offline-runtime-surface"]')?.dataset.serviceWorkerDetail ?? null,
-      calendarRouteMode: text('[data-testid="calendar-route-state"] strong'),
-      calendarRouteReason: text('[data-testid="calendar-route-state"] code'),
+      calendarRouteMode:
+        document.querySelector<HTMLElement>('[data-testid="calendar-route-state"]')?.dataset.routeMode ??
+        text('[data-testid="calendar-route-state"] strong'),
+      calendarRouteReason:
+        document.querySelector<HTMLElement>('[data-testid="calendar-route-state"]')?.dataset.routeReason ??
+        text('[data-testid="calendar-route-state"] code'),
       calendarRouteDetail: text('[data-testid="calendar-route-state"] p'),
       localNetwork: text('[data-testid="calendar-local-state"] strong'),
       localQueueSummary: text('[data-testid="calendar-local-state"] code'),
@@ -819,7 +823,7 @@ export async function openCalendarWeek(params: {
   await expect(page.getByTestId('calendar-week-board')).toBeVisible();
 
   const routeState = page.getByTestId('calendar-route-state');
-  if ((await routeState.count()) > 0 && ((await routeState.textContent()) ?? '').includes('trusted-online')) {
+  if ((await routeState.count()) > 0 && (await routeState.getAttribute('data-route-mode')) === 'trusted-online') {
     const localState = page.getByTestId('calendar-local-state');
     if ((await localState.count()) > 0) {
       await waitForLocalSnapshotStatus(page, 'ready');

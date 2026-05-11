@@ -659,7 +659,12 @@
     </p>
 
     <div class="status-stack">
-      <article class={`status-card ${routeTone}`} data-testid="calendar-route-state">
+      <article
+        class={`status-card ${routeTone}`}
+        data-testid="calendar-route-state"
+        data-route-mode={calendarState.mode}
+        data-route-reason={calendarState.reason ?? 'none'}
+      >
         <span class="status-card__label">Route state</span>
         <strong>{calendarState.mode}</strong>
         <p>{calendarState.detail}</p>

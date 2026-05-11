@@ -143,7 +143,7 @@ test('online collaborators see shared shift changes propagate live within the sa
       });
 
       await expect(page.getByRole('heading', { name: 'Alpha shared' })).toBeVisible();
-      await expect(page.getByTestId('calendar-route-state')).toContainText('trusted-online');
+      await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'trusted-online');
       await waitForQueueSummary(page, '0 pending / 0 retryable');
       await syncCalendarFlowContext(page, flow, {
         calendarId: seededCalendars.alphaShared,
@@ -156,7 +156,7 @@ test('online collaborators see shared shift changes propagate live within the sa
 
     await test.step('phase: prove both members are on the same scoped week with ready realtime subscriptions and a shared visible overlap baseline', async () => {
       await expect(collaborator.page.getByRole('heading', { name: 'Alpha shared' })).toBeVisible();
-      await expect(collaborator.page.getByTestId('calendar-route-state')).toContainText('trusted-online');
+      await expect(collaborator.page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'trusted-online');
       await waitForQueueSummary(collaborator.page, '0 pending / 0 retryable');
       await waitForRealtimeChannelReady(page);
       await waitForRealtimeChannelReady(collaborator.page);

@@ -117,7 +117,7 @@ test('previously synced calendar weeks reopen offline, keep local writes across 
     });
 
     await expect(page.getByRole('heading', { name: 'Alpha shared' })).toBeVisible();
-    await expect(page.getByTestId('calendar-route-state')).toContainText('trusted-online');
+    await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'trusted-online');
     await expect(page.getByTestId('calendar-local-state')).toContainText('online');
     await expect(page.getByTestId('calendar-local-state')).toContainText('0 pending / 0 retryable');
     await expect(page.getByTestId('calendar-week-board')).toContainText('Server-synced board');
@@ -158,7 +158,7 @@ test('previously synced calendar weeks reopen offline, keep local writes across 
 
     await expect(page.getByTestId('calendar-shell')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Alpha shared' })).toBeVisible();
-    await expect(page.getByTestId('calendar-route-state')).toContainText('cached-offline');
+    await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'cached-offline');
     await expect(page.getByTestId('calendar-local-state')).toContainText('offline');
     await expect(page.getByTestId('calendar-local-state')).toContainText('0 pending / 0 retryable');
     await expect(page.getByTestId('calendar-week-board')).toContainText('Cached local board');
@@ -293,7 +293,7 @@ test('previously synced calendar weeks reopen offline, keep local writes across 
     await page.reload();
 
     await expect(page.getByTestId('calendar-shell')).toBeVisible();
-    await expect(page.getByTestId('calendar-route-state')).toContainText('cached-offline');
+    await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'cached-offline');
     await expect(page.getByTestId('calendar-local-state')).toContainText('offline');
     await expect(page.getByTestId('calendar-local-state')).toContainText('4 pending / 0 retryable');
     await expect(page.getByTestId('calendar-week-board')).toContainText('Cached local board');
@@ -337,8 +337,8 @@ test('previously synced calendar weeks reopen offline, keep local writes across 
 
     const deniedState = page.getByTestId('access-denied-state');
     await expect(deniedState).toBeVisible();
-    await expect(page.getByTestId('calendar-route-state')).toContainText('offline-denied');
-    await expect(page.getByTestId('calendar-route-state')).toContainText('calendar-not-synced');
+    await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'offline-denied');
+    await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-reason', 'calendar-not-synced');
     await expect(deniedState).toContainText('calendar-missing');
     await expect(deniedState).toContainText('calendar-lookup');
     await expect(deniedState).toContainText(seededCalendars.betaShared);
@@ -358,7 +358,7 @@ test('previously synced calendar weeks reopen offline, keep local writes across 
 
     await expect(page.getByTestId('calendar-shell')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Alpha shared' })).toBeVisible();
-    await expect(page.getByTestId('calendar-route-state')).toContainText('cached-offline');
+    await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'cached-offline');
     await waitForQueueSummary(page, '4 pending / 0 retryable');
     const queuedCreatedShift = await resolveVisibleShiftCardIdentity({
       page,
