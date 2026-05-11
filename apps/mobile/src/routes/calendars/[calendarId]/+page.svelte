@@ -3,6 +3,7 @@
   import { page } from '$app/state';
   import { onDestroy, untrack } from 'svelte';
   import { createEmptyCalendarScheduleView, resolveVisibleWeek, type ScheduleLoadStatus } from '@repo/caluno-core/route-contract';
+  import type { DetectedRecurrencePattern } from '@repo/caluno-core/schedule/recurrence';
   import { buildCalendarWeekBoard } from '@repo/caluno-core/schedule/board';
   import { describeDeniedCalendarReason } from '@repo/caluno-core/app-shell';
   import type { CreatePrefillPayload } from '@repo/caluno-core/schedule/create-prefill';
@@ -16,7 +17,11 @@
   } from '$lib/schedule/create-prefill-arrival';
   import { rememberSyncedCalendarWeek, createMobileOfflineRepository } from '$lib/offline/repository';
   import { createMobileOfflineRuntime, type MobileOfflineRuntime } from '$lib/offline/runtime';
-  import { createTrustedMobileScheduleTransport, type MobileTrustedScheduleTransport } from '$lib/offline/transport';
+  import {
+    createTrustedMobileScheduleTransport,
+    type MobileRecurrenceSuggestionLoadStatus,
+    type MobileTrustedScheduleTransport
+  } from '$lib/offline/transport';
   import type { MobileCalendarControllerState } from '$lib/offline/controller';
   import {
     loadCachedMobileAppShell,
@@ -37,6 +42,37 @@
   } from '$lib/notifications/router';
   import { createMobileNotificationTransport } from '$lib/notifications/transport';
   import { createMobileNotificationRuntime, type MobileNotificationRuntime, type MobileNotificationRuntimeState } from '$lib/notifications/runtime';
+
+  type RecurrenceSuggestionRouteStatus = MobileRecurrenceSuggestionLoadStatus | 'inactive' | 'loading';
+  type RecurrenceSuggestionRouteDiagnostic = {
+    scopeKey: string;
+    status: RecurrenceSuggestionRouteStatus;
+    reason: string | null;
+    message: string;
+  };
+
+  function buildRecurrenceSuggestionScopeKey(params: {
+    viewerId: string | null;
+    calendarId: string | null;
+    weekStart: string;
+    routeMode: MobileShellRouteMode;
+  }): string {
+    return `${params.viewerId ?? 'anonymous'}:${params.calendarId ?? 'none'}:${params.weekStart}:${params.routeMode}`;
+  }
+
+  function createRecurrenceSuggestionDiagnostic(params: {
+    scopeKey: string;
+    status: RecurrenceSuggestionRouteStatus;
+    reason: string | null;
+    message: string;
+  }): RecurrenceSuggestionRouteDiagnostic {
+    return {
+      scopeKey: params.scopeKey,
+      status: params.status,
+      reason: params.reason,
+      message: params.message
+    };
+  }
 
   const authState = $derived(page.data.authState);
   const protectedEntry = $derived(page.data.protectedEntry);
@@ -63,6 +99,15 @@
   });
   let createPrefillObservedWeekStart = $state<string | null>(null);
   let createPrefill = $state<CreatePrefillPayload | null>(null);
+  let recurrenceSuggestion = $state<DetectedRecurrencePattern | null>(null);
+  let recurrenceSuggestionStatus = $state<RecurrenceSuggestionRouteDiagnostic>(
+    createRecurrenceSuggestionDiagnostic({
+      scopeKey: 'uninitialized',
+      status: 'inactive',
+      reason: 'RECURRENCE_SUGGESTION_INACTIVE',
+      message: 'Trusted online recurrence suggestions are inactive until a permitted calendar week is active.'
+    })
+  );
   let runtimeState = $state.raw<MobileCalendarControllerState | null>(null);
   let runtime = $state.raw<MobileOfflineRuntime | null>(null);
   let transport = $state.raw<MobileTrustedScheduleTransport | null>(null);
@@ -177,6 +222,28 @@
     });
   }
 
+  function setRecurrenceSuggestionInactive(params: {
+    viewerId: string | null;
+    calendarId: string | null;
+    weekStart: string;
+    routeMode: MobileShellRouteMode;
+    reason?: string;
+    message?: string;
+  }) {
+    recurrenceSuggestion = null;
+    recurrenceSuggestionStatus = createRecurrenceSuggestionDiagnostic({
+      scopeKey: buildRecurrenceSuggestionScopeKey({
+        viewerId: params.viewerId,
+        calendarId: params.calendarId,
+        weekStart: params.weekStart,
+        routeMode: params.routeMode
+      }),
+      status: 'inactive',
+      reason: params.reason ?? 'RECURRENCE_SUGGESTION_INACTIVE',
+      message: params.message ?? 'Trusted online recurrence suggestions are inactive for the current route context.'
+    });
+  }
+
   async function loadShell(force = false) {
     if (!browser || authState.phase !== 'authenticated' || !authState.user) {
       return;
@@ -202,16 +269,34 @@
   }
 
   async function ensureCalendarRuntime() {
+    const diagnosticCalendarId = (activeCalendar?.id ?? attemptedCalendarId) || null;
+
     if (!browser || !activeCalendar || !activeViewerId || (routeMode !== 'trusted-online' && routeMode !== 'cached-offline')) {
       await destroyRuntime();
       routeActivationFailure = null;
       remoteFailure = null;
       runtimeLoading = false;
+      setRecurrenceSuggestionInactive({
+        viewerId: activeViewerId,
+        calendarId: diagnosticCalendarId,
+        weekStart: visibleWeek.start,
+        routeMode,
+        message: 'Trusted online recurrence suggestions are unavailable until a permitted online calendar week is active.'
+      });
       return;
     }
 
     const nextScopeKey = `${activeViewerId}:${activeCalendar.id}:${visibleWeek.start}:${routeMode}`;
     if (runtimeScopeKey === nextScopeKey && runtimeState) {
+      if (routeMode !== 'trusted-online' && recurrenceSuggestionStatus.scopeKey !== nextScopeKey) {
+        setRecurrenceSuggestionInactive({
+          viewerId: activeViewerId,
+          calendarId: activeCalendar.id,
+          weekStart: visibleWeek.start,
+          routeMode,
+          message: 'Trusted online recurrence suggestions stay cleared while this route is serving cached continuity.'
+        });
+      }
       return;
     }
 
@@ -220,6 +305,25 @@
     runtimeLoading = true;
     routeActivationFailure = null;
     remoteFailure = null;
+
+    if (routeMode === 'trusted-online') {
+      recurrenceSuggestion = null;
+      recurrenceSuggestionStatus = createRecurrenceSuggestionDiagnostic({
+        scopeKey: nextScopeKey,
+        status: 'loading',
+        reason: null,
+        message: 'Loading trusted recurrence suggestions for the visible week.'
+      });
+    } else {
+      setRecurrenceSuggestionInactive({
+        viewerId: activeViewerId,
+        calendarId: activeCalendar.id,
+        weekStart: visibleWeek.start,
+        routeMode,
+        message: 'Trusted online recurrence suggestions stay cleared while this route is serving cached continuity.'
+      });
+    }
+
     await destroyRuntime();
 
     try {
@@ -228,13 +332,20 @@
         userId: activeViewerId,
         calendarId: activeCalendar.id
       });
-      const initialSchedule: CalendarScheduleView =
+      const [initialSchedule, recurrenceSuggestionResult] =
         routeMode === 'trusted-online'
-          ? await nextTransport.loadWeek({
-              calendarId: activeCalendar.id,
-              visibleWeekStart: visibleWeek.start
-            })
-          : createEmptyCalendarScheduleView(visibleWeek);
+          ? await Promise.all([
+              nextTransport.loadWeek({
+                calendarId: activeCalendar.id,
+                visibleWeekStart: visibleWeek.start
+              }),
+              nextTransport.loadRecurrenceSuggestion({
+                calendarId: activeCalendar.id,
+                visibleWeekStart: visibleWeek.start,
+                visibleWeekEndAt: visibleWeek.endAt
+              })
+            ])
+          : [createEmptyCalendarScheduleView(visibleWeek), null];
 
       if (sequence !== runtimeSequence) {
         return;
@@ -245,6 +356,24 @@
         reason: initialSchedule.reason,
         message: initialSchedule.message
       };
+
+      if (routeMode === 'trusted-online' && recurrenceSuggestionResult) {
+        recurrenceSuggestion = recurrenceSuggestionResult.suggestion;
+        recurrenceSuggestionStatus = createRecurrenceSuggestionDiagnostic({
+          scopeKey: nextScopeKey,
+          status: recurrenceSuggestionResult.status,
+          reason: recurrenceSuggestionResult.reason,
+          message: recurrenceSuggestionResult.message
+        });
+      } else {
+        setRecurrenceSuggestionInactive({
+          viewerId: activeViewerId,
+          calendarId: activeCalendar.id,
+          weekStart: visibleWeek.start,
+          routeMode,
+          message: 'Trusted online recurrence suggestions stay cleared while this route is serving cached continuity.'
+        });
+      }
 
       const nextRuntime = createMobileOfflineRuntime({
         scope: {
@@ -283,6 +412,14 @@
         reason: 'MOBILE_CALENDAR_RUNTIME_FAILED',
         detail: error instanceof Error ? error.message : 'The phone-first calendar board could not bootstrap.'
       };
+      setRecurrenceSuggestionInactive({
+        viewerId: activeViewerId,
+        calendarId: activeCalendar.id,
+        weekStart: visibleWeek.start,
+        routeMode,
+        reason: 'MOBILE_CALENDAR_RUNTIME_FAILED',
+        message: 'The phone-first calendar board could not bootstrap recurrence diagnostics for this route.'
+      });
       await destroyRuntime();
     } finally {
       if (sequence === runtimeSequence) {
@@ -369,29 +506,74 @@
   }
 
   async function refreshTrustedWeek() {
-    if (!transport || !runtime || !activeCalendar || !canRefresh || refreshing) {
+    if (!transport || !runtime || !activeCalendar || !activeViewerId || !canRefresh || refreshing) {
+      return;
+    }
+
+    if (routeMode !== 'trusted-online') {
+      setRecurrenceSuggestionInactive({
+        viewerId: activeViewerId,
+        calendarId: activeCalendar.id,
+        weekStart: visibleWeek.start,
+        routeMode,
+        message: 'Trusted online recurrence suggestions stay cleared while this route is serving cached continuity.'
+      });
       return;
     }
 
     refreshing = true;
+    const scopeKey = buildRecurrenceSuggestionScopeKey({
+      viewerId: activeViewerId,
+      calendarId: activeCalendar.id,
+      weekStart: visibleWeek.start,
+      routeMode
+    });
+    recurrenceSuggestion = null;
+    recurrenceSuggestionStatus = createRecurrenceSuggestionDiagnostic({
+      scopeKey,
+      status: 'loading',
+      reason: null,
+      message: 'Refreshing trusted recurrence suggestions for the visible week.'
+    });
 
     try {
-      const schedule = await transport.loadWeek({
-        calendarId: activeCalendar.id,
-        visibleWeekStart: visibleWeek.start
-      });
+      const [schedule, recurrenceSuggestionResult] = await Promise.all([
+        transport.loadWeek({
+          calendarId: activeCalendar.id,
+          visibleWeekStart: visibleWeek.start
+        }),
+        transport.loadRecurrenceSuggestion({
+          calendarId: activeCalendar.id,
+          visibleWeekStart: visibleWeek.start,
+          visibleWeekEndAt: visibleWeek.endAt
+        })
+      ]);
 
       remoteFailure = {
         status: schedule.status,
         reason: schedule.reason,
         message: schedule.message
       };
+      recurrenceSuggestion = recurrenceSuggestionResult.suggestion;
+      recurrenceSuggestionStatus = createRecurrenceSuggestionDiagnostic({
+        scopeKey,
+        status: recurrenceSuggestionResult.status,
+        reason: recurrenceSuggestionResult.reason,
+        message: recurrenceSuggestionResult.message
+      });
 
       if (schedule.status === 'ready') {
         await runtime.getController().ingestTrustedSchedule(schedule);
         await persistWeekContinuity(activeCalendar.id, visibleWeek.start);
       }
     } catch (error) {
+      recurrenceSuggestion = null;
+      recurrenceSuggestionStatus = createRecurrenceSuggestionDiagnostic({
+        scopeKey,
+        status: 'query-error',
+        reason: 'RECURRENCE_SUGGESTION_REFRESH_FAILED',
+        message: error instanceof Error ? error.message : 'Refreshing trusted recurrence suggestions failed.'
+      });
       remoteFailure = {
         status: 'query-error',
         reason: 'SCHEDULE_REFRESH_FAILED',
@@ -584,6 +766,11 @@
     data-create-prefill-source={createPrefill?.source ?? 'none'}
     data-create-prefill-start={createPrefill?.startAt ?? 'none'}
     data-create-prefill-end={createPrefill?.endAt ?? 'none'}
+    data-recurrence-suggestion-scope={recurrenceSuggestionStatus.scopeKey}
+    data-recurrence-suggestion-status={recurrenceSuggestionStatus.status}
+    data-recurrence-suggestion-reason={recurrenceSuggestionStatus.reason ?? 'none'}
+    data-recurrence-suggestion-match-count={recurrenceSuggestion?.matchCount ?? 0}
+    data-recurrence-suggestion-exemplar-shift-id={recurrenceSuggestion?.exemplarShiftId ?? 'none'}
     data-notification-route-result={routeDiagnostics.code}
     data-notification-route-reason={routeDiagnostics.reason ?? 'none'}
   >

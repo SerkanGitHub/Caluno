@@ -791,7 +791,7 @@ describe('mobile calendar-change dispatch contract', () => {
   it('degrades when invoke returns a malformed response shape', async () => {
     const client = {
       functions: {
-        invoke: vi.fn(async () => 'not-an-object' as unknown)
+        invoke: vi.fn(async () => 'not-an-object' as unknown as { data: unknown; error: { message: string } | null })
       }
     };
 

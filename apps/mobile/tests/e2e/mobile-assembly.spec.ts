@@ -267,7 +267,7 @@ test('phase 4 — notification delivery reaches the enabled calendar and a safe 
   // Enable notifications for the permitted calendar
   await page.goto('/groups');
   await expect(page.getByTestId('groups-shell')).toHaveAttribute('data-shell-bootstrap', 'ready');
-  await setSimulatedNotificationPermissions(page, 'granted');
+  await setSimulatedNotificationPermissions(page, { local: 'granted', push: 'granted' });
   await setNotificationToggleValue(page, calendarId, true);
 
   await waitForNotificationToggleState(page, calendarId, {
@@ -316,7 +316,7 @@ test('phase 4 — notification delivery reaches the enabled calendar and a safe 
   // Per-calendar reminder inventory must be non-empty for the enabled calendar
   const sharedReminders = await getPendingRemindersForCalendar(page, calendarId);
   expect(sharedReminders.length).toBeGreaterThan(0);
-  expect(sharedReminders.every((r) => r.calendarId === calendarId)).toBe(true);
+  expect(sharedReminders.every((r) => r.extra.calendarId === calendarId)).toBe(true);
 
   const backlogReminders = await getPendingRemindersForCalendar(page, backlogCalendarId);
   expect(backlogReminders).toHaveLength(0);

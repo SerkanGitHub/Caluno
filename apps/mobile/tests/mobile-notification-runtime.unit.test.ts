@@ -635,6 +635,20 @@ function createScheduleFormData(overrides: Record<string, string> = {}): FormDat
   return fd;
 }
 
+function createScheduleRequest(action: 'delete' | 'edit'): ReconnectDrainActionRequest {
+  const formData = createScheduleFormData();
+  return {
+    entryId: `entry-${action}`,
+    action,
+    actionKey: action === 'delete' ? 'deleteShift' : 'editShift',
+    url: `/calendars/${scheduleCalendarId}/shifts`,
+    formData,
+    visibleWeekStart: '2026-04-21',
+    shiftId: scheduleShiftId,
+    fields: Object.fromEntries(Array.from(formData.entries()).map(([key, value]) => [key, String(value)]))
+  };
+}
+
 function buildSuccessShiftRow() {
   return [
     {
@@ -788,12 +802,7 @@ describe('mobile schedule transport — dispatch wiring', () => {
       timeoutMs: 100
     });
 
-    const outcome = await transport.submitAction({
-      action: 'delete',
-      url: `/calendars/${scheduleCalendarId}/shifts`,
-      visibleWeekStart: '2026-04-21',
-      formData: createScheduleFormData()
-    });
+    const outcome = await transport.submitAction(createScheduleRequest('delete'));
 
     // Canonical write outcome must be success even though dispatch threw
     expect(outcome.type).toBe('success');
@@ -820,12 +829,7 @@ describe('mobile schedule transport — dispatch wiring', () => {
       timeoutMs: 100
     });
 
-    const outcome = await transport.submitAction({
-      action: 'edit',
-      url: `/calendars/${scheduleCalendarId}/shifts`,
-      visibleWeekStart: '2026-04-21',
-      formData: createScheduleFormData()
-    });
+    const outcome = await transport.submitAction(createScheduleRequest('edit'));
 
     expect(outcome.type).toBe('failure');
     await new Promise((resolve) => setTimeout(resolve, 20));
@@ -845,12 +849,7 @@ describe('mobile schedule transport — dispatch wiring', () => {
       timeoutMs: 100
     });
 
-    const makeRequest = (): ReconnectDrainActionRequest => ({
-      action: 'delete',
-      url: `/calendars/${scheduleCalendarId}/shifts`,
-      visibleWeekStart: '2026-04-21',
-      formData: createScheduleFormData()
-    });
+    const makeRequest = (): ReconnectDrainActionRequest => createScheduleRequest('delete');
 
     const outcome1 = await transport.submitAction(makeRequest());
     const outcome2 = await transport.submitAction(makeRequest());

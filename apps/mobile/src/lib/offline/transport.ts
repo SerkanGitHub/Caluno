@@ -1,5 +1,10 @@
 import { createEmptyCalendarScheduleView, resolveVisibleWeek } from '@repo/caluno-core/route-contract';
-import { normalizeShiftDraft, normalizeVisibleRange } from '@repo/caluno-core/schedule/recurrence';
+import {
+  detectRecurrencePattern,
+  normalizeShiftDraft,
+  normalizeVisibleRange,
+  type DetectedRecurrencePattern
+} from '@repo/caluno-core/schedule/recurrence';
 import type {
   CalendarScheduleView,
   CalendarShift,
@@ -24,7 +29,24 @@ const RRule = (rruleModule.RRule ?? rruleModule.default?.RRule) as typeof import
 
 export type MobileTrustedScheduleTransport = {
   loadWeek: (params: { calendarId: string; visibleWeekStart: string }) => Promise<CalendarScheduleView>;
+  loadRecurrenceSuggestion: (params: {
+    calendarId: string;
+    visibleWeekStart: string;
+    visibleWeekEndAt: string;
+  }) => Promise<MobileRecurrenceSuggestionLoadResult>;
   submitAction: (request: ReconnectDrainActionRequest) => Promise<CalendarControllerServerOutcome>;
+};
+
+export type MobileRecurrenceSuggestionLoadStatus = 'ready' | 'empty' | 'query-error' | 'timeout' | 'malformed-response';
+
+export type MobileRecurrenceSuggestionLoadResult = {
+  suggestion: DetectedRecurrencePattern | null;
+  status: MobileRecurrenceSuggestionLoadStatus;
+  reason: string | null;
+  message: string;
+  lookbackStartAt: string;
+  visibleWeekStart: string;
+  visibleWeekEndAt: string;
 };
 
 type ShiftRow = {
@@ -157,6 +179,81 @@ export function createTrustedMobileScheduleTransport(options: {
               : 'The visible-week schedule query failed, so the calendar stayed on the current bounded range.'
         } satisfies CalendarScheduleView;
       }
+    },
+
+    async loadRecurrenceSuggestion(params) {
+      const lookbackStartAt = new Date(new Date(params.visibleWeekEndAt).getTime() - RECURRENCE_LOOKBACK_DAYS * DAY_IN_MS).toISOString();
+      const result = await safeSupabaseCall(
+        options.client
+          .from('shifts')
+          .select('id, calendar_id, series_id, title, start_at, end_at, occurrence_index, source_kind')
+          .eq('calendar_id', params.calendarId)
+          .gte('start_at', lookbackStartAt)
+          .lt('start_at', params.visibleWeekEndAt)
+          .order('start_at', { ascending: true })
+          .order('end_at', { ascending: true }) as unknown as Promise<SupabaseResult<ShiftRow[]>>,
+        timeoutMs,
+        'SCHEDULE_RECURRENCE_SUGGESTION_TIMEOUT'
+      );
+
+      if (!result.ok) {
+        return {
+          suggestion: null,
+          status: result.timeout ? 'timeout' : 'query-error',
+          reason: result.timeout ? 'SCHEDULE_RECURRENCE_SUGGESTION_TIMEOUT' : 'SCHEDULE_RECURRENCE_SUGGESTION_FAILED',
+          message: result.timeout
+            ? 'The bounded recurrence history query timed out, so predictive hints stayed hidden.'
+            : result.detail ?? 'The bounded recurrence history query failed, so predictive hints stayed hidden.',
+          lookbackStartAt,
+          visibleWeekStart: params.visibleWeekStart,
+          visibleWeekEndAt: params.visibleWeekEndAt
+        } satisfies MobileRecurrenceSuggestionLoadResult;
+      }
+
+      if (!Array.isArray(result.data) || result.data.some((row) => !isShiftRow(row))) {
+        return {
+          suggestion: null,
+          status: 'malformed-response',
+          reason: 'SCHEDULE_RECURRENCE_SUGGESTION_RESPONSE_INVALID',
+          message: 'The bounded recurrence history query returned malformed data, so predictive hints stayed hidden.',
+          lookbackStartAt,
+          visibleWeekStart: params.visibleWeekStart,
+          visibleWeekEndAt: params.visibleWeekEndAt
+        } satisfies MobileRecurrenceSuggestionLoadResult;
+      }
+
+      const suggestion = detectRecurrencePattern(result.data.map(mapShiftRow).sort(compareShiftTimes));
+      if (!suggestion) {
+        return {
+          suggestion: null,
+          status: 'empty',
+          reason: 'RECURRENCE_SUGGESTION_EMPTY',
+          message: 'No trusted same-calendar recurrence pattern was detected inside the trailing 30-day window.',
+          lookbackStartAt,
+          visibleWeekStart: params.visibleWeekStart,
+          visibleWeekEndAt: params.visibleWeekEndAt
+        } satisfies MobileRecurrenceSuggestionLoadResult;
+      }
+
+      console.info('mobile.calendar.recurrence-suggestion.computed', {
+        calendarId: params.calendarId,
+        visibleWeekStart: params.visibleWeekStart,
+        visibleWeekEndAt: params.visibleWeekEndAt,
+        lookbackStartAt,
+        exemplarShiftId: suggestion.exemplarShiftId,
+        matchCount: suggestion.matchCount,
+        matchingShiftIds: suggestion.matchingShiftIds
+      });
+
+      return {
+        suggestion,
+        status: 'ready',
+        reason: null,
+        message: 'Recent same-calendar shifts suggested a trusted weekly recurrence pattern.',
+        lookbackStartAt,
+        visibleWeekStart: params.visibleWeekStart,
+        visibleWeekEndAt: params.visibleWeekEndAt
+      } satisfies MobileRecurrenceSuggestionLoadResult;
     },
 
     async submitAction(request) {
@@ -1181,3 +1278,6 @@ function isTimeoutError(error: unknown): boolean {
 function isUuidLike(value: string): boolean {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
 }
+
+const DAY_IN_MS = 24 * 60 * 60 * 1000;
+const RECURRENCE_LOOKBACK_DAYS = 30;

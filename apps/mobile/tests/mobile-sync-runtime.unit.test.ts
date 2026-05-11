@@ -316,6 +316,15 @@ describe('mobile sync runtime', () => {
 
     const timeoutTransport: MobileTrustedScheduleTransport = {
       loadWeek: async () => createInitialSchedule(),
+      loadRecurrenceSuggestion: async () => ({
+        suggestion: null,
+        status: 'empty',
+        reason: 'RECURRENCE_SUGGESTION_EMPTY',
+        message: 'No trusted same-calendar recurrence pattern was detected inside the trailing 30-day window.',
+        lookbackStartAt: '2026-03-28T00:00:00.000Z',
+        visibleWeekStart: scope.weekStart,
+        visibleWeekEndAt: '2026-04-27T00:00:00.000Z'
+      }),
       submitAction: async (request) =>
         ({
           type: 'failure',
@@ -377,6 +386,15 @@ describe('mobile sync runtime', () => {
 
     const transport: MobileTrustedScheduleTransport = {
       loadWeek: async () => createInitialSchedule(),
+      loadRecurrenceSuggestion: async () => ({
+        suggestion: null,
+        status: 'empty',
+        reason: 'RECURRENCE_SUGGESTION_EMPTY',
+        message: 'No trusted same-calendar recurrence pattern was detected inside the trailing 30-day window.',
+        lookbackStartAt: '2026-03-28T00:00:00.000Z',
+        visibleWeekStart: scope.weekStart,
+        visibleWeekEndAt: '2026-04-27T00:00:00.000Z'
+      }),
       submitAction: async (request) => {
         submitCount += 1;
         submittedTitles.push(request.fields.title);
@@ -521,6 +539,15 @@ describe('mobile sync runtime', () => {
 
     const transport: MobileTrustedScheduleTransport = {
       loadWeek: async () => createInitialSchedule(),
+      loadRecurrenceSuggestion: async () => ({
+        suggestion: null,
+        status: 'empty',
+        reason: 'RECURRENCE_SUGGESTION_EMPTY',
+        message: 'No trusted same-calendar recurrence pattern was detected inside the trailing 30-day window.',
+        lookbackStartAt: '2026-03-28T00:00:00.000Z',
+        visibleWeekStart: scope.weekStart,
+        visibleWeekEndAt: '2026-04-27T00:00:00.000Z'
+      }),
       submitAction: async (request) => {
         submitCount += 1;
         await drainPromise;
