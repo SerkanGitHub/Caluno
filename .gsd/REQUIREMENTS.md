@@ -15,17 +15,6 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: mapped
 - Notes: M003 extends the trusted shared-calendar permission boundary onto mobile surfaces and keeps create/edit/find-time flows inside permitted calendar scope.
 
-### R011 — Caluno provides predictive scheduling assistance that helps users anticipate better coordination options from their real schedule data.
-- Class: differentiator
-- Status: active
-- Description: Caluno provides predictive scheduling assistance that helps users anticipate better coordination options from their real schedule data.
-- Why it matters: Predictive help is part of the long-term vision, but it depends on trustworthy schedule data and matching foundations.
-- Source: user
-- Primary owning slice: M005/S01
-- Supporting slices: none
-- Validation: unmapped
-- Notes: M005 takes ownership of R011. S01 defines the concrete feature set; subsequent M005 slices implement and validate it.
-
 ## Validated
 
 ### R001 — Users can create an account, sign in, and continue using previously synced calendars offline with a cached session.
@@ -126,6 +115,17 @@ This file is the explicit capability and coverage contract for the project.
 - Supporting slices: M003/S05
 - Validation: Validated in M003/S04 by passing `pnpm --dir apps/mobile exec vitest run tests/mobile-continuity.unit.test.ts tests/mobile-notification-contract.unit.test.ts tests/mobile-notification-runtime.unit.test.ts tests/mobile-notification-router.unit.test.ts`, `npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/auth-scope.spec.ts tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-notifications.spec.ts`, and `pnpm --dir apps/mobile check && pnpm --dir apps/mobile build && sh -c 'test -d apps/mobile/ios || pnpm --dir apps/mobile cap:add:ios; pnpm --dir apps/mobile cap:sync'`, proving every permitted calendar exposes one per-device notification toggle that mirrors on `/groups` and `/calendars/[calendarId]`, persists installation-backed preference intent across reload, and truthfully reports permission/local-reminder/remote-subscription state without splitting reminders and shared-change control.
 - Notes: A single per-calendar device toggle covers both upcoming reminders and shared-calendar change notifications; disabled calendars must stay quiet.
+
+### R011 — Caluno provides predictive scheduling assistance that helps users anticipate better coordination options from their real schedule data.
+- Class: differentiator
+- Status: validated
+- Description: Caluno provides predictive scheduling assistance that helps users anticipate better coordination options from their real schedule data.
+- Why it matters: Predictive help is part of the long-term vision, but it depends on trustworthy schedule data and matching foundations.
+- Source: user
+- Primary owning slice: M005/S01
+- Supporting slices: none
+- Validation: Validated in M005/S06 by passing `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-sync.spec.ts tests/e2e/calendar-shifts.spec.ts`, `npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/mobile-predictive.spec.ts tests/e2e/mobile-assembly.spec.ts`, and `pnpm build`, which together proved the clean-reset web continuity/realtime proof on typed route-state diagnostics, a scoped predictive create-editor axe scan with zero new WCAG 2.1 AA violations, unchanged mobile predictive/assembly smoke on fresh seeded data, and successful launch-readiness builds for both apps.
+- Notes: M005/S06 closes R011 only for the shipped predictive scheduling assistance surfaces—recurrence suggestions and clash advisories grounded in real schedule data. The validation evidence is scoped to launch-hardening proof and does not widen predictive scope beyond those shipped surfaces.
 
 ### R012 — Authentication, row-level policies, and sharing rules prevent cross-group data leakage and limit each user to calendars they are permitted to access.
 - Class: compliance/security
@@ -259,7 +259,7 @@ This file is the explicit capability and coverage contract for the project.
 | R008 | differentiator | validated | M002/S01 | M002/S02, M002/S03 | Validated in M002 by passing `pnpm --dir apps/web exec vitest run tests/find-time/member-availability.unit.test.ts tests/find-time/matcher.unit.test.ts tests/routes/find-time-routes.unit.test.ts`, `pnpm --dir apps/web exec vitest run tests/schedule/create-prefill.unit.test.ts tests/routes/protected-routes.unit.test.ts`, `pnpm --dir apps/web check`, and `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/find-time.spec.ts tests/e2e/calendar-shifts.spec.ts`, which together proved truthful ranked shared windows, explanation-rich Top picks, explicit denial/offline fail-closed behavior, and exact suggestion-to-create handoff into the real calendar flow. |
 | R009 | launchability | validated | M003/S01 | M003/S02, M003/S03 | Validated in M003/S03 by passing `pnpm --dir apps/mobile exec vitest run tests/find-time-contract.unit.test.ts tests/mobile-find-time.unit.test.ts tests/mobile-create-prefill.unit.test.ts`, `pnpm --dir apps/web exec vitest run tests/find-time/matcher.unit.test.ts tests/routes/find-time-routes.unit.test.ts tests/schedule/create-prefill.unit.test.ts tests/routes/protected-routes.unit.test.ts`, `npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/auth-scope.spec.ts tests/e2e/calendar-offline.spec.ts tests/e2e/find-time-handoff.spec.ts`, and `pnpm --dir apps/mobile check && pnpm --dir apps/mobile build && sh -c 'test -d apps/mobile/ios || pnpm --dir apps/mobile cap:add:ios; pnpm --dir apps/mobile cap:sync'`, proving the mobile app now supports trusted sign-in/scope, offline continuity, compact live-backed Find time, exact slot handoff into create, and packaged native build closure on the shared scheduling substrate. |
 | R010 | continuity | validated | M003/S04 | M003/S05 | Validated in M003/S04 by passing `pnpm --dir apps/mobile exec vitest run tests/mobile-continuity.unit.test.ts tests/mobile-notification-contract.unit.test.ts tests/mobile-notification-runtime.unit.test.ts tests/mobile-notification-router.unit.test.ts`, `npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/auth-scope.spec.ts tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-notifications.spec.ts`, and `pnpm --dir apps/mobile check && pnpm --dir apps/mobile build && sh -c 'test -d apps/mobile/ios || pnpm --dir apps/mobile cap:add:ios; pnpm --dir apps/mobile cap:sync'`, proving every permitted calendar exposes one per-device notification toggle that mirrors on `/groups` and `/calendars/[calendarId]`, persists installation-backed preference intent across reload, and truthfully reports permission/local-reminder/remote-subscription state without splitting reminders and shared-change control. |
-| R011 | differentiator | active | M005/S01 | none | unmapped |
+| R011 | differentiator | validated | M005/S01 | none | Validated in M005/S06 by passing `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-sync.spec.ts tests/e2e/calendar-shifts.spec.ts`, `npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/mobile-predictive.spec.ts tests/e2e/mobile-assembly.spec.ts`, and `pnpm build`, which together proved the clean-reset web continuity/realtime proof on typed route-state diagnostics, a scoped predictive create-editor axe scan with zero new WCAG 2.1 AA violations, unchanged mobile predictive/assembly smoke on fresh seeded data, and successful launch-readiness builds for both apps. |
 | R012 | compliance/security | validated | M002/S01 | M002/S02 | Validated by the M001 auth/policy/browser proof surfaces: `tests/access/policy-contract.unit.test.ts`, protected-route/unit coverage, denied-route browser proof, and the combined offline+sync browser verification together proved auth, RLS, and sharing rules keep cross-group calendar access fail-closed. |
 | R013 | admin/support | deferred | none | none | unmapped |
 | R014 | admin/support | deferred | none | none | unmapped |
@@ -275,7 +275,7 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Coverage Summary
 
-- Active requirements: 2
-- Mapped to slices: 2
-- Validated: 12 (R001, R003, R004, R005, R006, R007, R008, R009, R010, R012, R022, R023)
+- Active requirements: 1
+- Mapped to slices: 1
+- Validated: 13 (R001, R003, R004, R005, R006, R007, R008, R009, R010, R011, R012, R022, R023)
 - Unmapped active requirements: 0
