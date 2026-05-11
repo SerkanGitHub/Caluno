@@ -1,0 +1,170 @@
+== files ==
+packages/caluno-core/src/offline/sync-engine.ts:713:        recurrenceCadence: entry.payload.fields.recurrenceCadence ?? '',
+packages/caluno-core/src/offline/sync-engine.ts:714:        recurrenceInterval: entry.payload.fields.recurrenceInterval ?? '',
+packages/caluno-core/src/offline/mutation-queue.ts:15:  recurrenceCadence?: string;
+packages/caluno-core/src/offline/mutation-queue.ts:16:  recurrenceInterval?: string;
+packages/caluno-core/src/offline/mutation-queue.ts:318:    (candidate.recurrenceCadence === undefined || typeof candidate.recurrenceCadence === 'string') &&
+packages/caluno-core/src/offline/mutation-queue.ts:319:    (candidate.recurrenceInterval === undefined || typeof candidate.recurrenceInterval === 'string') &&
+packages/caluno-core/src/index.ts:14:export * from './schedule/recurrence';
+apps/web/src/lib/offline/calendar-controller.ts:5:} from '$lib/schedule/recurrence';
+apps/web/src/lib/offline/calendar-controller.ts:801:    recurrence: {
+apps/web/src/lib/offline/calendar-controller.ts:802:      cadence: fields.recurrenceCadence || null,
+apps/web/src/lib/offline/calendar-controller.ts:803:      interval: parseOptionalInteger(fields.recurrenceInterval ?? ''),
+apps/web/src/lib/offline/calendar-controller.ts:834:    seriesId: draftResult.value.recurrence ? `local-series-${params.operationId}` : null,
+apps/web/src/lib/offline/calendar-controller.ts:890:    recurrence: null
+apps/web/src/lib/offline/calendar-controller.ts:1114:    recurrenceCadence: readFormValue(formData, 'recurrenceCadence'),
+apps/web/src/lib/offline/calendar-controller.ts:1115:    recurrenceInterval: readFormValue(formData, 'recurrenceInterval'),
+apps/web/src/lib/offline/calendar-controller.ts:1188:      return 'Choose a recurrence cadence before creating a recurring local shift.';
+apps/web/src/lib/offline/calendar-controller.ts:1190:      return 'That recurrence cadence is not supported for local-first writes.';
+apps/web/src/lib/offline/calendar-controller.ts:1192:      return 'The recurrence interval must be at least 1.';
+apps/web/tests/e2e/find-time.spec.ts:139:test('suggestion handoff lands on the chosen slot week, opens the prefilled create dialog, and strips one-shot URL state on arrival', async ({
+apps/web/tests/e2e/calendar-shifts.spec.ts:17:  submitShiftEditorForm,
+apps/web/tests/e2e/calendar-shifts.spec.ts:175:  await test.step('phase: submit the existing create dialog and verify the new shift is visible on the chosen board day', async () => {
+apps/web/tests/e2e/calendar-shifts.spec.ts:177:      throw new Error('Expected the browse suggestion handoff snapshot before submitting the create dialog.');
+apps/web/tests/e2e/calendar-shifts.spec.ts:181:    await submitShiftEditorForm(editor, { title: createdTitle });
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:196:          <div class="recurrence-fields">
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:197:            <div class="recurrence-fields__header">
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:199:                <p class="panel-kicker">Bounded recurrence</p>
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:205:            <div class="calendar-form-grid recurrence-fields__grid">
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:206:              <fieldset class="field recurrence-cadence-group">
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:208:                <div class="recurrence-cadence-options">
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:209:                  <label class="recurrence-cadence-option is-selected">
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:210:                    <input type="radio" name="recurrenceCadence" value="" checked />
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:215:                  <label class="recurrence-cadence-option">
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:216:                    <input type="radio" name="recurrenceCadence" value="daily" />
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:221:                  <label class="recurrence-cadence-option">
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:222:                    <input type="radio" name="recurrenceCadence" value="weekly" />
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:227:                  <label class="recurrence-cadence-option">
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:228:                    <input type="radio" name="recurrenceCadence" value="monthly" />
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:237:                <input class="input" type="number" min="1" step="1" name="recurrenceInterval" value="" />
+apps/web/src/lib/components/calendar/ShiftCard.svelte:6:  import ShiftEditorDialog from './ShiftEditorDialog.svelte';
+apps/web/src/lib/components/calendar/ShiftCard.svelte:103:    <ShiftEditorDialog
+apps/web/src/lib/components/calendar/ShiftCard.svelte:114:    <ShiftEditorDialog
+apps/web/tests/e2e/calendar-offline.spec.ts:15:  submitShiftEditorForm,
+apps/web/tests/e2e/calendar-offline.spec.ts:198:    await submitShiftEditorForm(createDialog, {
+apps/web/tests/e2e/calendar-offline.spec.ts:202:      recurrenceCadence: ''
+apps/web/tests/e2e/calendar-offline.spec.ts:235:    await submitShiftEditorForm(editDialog, {
+apps/web/tests/e2e/calendar-offline.spec.ts:249:    await submitShiftEditorForm(moveDialog, {
+apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte:9:  import ShiftEditorDialog from './ShiftEditorDialog.svelte';
+apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte:97:    <ShiftEditorDialog
+apps/web/src/lib/schedule/recurrence.ts:1:export * from '@repo/caluno-core/schedule/recurrence';
+apps/web/tests/e2e/calendar-sync.spec.ts:15:  submitShiftEditorForm,
+apps/web/tests/e2e/calendar-sync.spec.ts:103:  await submitShiftEditorForm(createDialog, {
+apps/web/tests/e2e/calendar-sync.spec.ts:107:    recurrenceCadence: ''
+apps/web/src/lib/schedule/types.ts:47:  recurrence?: ScheduleRecurrenceInput | null;
+apps/web/src/lib/schedule/types.ts:70:  recurrence: NormalizedScheduleRecurrence | null;
+apps/web/tests/schedule/recurrence.unit.test.ts:5:  detectRecurrencePattern,
+apps/web/tests/schedule/recurrence.unit.test.ts:10:} from '@repo/caluno-core/schedule/recurrence';
+apps/web/tests/schedule/recurrence.unit.test.ts:20:  it('normalizes bounded recurrence input into a concrete shift draft', () => {
+apps/web/tests/schedule/recurrence.unit.test.ts:27:      recurrence: {
+apps/web/tests/schedule/recurrence.unit.test.ts:42:    expect(result.value.recurrence).toEqual({
+apps/web/tests/schedule/recurrence.unit.test.ts:78:  it('rejects unsupported cadence values and missing recurrence bounds', () => {
+apps/web/tests/schedule/recurrence.unit.test.ts:85:        recurrence: {
+apps/web/tests/schedule/recurrence.unit.test.ts:93:      field: 'recurrence.cadence'
+apps/web/tests/schedule/recurrence.unit.test.ts:102:        recurrence: {
+apps/web/tests/schedule/recurrence.unit.test.ts:109:      field: 'recurrence.repeatUntil'
+apps/web/tests/schedule/recurrence.unit.test.ts:147:      recurrence: {
+apps/web/tests/schedule/recurrence.unit.test.ts:253:describe('detectRecurrencePattern', () => {
+apps/web/tests/schedule/recurrence.unit.test.ts:256:      detectRecurrencePattern([
+apps/web/tests/schedule/recurrence.unit.test.ts:324:      detectRecurrencePattern([
+apps/web/tests/schedule/recurrence.unit.test.ts:349:      detectRecurrencePattern([
+apps/web/tests/schedule/recurrence.unit.test.ts:384:      detectRecurrencePattern([
+apps/web/tests/schedule/recurrence.unit.test.ts:420:    expect(detectRecurrencePattern([])).toBeNull();
+apps/web/tests/schedule/recurrence.unit.test.ts:423:      detectRecurrencePattern([
+apps/web/tests/schedule/recurrence.unit.test.ts:481:    expect(scheduleMigrationSql).toContain("create type public.shift_recurrence_cadence as enum ('daily', 'weekly', 'monthly');");
+apps/web/tests/schedule/recurrence.unit.test.ts:488:    expect(scheduleMigrationSql).toContain('constraint shift_series_recurrence_bound check');
+apps/web/src/app.css:535:.recurrence-fields,
+apps/web/src/app.css:536:.recurrence-fields__header,
+apps/web/src/app.css:537:.recurrence-fields__grid,
+apps/web/src/app.css:725:.recurrence-fields__header {
+apps/web/src/app.css:750:.recurrence-fields {
+apps/web/src/app.css:757:.recurrence-fields__grid {
+apps/web/src/app.css:761:.recurrence-cadence-group {
+apps/web/src/app.css:767:.recurrence-cadence-options {
+apps/web/src/app.css:773:.recurrence-cadence-option {
+apps/web/src/app.css:785:.recurrence-cadence-option input {
+apps/web/src/app.css:790:.recurrence-cadence-option strong,
+apps/web/src/app.css:791:.recurrence-cadence-option small {
+apps/web/src/app.css:795:.recurrence-cadence-option strong {
+apps/web/src/app.css:799:.recurrence-cadence-option small {
+apps/web/src/app.css:803:.recurrence-cadence-option.is-selected {
+apps/web/src/app.css:841:  .recurrence-fields__grid,
+apps/web/src/app.css:842:  .recurrence-cadence-options {
+apps/web/tests/e2e/fixtures.ts:1426:export async function submitShiftEditorForm(
+apps/web/tests/e2e/fixtures.ts:1432:    recurrenceCadence?: '' | 'daily' | 'weekly' | 'monthly';
+apps/web/tests/e2e/fixtures.ts:1480:    if (typeof nextValues.recurrenceCadence === 'string') {
+apps/web/tests/e2e/fixtures.ts:1481:      const radios = Array.from(formElement.querySelectorAll('input[name="recurrenceCadence"]')).filter(
+apps/web/tests/e2e/fixtures.ts:1484:      const radio = radios.find((candidate) => candidate.value === nextValues.recurrenceCadence);
+apps/web/tests/e2e/fixtures.ts:1486:        throw new Error(`Missing recurrence radio for value: ${nextValues.recurrenceCadence}`);
+apps/web/tests/e2e/fixtures.ts:1490:        candidate.checked = candidate.value === nextValues.recurrenceCadence;
+apps/web/tests/schedule/offline-queue.unit.test.ts:137:  formData.set('recurrenceCadence', '');
+apps/web/tests/schedule/offline-queue.unit.test.ts:138:  formData.set('recurrenceInterval', '');
+apps/web/tests/schedule/conflicts.unit.test.ts:2:import { deriveVisibleWeekConflicts, previewShiftConflicts } from '@repo/caluno-core/schedule/conflicts';
+apps/web/tests/schedule/conflicts.unit.test.ts:13:    recurrence: null,
+apps/web/tests/schedule/conflicts.unit.test.ts:260:describe('previewShiftConflicts', () => {
+apps/web/tests/schedule/conflicts.unit.test.ts:262:    const conflicts = previewShiftConflicts(buildDraft(), [
+apps/web/tests/schedule/conflicts.unit.test.ts:314:      previewShiftConflicts(buildDraft(), [
+packages/caluno-core/src/schedule/recurrence.ts:24:const recurrenceFrequencyByCadence: Record<ScheduleRecurrenceCadence, number> = {
+packages/caluno-core/src/schedule/recurrence.ts:120:  const recurrenceResult = normalizeRecurrence(input.recurrence ?? null, endAt);
+packages/caluno-core/src/schedule/recurrence.ts:121:  if (!recurrenceResult.ok) {
+packages/caluno-core/src/schedule/recurrence.ts:122:    return recurrenceResult;
+packages/caluno-core/src/schedule/recurrence.ts:134:      recurrence: recurrenceResult.value
+packages/caluno-core/src/schedule/recurrence.ts:145:  if (!shift.recurrence) {
+packages/caluno-core/src/schedule/recurrence.ts:152:    freq: recurrenceFrequencyByCadence[shift.recurrence.cadence],
+packages/caluno-core/src/schedule/recurrence.ts:153:    interval: shift.recurrence.interval,
+packages/caluno-core/src/schedule/recurrence.ts:154:    count: shift.recurrence.repeatCount ?? undefined,
+packages/caluno-core/src/schedule/recurrence.ts:155:    until: shift.recurrence.repeatUntil ?? undefined,
+packages/caluno-core/src/schedule/recurrence.ts:220:export function detectRecurrencePattern(shifts: CalendarShift[]): DetectedRecurrencePattern | null {
+packages/caluno-core/src/schedule/recurrence.ts:290:  input: ScheduleShiftDraftInput['recurrence'],
+packages/caluno-core/src/schedule/recurrence.ts:315:      field: 'recurrence.cadence'
+packages/caluno-core/src/schedule/recurrence.ts:324:      field: 'recurrence.cadence'
+packages/caluno-core/src/schedule/recurrence.ts:333:      field: 'recurrence.interval'
+packages/caluno-core/src/schedule/recurrence.ts:342:      field: 'recurrence.repeatCount'
+packages/caluno-core/src/schedule/recurrence.ts:351:      field: 'recurrence.repeatUntil'
+packages/caluno-core/src/schedule/recurrence.ts:359:      field: 'recurrence.repeatUntil'
+packages/caluno-core/src/schedule/recurrence.ts:367:      field: 'recurrence.repeatUntil'
+apps/web/tests/schedule/server-actions.unit.test.ts:106:        recurrenceCadence: '',
+apps/web/tests/schedule/server-actions.unit.test.ts:107:        recurrenceInterval: '',
+apps/web/tests/schedule/server-actions.unit.test.ts:126:        recurrenceCadence: 'daily',
+apps/web/tests/schedule/server-actions.unit.test.ts:127:        recurrenceInterval: '1',
+apps/web/tests/schedule/server-actions.unit.test.ts:187:        recurrenceCadence: '',
+apps/web/tests/schedule/server-actions.unit.test.ts:188:        recurrenceInterval: '',
+apps/web/tests/schedule/server-actions.unit.test.ts:369:        recurrenceCadence: '',
+apps/web/tests/schedule/server-actions.unit.test.ts:370:        recurrenceInterval: '',
+apps/web/tests/schedule/server-actions.unit.test.ts:473:        recurrenceCadence: '',
+apps/web/tests/schedule/server-actions.unit.test.ts:474:        recurrenceInterval: '',
+apps/web/tests/schedule/server-actions.unit.test.ts:564:        recurrenceCadence: 'daily',
+apps/web/tests/schedule/server-actions.unit.test.ts:565:        recurrenceInterval: '1',
+apps/web/tests/schedule/server-actions.unit.test.ts:746:      formData: createFormData({ title: 'Morning intake', startAt: '2026-04-20T09:00:00.000Z', endAt: '2026-04-20T11:00:00.000Z', recurrenceCadence: '', recurrenceInterval: '', repeatCount: '', repeatUntil: '' })
+apps/web/tests/schedule/server-actions.unit.test.ts:817:      formData: createFormData({ title: 'Morning intake', startAt: '2026-04-20T09:00:00.000Z', endAt: '2026-04-20T11:00:00.000Z', recurrenceCadence: '', recurrenceInterval: '', repeatCount: '', repeatUntil: '' })
+apps/web/tests/schedule/server-actions.unit.test.ts:835:      formData: createFormData({ title: 'Morning intake', startAt: '2026-04-20T09:00:00.000Z', endAt: '2026-04-20T11:00:00.000Z', recurrenceCadence: '', recurrenceInterval: '', repeatCount: '', repeatUntil: '' })
+apps/web/tests/schedule/server-actions.unit.test.ts:849:      formData: createFormData({ title: 'Morning intake', startAt: '2026-04-20T09:00:00.000Z', endAt: '2026-04-20T11:00:00.000Z', recurrenceCadence: '', recurrenceInterval: '', repeatCount: '', repeatUntil: '' })
+apps/web/tests/schedule/server-actions.unit.test.ts:868:      formData: createFormData({ title: 'Morning intake', startAt: '2026-04-20T09:00:00.000Z', endAt: '2026-04-20T11:00:00.000Z', recurrenceCadence: '', recurrenceInterval: '', repeatCount: '', repeatUntil: '' })
+apps/web/tests/schedule/server-actions.unit.test.ts:890:      formData: createFormData({ title: 'Morning intake', startAt: '2026-04-20T09:00:00.000Z', endAt: '2026-04-20T11:00:00.000Z', recurrenceCadence: '', recurrenceInterval: '', repeatCount: '', repeatUntil: '' })
+apps/web/tests/schedule/server-actions.unit.test.ts:910:      formData: createFormData({ title: 'Opening sweep', startAt: '2026-04-20T08:30:00.000Z', endAt: '2026-04-20T09:00:00.000Z', recurrenceCadence: 'daily', recurrenceInterval: '1', repeatCount: '3', repeatUntil: '' })
+packages/caluno-core/src/schedule/conflicts.ts:95:export function previewShiftConflicts(
+packages/caluno-core/src/schedule/types.ts:47:  recurrence?: ScheduleRecurrenceInput | null;
+packages/caluno-core/src/schedule/types.ts:70:  recurrence: NormalizedScheduleRecurrence | null;
+apps/web/src/lib/server/schedule.ts:5:import { normalizeShiftDraft, normalizeVisibleRange } from '$lib/schedule/recurrence';
+apps/web/src/lib/server/schedule.ts:129:const recurrenceFrequencyByCadence: Record<ScheduleRecurrenceCadence, number> = {
+apps/web/src/lib/server/schedule.ts:292:  recurrenceCadence: string;
+apps/web/src/lib/server/schedule.ts:293:  recurrenceInterval: string;
+apps/web/src/lib/server/schedule.ts:301:    recurrenceCadence: readFormValue(formData, 'recurrenceCadence'),
+apps/web/src/lib/server/schedule.ts:302:    recurrenceInterval: readFormValue(formData, 'recurrenceInterval'),
+apps/web/src/lib/server/schedule.ts:333:    recurrence: {
+apps/web/src/lib/server/schedule.ts:334:      cadence: fields.recurrenceCadence || null,
+apps/web/src/lib/server/schedule.ts:335:      interval: parseOptionalInteger(fields.recurrenceInterval),
+apps/web/src/lib/server/schedule.ts:399:  if (!normalized.value.recurrence) {
+apps/web/src/lib/server/schedule.ts:488:    recurrence_cadence: normalized.value.recurrence.cadence,
+apps/web/src/lib/server/schedule.ts:489:    recurrence_interval: normalized.value.recurrence.interval,
+apps/web/src/lib/server/schedule.ts:490:    repeat_count: normalized.value.recurrence.repeatCount,
+apps/web/src/lib/server/schedule.ts:491:    repeat_until: normalized.value.recurrence.repeatUntil?.toISOString() ?? null,
+apps/web/src/lib/server/schedule.ts:634:    recurrence: null
+apps/web/src/lib/server/schedule.ts:1214:  if (!normalizedShift.recurrence) {
+apps/web/src/lib/server/schedule.ts:1225:    freq: recurrenceFrequencyByCadence[normalizedShift.recurrence.cadence],
+apps/web/src/lib/server/schedule.ts:1226:    interval: normalizedShift.recurrence.interval,
+apps/web/src/lib/server/schedule.ts:1227:    count: normalizedShift.recurrence.repeatCount ?? undefined,
+apps/web/src/lib/server/schedule.ts:1228:    until: normalizedShift.recurrence.repeatUntil ?? undefined,
+apps/web/src/lib/server/schedule.ts:1329:      return 'Choose a recurrence cadence before creating a recurring shift.';
+apps/web/src/lib/server/schedule.ts:1331:      return 'That recurrence cadence is not supported.';
+apps/web/src/lib/server/schedule.ts:1333:      return 'The recurrence interval must be at least 1.';

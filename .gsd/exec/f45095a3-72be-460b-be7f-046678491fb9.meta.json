@@ -1,0 +1,18 @@
+{
+  "id": "f45095a3-72be-460b-be7f-046678491fb9",
+  "runtime": "bash",
+  "purpose": "scan web e2e schedule create/edit tests",
+  "script_chars": 186,
+  "started_at": "2026-05-11T09:06:59.591Z",
+  "finished_at": "2026-05-11T09:06:59.617Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 26,
+  "stdout_bytes": 30815,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/f45095a3-72be-460b-be7f-046678491fb9.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/f45095a3-72be-460b-be7f-046678491fb9.stderr"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "20d81a18-68e6-4e65-a553-a60958796dae",
+  "runtime": "python",
+  "purpose": "locate normalizeShiftDraft re-export and local datetime helpers",
+  "script_chars": 457,
+  "started_at": "2026-05-11T09:10:55.422Z",
+  "finished_at": "2026-05-11T09:10:55.460Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 38,
+  "stdout_bytes": 203,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/20d81a18-68e6-4e65-a553-a60958796dae.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/20d81a18-68e6-4e65-a553-a60958796dae.stderr"
+}

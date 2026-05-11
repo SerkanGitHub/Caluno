@@ -1,0 +1,18 @@
+{
+  "id": "05030323-1fbf-4a32-8d5d-848f733c3813",
+  "runtime": "python",
+  "purpose": "extract line numbers for server schedule load and form validation",
+  "script_chars": 327,
+  "started_at": "2026-05-11T09:08:03.823Z",
+  "finished_at": "2026-05-11T09:08:03.876Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 53,
+  "stdout_bytes": 983,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/05030323-1fbf-4a32-8d5d-848f733c3813.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/05030323-1fbf-4a32-8d5d-848f733c3813.stderr"
+}

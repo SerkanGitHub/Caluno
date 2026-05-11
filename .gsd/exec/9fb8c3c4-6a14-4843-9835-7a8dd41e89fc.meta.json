@@ -1,0 +1,18 @@
+{
+  "id": "9fb8c3c4-6a14-4843-9835-7a8dd41e89fc",
+  "runtime": "bash",
+  "purpose": "T02 contract tests recurrence+conflicts",
+  "script_chars": 149,
+  "started_at": "2026-05-11T09:01:59.783Z",
+  "finished_at": "2026-05-11T09:02:01.599Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 1816,
+  "stdout_bytes": 357,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/9fb8c3c4-6a14-4843-9835-7a8dd41e89fc.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/9fb8c3c4-6a14-4843-9835-7a8dd41e89fc.stderr"
+}

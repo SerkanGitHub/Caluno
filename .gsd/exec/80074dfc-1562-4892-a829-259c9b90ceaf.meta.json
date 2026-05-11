@@ -1,0 +1,18 @@
+{
+  "id": "80074dfc-1562-4892-a829-259c9b90ceaf",
+  "runtime": "python",
+  "purpose": "extract line numbers for enhanceMutation reset behavior",
+  "script_chars": 266,
+  "started_at": "2026-05-11T09:11:20.091Z",
+  "finished_at": "2026-05-11T09:11:20.152Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 61,
+  "stdout_bytes": 400,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/80074dfc-1562-4892-a829-259c9b90ceaf.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/80074dfc-1562-4892-a829-259c9b90ceaf.stderr"
+}

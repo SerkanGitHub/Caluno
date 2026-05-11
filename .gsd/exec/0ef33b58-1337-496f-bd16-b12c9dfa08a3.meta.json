@@ -1,0 +1,18 @@
+{
+  "id": "0ef33b58-1337-496f-bd16-b12c9dfa08a3",
+  "runtime": "bash",
+  "purpose": "locate create-prefill contract implementation and recurrence helper exports",
+  "script_chars": 533,
+  "started_at": "2026-05-11T09:07:27.198Z",
+  "finished_at": "2026-05-11T09:07:27.267Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 69,
+  "stdout_bytes": 434,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/0ef33b58-1337-496f-bd16-b12c9dfa08a3.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/0ef33b58-1337-496f-bd16-b12c9dfa08a3.stderr"
+}

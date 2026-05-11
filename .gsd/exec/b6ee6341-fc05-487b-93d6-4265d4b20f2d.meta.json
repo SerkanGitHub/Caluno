@@ -1,0 +1,18 @@
+{
+  "id": "b6ee6341-fc05-487b-93d6-4265d4b20f2d",
+  "runtime": "bash",
+  "purpose": "scan schedule core for recurrence/conflict related files",
+  "script_chars": 341,
+  "started_at": "2026-05-11T08:50:55.743Z",
+  "finished_at": "2026-05-11T08:50:55.768Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 25,
+  "stdout_bytes": 21717,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/b6ee6341-fc05-487b-93d6-4265d4b20f2d.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/b6ee6341-fc05-487b-93d6-4265d4b20f2d.stderr"
+}

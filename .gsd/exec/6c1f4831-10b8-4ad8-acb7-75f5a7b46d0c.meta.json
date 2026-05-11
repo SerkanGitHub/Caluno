@@ -1,0 +1,18 @@
+{
+  "id": "6c1f4831-10b8-4ad8-acb7-75f5a7b46d0c",
+  "runtime": "python",
+  "purpose": "extract protected-routes line numbers around calendar load tests",
+  "script_chars": 304,
+  "started_at": "2026-05-11T09:10:29.059Z",
+  "finished_at": "2026-05-11T09:10:29.130Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 71,
+  "stdout_bytes": 1797,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/6c1f4831-10b8-4ad8-acb7-75f5a7b46d0c.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/6c1f4831-10b8-4ad8-acb7-75f5a7b46d0c.stderr"
+}

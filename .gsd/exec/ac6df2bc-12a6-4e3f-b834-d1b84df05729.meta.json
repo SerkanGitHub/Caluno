@@ -1,0 +1,18 @@
+{
+  "id": "ac6df2bc-12a6-4e3f-b834-d1b84df05729",
+  "runtime": "bash",
+  "purpose": "locate create prefill snapshot helpers and potential extension points",
+  "script_chars": 259,
+  "started_at": "2026-05-11T09:08:20.020Z",
+  "finished_at": "2026-05-11T09:08:20.083Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 63,
+  "stdout_bytes": 159,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/ac6df2bc-12a6-4e3f-b834-d1b84df05729.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/ac6df2bc-12a6-4e3f-b834-d1b84df05729.stderr"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "3ebc8cc9-4138-4f4c-a842-b125259daa6a",
+  "runtime": "bash",
+  "purpose": "find any existing non-blocking advisory UI patterns and test ids",
+  "script_chars": 412,
+  "started_at": "2026-05-11T09:08:56.901Z",
+  "finished_at": "2026-05-11T09:08:56.967Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 66,
+  "stdout_bytes": 239,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/3ebc8cc9-4138-4f4c-a842-b125259daa6a.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/3ebc8cc9-4138-4f4c-a842-b125259daa6a.stderr"
+}

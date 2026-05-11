@@ -1,0 +1,18 @@
+{
+  "id": "023e33a8-7029-4d44-959d-5862925b63a1",
+  "runtime": "bash",
+  "purpose": "T01 route and recurrence verification",
+  "script_chars": 154,
+  "started_at": "2026-05-11T09:25:00.130Z",
+  "finished_at": "2026-05-11T09:25:01.845Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 1715,
+  "stdout_bytes": 364,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/023e33a8-7029-4d44-959d-5862925b63a1.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/023e33a8-7029-4d44-959d-5862925b63a1.stderr"
+}

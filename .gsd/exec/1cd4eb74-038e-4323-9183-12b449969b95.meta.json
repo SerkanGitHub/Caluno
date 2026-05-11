@@ -1,0 +1,18 @@
+{
+  "id": "1cd4eb74-038e-4323-9183-12b449969b95",
+  "runtime": "bash",
+  "purpose": "scan web shift editor and recurrence/advisory touchpoints",
+  "script_chars": 267,
+  "started_at": "2026-05-11T09:06:59.590Z",
+  "finished_at": "2026-05-11T09:06:59.618Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 28,
+  "stdout_bytes": 17985,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/1cd4eb74-038e-4323-9183-12b449969b95.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/1cd4eb74-038e-4323-9183-12b449969b95.stderr"
+}

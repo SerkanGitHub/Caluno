@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T02",
+  "unitId": "M005/S02/T02",
+  "timestamp": 1778490141406,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "pnpm --dir apps/web exec vitest run tests/schedule/conflicts.unit.test.ts tests/schedule/recurrence.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 1310,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/web exec vitest run tests/schedule/board.unit.test.ts tests/schedule/server-actions.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 1241,
+      "verdict": "pass"
+    }
+  ]
+}

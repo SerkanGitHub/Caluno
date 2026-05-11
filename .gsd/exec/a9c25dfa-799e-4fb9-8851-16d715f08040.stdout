@@ -1,0 +1,9 @@
+7:  import CalendarWeekBoard from '$lib/components/calendar/CalendarWeekBoard.svelte';
+15:  import { buildCalendarWeekBoard } from '$lib/schedule/board';
+18:    stripCreatePrefillSearchParams,
+39:    createPrefill: CreatePrefillPayload | null;
+64:  const readyCreatePrefill = $derived(readyView?.createPrefill ?? null);
+90:      ? buildCalendarWeekBoard(effectiveSchedule, {
+571:    const nextSearchParams = stripCreatePrefillSearchParams(currentUrl.searchParams);
+825:        <CalendarWeekBoard
+830:          createPrefill={readyCreatePrefill}

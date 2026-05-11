@@ -1,0 +1,13 @@
+apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte
+9:  import ShiftEditorDialog from './ShiftEditorDialog.svelte';
+16:    createPrefill?: CreatePrefillPayload | null;
+31:    createPrefill = null,
+97:    <ShiftEditorDialog
+98:      action="create"
+102:      {createPrefill}
+apps/web/src/lib/components/calendar/ShiftCard.svelte
+6:  import ShiftEditorDialog from './ShiftEditorDialog.svelte';
+103:    <ShiftEditorDialog
+104:      action="edit"
+114:    <ShiftEditorDialog
+115:      action="move"

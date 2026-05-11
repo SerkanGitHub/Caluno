@@ -1,0 +1,404 @@
+[
+  {
+    "kind": "bash",
+    "toolCallId": "call_iQvlRQzZIUIRQpdlsWMhkmrh|zXMXroRKg7wAwYypXudkaOxbaKyLdPEXapZ6r+touMZCXKKa1SCckG0R8akwzj0oC1PrPMYv9Sblo3UUd0nsTDfVWncztbEMFns8VW0mH3RjyLx/Po6e9lwk2jTzAjCKx6nQnt2xhk5/qyO4btSqij/6lFpYxIrlpM+7aVEeHh7KQVOpCnDaTaixjXJ3QK+Ti3cNIjqegToSge5laDmG+mELdHAeHeUniy+3UWn1K0NQSpTK65BwgLead/zAvFpWNr0Sn0TPWxP5KzxsnQ3Li/pkrabLlljA6Zi2xet5TWEuRP39nOYgIVjNa0FWXXWjhoAEimCyRO6V/KhNyNzxUw/ceRxMZMiaQfAoZUl+eoP+Yhlxh4SkbVAYStqcAyzBH5Y6QymYS2RyOXmuJQysSA==",
+    "command": "python3 - <<'PY'\nfrom pathlib import Path\nfiles = [\n  'apps/web/src/lib/server/schedule.ts',\n  'apps/web/src/routes/(app)/calendars/[calendarId]/+page.server.ts',\n  'apps/web/tests/routes/protected-routes.unit.test.ts',\n  'supabase/seed.sql',\n  'apps/web/tests/schedule/recurrence.unit.test.ts',\n  'apps/web/tests/e2e/fixtures.ts',\n]\nfor f in files:\n    p = Path(f)\n    print(f'{f}\\t{\"OK\" if p.exists() else \"MISSING\"}\\t{p.stat().st_size if p.exists() else 0}')\nPY",
+    "exitCode": 0,
+    "outputSnippet": "apps/web/src/lib/server/schedule.ts\tOK\t44309\napps/web/src/routes/(app)/calendars/[calendarId]/+page.server.ts\tOK\t6774\napps/web/tests/routes/protected-routes.unit.test.ts\tOK\t33968\nsupabase/seed.sql\tOK\t14665\napps/web/tests/schedule/recurrence.unit.test.ts\tOK\t15519\napps/web/tests/e2e/fixtures.ts\tOK\t51274\n",
+    "timestamp": 1778493435191
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_rOvHciphvGsKyGCHc3Ca5YT0|o5LX/oYLMHAjTTDGwBYpvNu4QxcVCO+wbwhZLXIzAofi8S+fs7jJX83f1SFMIyuSh5yACQYbdK+u+x7zYUuXiGmcQf+l3gqKDX6nG0w5f6SXgkjT6FNmAMiH2F5GllEblLEDND5N1wiFFb1sZNUdQb4SkTTET2VClJt4Ob+9sWjUmOZGVnphTIxwK6MT/1YiBY5UyiV64ZJjgbwCguS8FPhRb+lI8kovfsLWsKTJqnbLGb9boRE7CJEjo3F12EwO7yuEXLKY2R7/ooCB8JUXhOYwIvMle3BnYFDd7M2/hWwdpZcUQ3lcumfkE/N9SUiDV/G2QnxlaR7ygy8dsbo6iM0rzJhW2rH+xADkwGObMFDcQz3K86ueigCKcOBkdXW1Ky8tHGpwV5kCvV4ni/Zwuw==",
+    "command": "rg -n \"recurrenceSuggestion|recurrence suggestion|suggestion\" apps/web/src/routes/\\(app\\)/calendars/\\[calendarId\\]/+page.server.ts apps/web/src/lib/server/schedule.ts apps/web/tests/e2e/fixtures.ts",
+    "exitCode": 0,
+    "outputSnippet": "apps/web/src/routes/(app)/calendars/[calendarId]/+page.server.ts:110:  const recurrenceSuggestion = await loadCalendarRecurrenceSuggestion({\napps/web/src/routes/(app)/calendars/[calendarId]/+page.server.ts:125:      recurrenceSuggestion,\napps/web/src/lib/server/schedule.ts:257:  const suggestion = detectRecurrencePattern(result.data.map(mapShiftRow));\napps/web/src/lib/server/schedule.ts:259:  if (suggestion) {\napps/web/src/lib/server/schedule.ts:260:    console.info('calendar.recurrence-suggesti",
+    "timestamp": 1778493441293
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_57rTsrOZCkBvzIW2R2L3G1Rb|9pM08agINIIezPy/ZTwY1lbDkG6pje5IxQcEKa8BZ9EzfEBlNFLDv+zdWEwcFkKrW4IA2nmdd0iuhHu8JMW6yUmgKSBoTmqK3SZbowpKfY/+8nkAfpD68pQS0J0YiSl/Y2NioVfXpxX5dEvvpdESCQKZULF5PpO1vJ3YvwA9W5LztxdA2EXiUSgtCSDmX/miAlflpefwOIeMgJtGQ45rgOBqLwYXloZYU8BL3HXSs/FaQtQ0NVseW7aLa2wJHTDwqcy7TOVTxIRqdxBIOY02Q8rpRkF4cbvu0Otb2zDTegLFpMmce0+9C0ZdBL0f/F5VNcZMfax9r9o6USYZUnkT4DqTD7R4t5ovruP+a4U1hl58syYwOLMA7OPHzYfoDfG2thuLfV+HhAnm5o6PTm9Mag==",
+    "command": "rg -n \"create-shift-editor|recurrenceCadence|repeatCount|repeatUntil|submitShiftEditorForm|readCreateShiftPrefillSnapshot|data-testid\" apps/web/tests/e2e/fixtures.ts apps/web/tests/e2e/calendar-shifts.spec.ts apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte",
+    "exitCode": 0,
+    "outputSnippet": "apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:135:  data-testid={`${mode}-shift-editor`}\napps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:153:        data-testid=\"create-prefill-source\"\napps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:210:                    <input type=\"radio\" name=\"recurrenceCadence\" value=\"\" checked />\napps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:216:                    <input type=\"radio\" name=\"recurrenceCadence\" val",
+    "timestamp": 1778493441293
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_1TYO1XNWNv1J8AWjSfL36zNq|aTQNFszHieFbj0dsSeUWCjQjm97Urhe7ZS8lBScVThNi2X3nFsYQ5Qdr2k3j+rlAy/OkyR30HIIEkaZWnQG9tCdzldzHNUGm4IjdGEiXNMI8dDeTuxv1HfFbw8R6VC9a2Bdu6GhBD/4CWShSr/m6FBes8TWQ0rhpINOs91bMocNpt50BCqSQPPaJt2Af310P0AoFKmzBlbNmzh+OlJKKE/G/n+IcEhiRD8nVOS/x0g7788Dlcw0VIR5jXlLAtXelb8Ri0S1dF3c0+84c1/IFB1FPWVplVrVWKDwLov727eyJdx9jYuei0p3DiodEw0O/CDQ06vr7kvzg03u5ryaFlxx9xTJKJgHu50ztcFL+0W3rgJZUURlSVe/Goz209RfcRN7SUu5fpforx8axANtmRg==",
+    "command": "rg -n -C 3 \"recurrenceSuggestion\" apps/web/src/routes/\\(app\\)/calendars/\\[calendarId\\]/+page.server.ts",
+    "exitCode": 0,
+    "outputSnippet": "107-    calendarId: calendarState.calendar.id,\n108-    searchParams: url.searchParams\n109-  });\n110:  const recurrenceSuggestion = await loadCalendarRecurrenceSuggestion({\n111-    supabase: locals.supabase,\n112-    calendarId: calendarState.calendar.id,\n113-    visibleWeek: schedule.visibleWeek\n--\n122-      welcome: url.searchParams.get('welcome'),\n123-      visibleWeek: schedule.visibleWeek,\n124-      schedule,\n125:      recurrenceSuggestion,\n126-      createPrefill\n127-    }\n128-  };\n",
+    "timestamp": 1778493450043
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_4tfD9xoIJOIIMBoeDr1e7tSM|v+HA+07v1saNX5YtuPt6KjmIcSCt8L0mbBnqIyqHLfcY4mDyFD3KjEQtpI7O6K4Y2f7rAU8rvz09tFK/+B0E+CiNfMqzcxzPIvsbinb88k55mfrxw1C+gnMzv3Iur3gLCrNB5KfWITWLmzUR249E4EmcQXpPhnS2k2lde5RfFEZnlHUB4Hff3Hh1PoFc2VzwsFPbUD8Uir4I3QRUUqWq9SSoZMy4aNeGa3cMk2r3BfEr5IBUlq9Il3GjbsTxb73qntoTzYA/jrPP3Wy75dzwhzLWIISmCNnfRynI+soZt9GISYdH+5MDyO/6aoG8o36vWwQ0WAbHRwdJQnyllnw3iagL6Q3fHP1D6Prh2LrWpQQV8AjXFcQUQehiu6cDoYWXwKCR0Ey+6cpn3qlRi9Cdww==",
+    "command": "rg -n \"export type .*Recurrence|interface .*Recurrence|DetectedRecurrencePattern|type .*Suggestion\" apps/web/src/lib/server/schedule.ts packages apps/web/src/lib | head -200",
+    "exitCode": 0,
+    "outputSnippet": "apps/web/src/lib/server/schedule.ts:9:  type DetectedRecurrencePattern\napps/web/src/lib/server/schedule.ts:78:export type ScheduleRecurrenceSuggestion = DetectedRecurrencePattern;\napps/web/src/lib/server/schedule.ts:9:  type DetectedRecurrencePattern\napps/web/src/lib/server/schedule.ts:78:export type ScheduleRecurrenceSuggestion = DetectedRecurrencePattern;\npackages/caluno-core/src/schedule/recurrence.ts:207:export type DetectedRecurrencePattern = {\npackages/caluno-core/src/schedule/recurrence.t",
+    "timestamp": 1778493450044
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_MtgCx8IX0dtuR8HGOItidRuq|6oslYHFU4eTb1hVqXinW6aHjsOKwkcRQ6t+XclBm2nbZ+ODNf0Xt8hb8RV+3dMQ1f56/jmv1dSJCTuh4BWRwIMr+LUVD6BhDpEPQV4siACiASpojQol0cS7VtXPcTuW+GHxqzM03OqecHp+4TvnzSThVwDES+t3lEnvKBd4l6IQsK+kPbtKzOtV57VTC39uhHRKahiAS6KXcAQ7CqclBKKXnUvWjbwPEy2gpdbtBejQJQ5d/jz2NC/6vJbTxLQc8JOuNPmSp2x3KnLOpmnmlSn+xeHwLlejc8wVoUX3cNr76gnAatCXdEHhOejyJbJ/j2JzTZDDPTN8Tk9YMMpnUFdKLw+XDg9mD3udcIPjt/P43/KfuEMWSRn8U8mOeBiTxWdXR+yLEkvz0XdgGX2iC2g==",
+    "command": "rg -n -A 20 \"export type DetectedRecurrencePattern =\" packages/caluno-core/src/schedule/recurrence.ts",
+    "exitCode": 0,
+    "outputSnippet": "207:export type DetectedRecurrencePattern = {\n208-  cadence: 'weekly';\n209-  interval: 1;\n210-  weekday: number;\n211-  startTime: string;\n212-  endTime: string;\n213-  exemplarShiftId: string;\n214-  exemplarStartAt: string;\n215-  exemplarEndAt: string;\n216-  matchCount: number;\n217-  matchingShiftIds: string[];\n218-};\n219-\n220-export function detectRecurrencePattern(shifts: CalendarShift[]): DetectedRecurrencePattern | null {\n221-  const duplicateShiftIds = findDuplicateShiftIds(shifts);\n222-  co",
+    "timestamp": 1778493461272
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_YrisfSfA9ijgWUWBPUpuNkSr|b4gJ0qHSkw3cMZ5uDN2vEPm3q5tc6DXtMnqAxpYje8P1Tv2b0B92Kp6nUBvGV4dgSgA08g76kHhDb7/ukAd5BcLBUXYTYple7o2imj5mAAbj4sYyhkguyvQNjXXm0BAaIc7rnplYvT5G+1bFskjlGvv/Ltmp0glx0nsuKD67q13rkSnHBq4GmtYv8ZBeKC3nFFvN9beSdtgYoN9G7yTmaWXM1Xl3m5qC0J+GjNBkMREPPOxIq/1h8kezAoWiCC9NjtC9DXi3cSxKJoYk7d3mjAGacf3zBfH5m0zdmhCHNeO1wssp5bzWCX0uXzE0z8S7l3Sa3+maOnQfhuQBZy3LH55nDl9HCNg5RYncgDhjj5rEJZNX6HE0HbpPdYoX5xme9VeusqrxtIaipGuIqIv6xg==",
+    "command": "rg -n \"type CreateShiftPrefillSnapshot|interface CreateShiftPrefillSnapshot|type .*Recurrence.*Snapshot|export \\{ test\" apps/web/tests/e2e/fixtures.ts",
+    "exitCode": 0,
+    "outputSnippet": "402:export type CreateShiftPrefillSnapshot = {\n",
+    "timestamp": 1778493498346
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_Pg09RpeokGeAUikSnRsMgSdb|FqT62zUaapB+ilxxhzpnpQXiImdDxFAzhRHugCnh2s3hOsqlSRtVKtrjmMHPdvQEt+neRNgoXm81jI6aQ4gTBSPU/SjKGkXwUf7ncHXPTCOZKO5pUoB79lgdagI2/SzGVGi+xM1Ehl30d9zJnJKczq3iOk1N0jgafqRj+/wsZdFLTogzSnJvSZx9zCX33N9nMVXJX4HebinUPYWNYdliDUqaSP78NO23XxBt76Hv9oeqM2niCzR8MokdUAeptbccfJIVFPyKnXHrJ34WJtsKKVItonka2GHBCtqttU17/5Vd69WEmFzKYO651UoblZkt0PDa/87wrkomJarXOZ6uAJrCaYmIYDwQOoP+U5zlaAHL91epFVS8R0AWuKHmHe5/f7KoxcUbbRbc4rzOWI7l8A==",
+    "command": "rg -n \"from '\\$lib/server/schedule'|type Props = \\{|createPrefill\\?: CreatePrefillPayload\" apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte apps/web/src/routes/\\(app\\)/calendars/\\[calendarId\\]/+page.svelte",
+    "exitCode": 0,
+    "outputSnippet": "apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:11:  type Props = {\napps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:16:    createPrefill?: CreatePrefillPayload | null;\napps/web/src/lib/components/calendar/CalendarWeekBoard.svelte:11:  type Props = {\napps/web/src/lib/components/calendar/CalendarWeekBoard.svelte:16:    createPrefill?: CreatePrefillPayload | null;\n",
+    "timestamp": 1778493498347
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_EHFvqbZ3dpRLabZ3UBOV63Y7|qys78pVRjy3W+A8ULB/8QnPCNiIE8fzm8TurA+QhIPTeUCWB4GHRdTM9tRHJcTjcGbYHXTM8l09zj5NcKsdRc/krV6/UAK2tVPfBoSZ/9ELGpCuh3K16O3lG9WGGYQVVwVHSIldXsvBUmOucdOLZl/1MKvQvS6yrQLtVRdUY9nj1yrO3HjkYnuL0QnXOiS14bk07ckltBP1YLZ9y6lGvTK1J0oF0/D/VtnljEllKPIGZEFDuYh5KiR9KMHvlC35YsznrOfIXb4LnXhivT1NSZhN9uahfNzZ+CbC73aa1qn98sUPcz51Z+da97DX7AkgphlIdmuO3TecDPEijL9V9x9Ia+okapgwPrJV712WogCrutbr77H5iQZH6bT5sTB6UljIaEKZEVBnKQeRpxPxDJQ==",
+    "path": "apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte",
+    "timestamp": 1778493527326
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_ttdmh3Nw8Uuu420nwJPLGT1P|I+uuCRqChoK5t5mnYrslVoJGH49u8wPn/PmPpkjrd9geoSnphfW1kC6A0/mGRWrAo4WhhqyXfCb5FuBCxoWX9yRu+hIPo140/cNgFaQsFTdOpjSH2HVI7Aj+7MszG2ftvk4aHAobH1o+8sVXpLFe3V/bXhuDPzKENByo7JsS+YCdsOTeywHDnlHPGaOKLgY2JXWaniCzMyDpmWBHHV/nnlfSk5Ta0qdQHpXkB4NGVsPOFOwq4e9JcU8Q+mT4iAG7sZ5j7NDY4oy401xstCDH8yUv056YAatjaUbY4d+j+699270y7VD/DwFlIav8opZQnQmU6GlOSS1cohSNgIfPDDHVs0wkYcqYV4RZBNila5MX6+SEkn4SbpqHaouyyNuuaLybanHArZ8gs7qgNY3w/Q==",
+    "path": "apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte",
+    "timestamp": 1778493531117
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_3PK0HYlOPKnETfo2jrupss9b|VHRiitaaCal+z4UBU38N8427oiNUwQllgt4gztE0+h/d/Aj4cHtc9QyVNg+VpQXmt0Yc2zKbd3TnRE395fRP/79TEz4YZhPfx4awV9QCV55WkiRNQvBRah8UTcnJcA2VC3nAbGQdZLGPZBdPB41+vMJpeBB5ianQDSKc5CzJ1GZQoOyoUnRJYrskBBu4ZqjMTW+P/T9b59eblje4XAlvdzbFyPEvE+LO8r0HKoD1mTMHp1dPG9cJ015hglp/nbhoECwFSIMOYcqBScjmhJcOildMRfRXTU/hqx5RgHxpc9bcL8dt2OsimNNGFK95iwJ/rEDj39vCDFM1h0Ul7WKjjAzhQXW1/CT6o1R+0/0Q6kJUG13try7fSUdZbMgqXneGylHPn7RuIrZyngJZpFdzcg==",
+    "path": "apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte",
+    "timestamp": 1778493536026
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_5hHdgZvaVYVwtoFEUc2aiG3u|baGrsNVLcy27pMMNU+Tnyi6URg6eetQgS08Ojaa9dMF+0QgjVWLlLQj/3u/rp0TciAYvvwRClFvbvgPB0l6zzYSapfPaEYiCrW3FMbubK/lpLdWBpvj3f9Z5995IAoG9did/7a4kUp+skK3D0D+ToQUVpDvaCsQMYC4J3mSq2btp1q1vgcybeNaY9DqPLyH585NIj6xhb9QvGuOBTI/dwsfvb9//IJ23Erak0rUSY5mJEnSFfvLE6OtqKK2wzcjVgRgS0pEh3qmHYT1/bnQH0f+ObDqNs2JZALEUMUwv7Uv/TqYP1a/02Rjtv15xw/ij5+pHvftWp7IokVQtkztHh7AEkG6xq2usF/6NfafLln9mtBZvX0rI6xnxWwDGBW2lvWnqCNFKqhXIxHv5kcAsbA==",
+    "path": "apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte",
+    "timestamp": 1778493542473
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_WiI9wbjOcvAQc4PAX0FLPwa8|O5JynsM+UI9KQFdvRa9WctJmk5goM8BE6t4woYVij+9hE6My+jj2okz2oh/Nq8wZXPL8Z1usYZO8rl4g6Fz0TSHxrHjI6O/I498yv6Myuo6FRtInpwjZE6UnCEFpcCK/3phpk8xU9Z8t4GpcDsCZZhP2bCujrkEGpa2ek72e6tjqgoeytT6TCS1IbdGhc69TRgIYzUc20V5DpiOq8k5SuvDkbF1CTYU3FHa3H15Tkdley/J9lmEiB+JXlj7TuU7cg2QOjVBjcVpWnrAXoHCbzq2z+0FScGzFzG7pYm/8mXdGRoZ+sl93ceo4xbXa2Hrh28Xh0wrd2wraRGGO4gpCeNXz8ndTbKrwznjzOtsKQIJLv8w+9EetMaudgNHKmrB2QgTHt/AATEXEJF/iCbKOuQ==",
+    "path": "apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte",
+    "timestamp": 1778493547055
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_aRcblHmyGozQTR6RzKlQaTun|G5VI+MmFEENEDQiGBassdM9ZyaMYjWl10YvgyAs3No3ZlhPRx2BBobn+owbOguEQiFJJs9ctzgUlTYcGgeFDLT7jqIZh0wRLpMPrV0sZ2VRXxKerza+u6U9H3YPaQ4B77m0owZv4mQPtZ9HVI9vTgHirLK0CxE0sQgg14TRbanULHcOFkgpaIBDdmOnMLYDZVtxya/hKpI9aY0ttOoM6TajAAEXwmzUGj4izyhLwDwrrPdRfEf8pMytIQci4ALVeB/as+O4KXtM2fsThh4WZYZcbbNTHfkIWQyHUoH/fpAYTHj5tsMnssWcKiDNppFpqwSU1Of3QR4p6gd0pr7j6lny/F3EaR9v+QVhCxkMdwVb4JUcrMgvdQdnQfyoQtmjx8uO8q3pGOojo8mfjmQtafA==",
+    "path": "apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte",
+    "timestamp": 1778493567570
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_Ol0sZD9cIRKzqJuBWCMfhKzU|sr1kHq6Lb9T+LqRcqNrz8oReIfsOV83Icg7b7rFENoae/E/I3YWjqLem8zMH2mOvfiUijG5Axx7lkMWqr0v/GOveZZYus2djJ4fPg1Mr5PY/fDpo5yw5J26pvfWaGcEftUO9XOS2BR8LZJYhfdTGx7UmedGeQCyNqhNBkxDRBUgFIaiX9qP0XoUVDXSJEplo+bjt7qXbvRlSJVR9onGcjSVDkjTKhgUMjxI37DEuyVsZ9S8mqoGv1TCSX5sTj927da5IM7ZxFrUxzm+atRhlxdUoFBYLAuQlRNMcGMYgj6oSpI1wJ389c/qcMvqLusnNdbEZvRJuFyalDFgPxKyUhKIyVaGC/+bvkl2KRZx/TzCS/G9X0/2PxVtOxMGVECdeRyst+6sXoRJnvHqvrDn74w==",
+    "path": "apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte",
+    "timestamp": 1778493576489
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_6GaUSw8soaKiYCnh8ZoRytqW|sG6PtWqi7mrbOW3R7uMgmbXPQ5v3kKR9rhWJaXlwZKKbH3DUwoNnrM8te4+iJxL3McEB3i6u9k7OwGD8IpMIs75uFrKx4XEpK7Kw0GtbjL7/4IY6U8JpVF6X1DCeluVfqjO0wQgayEWORru81wWY4myxZim6CyjCCX+VpLtZfxf9Yj4COYPPyxXQzrhywBgoK9Y9X7ZvqDiLoOkS10Cc69MSbo6FtIt7cIcEdjUbf9HzBtBHbMCeTr22SW7YNYYpZYkj8/U7XbtunzJCGQUVZu0UE4MZbZwP+BPe389LQoKHmKGlGQlJGhfjdQ5eEmW8AT5W0+0/mR4f1DWpA+UTpZd9hnS3ZtjR7fiUsUKzA+WhrolSYjGFzW6A6Tb1Y4Ikmc6U+5A8O/7cCEy3kzD6cg==",
+    "path": "apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte",
+    "timestamp": 1778493591753
+  },
+  {
+    "kind": "write",
+    "toolCallId": "call_DMfFr88jI8cTf41dHRa5Bzjs|vu6+W6oizOgK0KGDDVNbbaYnWkffTYiOrOnXZukRktkFnRSWrJ/XbEoVTo7CnsBDqFKUurchYljM8IYG5hI81syIU5/XHBbFi7u85ciUpmTpUBrnn6fQfb3cthq3454PLJU2jBd4rLGqa95LFlbI1UHwdB6gZan3qXiZCCIp+V8R6BQwqs+LBkqGUKnNuGeBf9R2xoD+6HqYlUveOvJ/A0hr8zekUYZizmI/om23Y5l8V57YrhTOTnJ2NTnNeq6l9tyBAR9Dr2DE6NhVETinVdnkqvPfFmLWt+eD09vi4VDHRRdAaHwIsMECEtJeYXr2LV1elPCs1KppkU7k1jX9rUmOkkw/kuw/5hBZHd9y3AgGkGteRGxdefUhRom4LT1BJaOmWlfcml81OZA4W0+HZA==",
+    "path": "apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte",
+    "timestamp": 1778493655664
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_cM6I5U7z3OmzcSARKCI2nZDD|XMGhDvhfeM9cAr92yhOJ0XpTvqN8kcUxhZDfZB+KKWiNBQFAzM5h8H9lhWfS7wwFmCbHOF2m1ZCDBxxERvLpUAiG/E1CdyGbJltvo5kPds6TRo9pRHdBWQGMwp98YT/jWK4HXZZOaI8mTNpkvCY6GEn1lZgk2BdVgIs9nHlcZBLVEEU0FMG9K1m1MzDGaVw/4Wg7wfUCtjaaFLufj8o5Bn5KTZlstgeGqXSRU4RdcFpl28igMzl1hSinKJjNNt0gsPzyTbjNmeBIC04CUz3+lceIpIclDO3oFLbLuhsa76bvdL3zCq8B8JvhUwukTkq/OCAcYkyUu7dPkRkCWJEu6cLqZo356Ba68m/eKWvw4QMP8xVq/p6EO9SgZ9oq8Rj/89hBEsBhNK78OyIihcsjAA==",
+    "path": "apps/web/src/app.css",
+    "timestamp": 1778493673145
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_E0OQF4yZuYHjVtTwxf8adDll|tuRJil/jFpDkC4izRU7xOdKNd4PbTRWHqbwJ2wlruGn/X0zbEmuqYELrOMpx96rOexx+UP3fAJioq/1XNbgpDA+VTNas3sGNF/7AwWuZeWG+ClIp8BzI08FfLjP4kO0w3B8L9sThOSqI7wfHUuBF0dLfD/uE47wuFgxrSG5dwI4mCSXABR04w5yxnyZWyB07gJefPX52uemAUTAfcLxJLmoj3SDNnoUeaBP04PUJfBh7c1FrvgzgRMZzzgg7NwFef0+f1uRnO2wdoG0RqviiF6+Qy832LALukm8REZ0Jz+iK0UuoQJHxsryf4PKBnTMutG9SYgCR6uyU1eOiwAALCCBlz7QydKRlFFhV5Rir0oJ8zkSTZI7ychoZiM5NAj3/r0mA8KU3BAn4p7yg3OczCQ==",
+    "path": "apps/web/src/app.css",
+    "timestamp": 1778493682872
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_Q4UHDqFFLOp9CPPIPgiQynJg|1tIErXagxH95LNXhCa1vk/vImCplmWaqSLUYJiNcqzT93PVifYBwgw4DYfZY9SwBfujM9CJ2wMWwwQ4gGiEMFl/WSkWuOwj3dtzq5WaRVm1eEjscuNxDAuIv/Irr/o5cLQ/ACkkz7xCSzhL/yQ5vUVmTZ8mTCUjrOYkFmIRBUAXQ4DnPepexIdgT8n/rbNkYLvWImkKDo500CqvjgE1BcsWEjNsCebP1fWo1aWjAsRRyIXiN3VT9NqPM9oC11CLHHVm0Sn0IfhIi26qddKqlaA+Sb+zIUhaA5KgZDFLuDZiWpONbwdWT99SMTtCGQkxBafaZlD4QDOATPdAHjMiBA0bgdlBzPKsOeMXkLMMS17vHk6DddP6uSIW5KYSZk4VX4iPILCMIiBbIt5NlbDkhYw==",
+    "path": "apps/web/src/app.css",
+    "timestamp": 1778493690230
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_LTO8cPrgkFCmJgRbV8SAWnVA|Lb7wg+zQun7AC7BxN8SLSBsSW1VbHvFCw9+Sh3IdOyK1mW10nE1gk30iuYHL8XV3YSXvJpwrPxjNsTe7IfwE37NtUSp4j29kYowwFLIBoFzPYa59227eMwiTNn05AXMdiCGICCo0N9SVA3X1HH7cCAuoKGh4fLDObBZMtCcwHu4uHWqTRP+UMsCIHNOZJuBhw1PewLPebzPOEHIwebf4ItE/rKS986QS7f2U+AN5HtKlz71mtr4M35EvMcRLFTuK4LO5h6/y1XYZpqZFwkxRIWLgTIMh6s2Pm2HxAfCQCFQYGlOMwJX9gRJUNGt75urq+OZmQbg0cuWqtAm/REE/p6oNvHWvf4cgBKVG6bjVt337SSi3hLgpmpz0IGpM1VyWy/+dpYYLNfv6JIRddkOpGA==",
+    "path": "apps/web/src/app.css",
+    "timestamp": 1778493693256
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_Z5xCmZsOXZryOzbBkr1T7mSc|LSseGsCmy1yZqZ7VQsnnouL8vG/FYwFAskYkJin1EHtn4dWxS/yrh4+752Y+uVG/f5BjF8rv96xc+jsUT2D/qY/nkEahls9DoH6MaKVerMBs9DSP+XCz1ubWJTQ+PGBK2PM1UqKRW4m2pntbxmUwFbNuvF+mDr1M5Y91daUxGXe5jrMFKZvOF+aOrLkfxMjbmP8NiePcdhWnnjy+vhPlMqZUi7mrLtp0nzxKh2d7XdSDxNSLj9cfq92Wpw2S50jul61NVl9vEQhGxrBHpMqwH0+wFRNSCR1cH7+Pmg4wUntxWSLkARiq0f0crOv1r5axhj2uyjIjgFjjTFDnCoznOnOY7vKFK0DJB3nC0u8l2g1Hm3Fuf5uwMTdTAjoZM5zfe1k4aiVDMVqiu9Bc0dDxSw==",
+    "path": "apps/web/src/app.css",
+    "timestamp": 1778493699560
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_Sd9cqHnHEG9pz1PNz8s2uABK|wTEnKNsQz4aoRMKNLwzZIclTiK+ujJOCXUJDiy9UTuDRWhn7m9hC6pHWHjvHJNhvub/RrBmT6uH6pgAwUklKOdGivel6Hmi+z2QVFTKLKSEpWoN/XGNJTWBbVk8V/ioXFdBwvNAuH5BwZkJC4nwBsqGZbEBjpdANM4sPxRMZn/+aKb7qiTSIb70XTi6DZHGM0CiwcRYzToMKbACqIwE7+pM7X95bUi1WXjxB29gDJVD2R9QQ5BYSNpoAY0/gYCtPpPahnZp6jJmCrdu9fdlvE71i7kYUkM7Y9nvLePMD5GC4s66EA8cF9KR+gZZTyPIeqQadg5BWRUrAfZsQmHHztO9klhhJ5whmKtismzui/gr75IB5uQOHLHyz74R+h75naGFDaPQqzaTi+B9FpmEtwQ==",
+    "path": "apps/web/tests/e2e/fixtures.ts",
+    "timestamp": 1778493715335
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_yPmoUfbTMMJmvsi4loiu7OIW|v57zcT0DMriWR4boIE0+f8HlBjWZF9Cj2/zGHe6Wy+usus29yoN7pyoeILnQ0h20hXgLc1cHt6sLNzI1iaW4AimnizFB2v0D16B9Fm3zU9ng8khm4c5IWVMUxExtayTjUuiO6L8i9+NCpAu+nJuOdGeMt4tVdBQ58PbjSpBf8qiGm+4b9rlE86FQcESBuh2N/1AIUFZwgA3qA80cEr3DUzrfSFT5Tss94atJmGTwrQ2jin5cQdRkILXzRJSFxVGAVUS71QqHtWVldirnh8cq1RNyxB3/9X2A+TT6GFbCF/e+wrZOTYMOeyd+WiIkcVo3TTJFMBIYulkn252XRGk9eGfnFPzYYh5dmPYUjU98m61Sloekcq6pFsciocW8ZDMGTN2B6juGGcOIaUc7Ad3pxg==",
+    "path": "apps/web/tests/e2e/fixtures.ts",
+    "timestamp": 1778493729892
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_yyjrgcFt3vCy8Pt5v9unpg8u|USeYOxcsDKpzv4XRPqmLUQiSH3+rVuImE7us5HN+fkh6QgF7ySOfd+pMSytqR2rcrrDDi04NCrc16HDPCnqCkQN1JVmUdgMlSthYm8yiodMOZXQWU8J3iiZz7drCBT6geanoXBEYEHYDJ4nuRPokx5VJOg9nxHLWKdKdgxKDCy7BrvUI0IFFx8hfcOi/cZbWz1jk/Gt4rZPl9z6VSuPU7ObLDNIpQnSe0WiC6LYg6cKOFsddMNJhVDvAlK4z7y+3GwcP0nYqV6Gw5To9G2wsWzR8KyFivsblPuewrrJBw7eKmHasGiP8BO8hL1EpHW1i+1nQbcyk+9tLxf2Sg6rdmsc0uJAk2BwNXyLGfAYDkVxa68rcGdAwYsCOqS9fyiUT/vIZ2cpI3SaaaYE+8u8C3A==",
+    "path": "apps/web/tests/e2e/fixtures.ts",
+    "timestamp": 1778493733371
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_aJgre2CRXPBrYXCGqBRIWC5T|8/eb+HYNEvnU1FFiLWblirTVs9YP6ItMPlDMyTH2VA2IlwjPMoYGtbeeaPAFbdM6AJlHzAulB0Afmui4C6XxRAQypGTnmer664lPE+HR/61bs7G9g3uAfGrZhOhsoYMTs5jnO5REqQVy6eb8K44ONkm0aGovLh+6v8px2sBGH0riLqZtXX+WlPaoWKk/OFUn60luEQmIyXkBF28+0gzViLPFper4h23VxyjdWhzLW8KnNQimoF4NfjH/aRnMNsMVbQXk86zMZC+xwjEIP9PATtkSXnVu7+mLAMibUuthUyl0Iicu1sicxdjchtuhaRCL1hHm5sKIy0R3z6JDFJi7P/ZUSvG5d9boiZBZdzVgshThKqVjY4CPuiR9XpWhb8jvy4rJZXG+flI/jflnAOYeWw==",
+    "path": "apps/web/tests/e2e/fixtures.ts",
+    "timestamp": 1778493741854
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_BcO2ZfZM6TPAN9UZZSyWIkjq|dtCQfz457bcAMqiPCSQlsJQ+Pi2C7EiFmXpyv5LoLsNMoTjg6AxVXCuziZtke/T0m3YELL0vr44eyCRD99IORZ6wmH4z1MZ2gNz2m6K+2eoWu+L+HFd98J8PRDN7wmZryqVHsRWMJKhO8FwcA5iKSZsybALtjbPcYad9Z4WOgjIas9xuX3IHZO+mIpa7IrN/NLm9+ZyX3Xyc0ll6bKQQsW1gXOtIo/KN2rN9rLWjBbXstSpffYWadUxd2tggcrrP33TbDAO9Zbvb5bInijVqG4lcynnj4ZroBsUt47JUnSoN1Zl4lRDqV0CI3VczwQPTCUcZCeAJQRmQnnk/orXvhSPKyDPn9LCheqQzOQPIWAprA+nOby9vVRbKnp7f7bac1GkYVwAqcr/VZGEzPdOyEg==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778493745441
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_LN541jJXH5wViEgIfyEPwqiR|fRBsqELC0BXBFF49DT5AZkJZ2Jxh/UDh6JJc+XHIW69wefeg+pniJ1CINg8oNU23l/8Cn5LgjzfKKTBi+fkZ9dVwE05D3Rn0ePH/DTCNCDzq8Qr7kux3Biq9y54Zv8B6TcMgTITFNkO046NTpJ5lVxokxD4EUJraG5FOYz9VWjeJswunx6MZ2YV61gpWBRWpmMGxRyfw1zdkyqn6kIPfBKwebGXDiBiyPNi3xdzRV8YfD/eR4Kaj4+Xe3ofRvM9cyQzW92p/WD3S8VR8XPUxy0kTI2vXt8Ll+vlaZn0xyhUXBYcFBg6QCL4yWFvhv15fNLyOONSIvwk/S36dFlKxSF07wl6Ewt2cQdywaBv6AhfsI7gD8rzMRbbWEeCzyqhhYbnbf5kswS3iNWiVa8Qq6A==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778493796889
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_9PVsilxjW6QVGLqDk5FeTVwd|6IH8v1/g9r4E/y3Ricm942aYpw/b7KXcHU9jHqNtQrkjoushJlxtPKvlyv8+AI6nlSrMCEcdIIgcINW1NG3GgQb47bwo2PSAHUKt6VFHm7rVgHNIGShcNDwb/TxkDPtdqz6+Z2/9CSJCtbGdiYpSiwzz9JHPdv0jz4ymg5Ant0oeMEl15XPDbtveaUhT1jg5Q/TAY+ZewTRl9GizrRhrpNwjq2UuHNVPmRm4WwjFqx+M7guBg3CtNPJpgz3BRlSwrySLW2uIoCJlpjaUMvap7U2f6YnUZv/IpoNtzsAVewFp2b3xcH5jdPFz08w6hlzSKGxF4xC9c8/xn3AQORK04djkmcSdH7ZaD8PnSeQwsJBQnDh6TXq52rMOuCj32mlq2e15Q9sGQCcHSmcdzOEZbg==",
+    "command": "",
+    "exitCode": 0,
+    "outputSnippet": "gsd_exec[5fbe23ba-0f87-472a-9f98-75475171d10e] runtime=bash exit=1 duration=49935ms\n  stdout: 4964B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/5fbe23ba-0f87-472a-9f98-75475171d10e.stdout\n  stderr: 3800B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/5fbe23ba-0f87-472a-9f98-75475171d10e.stderr\n--- digest ---\n───────────────────────────────────────────────────────────────────────────────────────────\n\n  1 failed\n    tests/e2e/calendar-shifts.spec.ts:211:1 › weekly recurrence suggestion accept path pre-",
+    "timestamp": 1778493840348
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_sTvV4we90tjn0eu263dzaBAi|HlYqbvrj7FDp5sG50IQIF2CksGybkoz6qmnxXd7/l3mgPtXCEqv4LuV+uMeu0n4VavOSs10xpyZmaNDYcK5pe6oPzBD+ln1Sg/0xhQR29vtEcL0aFChTtmokYhVro4ifaJ38/uR1KA9l3YiR25W05Fn21XHSBWzlcnClsjDMQpnLhwWGUPCMgn6JJiNTIQseDIaot0FXwKYheAHv/heLh4A/SDAdybKYJ2XUycJamPIVJ7/OTsIN3FrBuGUEe9Cf2Torn2i3Nn9Y5tuo+O6GOpcV3X0KOVSOGrw3oRG4t7L6VL7GyVzrhpSysPelpa5SsHG6TAa2DAzIWVN4ueV909hhE2GIHdQKYH/L8aynOA699OTzscoKGPC7VvD+SpKGicOa/EmH3s9C9/7f/LBRiA==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778493914336
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_I4PIufKjp7RUff4aBRIobFZl|3CuOIljGMrZMgApZv9OxZzXKaS/EtVCAC2vyZIg03qK6HbNQomboo/LZ+ioUgkmmZh7FzOoA5335SuB6YTaraC/Y1o9CV9r2XNQ643a+rR36Kd7fR6QATjmPO/bVBbszQRp3pt6p9y3T+Cvqq2aMznNQVAesIDykNhIBX4favMQTq0ocbfmUvwAOaZTYlFnzsaRlcfuWzQpWste4Vq8nwOU4DQ1JIhKUtOkGhrv5BTFBMqQx5keUJ5PnUqbaeaRSdw6uXOrTlf+0NeNvSJ8ZXuAbGUqD1Y8nzawhnYB8DZVN55NwI9fYnh7paTYqKoWCDi4gUVRZxbkj16rTGtjRYcvP1vsypAajsEHjcHtci3U9CJO51HLFYUzrb0qL3tr0E3HyLzJISE2zirWhVRkQ2Q==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778493919839
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_clLx8NrAX5NZyxEpICie6wfR|ji615UsmvdmbWl/2ypwmOAnkSE9uG9EvvwdQaol9nq2zy97wxrejkRvPQxcA8x2wkBmoTxJfl2Lazr3CAqxXmxO3tiC+9ViwObITMwVnTVADFOqOIVziD3rB8JlcbJ10ylwQV0/ImYuxqEu3hx1SPOycAWHcowf0NW/FUzKbsH3FyKzWbHeXE5m/YAKPhl+NVqoimeY6lWumMkhJ62mVSRWuC5QKIK4rDMKo+cj/lhjk1P5cCRKwYAi5a5ND6cU9ieX1mYrhgIXyA2N57R6zM8Jhv8jYAnz8m8DmI4JbCaEsxyj+IrAzDxUmFHLnpOiqiG6hX3jeed59nMVlkP3+pYNoBdvJTRs9l20u6/5edmN/my1/dSA3mKUa9G13Rq3KgdH57ayzMsYM5KqJhed3EQ==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778493923163
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_YVZt3VzS6BqPHIicp99MDJBE|Tvvt0WXB6CemKQiOMAxaMZmLf1vApzeDs6H6yVw3B4PoNqdPa/z9k+atr11JzRtzmOJqQ79X2W4tk816nzqiDHad+nfJRYI1sX0siuy5C2+osLyhfvTgd41SgV9bneoTa9G7j8iyge5pncvsSzVRrFCTNI5joXxl9uRLEfTnm1ALXFezbLUJYrJInuhpIl/KjPCXlcytv5QVI0y3SbFIPJ4hu60o+icO+dJN24zSfVw5hwMaH4Jrx5wXizyPu/xhEJfP5CqsCE325a6hlPxQQyoNAZpPK/lpZvUZKQFb720o0JDXV+X2+w+AZG/k9Ru/yJZOT30v487fA2pgSLEtxz8MbXP34vu1wkloUYoqYQ0grTxCAlhTneCOv6J3+13oQIBMjn/UYAL1VNZ+rK8z3w==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778493936540
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_4JvXg1dT1CzyFIHj8Lfq3Irr|YBIuHZ94LF5lFGtqrhl5mKBUkpmCFtpdQANe6g4zBb44TUNpNYZN1U1ku4vNZPqKDr+tzgBeSc0dubwlKk4uo+zR0CTGsxJOlS5ShXhs6et67UAxd6xUWDPbhVBX3+esLU1jqJojeXqf2UaIGq2HmEXF1eEVNN3QlesrAdFIiMJEKjp/IkwIzlUaB+BXyZeTC4lJkxX5H775EzSv5rkVE7byowFmqoFPYyjlSzKrD2dmMBmPml/ZH5n0wzo/EhyWk7jXgMW4p3dwNfXlgahMOWF1CDLeraKIXmaJLytpa0ZxNYlYUNUEQbT1LfYzAEbCZuxGwFMlIISrZXZLFEhqS9iOrzssQtWdw2wxY1HfowQZTfI8cnWfhcDUgsI6uSgQBo0nz3ay64zndZq8L+IyhQ==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778493947367
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_sKnnKc6sxcqRh6NWYCIG7D6u|zt8AY3sid+j2oyvFolrPtqLOPsL6SK3qbp2aIyM600fGHEqVhmJgIhazk3siGUC9qXVhpzAQ63LlxILN28tVJ2ErBHTibHImsln+4zWA7DUoyoR+CjP2ujn/dFKE89aTPA6OOa/ORET+lVT2kutg9qcsiclnQcGTtbHzmRdg2ftZT+uyiu8FIH4guB88JwT7F4/eClm3rQ41otzHR5UZAVRCBb7RzI/NYg63sqWZIGA8inu+pnO2j+HRWDDAJcH5s0udE2iMAjDDre8w5qdJ1jOmPnDRDzniUTTU/OAzVMvO8zKxP1zwUp433DCFdX8gpcJExS8+tlWPk7KQ2GlYx53siqt4wAM0NaaXcC0a0aJbFijjY56IafsA6ZHiP8wMM3p3QTcTaX8SRWNQ2BSdNw==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778493965396
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_mSkgOhBLsjvPuzQxHKOay4wp|RyAltVvRgRdqM9dpVcdYlJPAx+j/0M6URPh8Os4CP84TCXRoXL93wsi00WVqtuCEYkXsOxVViL/WUZp5gA1ajjPW9pY/rX8Ycmez2lT+/B3pO+67/G6cL0PT+pDXgnF4O2HtWiaUdkun9Vx8D08KIMb9NMyWgiKan8KI29+Aq9eZh8w4NN1JSLNjJ6fdd9F2pHdqxo3fTenDFq5rX6kk9IgOxdSFDNlGAM5kWiqocNEfFIPpIrE52B3ijKIHzs5rX5VPXF6rr8E9fGYTxRsO/9e6ovXB4j0mgUIyToASV2RXHTT44j3y31KiYBt/fA4vPZ3nOCqy7uFXeqq897QKgpsqlZd9RKFKADqiUkAGItwVNGENoB9+Wsv9y4qKjLvchWab9bTtuxBu6kQGDE5M3w==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778493971750
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_PD6ZjIhGkqOlWeb5g2HeQdoB|aArfJenTRNTGxmYvs62UkYHpycEgQC+Eevi8Nlzy7sdCOeGrMdqmGMjxr27y9VsACE+XhKxLY+j4jkhV8bd/SQsTjkrOSsodmeDuZYJ+48JG0DfgLm/B1G1A6VkAgQE8hKV0IA5JqyKLMJg1+VzPyHQrm98/R2mKXuD2tlwCw2kY+hYd67kMNU/YN8F2MM1cwTDeHX+Su3axz+CjUyOFje8zMxw0YpiTJuc1F4XA5VxGB92415GLW4z72bMr5eTH2mnshTyq/L804QURGkJp73IhTucAxG5jaLfMoOkUWQ1pM4bGjAEQZZDOHO6G8wdeSId10w5haM/x3AdtGbWSPun/pNbR2c4HGlj34AU5z+ok8wnDaugHGOTmpEPDV6djuubg6JTVap7WPs79JlP5xQ==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778493979225
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_pIdBfHHI24n1maQQPKsUk2u0|Xry1DgtYPScmpHZRY4skybkYmM+8UFj/54AsZzza0igO69uaWafkhwTZLKuxFShXIDQx4DkloviVT3tCvnM3xVzAD5rpsyUUkiDBtBxy3KvYmq6zWv2ptcK7OuPffLRu00S3u4014MqGDvhhqHi3bvhFeZnAHULlJvvrHjrO4ov4KzY4e3a48ETpsTdDfIZncgekG3aEkJd1OHMmh6IxlTZkXoxO4/Uj0nV+4iq6Ypp1quLwnyWWdMaXS2YPdHETbVQxL6G1du/+uQyfifFxEyi0YThBUaDtS3jyTeOT0zlgkjJhjQe6LK8jWI3R9zA7Uv/Y0ATkGtGq58TkEfQinu2/B/4evS7G9fFwQy3+sNnWBQEwWPoa4ci5CiauL5PrATBnweZPVaY1uKWfavszjw==",
+    "command": "T02 verification: supabase reset plus calendar shifts Playwright spec",
+    "exitCode": 0,
+    "outputSnippet": "Found 1 exec run(s), most recent first:\n- [5fbe23ba-0f87-472a-9f98-75475171d10e] bash exit:1 49935ms — T02 verification: supabase reset plus calendar shifts Playwright spec\n    stdout: /Users/serkanyeniay/dev/Caluno/.gsd/exec/5fbe23ba-0f87-472a-9f98-75475171d10e.stdout\n    preview:\n      ────────────────────────────────────────────────────────────────────────────────────────────\n      \n        1 failed\n          tests/e2e/calendar-shifts.spec.ts:211:1 › weekly recurrence suggestion accept path p",
+    "timestamp": 1778493982760
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_SBFGb16gzPCuL2O4VflYwgcE|42suzD8LVmbBSShSrkvHnWC/kcFk4OgUESrdHB1tDv4Ove4Gh3nn17Q0LBf7Zbo21elX+3j9jWSKS4mHzs3Z+nzF3nYuR3THgzrEDr+F5Y7mirTDgpyjPnbeCltH7k+1OTGySgVIiksW0ZBRg731O4vEk/g0fsjJOCDXuo0KIiaveqxxRpelNOyHENWRxmcKc7t6DQ8zxbvu6STdhE5hhru2VzbgiPy6CkLYWDOPNuBqKMF9Cj+5VKuwQIrsGDIa69noezYTZv2/1XTYyEYgKLq92POjop+abKATNtBuWyjpb1zVlRHqi1rejKRE2da1ymZy3kLTFPw76AaQV5nmfB35UQrsSE3S2MJIlpTrstYClYRxotOGUswO5jbjhf/OnG4hdHnr8xKEIdpzYrtQUw==",
+    "command": "",
+    "exitCode": 0,
+    "outputSnippet": "gsd_exec[3659c59a-2485-4f05-8134-b32a4462959a] runtime=bash exit=1 duration=46010ms\n  stdout: 5003B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/3659c59a-2485-4f05-8134-b32a4462959a.stdout\n  stderr: 3800B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/3659c59a-2485-4f05-8134-b32a4462959a.stderr\n--- digest ---\n───────────────────────────────────────────────────────────────────────────────────────────\n\n  1 failed\n    tests/e2e/calendar-shifts.spec.ts:223:1 › weekly recurrence suggestion accept path pre-",
+    "timestamp": 1778493987722
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_Cw8o4JxybW3n7RKYWUp8OpgE|RkFPDEikk3IXubRZKyz422wyzuO+uj+0C17jC4cw/ZnFa6aBOm0OjKjfpoqRZuJGQMkP7W5nuSBzO16l0TnW1ujjz1qrxUGXCV4W8pZEYwUv2OvrbjFFWH9Pp5M/LG+++TtCCX+ArOXLAAZViVW0377hpvjVfT2Gu022kGpV0/TJjNHxdkrb5BGU7pu1ghbbeFQvxif9Zlximc2v4TZvy3AuGzhgwkDe+NnAZ7MQ0le6yBoHWIt5Q6jiP+rBNnTxNJrCV2gMzMGJe8lIOwzmIKAUvaBb1d+9fgopWE7XlGJvR4yanURNrDYffqZxM2ojWHmnuDwXxsPh1n0CNVwbK8BxBqBbBs2PZ3HYg7ZSFndkUEF6BH8mXCzYKUe3HgWuP72OPU3AWYnRUjmB5Z54IA==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778494123318
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_Lw4mgoM7pr42nmQuTzkzVDXk|XDqchywDAP/p/kawX0Ccpo1JRz26zmmXclV5YRIUVteNQvoRunMskiOGLt6FselsDpUsV59z5OrgyLLdXQeU6rlRUD200SY4cfc9eF2tPBhpu4aTdRLqmNHlv2le31LXiAQ2RFkmgtMQIhrQaTIlyxTaozHRh607VmZToSO19qE76lFYLWFiieg/03YmAsTbaJBxkiOtpVn5pd64vMTOgF+tgR6G5vhh+Tr/M2t9jE1vaU0My/G2zJv4H1VStQfseTKVbQpyDHmkAMxj2ikk2AZUft7Zu6+PmOoOdMwoHkk2YKi9fZzjzTXeAZYplfsLadvWZ9nnvu/1ZP7YhJ6xDyUeBJeW526QgbcMEX6mSieh8kPxvhBnzf7Io9ijTMGsUr3rw/2bPth0p8bhQFalhw==",
+    "command": "T02 verification: supabase reset plus calendar shifts Playwright spec",
+    "exitCode": 0,
+    "outputSnippet": "Found 2 exec run(s), most recent first:\n- [3659c59a-2485-4f05-8134-b32a4462959a] bash exit:1 46010ms — T02 verification: supabase reset plus calendar shifts Playwright spec\n    stdout: /Users/serkanyeniay/dev/Caluno/.gsd/exec/3659c59a-2485-4f05-8134-b32a4462959a.stdout\n    preview:\n      ────────────────────────────────────────────────────────────────────────────────────────────\n      \n        1 failed\n          tests/e2e/calendar-shifts.spec.ts:223:1 › weekly recurrence suggestion accept path p",
+    "timestamp": 1778494133832
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_gnu38uKFuCax2SkyDhWgDfdy|E+J9TPZSOAyQx0tXOj3JEZbRUTdcu8whIsGiOVMGXK+VgZO/FG8BD2/w7Fv8+hqHk+nnNQcFId/PnwXqo1h+w+xaS5H1DyawPPY4fQJr+v+B0BeTmeJpn0pURINnS+fggTh3rc5ciNONkEp53NR3c/MSxPcjqnaLYHhSPV6ptuETGRew0rm2GiwgWH35IvTkQSQskk4byw5mb/Hkc39fb86YRQZQDMoSFd4NGG+jqaCo//JLuuB8v4kfmh34yh9MjTBWnppUgDdBPBygLLDD81qEgxf4zTCxTXpOOVKWEfzh44UF72uwBQZE/EqTWR1grPcAXkw/+h7nKXeK6msIPk5jalriHp0Aw9q4lQktzSXut/Tztk5sOr2NyeW9q0MAGU9WCgJFwh0qrSDZP+u6vw==",
+    "command": "",
+    "exitCode": 0,
+    "outputSnippet": "gsd_exec[63fd438f-c903-470c-8faa-747082c842f1] runtime=bash exit=1 duration=46704ms\n  stdout: 4695B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/63fd438f-c903-470c-8faa-747082c842f1.stdout\n  stderr: 4173B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/63fd438f-c903-470c-8faa-747082c842f1.stderr\n--- digest ---\n───────────────────────────────────────────────────────────────────────────────────────────\n\n  1 failed\n    tests/e2e/calendar-shifts.spec.ts:226:1 › weekly recurrence suggestion accept path pre-",
+    "timestamp": 1778494143920
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_P7OoVaQotlomaQEmcr00gibI|2OtVY2HGTuC6Cfjt7uLUKHpLUG/Q7+N826NFNaKA4P3rS7Uxx2aZO8MA8pFYxtsV01U95UvSnYEfX7SpB9t16sNw1M2ijY58LQ/NPNyf44omTBbl3Wg8ZR3R1rZPg5AjLsFQwS4rTEA9BEc5vYuQAkA5s5R41pfkRMKDvV0oPOskwD4twLprT+pAadXgQZMZfdycQDmkIAspQqv3NuaXzV2lnBFnduV+qd9TnI9VNQhN0GgelXHEZGdwJZ8phKqJeg7c74oqNCbG5wzoA3hQnLD1/A56054850hP2wxXMFY88hsIHXdsozZWoMkBAf/G12TY/wTvMpfk/YK9F+5wouPxu0OQxfXx4dg6mmN1ylfy8yIs6v4xRMuMYXEtLW0xCcDFaDZ+h9Vz5y8gAb85Eg==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778494210968
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_CZoNVNt8OEK2JwqDXVV6aur9|ncEQikSFwHzszH1v8k32qTIofpRnRh0ecI/eGud2Yqh8AsNzCx1VIWAWPGYINHG8hwhHPlX/kt9M1bvNy4h5G9MNLqtolxYFI5Z79dY8R2iXew/yod4o1UcbD3B3TQgsna9AQR7YesL8QSznGRbwcmJ3XSCigxFcWGyVmSpwXrNKInCofwBypRx2O9kE86E10OLgymyYe8sX8DfZ14yFQOk3e4Ik8egO+k9sDNzF+yg1ClMdVAn8IyPizPehtrax4YQrfsTFiHHQvVVDu4DtC9uY99tnz2sZ+zXb1l1buDdzNZG4dOtZLCm+o7xR/chkUEar7EsjjTdfjXy++Kcp7R1KAQnIdUjvZBdJV5pKTLFJuJ+jDnTJe43RQIR3ccIIqPZ2DNDwDDAFo4jdGHUXow==",
+    "command": "T02 verification: supabase reset plus calendar shifts Playwright spec",
+    "exitCode": 0,
+    "outputSnippet": "Found 3 exec run(s), most recent first:\n- [63fd438f-c903-470c-8faa-747082c842f1] bash exit:1 46704ms — T02 verification: supabase reset plus calendar shifts Playwright spec\n    stdout: /Users/serkanyeniay/dev/Caluno/.gsd/exec/63fd438f-c903-470c-8faa-747082c842f1.stdout\n    preview:\n      ────────────────────────────────────────────────────────────────────────────────────────────\n      \n        1 failed\n          tests/e2e/calendar-shifts.spec.ts:226:1 › weekly recurrence suggestion accept path p",
+    "timestamp": 1778494215122
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_K2WifJg5UQ1eEpRDnvSbqKp4|zieNMx5d+O4YUYGUELVteXXUIas/YVZW1PeYamTOIokw6eWbh93XZ4frmjH+4OTOU194wiXJOiL7uxRMfBQxGKCnkggu8pGAoFVy1/03H/UIMZ5QP/I5+SxRT6lRLf7eyDnVUh/yk03yJJC6X+qN8+eelZ+pWP1474jRXGlWSSSVVLM/sfN3P/LltcQPYV+XB/vttvM9WZ+n4lhh2vr2mK3gnH5kEhL275U5HwbCZQ5xypDA3Irsze8gVwfEPK4o3cXgOrEyq8xAKqndbphGnVPdznpp9oYLbjtmWv9w8DuHOnrbYKP4M5AgKNCp7UUZ2hYMf4QhoIGwIaeYR5WsYRZ7sEPv4Qd7uNwhzGxa9g6gYcW2exUb1u1iI+UICyMFKzirlOX24eZGjsQVCdCGcw==",
+    "command": "",
+    "exitCode": 0,
+    "outputSnippet": "gsd_exec[2e527883-dbca-46fd-91b1-c6defc4a5243] runtime=bash exit=1 duration=45137ms\n  stdout: 4535B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/2e527883-dbca-46fd-91b1-c6defc4a5243.stdout\n  stderr: 3800B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/2e527883-dbca-46fd-91b1-c6defc4a5243.stderr\n--- digest ---\n───────────────────────────────────────────────────────────────────────────────────────────\n\n  1 failed\n    tests/e2e/calendar-shifts.spec.ts:226:1 › weekly recurrence suggestion accept path pre-",
+    "timestamp": 1778494219607
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_l0NLgZ2C03J2U2ngVeco8Sz3|oGP5dPZl5pXunhGIBCfntSrhV08egvU9IdsGKZGfXEpgOZkT35KZ36hic9L5M5bgIkexJUWgrIVZ4k9omh0R5L2JPW7lTVdH2BHDnl3zZNjUSu49djn62WpZ24b5sC5TkX31oJDJEFmCCBGEwuBJhsJMamvCVT0e9/lZx12TDiNvgKdNAwsPRJhqC9h+TUaX5gWkuKsgumeOvvitIEyMtKRwNa9UabhjIi1gkJnBSCaZdmG9H4a+HEP/fAVBXUUw76DWHGTEialJ8K2UjONyQ50TPKUXbk/UFZpi+LAyo1G75c9wQrUr8WJdEKbsCkA0AK7EzwtaIKiUj8JiCzHK86xA6b8wFqPeNO2ys3NpOB6rraUgBLcDUm2X9kkROrlQPqsIbfhbImK/mktlRRyrJg==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778494296369
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_exMgOY9PDLcFmYinNdQYiZkP|Bnz0VxOvee05K2j3nSemTjS/Irn9V9Z69uiOx2/nLn6hk+eRgo/66G8a8eW1eqnmFg5iv8Hl7BlSUCWNELC9X++iO7Omy17hDZjnJzfs6jCzRJek6lon8VN/MSS3ThmHmRJCobWN5zui/r68vfJA1SmHu6f1D7nyosxCaZv6/N1CUfzIjMoYgCJw0JyZeF41f+7/i4ctAOO3jDqgGdZzNU8FBnj7ckjX8KOV654sQW2pKb5aZnKxGhWvHezC+pijeG+qEfB/73emkaeHeC5zK+/0YZGeZkub3D6IUvdtI8iHeJ5MEkBwxiN0aH2XsXqYGo46MwNqZpmRGOfnV6SHQgfT+5DNMg2u7G6Beu3EKZ8at0nxaOMydyFJQFO/pUDKuhdq6CfvpNt+0mu57+0+Fg==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778494303095
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_E2Lnr7GO3eJ5kIrTh2p2PvtJ|xHRX2C4+Wh1VmvsJ5CntDkcPUd4HsBlfD2cu6VQEt5XV6LNPxim7O2oMU/ZkNvLoA9HHj3ZKRh81cxyDSdGQz8u6nCrj8gWTlSOdrS9zj3JyGo6CAj/ka4etwWVxfKXVSN9PucQo9bxwPOvIqMrjHABnBJCWD5CrTjl9q1N5vwK0WEIQ4ZEXOJMQkPOTywMuuwrg3MMoQgyvq+8WzIHWKVpZ6xp4nzSBejIxllHPj0S00REnZfUIB5F7fwzGX/Jh9ooD3LDo+nFKx1rqcWFDL8XMiiJMyzRr3dx4MIN+g/6ZxmneQ8fMP2FQhgIrTezvRfrybbSytKC2rEE2Ydcb5wmvhQczFjfN74RDpYeBebrRo7Xd1TYWK84zsQ9aQ5W1VF9RMTzO0rfUNtZmosc8ag==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778494309109
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_QSInEG69lvUh93fBg6E5aDBM|Id8a7Agpr6ET2A1MZZ4Cf6G67/8lnBgc+wt3gaO8TrTGRPgbaS4tILCsPVil1C+CQHXlwPlhD+br0W6EcO1cGBkVgD3rqjWwts+2uA84/V+L3LC1g5c54a3BK+b7svI79sPoXq3COK0JyzeCDfUy+ofr+2i/uvd5raGLFBzHQgUHn9yfVeU1EcyGSc8f3+yQdhG5zZ4kac1mVPZwnH/tm+5odzHvKjqHQ0U4OKKvHieruO/eE5WN9s/EzMFRT0rvtsxSUJKsY4spXu3uPQZ8UxGzu1WZMcrmmIIr3xb+YqzhXKeS/wWUxxoD4xChsRAOc9SgpI3ZWCVF2+J6ItPrb59j1MHLPJZ7lWNoKKoMB6QB1TlYWxJ0Acd/KhQulzTo+4/QD9bUG/V1PNPr0s7BFg==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778494313554
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_5KNS8ImWcHhRmHEaWQNpoJjE|m3Ej+++oDXeqHBDf8iXS0l1Mk9it6/tDHGnRp3XliVj6VoNvPNjr6bXzA9N2Fc2PDy4nrL7ymozBkFFJXWBq5IspkGYGG1wH+UhPLSMj7QjuBScjTQkcV86Q666c/u6Jtmf4eJh9m4ekTNmQanlbq7rhZUaLHcNMEhinG08Moz2x1c6e8P0BGlF/R0bLoUbfD3uvrxj/Vc3WD7wbf9vznoppo1siiHz6hA2HXGnblHsRXsglUuJxhj1jeKmHDCiGFsO24Xn5t6HKXR4RWKgzKFsCWhpa/6cEHdecsYNFCIsxNNzBFe3NL58LsQxIrBTVGaHuDjqxnoqR5jAZV3+OzjZoy0z1M6EkUUGeIaLsJwNnIeSYD6104HqLVUZDh9NDeZhFcteQ/P0+bdXktLKTgQ==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778494322454
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_Sawy3htyIXyokllwDCVuqlhV|DKWIImpfxwpYw+Nih5jiVa9dP+Ds6iG2cxdimaIyn0eaX1c5UQH9o33HW5DxOU8decqBvVofZUqeG/QzdQg4hB9oFPC6l49m9MxW87Ne5RnyO769YHPNxCn6Ucnuba75OQ8UP1JWmS7juwCzWBLc+gA1tntjQJIN/0tALx1MV04vBVwZaDSSXNA5lVsgc5izcJavu5ot2IYk2a7qPb0tdL8kEgK4y0JIhUTNQUwXMvk9UPSjkfcBnfvwYpaFcZsl+VMJmK4Mfy4UTctMGjwbFUl65OBTCzgk0ksVk7ZMDnOUyLtJ6znUTyw4KR363uc8D4vMBHEFCg16/IEyMIqJ3rVHRs6cNwHuO6WAZntX31R7mQSGlqeZ2h3kRn6i4qcLnWnNxrJohhZLgBosxmzRww==",
+    "command": "T02 verification: supabase reset plus calendar shifts Playwright spec",
+    "exitCode": 0,
+    "outputSnippet": "Found 4 exec run(s), most recent first:\n- [2e527883-dbca-46fd-91b1-c6defc4a5243] bash exit:1 45137ms — T02 verification: supabase reset plus calendar shifts Playwright spec\n    stdout: /Users/serkanyeniay/dev/Caluno/.gsd/exec/2e527883-dbca-46fd-91b1-c6defc4a5243.stdout\n    preview:\n      ────────────────────────────────────────────────────────────────────────────────────────────\n      \n        1 failed\n          tests/e2e/calendar-shifts.spec.ts:226:1 › weekly recurrence suggestion accept path p",
+    "timestamp": 1778494327299
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_SuDDITMnzowHzG7w3lsG0psy|xMgunzZxYkrOCz+isHco833yGffQo14NviNhL2fdLHub+U9bRzv0unPfSVyjWjPWgIu5ZKfpsInBd7F2sMZ9mAL5hfWguqYEDQD5EJ+cVsCnjBwfQp8UytLNzJ42b2ya5HYTKPL31bvccg+mwcEayiELsBsqkUYfiTa2EdyoPr3NKyVMYLxipgrMTq1PYQkXlp+Yb/ugarw8rFdHgTMUM6xdAZp7Gjkb4vaT8kZ7PXGrnXWi/jakukU7x8ddqrHjBQPy79DQk8OSK6YcYXMyqC/T/YYvqXPb24f9uc7mcp2DgCKrQHKmU41IvAWisLk2rHvPCIb0KjmqcpPmViQHMxC4RT83LpOOnRToXJ4QADbczWMe+kfZJYK8JlnfjzIjlbrujtrGh15I8v0Lx48gnw==",
+    "command": "",
+    "exitCode": 0,
+    "outputSnippet": "gsd_exec[ea0783b5-1bf9-4d1f-90d7-43be1ccc8068] runtime=bash exit=1 duration=37316ms\n  stdout: 4220B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/ea0783b5-1bf9-4d1f-90d7-43be1ccc8068.stdout\n  stderr: 4173B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/ea0783b5-1bf9-4d1f-90d7-43be1ccc8068.stderr\n--- digest ---\n────────────────────────────────────────────────────────────────────────────────────────────\n\n  1 failed\n    tests/e2e/calendar-shifts.spec.ts:223:1 › weekly recurrence suggestion accept path pre",
+    "timestamp": 1778494333150
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_X6lSHNj1Abg3KIdaDhqbOlX4|7Ar1AHdQyWXRhZSH7NjK9ZGpAceeYlbIUJWNy4+YBhxh1P3rUhqLCqnbosY4wXxkgItLPYv15mOOpOg343QLQejxE+GlS/6I1PJJcEKAAU9DU7eNOJ8pfAwv2I8pS/3Goxen6jm9UJONGxDfB0ZjgDAf6aBExdOS4+AAaVRoUNuE7sEhD5phGE/47hP7Ygu4PAgoxtk7fBq8hLT7vQfRAEkbukWgl9v5YwPOBBIo90ZXcixWoMWvxarA8y2FhjzVkbJpsFBDrTAcrheyzR+REpurvHGAZN7YYgHn+S3P3qJ+zz2JGGb1NFHzjg4eOiNZzUG8JJ4LXqccUOEZRafmlGjwfY62SF5+RY/s7zevhLw6V/QyYJiRJ6xhVLAhx/Z/eKL2MFMvWvHx8YpzCvg71A==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778494420800
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_oWhOXHMyh9aLN1RC2ubBQBJa|cKT27jtiyfj7C4U486O1jbk22vGbDP3QEcy4X0E9VhPQ6wecm1a8QRtuafLTFo4F+rAudLn7/4zs41ZFMxUI+DB44IfFchH8K5EHxjKt332o2a3cIz3V6qcwKK10kuiY8FxjWJQ9AMSZl4rgiRXnwap3UR8C8W1U9P6biwkZpWoZ9/ijH2YdcxlMcOwuMEXJgDa3jPWYKl96nUtlOtrZcYOhvY9zD14lpNsUcvT2uvOis7DYvxBOAMueXvWO3giAK4OInp/Q5wbHC/9Yek2UlLkWwDidvVFyKtA3eVWSPXxtGFyu03/Z/KwFJdZ6T3P5+TI6Hu0WX58N7rfzT3bHZ6XCl/CaqUaHRAQB+WDQuQVZOVw9PmDtLYqoBZEGgzzngIUdbByWUpdyQTIWjCKuvw==",
+    "command": "T02 verification: supabase reset plus calendar shifts Playwright spec",
+    "exitCode": 0,
+    "outputSnippet": "Found 5 exec run(s), most recent first:\n- [ea0783b5-1bf9-4d1f-90d7-43be1ccc8068] bash exit:1 37316ms — T02 verification: supabase reset plus calendar shifts Playwright spec\n    stdout: /Users/serkanyeniay/dev/Caluno/.gsd/exec/ea0783b5-1bf9-4d1f-90d7-43be1ccc8068.stdout\n    preview:\n      ─────────────────────────────────────────────────────────────────────────────────────────────\n      \n        1 failed\n          tests/e2e/calendar-shifts.spec.ts:223:1 › weekly recurrence suggestion accept path ",
+    "timestamp": 1778494426119
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_qPfFCJW1jQOZLJTFA2I2mGn6|zmpZNBdcoX9iGE98QO7LKfiCq5KldK/D7ZlNTMQZ3cc/W6fFAdVDhcNjg9PhGNH8rd1+uxTcGN1qkxPuL8EXExyXmoRyDL5dE9FZr0WiMfPtvkGiwAujjBV16njBAnxrMFk/3Lp1/3pvFfpsMJVAhZxAJkHuYIcu1f4CBYSG5+UkubONUcuxsRMi4v9IRQ5BcE8JCwAOvg2nE2TzLBUuyVNPV62yz1oHjCKPfmIUNqJY8Z9M4rbWuD8CRWQyBf09OoMxI5qfnhgAwdXFrnTEm45JPdKVWD57CZKt9Naz3mbiO/MQTvs0DE+weBNSxaljxJIS7NFcZMr4B45NYJMti0EI9K0+m3K+/2TVyTJIFPznZm2nbrv1VjbsAlqL9gEFocgLcVqE4UnxJEWfmxO/7Q==",
+    "command": "",
+    "exitCode": 0,
+    "outputSnippet": "gsd_exec[320a3efd-3547-41a5-8d3c-b0de4e495347] runtime=bash exit=1 duration=36251ms\n  stdout: 4217B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/320a3efd-3547-41a5-8d3c-b0de4e495347.stdout\n  stderr: 4546B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/320a3efd-3547-41a5-8d3c-b0de4e495347.stderr\n--- digest ---\n───────────────────────────────────────────────────────────────────────────────────────────\n\n  1 failed\n    tests/e2e/calendar-shifts.spec.ts:223:1 › weekly recurrence suggestion accept path pre-",
+    "timestamp": 1778494431144
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_puJlMkxBVxzfGYR1zd7d1Lcb|3GiKEdm6keT4QF6v5qEKeO2q6Ca3s1lwD0rHKRaaw4F3Z8AsULOrOU0N4R3yF64WpqFhLnFkQv9LacX01UhvdS0mRBzRKpIAPMnicNjU7AubLj5Npj8NhzWPbSguJzGujU1YLmmwaOLFedIX4/+bgTuVQxaNuZr6jW+AVu7Cr3j8eOJbBwwN5IjRcxDZxrfegpphB5ch8g5jKCxewdY11AdryplrK54DAn7SE7+AFjjyWiPmk9aEkhCqj3mL71lZeNO0+NTcgnaPn6Kt/HlYVZoLIYsMEkgMdN0ikIwEFR0q3DO6bwgkTYAtwRbUyLVA4Lz5vBBYcP228YSgRUBnogSvX1cC8EB224jqU53kpRbNRo3wQDVl282wvqVywxlYsV+8I2Z+pC1hOx8Yq8E74w==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778494504721
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_RJe2kXsZvTNwr7Ieaj8NVFsE|5oVNBsP2lgYqWLCYrRxuZUWw9meUMtWLh1/00mIpZ2XTSKlzYCz6gKIlS0hlujkulqbWEjAYb3VBdFn9chpmeYAEOZlXRSEtLmIcxShXOQ9O6J9gb7c1v8FR6Uo3h13nMpbbjyxZsQ5g0pCx0DmUVxf29qACDAtLQMEiL9osXRV1PSTv9Cew6x51XMDwhCAVW9Gzq3TXbFZ8I0Ltu3HFY+25dFWPfZrNXqdjrpbm6/FpDmUsztJTzg8xMTjQkaYUrcegqtv57ZyLBdMfZL3D1VXGGdAFFEr0UAvkB5eEq/TkBgUH8lXg1r8PNgfgvkEVsw71615X4QgNNc7q2uPITP9r4zj+RM/csdQwOW/6sJC1UoPgRW3VfCko2YlfXuG+D4SrZljSeYIUiNM4GUsjbQ==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778494517183
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_b0aIY8nsC9r8i74DkTqTn1Tn|dFiUSgYekadX+Gv5mRH8PkS5lvHpcHBfVl3oWh1TqKbNWzj+PyK1UrILeRjrr28QeJohWdWDkZ2Aoh1dhvnKYS9MpsaRC9iFFQGswF7IRqlXxMzWit4o/sr9ilP4TR2MMNo7bWoCOQmf6RYFJQZJIeEXvsdekTdKuVxtY0URs7cgOabOULn+4C6NGl0dKGwSlY52XiprAfiwOQdd02+al+Zttufn0iMkvmHZ0ZRXo1oc9DlIDDK8lHnuThdyS0hqMF8XccAgr6A6AXuafhvb6LUIIFJISi0SLKjCIfJG8tJlkBLydxOAVSmWd6V0XtMynQ3ig+zjBVukVQPhsYGWgrMwhwxM2L20XrEkVBTqZ4oBZzx46ZnRso6Fjpuj7afGn1vgP2zsQZ9gBAZhqSmZBA==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778494523618
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_S39QurTcGqGnOnmEEL2ixizY|hFomWeUBJE7eIIl0j9dedRecdUoo7gogqx0C908db1xmX3uu4tbK80GKcJafU8FDZrw/bLXJoh1B+ICo8Oc7tDR9SRLP9fNTj6dtFCwmlOTDUnSZLC4Ziz4Y6MPVH6/MFYpWoPmKeCn4vWjX2pFuXxuAssfTJ/s3QdauN0DVfl8MlASMsmnbcbFCCJnFk849liLhOIvoGPLG7AeU30ox2ss0aAc2PH5VWbHlDqnllf0Jz+eqH6YnQRePetTSXLD2MTlU7yOSvL5T8wgWAqNApW/3eLqNPTK0f74vQ61QQss+jEZDBiPerQGHTeU+EbRwt4vHPVJqqMOMGlgFV5W5isb3JcEQ1fbOW2qQn7BWSLyO1+x4zp/Gte48MEslVk9ZXovZAlPD6YyWGf0rksyL3g==",
+    "command": "T02 verification: supabase reset plus calendar shifts Playwright spec",
+    "exitCode": 0,
+    "outputSnippet": "Found 5 exec run(s), most recent first:\n- [320a3efd-3547-41a5-8d3c-b0de4e495347] bash exit:1 36251ms — T02 verification: supabase reset plus calendar shifts Playwright spec\n    stdout: /Users/serkanyeniay/dev/Caluno/.gsd/exec/320a3efd-3547-41a5-8d3c-b0de4e495347.stdout\n    preview:\n      ────────────────────────────────────────────────────────────────────────────────────────────\n      \n        1 failed\n          tests/e2e/calendar-shifts.spec.ts:223:1 › weekly recurrence suggestion accept path p",
+    "timestamp": 1778494546937
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_2dIm5LgRfO15fbpurB7oE5tR|BS/HoDtDNaOYjhTdaZW6AmIw27P8UOaabl56Z/hjIvzgX9AItmpXDN+jBvRaQs6ha5uU8fj0t3oTm7VIRaEFDwUqHIr+bz9I3pcqHWc0RF97lrDbAOWXx5fm4n4DAqyPA5c7resw8EiFGQEUY8XW2FvLxo3ErkPQxduB2ReENj5fUEb+CAA1si0WyP1ahgvRZ6W5mO7KPzRyW6b81jxEUTSLldyN2zLA8g0Ku7Mpxp+XJLFEqcZskHRv5rcdPg9JkCOVr+zGnydfNc+2btXdp91DjgaJA2qQ/rJAYB8TWy/LIZfggB9KkTU2UP7RHn+3gk8idleFmotp0Vc+ppSoyAT98vaX5hoz5m2hx3/NgiO/RY3fjh6+el6/evAh2/idRiTYgt350M48Oj1JYXuEuQ==",
+    "command": "",
+    "exitCode": 0,
+    "outputSnippet": "gsd_exec[317784d8-16fd-4966-8433-0d5ce53207b1] runtime=bash exit=1 duration=46557ms\n  stdout: 4416B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/317784d8-16fd-4966-8433-0d5ce53207b1.stdout\n  stderr: 4173B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/317784d8-16fd-4966-8433-0d5ce53207b1.stderr\n--- digest ---\n───────────────────────────────────────────────────────────────────────────────────────────\n\n  1 failed\n    tests/e2e/calendar-shifts.spec.ts:223:1 › weekly recurrence suggestion accept path pre-",
+    "timestamp": 1778494568633
+  }
+]

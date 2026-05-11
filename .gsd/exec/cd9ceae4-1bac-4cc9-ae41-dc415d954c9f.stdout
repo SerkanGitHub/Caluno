@@ -1,0 +1,9 @@
+17:  submitShiftEditorForm,
+30:test('seeded member can prove the trusted-online Thursday overlap warning while the Wednesday touch boundary stays clean', async ({
+125:test('browse suggestion handoff creates a visible shift on the intended day and does not reopen after reload', async ({ page, flow }) => {
+170:        message: 'expected the calendar destination URL to stay clean after the browse suggestion handoff'
+177:      throw new Error('Expected the browse suggestion handoff snapshot before submitting the create dialog.');
+180:    const editor = page.getByTestId('create-shift-editor');
+181:    await submitShiftEditorForm(editor, { title: createdTitle });
+192:      throw new Error('Expected the browse suggestion handoff snapshot before verifying reload behavior.');
+198:    await expect(page.getByTestId('create-shift-editor')).toHaveAttribute('data-open-on-arrival', 'false');

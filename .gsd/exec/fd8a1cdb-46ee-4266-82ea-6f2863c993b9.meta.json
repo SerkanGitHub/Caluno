@@ -1,0 +1,18 @@
+{
+  "id": "fd8a1cdb-46ee-4266-82ea-6f2863c993b9",
+  "runtime": "bash",
+  "purpose": "check predictive helper symbols absent and export surface implications",
+  "script_chars": 533,
+  "started_at": "2026-05-11T08:51:59.990Z",
+  "finished_at": "2026-05-11T08:52:00.122Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 132,
+  "stdout_bytes": 670,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/fd8a1cdb-46ee-4266-82ea-6f2863c993b9.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/fd8a1cdb-46ee-4266-82ea-6f2863c993b9.stderr"
+}

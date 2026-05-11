@@ -32,11 +32,12 @@
     type ShiftRealtimeSignal,
     type TrustedRemoteRefreshResult
   } from '$lib/offline/sync-engine';
-  import type { CalendarScheduleView } from '$lib/server/schedule';
+  import type { CalendarScheduleView, ScheduleRecurrenceSuggestion } from '$lib/server/schedule';
   import type { PageData } from './$types';
 
   type ReadyCalendarView = Extract<NonNullable<PageData['calendarView']>, { kind: 'calendar' }> & {
     createPrefill: CreatePrefillPayload | null;
+    recurrenceSuggestion: ScheduleRecurrenceSuggestion | null;
   };
   type DeniedCalendarView = Extract<NonNullable<PageData['calendarView']>, { kind: 'denied' }>;
 
@@ -62,6 +63,7 @@
     calendarView?.kind === 'denied' ? (calendarView as DeniedCalendarView) : null
   );
   const readyCreatePrefill = $derived(readyView?.createPrefill ?? null);
+  const readyRecurrenceSuggestion = $derived(readyView?.recurrenceSuggestion ?? null);
   const readyCalendarId = $derived(readyView?.calendar.id ?? null);
   const readyWeekStart = $derived(readyView?.schedule.visibleWeek.start ?? null);
   const controllerScopeKey = $derived(
@@ -828,6 +830,7 @@
           scheduleReason={effectiveSchedule.reason}
           scheduleMessage={effectiveSchedule.message}
           createPrefill={readyCreatePrefill}
+          recurrenceSuggestion={readyRecurrenceSuggestion}
           actionStates={controllerState?.actionStates ?? []}
           realtimeDiagnostics={realtimeDiagnostics}
           {pendingActionKey}

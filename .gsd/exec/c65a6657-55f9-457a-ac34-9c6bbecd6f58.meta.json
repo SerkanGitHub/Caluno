@@ -1,0 +1,18 @@
+{
+  "id": "c65a6657-55f9-457a-ac34-9c6bbecd6f58",
+  "runtime": "bash",
+  "purpose": "locate seeded schedule definitions and weekday recurring candidates",
+  "script_chars": 350,
+  "started_at": "2026-05-11T09:08:20.019Z",
+  "finished_at": "2026-05-11T09:08:20.083Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 64,
+  "stdout_bytes": 516,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/c65a6657-55f9-457a-ac34-9c6bbecd6f58.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/c65a6657-55f9-457a-ac34-9c6bbecd6f58.stderr"
+}

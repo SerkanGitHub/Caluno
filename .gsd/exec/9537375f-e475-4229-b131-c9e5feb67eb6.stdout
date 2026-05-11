@@ -1,0 +1,41 @@
+20:import { _resolveActionSearchParams, load as calendarPageLoad } from '../../src/routes/(app)/calendars/[calendarId]/+page.server';
+330:    expect(result.calendarView.kind).toBe('denied');
+331:    expect(result.calendarView.reason).toBe('calendar-id-invalid');
+332:    expect(result.calendarView.failurePhase).toBe('calendar-param');
+409:    expect(result.calendarView.kind).toBe('calendar');
+410:    expect(result.calendarView.visibleWeek.start).toBe('2026-04-20');
+411:    expect(result.calendarView.visibleWeek.endExclusive).toBe('2026-04-27');
+412:    expect(result.calendarView.schedule.totalShifts).toBe(2);
+414:      result.calendarView.schedule.days.find((day: { dayKey: string }) => day.dayKey === '2026-04-20')?.shifts
+417:      result.calendarView.schedule.days.find((day: { dayKey: string }) => day.dayKey === '2026-04-22')?.shifts
+451:    expect(result.calendarView.kind).toBe('calendar');
+452:    if (result.calendarView.kind === 'calendar') {
+453:      expect(result.calendarView.visibleWeek.start).toBe('2026-04-27');
+454:      expect(result.calendarView.createPrefill).toEqual({
+492:    expect(result.calendarView.kind).toBe('calendar');
+493:    if (result.calendarView.kind === 'calendar') {
+494:      expect(result.calendarView.visibleWeek.start).toBe('2026-04-27');
+495:      expect(result.calendarView.createPrefill).toBeNull();
+496:      expect(result.calendarView.schedule.reason).toBeNull();
+555:    expect(routeResult.calendarView.kind).toBe('calendar');
+556:    if (routeResult.calendarView.kind === 'calendar') {
+557:      expect(routeResult.calendarView.schedule.totalShifts).toBe(1);
+558:      expect(routeResult.calendarView.group?.name).toBe('Alpha Group');
+559:      expect(routeResult.calendarView.schedule.days[0]?.shifts[0]?.title).toBe('Alpha opening sweep');
+584:    expect(routeResult.calendarView.kind).toBe('denied');
+585:    if (routeResult.calendarView.kind === 'denied') {
+586:      expect(routeResult.calendarView.reason).toBe('calendar-missing');
+587:      expect(routeResult.calendarView.failurePhase).toBe('calendar-lookup');
+588:      expect(routeResult.calendarView.detail.title).toBe('That calendar was never synced on this browser.');
+629:    expect(routeResult.calendarView.kind).toBe('denied');
+630:    if (routeResult.calendarView.kind === 'denied') {
+631:      expect(routeResult.calendarView.detail.title).toBe('The cached calendar snapshot could not be trusted.');
+635:  it('keeps the denied contract for out-of-scope calendar ids without loading schedule data', async () => {
+660:    expect(result.calendarView.kind).toBe('denied');
+661:    expect(result.calendarView.reason).toBe('calendar-missing');
+662:    expect(result.calendarView.failurePhase).toBe('calendar-lookup');
+694:    expect(result.calendarView.kind).toBe('calendar');
+695:    expect(result.calendarView.visibleWeek.source).toBe('fallback-invalid');
+696:    expect(result.calendarView.visibleWeek.reason).toBe('VISIBLE_WEEK_START_INVALID');
+697:    expect(result.calendarView.visibleWeek.start).toBe('2026-04-13');
+698:    expect(result.calendarView.schedule.reason).toBe('VISIBLE_WEEK_START_INVALID');

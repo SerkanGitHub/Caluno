@@ -1,0 +1,18 @@
+{
+  "id": "515c8e98-03de-48a2-9539-c86a30ea3f01",
+  "runtime": "bash",
+  "purpose": "Inspect M005 context headings for launch criteria and scope wording",
+  "script_chars": 189,
+  "started_at": "2026-05-11T08:49:53.168Z",
+  "finished_at": "2026-05-11T08:49:53.231Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 63,
+  "stdout_bytes": 333,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/515c8e98-03de-48a2-9539-c86a30ea3f01.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/515c8e98-03de-48a2-9539-c86a30ea3f01.stderr"
+}

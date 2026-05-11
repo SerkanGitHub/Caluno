@@ -1,0 +1,4 @@
+253:describe('detectRecurrencePattern', () => {
+254:  it('detects a deterministic weekly suggestion from three same-weekday time matches inside the anchored 30-day window', () => {
+317:      matchCount: 3,
+322:  it('returns null when the evidence is under threshold, outside the anchored window, or split across different time windows', () => {

@@ -1,0 +1,18 @@
+{
+  "id": "b9ff71d0-c830-458f-b25a-5b13da103459",
+  "runtime": "python",
+  "purpose": "extract line numbers for shift card/day column editor composition",
+  "script_chars": 411,
+  "started_at": "2026-05-11T09:09:23.401Z",
+  "finished_at": "2026-05-11T09:09:23.459Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 58,
+  "stdout_bytes": 504,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/b9ff71d0-c830-458f-b25a-5b13da103459.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/b9ff71d0-c830-458f-b25a-5b13da103459.stderr"
+}

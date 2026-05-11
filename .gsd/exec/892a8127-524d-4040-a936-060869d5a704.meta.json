@@ -1,0 +1,18 @@
+{
+  "id": "892a8127-524d-4040-a936-060869d5a704",
+  "runtime": "bash",
+  "purpose": "locate calendar route load/create prefill/server files",
+  "script_chars": 266,
+  "started_at": "2026-05-11T09:07:14.555Z",
+  "finished_at": "2026-05-11T09:07:14.574Z",
+  "exit_code": 2,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 19,
+  "stdout_bytes": 0,
+  "stderr_bytes": 57,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/892a8127-524d-4040-a936-060869d5a704.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/892a8127-524d-4040-a936-060869d5a704.stderr"
+}

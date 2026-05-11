@@ -1,0 +1,241 @@
+== e2e ==
+apps/web/src/routes/+layout.svelte:123:  data-testid={OFFLINE_RUNTIME_TEST_ID}
+apps/web/tests/e2e/find-time.spec.ts:69:        const topPicks = document.querySelector('[data-testid="find-time-top-picks"]');
+apps/web/tests/e2e/find-time.spec.ts:70:        const browse = document.querySelector('[data-testid="find-time-browse-results"]');
+apps/web/tests/e2e/find-time.spec.ts:89:        `[data-testid^="find-time-browse-window-"][data-start-at="${seededFindTime.focusedBrowseWindow.startAt}"][data-end-at="${seededFindTime.focusedBrowseWindow.endAt}"]`
+apps/web/tests/e2e/find-time.spec.ts:93:    const focusedBrowseTestId = await focusedBrowseCard.getAttribute('data-testid');
+apps/web/tests/e2e/find-time.spec.ts:99:    expect(Number.isFinite(focusedBrowseIndex), 'expected the focused browse window to expose its deterministic data-testid').toBe(true);
+apps/web/src/routes/(auth)/signin/+page.svelte:27:      <article class={`status-card tone-${surfaceTone}`} data-testid="signed-out-entrypoint">
+apps/web/tests/e2e/calendar-shifts.spec.ts:60:      note: 'verifying seeded same-day multi-shift load plus conflict visibility',
+apps/web/tests/e2e/calendar-shifts.spec.ts:76:    await expect(wednesdayColumn.locator('[data-testid^="shift-card-"]')).toHaveCount(3);
+apps/web/tests/e2e/calendar-shifts.spec.ts:82:    await expect(thursdayColumn.locator('[data-testid^="shift-card-"]')).toHaveCount(3);
+apps/web/tests/e2e/calendar-shifts.spec.ts:187:    await expect(page.locator('[data-testid^="shift-card-"]').filter({ hasText: createdTitle }).first()).toBeVisible();
+apps/web/tests/e2e/calendar-shifts.spec.ts:200:    await expect(page.locator('[data-testid^="shift-card-"]').filter({ hasText: createdTitle }).first()).toBeVisible();
+apps/web/tests/e2e/calendar-offline.spec.ts:193:  await test.step('phase: create a local-only offline anchor shift without widening the conflict scope yet', async () => {
+apps/web/tests/e2e/calendar-offline.spec.ts:225:      note: 'offline create stored a local-only anchor shift without yet changing the visible-week conflict count'
+apps/web/tests/e2e/calendar-offline.spec.ts:256:      page.locator(`[data-testid="day-column-${offlineMove.fromDayKey}"] [data-testid="shift-card-${offlineMove.shiftId}"]`)
+apps/web/tests/e2e/calendar-sync.spec.ts:46:  return page.locator('[data-testid^="shift-card-"]').filter({ hasText: title });
+apps/web/tests/e2e/calendar-sync.spec.ts:246:        note: 'primary member created a shared overlapping shift so the collaborator page could prove live conflict propagation without a manual reload'
+apps/web/tests/e2e/calendar-sync.spec.ts:255:        throw new Error('Expected the primary create shift id before asserting collaborator realtime refresh.');
+apps/web/tests/e2e/calendar-sync.spec.ts:259:        throw new Error('Expected the primary create shift title before asserting collaborator realtime refresh.');
+apps/web/tests/e2e/calendar-sync.spec.ts:376:        note: 'collaborator intentionally stayed on the next visible week so realtime scope guards remain testable and conflict-free'
+apps/web/tests/e2e/calendar-sync.spec.ts:395:          message: 'expected the writer board conflict count to increase after the current-week overlap create'
+apps/web/tests/e2e/calendar-sync.spec.ts:401:          message: `expected ${scopedCreate.dayKey} conflict pairs to increase after the current-week overlap create`
+apps/web/tests/e2e/calendar-sync.spec.ts:420:        note: 'out-of-scope collaborator view stayed on the next week, kept its clean conflict state, and ignored the current-week realtime overlap write as expected'
+apps/web/tests/e2e/fixtures.ts:411:    const dayConflicts = Array.from(document.querySelectorAll<HTMLElement>('[data-testid^="day-conflict-summary-"]')).map(
+apps/web/tests/e2e/fixtures.ts:413:        dayKey: element.getAttribute('data-testid')?.replace('day-conflict-summary-', '') ?? 'unknown-day',
+apps/web/tests/e2e/fixtures.ts:416:        pairCount: count(element, 'data-conflict-pairs') ?? 0,
+apps/web/tests/e2e/fixtures.ts:417:        shiftCount: count(element, 'data-conflict-shifts') ?? 0
+apps/web/tests/e2e/fixtures.ts:420:    const shiftConflicts = Array.from(document.querySelectorAll<HTMLElement>('[data-testid^="shift-conflict-summary-"]')).map(
+apps/web/tests/e2e/fixtures.ts:422:        shiftId: element.getAttribute('data-testid')?.replace('shift-conflict-summary-', '') ?? 'unknown-shift',
+apps/web/tests/e2e/fixtures.ts:425:        overlapCount: count(element, 'data-conflict-overlaps') ?? 0
+apps/web/tests/e2e/fixtures.ts:429:    const syncParagraphs = texts('[data-testid="calendar-sync-state"] p');
+apps/web/tests/e2e/fixtures.ts:430:    const syncCodes = texts('[data-testid="calendar-sync-state"] code');
+apps/web/tests/e2e/fixtures.ts:431:    const realtimeParagraphs = texts('[data-testid="calendar-realtime-state"] p');
+apps/web/tests/e2e/fixtures.ts:432:    const realtimeCodes = texts('[data-testid="calendar-realtime-state"] code');
+apps/web/tests/e2e/fixtures.ts:433:    const boardSyncParagraphs = texts('[data-testid="board-sync-diagnostics"] p');
+apps/web/tests/e2e/fixtures.ts:434:    const boardSyncCodes = texts('[data-testid="board-sync-diagnostics"] code');
+apps/web/tests/e2e/fixtures.ts:435:    const boardRealtimeParagraphs = texts('[data-testid="board-realtime-diagnostics"] p');
+apps/web/tests/e2e/fixtures.ts:436:    const boardRealtimeCodes = texts('[data-testid="board-realtime-diagnostics"] code');
+apps/web/tests/e2e/fixtures.ts:437:    const boardMetaBadges = texts('[data-testid="calendar-week-board"] .calendar-week-board__meta .pill');
+apps/web/tests/e2e/fixtures.ts:438:    const boardConflictSummary = document.querySelector<HTMLElement>('[data-testid="board-conflict-summary"]');
+apps/web/tests/e2e/fixtures.ts:442:      runtimeIsolationState: document.querySelector<HTMLElement>('[data-testid="offline-runtime-surface"]')?.dataset.crossOriginIsolated ?? null,
+apps/web/tests/e2e/fixtures.ts:443:      serviceWorkerStatus: document.querySelector<HTMLElement>('[data-testid="offline-runtime-surface"]')?.dataset.serviceWorkerStatus ?? null,
+apps/web/tests/e2e/fixtures.ts:444:      serviceWorkerDetail: document.querySelector<HTMLElement>('[data-testid="offline-runtime-surface"]')?.dataset.serviceWorkerDetail ?? null,
+apps/web/tests/e2e/fixtures.ts:445:      calendarRouteMode: text('[data-testid="calendar-route-state"] strong'),
+apps/web/tests/e2e/fixtures.ts:446:      calendarRouteReason: text('[data-testid="calendar-route-state"] code'),
+apps/web/tests/e2e/fixtures.ts:447:      calendarRouteDetail: text('[data-testid="calendar-route-state"] p'),
+apps/web/tests/e2e/fixtures.ts:448:      localNetwork: text('[data-testid="calendar-local-state"] strong'),
+apps/web/tests/e2e/fixtures.ts:449:      localQueueSummary: text('[data-testid="calendar-local-state"] code'),
+apps/web/tests/e2e/fixtures.ts:450:      localStateDetail: text('[data-testid="calendar-local-state"] p'),
+apps/web/tests/e2e/fixtures.ts:451:      localQueueState: document.querySelector<HTMLElement>('[data-testid="calendar-local-state"]')?.dataset.queueState ?? null,
+apps/web/tests/e2e/fixtures.ts:452:      localSnapshotStatus: document.querySelector<HTMLElement>('[data-testid="calendar-local-state"]')?.dataset.snapshotStatus ?? null,
+apps/web/tests/e2e/fixtures.ts:453:      localSnapshotAt: document.querySelector<HTMLElement>('[data-testid="calendar-local-state"]')?.dataset.snapshotAt ?? null,
+apps/web/tests/e2e/fixtures.ts:454:      localSnapshotOrigin: document.querySelector<HTMLElement>('[data-testid="calendar-local-state"]')?.dataset.snapshotOrigin ?? null,
+apps/web/tests/e2e/fixtures.ts:455:      syncPhase: text('[data-testid="calendar-sync-state"] strong'),
+apps/web/tests/e2e/fixtures.ts:461:        document.querySelector<HTMLElement>('[data-testid="calendar-realtime-state"]')?.dataset.channelState ??
+apps/web/tests/e2e/fixtures.ts:462:        text('[data-testid="calendar-realtime-state"] strong'),
+apps/web/tests/e2e/fixtures.ts:464:        document.querySelector<HTMLElement>('[data-testid="calendar-realtime-state"]')?.dataset.remoteRefreshState ?? null,
+apps/web/tests/e2e/fixtures.ts:467:      boardSyncPhase: text('[data-testid="board-sync-diagnostics"] strong'),
+apps/web/tests/e2e/fixtures.ts:474:        document.querySelector<HTMLElement>('[data-testid="board-realtime-diagnostics"]')?.dataset.channelState ??
+apps/web/tests/e2e/fixtures.ts:475:        text('[data-testid="board-realtime-diagnostics"] strong'),
+apps/web/tests/e2e/fixtures.ts:477:        document.querySelector<HTMLElement>('[data-testid="board-realtime-diagnostics"]')?.dataset.remoteRefreshState ?? null,
+apps/web/tests/e2e/fixtures.ts:480:      localWriteFailureReason: text('[data-testid="local-write-failure"] strong'),
+apps/web/tests/e2e/fixtures.ts:481:      localWriteFailureDetail: text('[data-testid="local-write-failure"] p'),
+apps/web/tests/e2e/fixtures.ts:486:      boardConflictDayCount: count(boardConflictSummary, 'data-conflict-days'),
+apps/web/tests/e2e/fixtures.ts:487:      boardConflictShiftCount: count(boardConflictSummary, 'data-conflict-shifts'),
+apps/web/tests/e2e/fixtures.ts:488:      boardConflictPairCount: count(boardConflictSummary, 'data-conflict-pairs'),
+apps/web/tests/e2e/fixtures.ts:491:      actionReasons: texts('[data-testid="schedule-action-strip"] article strong'),
+apps/web/tests/e2e/fixtures.ts:492:      actionSummaries: texts('[data-testid="schedule-action-strip"] article p'),
+apps/web/tests/e2e/fixtures.ts:493:      deniedReason: text('[data-testid="access-denied-state"] .denied-meta div:nth-of-type(2) strong'),
+apps/web/tests/e2e/fixtures.ts:494:      deniedFailurePhase: text('[data-testid="access-denied-state"] .denied-meta div:nth-of-type(1) strong'),
+apps/web/tests/e2e/fixtures.ts:495:      deniedAttemptedId: text('[data-testid="access-denied-state"] .denied-meta div:nth-of-type(3) code')
+apps/web/tests/e2e/fixtures.ts:864:  let locator = scope.locator('[data-testid^="shift-card-"]').filter({ hasText: params.title });
+apps/web/tests/e2e/fixtures.ts:895:    const candidates = scope.locator('[data-testid^="shift-card-"]');
+apps/web/tests/e2e/fixtures.ts:916:      const testId = await locator.getAttribute('data-testid');
+apps/web/tests/e2e/fixtures.ts:933:    `Expected visible shift card "${params.title}"${params.dayKey ? ` in day ${params.dayKey}` : ''} to expose a ${idKind} id via data-testid${params.windowLabel ? ` with window ${params.windowLabel}` : ''}, but no matching visible card was found before timeout.`
+apps/web/tests/e2e/fixtures.ts:978:  const summary = page.getByTestId('board-conflict-summary');
+apps/web/tests/e2e/fixtures.ts:994:    dayCount: await readCountAttribute(summary, 'data-conflict-days'),
+apps/web/tests/e2e/fixtures.ts:995:    shiftCount: await readCountAttribute(summary, 'data-conflict-shifts'),
+apps/web/tests/e2e/fixtures.ts:996:    pairCount: await readCountAttribute(summary, 'data-conflict-pairs')
+apps/web/tests/e2e/fixtures.ts:1001:  const summary = page.getByTestId(`day-conflict-summary-${dayKey}`);
+apps/web/tests/e2e/fixtures.ts:1018:    pairCount: await readCountAttribute(summary, 'data-conflict-pairs'),
+apps/web/tests/e2e/fixtures.ts:1019:    shiftCount: await readCountAttribute(summary, 'data-conflict-shifts')
+apps/web/tests/e2e/fixtures.ts:1024:  const summary = page.getByTestId(`shift-conflict-summary-${shiftId}`);
+apps/web/tests/e2e/fixtures.ts:1040:    overlapCount: await readCountAttribute(summary, 'data-conflict-overlaps')
+apps/web/tests/e2e/fixtures.ts:1050:          ? 'expected the board conflict summary to stay absent'
+apps/web/tests/e2e/fixtures.ts:1051:          : `expected the board conflict summary to show ${expectedPairCount} overlap pair(s)`
+apps/web/tests/e2e/fixtures.ts:1062:          ? `expected day ${dayKey} to stay conflict-free`
+apps/web/tests/e2e/fixtures.ts:1074:          ? `expected shift ${shiftId} to stay conflict-free`
+apps/web/tests/e2e/fixtures.ts:1366:    Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-handoff-source="find-time"][data-testid$="-cta"]')).map((cta) => ({
+apps/web/tests/access/policy-contract.unit.test.ts:203:    expect(migrationSql).toContain('on conflict on constraint group_memberships_pkey do nothing;');
+apps/web/src/routes/(app)/groups/+page.svelte:37:        data-testid="groups-shell"
+apps/web/src/routes/(app)/groups/+page.svelte:62:        <article class={`status-card ${joinState.status === 'timeout' ? 'tone-warning' : 'tone-danger'}`} data-testid="join-error-state">
+apps/web/src/routes/(app)/groups/+page.svelte:95:      <section class="feature-banner tone-danger" data-testid="offline-shell-denied">
+apps/web/src/routes/(app)/groups/+page.svelte:102:      <section class="feature-banner tone-warning" data-testid="onboarding-empty-state">
+apps/web/src/routes/(app)/groups/+page.svelte:189:      <section class="feature-banner tone-warning" data-testid="cached-shell-readonly">
+apps/web/src/routes/(app)/groups/+page.svelte:210:          <article class="group-card framed-panel" data-testid="group-card">
+apps/web/src/lib/offline/sync-engine.ts:410:        .channel(`calendar-shifts:${params.calendarId}:${params.visibleWeek.start}`)
+apps/web/tests/schedule/board.unit.test.ts:47:  it('builds a calm week model with separate conflict, local-write, and sync diagnostics', () => {
+apps/web/tests/schedule/board.unit.test.ts:211:    expect(board.conflict).toMatchObject({
+apps/web/tests/schedule/board.unit.test.ts:215:      conflictDayKeys: ['2026-04-16']
+apps/web/tests/schedule/board.unit.test.ts:217:    expect(board.conflict?.detail).toContain('Thu, Apr 16');
+apps/web/tests/schedule/board.unit.test.ts:225:    expect(wednesday?.conflict).toBeNull();
+apps/web/tests/schedule/board.unit.test.ts:230:    expect(thursday?.conflict).toMatchObject({
+apps/web/tests/schedule/board.unit.test.ts:233:      conflictingShiftIds: ['shift-a', 'shift-c']
+apps/web/tests/schedule/board.unit.test.ts:235:    expect(thursday?.conflict?.detail).toContain('Kitchen prep');
+apps/web/tests/schedule/board.unit.test.ts:236:    expect(thursday?.conflict?.detail).toContain('Supplier call');
+apps/web/tests/schedule/board.unit.test.ts:242:      conflict: null
+apps/web/tests/schedule/board.unit.test.ts:246:      conflict: {
+apps/web/tests/schedule/board.unit.test.ts:249:        conflictingShiftIds: ['shift-c']
+apps/web/tests/schedule/board.unit.test.ts:252:    expect(thursday?.shifts.find((shift) => shift.id === 'shift-a')?.conflict?.detail).toContain('Supplier call');
+apps/web/tests/schedule/board.unit.test.ts:258:      conflict: {
+apps/web/tests/schedule/board.unit.test.ts:261:        conflictingShiftIds: ['shift-a']
+apps/web/tests/schedule/board.unit.test.ts:264:    expect(thursday?.shifts.find((shift) => shift.id === 'shift-c')?.conflict?.detail).toContain('Kitchen prep');
+apps/web/tests/schedule/board.unit.test.ts:269:      conflict: null
+apps/web/tests/schedule/conflicts.unit.test.ts:2:import { deriveVisibleWeekConflicts, previewShiftConflicts } from '@repo/caluno-core/schedule/conflicts';
+apps/web/tests/schedule/conflicts.unit.test.ts:32:describe('visible-week conflict derivation', () => {
+apps/web/tests/schedule/conflicts.unit.test.ts:34:    const conflicts = deriveVisibleWeekConflicts({
+apps/web/tests/schedule/conflicts.unit.test.ts:91:    expect(conflicts.invalidShiftIds).toEqual([]);
+apps/web/tests/schedule/conflicts.unit.test.ts:92:    expect(conflicts.board).toEqual({
+apps/web/tests/schedule/conflicts.unit.test.ts:94:      conflictDayCount: 1,
+apps/web/tests/schedule/conflicts.unit.test.ts:95:      conflictingShiftCount: 2,
+apps/web/tests/schedule/conflicts.unit.test.ts:96:      conflictDayKeys: ['2026-04-16']
+apps/web/tests/schedule/conflicts.unit.test.ts:98:    expect(conflicts.days['2026-04-15']).toBeUndefined();
+apps/web/tests/schedule/conflicts.unit.test.ts:99:    expect(conflicts.days['2026-04-16']).toEqual({
+apps/web/tests/schedule/conflicts.unit.test.ts:102:      conflictingShiftIds: ['shift-t1', 'shift-t2'],
+apps/web/tests/schedule/conflicts.unit.test.ts:103:      conflictPairs: [{ leftShiftId: 'shift-t1', rightShiftId: 'shift-t2' }]
+apps/web/tests/schedule/conflicts.unit.test.ts:105:    expect(conflicts.shifts['shift-t1']).toMatchObject({
+apps/web/tests/schedule/conflicts.unit.test.ts:107:      conflictingShiftIds: ['shift-t2']
+apps/web/tests/schedule/conflicts.unit.test.ts:109:    expect(conflicts.shifts['shift-t2']).toMatchObject({
+apps/web/tests/schedule/conflicts.unit.test.ts:111:      conflictingShiftIds: ['shift-t1']
+apps/web/tests/schedule/conflicts.unit.test.ts:116:    const conflicts = deriveVisibleWeekConflicts({
+apps/web/tests/schedule/conflicts.unit.test.ts:157:    expect(conflicts.board).toEqual({
+apps/web/tests/schedule/conflicts.unit.test.ts:159:      conflictDayCount: 1,
+apps/web/tests/schedule/conflicts.unit.test.ts:160:      conflictingShiftCount: 3,
+apps/web/tests/schedule/conflicts.unit.test.ts:161:      conflictDayKeys: ['2026-04-17']
+apps/web/tests/schedule/conflicts.unit.test.ts:163:    expect(conflicts.days['2026-04-17']?.conflictPairs).toEqual([
+apps/web/tests/schedule/conflicts.unit.test.ts:167:    expect(conflicts.shifts['shift-anchor']).toMatchObject({
+apps/web/tests/schedule/conflicts.unit.test.ts:169:      conflictingShiftIds: ['shift-mid', 'shift-late']
+apps/web/tests/schedule/conflicts.unit.test.ts:171:    expect(conflicts.shifts['shift-mid']).toMatchObject({
+apps/web/tests/schedule/conflicts.unit.test.ts:173:      conflictingShiftIds: ['shift-anchor']
+apps/web/tests/schedule/conflicts.unit.test.ts:175:    expect(conflicts.shifts['shift-late']).toMatchObject({
+apps/web/tests/schedule/conflicts.unit.test.ts:177:      conflictingShiftIds: ['shift-anchor']
+apps/web/tests/schedule/conflicts.unit.test.ts:182:    const conflicts = deriveVisibleWeekConflicts({
+apps/web/tests/schedule/conflicts.unit.test.ts:248:    expect(conflicts.board).toBeNull();
+apps/web/tests/schedule/conflicts.unit.test.ts:249:    expect(conflicts.days).toEqual({});
+apps/web/tests/schedule/conflicts.unit.test.ts:250:    expect(conflicts.shifts).toEqual({});
+apps/web/tests/schedule/conflicts.unit.test.ts:251:    expect(conflicts.invalidShiftIds).toEqual([
+apps/web/tests/schedule/conflicts.unit.test.ts:262:    const conflicts = previewShiftConflicts(buildDraft(), [
+apps/web/tests/schedule/conflicts.unit.test.ts:308:    expect(conflicts.map((shift) => shift.id)).toEqual(['shift-early', 'shift-late']);
+apps/web/tests/schedule/conflicts.unit.test.ts:309:    expect(conflicts.map((shift) => shift.title)).toEqual(['Early overlap', 'Late cover']);
+apps/web/src/app.css:410:.pill-conflict {
+apps/web/src/app.css:617:.shift-day-column--conflict {
+apps/web/src/app.css:638:.shift-day-column__conflict {
+apps/web/src/app.css:659:.shift-card--conflict {
+apps/web/src/app.css:682:.shift-card__conflict {
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:263:        data-testid="find-time-shell-state"
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:273:      <article class={`status-card ${routeState.tone}`} data-testid="find-time-route-state" data-status={routeState.status}>
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:283:        <article class={`status-card ${toneForSearchStatus(search.status)}`} data-testid="find-time-search-state" data-status={search.status}>
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:290:        <article class="status-card tone-neutral" data-testid="find-time-scope-state">
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:314:      <section class="denied-banner framed-panel" data-testid="find-time-offline-state">
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:342:      <section class="denied-banner framed-panel" data-testid="find-time-denied-state">
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:370:      <header class="hero-panel compact find-time-hero" data-testid="find-time-shell">
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:398:        <form method="GET" class="stacked-form find-time-form" data-testid="find-time-query-form">
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:404:                data-testid="find-time-duration-input"
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:419:                data-testid="find-time-start-input"
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:439:            <button class="button button-primary" data-testid="find-time-submit" type="submit">Refresh truthful windows</button>
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:447:          <article class="status-card tone-neutral" data-testid="find-time-summary">
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:463:          <section class="feature-banner tone-warning" data-testid="find-time-truncated-state">
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:473:          data-testid="find-time-results"
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:478:          <section class="find-time-top-picks framed-panel" data-testid="find-time-top-picks" data-top-pick-count={search.topPicks.length}>
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:491:              <article class="find-time-empty-panel" data-testid="find-time-top-picks-empty">
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:502:                    data-testid={`find-time-top-pick-${index}`}
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:552:                      <section class="find-time-detail-panel" data-testid={`find-time-top-pick-${index}-free-members`}>
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:563:                        data-testid={`find-time-top-pick-${index}-blocked-members`}
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:582:                        data-testid={`find-time-top-pick-${index}-nearby-leading`}
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:599:                        data-testid={`find-time-top-pick-${index}-nearby-trailing`}
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:619:                          data-testid={`find-time-top-pick-${index}-cta`}
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:629:                        <p class="find-time-card__handoff-unavailable" data-testid={`find-time-top-pick-${index}-cta-unavailable`}>
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:640:          <section class="find-time-browse framed-panel" data-testid="find-time-browse-results" data-browse-count={search.browseWindows.length}>
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:653:              <article class="find-time-empty-panel" data-testid="find-time-browse-empty">
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:664:                    data-testid={`find-time-browse-window-${index}`}
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:700:                      <section class="find-time-detail-panel" data-testid={`find-time-browse-window-${index}-free-members`}>
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:705:                      <section class="find-time-detail-panel" data-testid={`find-time-browse-window-${index}-nearby-summary`}>
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:720:                          data-testid={`find-time-browse-window-${index}-cta`}
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:730:                        <p class="find-time-card__handoff-unavailable" data-testid={`find-time-browse-window-${index}-cta-unavailable`}>
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:742:        <section class="feature-banner tone-warning" data-testid="find-time-empty-state">
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:747:        <section class={`feature-banner ${toneForSearchStatus(search.status)}`} data-testid="find-time-error-state" data-status={search.status}>
+apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte:655:      <article class={`status-card ${routeTone}`} data-testid="calendar-route-state">
+apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte:667:          data-testid="calendar-local-state"
+apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte:699:          data-testid="calendar-sync-state"
+apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte:721:          data-testid="calendar-realtime-state"
+apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte:779:        <header class="hero-panel compact" data-testid="calendar-shell" data-trusted-schedule-key={buildTrustedScheduleKey(effectiveSchedule)}>
+apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte:790:          <div class="hero-actions" data-testid="calendar-find-time-entry">
+apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte:793:              data-testid="find-time-entrypoint"
+apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte:838:      <section class="denied-banner framed-panel" data-testid="access-denied-state">
+apps/web/src/lib/schedule/conflicts.ts:1:export * from '@repo/caluno-core/schedule/conflicts';
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte:28:  class={`shift-day-column shift-day-column--${day.density} ${day.isToday ? 'shift-day-column--today' : ''} ${day.conflict ? 'shift-day-column--conflict' : ''}`}
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte:29:  data-conflict-pairs={day.conflict?.overlapCount ?? 0}
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte:30:  data-testid={`day-shell-${day.dayKey}`}
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte:41:      {#if day.conflict}
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte:43:          class="pill pill-conflict"
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte:44:          data-testid={`day-conflict-pill-${day.dayKey}`}
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte:45:          data-conflict-pairs={day.conflict.overlapCount}
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte:46:          data-conflict-shifts={day.conflict.conflictingShiftIds.length}
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte:48:          {day.conflict.label}
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte:56:    <article class="empty-card shift-day-column__empty" data-testid={`day-empty-${day.dayKey}`}>
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte:62:    <div class="shift-day-column__stack" data-testid={`day-column-${day.dayKey}`}>
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte:63:      {#if day.conflict}
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte:65:          class="inline-state tone-warning shift-day-column__conflict"
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte:66:          data-testid={`day-conflict-summary-${day.dayKey}`}
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte:67:          data-conflict-pairs={day.conflict.overlapCount}
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte:68:          data-conflict-shifts={day.conflict.conflictingShiftIds.length}
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte:70:          <strong>{day.conflict.label}</strong>
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte:71:          <p>{day.conflict.detail}</p>
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:135:  data-testid={`${mode}-shift-editor`}
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:153:        data-testid="create-prefill-source"
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:255:        <article class={`inline-state ${tone}`} data-testid={`${mode}-state`}>
+apps/web/src/lib/components/calendar/ShiftCard.svelte:45:  class={`shift-card shift-card--${shift.density} ${shift.conflict ? 'shift-card--conflict' : ''}`}
+apps/web/src/lib/components/calendar/ShiftCard.svelte:46:  data-testid={`shift-card-${shift.id}`}
+apps/web/src/lib/components/calendar/ShiftCard.svelte:47:  data-conflict-overlaps={shift.conflict?.overlapCount ?? 0}
+apps/web/src/lib/components/calendar/ShiftCard.svelte:59:      {#if shift.conflict}
+apps/web/src/lib/components/calendar/ShiftCard.svelte:61:          class="pill pill-conflict"
+apps/web/src/lib/components/calendar/ShiftCard.svelte:62:          data-testid={`shift-conflict-pill-${shift.id}`}
+apps/web/src/lib/components/calendar/ShiftCard.svelte:63:          data-conflict-overlaps={shift.conflict.overlapCount}
+apps/web/src/lib/components/calendar/ShiftCard.svelte:65:          {shift.conflict.label}
+apps/web/src/lib/components/calendar/ShiftCard.svelte:76:  {#if shift.conflict}
+apps/web/src/lib/components/calendar/ShiftCard.svelte:78:      class="inline-state tone-warning shift-card__conflict"
+apps/web/src/lib/components/calendar/ShiftCard.svelte:79:      data-testid={`shift-conflict-summary-${shift.id}`}
+apps/web/src/lib/components/calendar/ShiftCard.svelte:80:      data-conflict-overlaps={shift.conflict.overlapCount}
+apps/web/src/lib/components/calendar/ShiftCard.svelte:82:      <strong>{shift.conflict.label}</strong>
+apps/web/src/lib/components/calendar/ShiftCard.svelte:83:      <p>{shift.conflict.detail}</p>
+apps/web/src/lib/components/calendar/ShiftCard.svelte:138:    <article class={`inline-state ${deleteTone}`} data-testid={`delete-state-${shift.id}`}>
+apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte:58:<section class="calendar-week-board framed-panel" data-testid="calendar-week-board" data-visible-week-start={board.visibleWeekStart} data-visible-week-end={board.visibleWeekEndExclusive}>
+apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte:71:        {#if board.conflict}
+apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte:73:            class="pill pill-conflict"
+apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte:74:            data-testid="board-conflict-pill"
+apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte:75:            data-conflict-days={board.conflict.dayCount}
+apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte:76:            data-conflict-shifts={board.conflict.shiftCount}
+apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte:77:            data-conflict-pairs={board.conflict.overlapCount}
+apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte:79:            {board.conflict.label}

@@ -1,0 +1,11 @@
+section_count=13
+PASS detectRecurrencePattern
+PASS previewShiftConflicts
+FAIL Launch criteria
+FAIL launch criteria
+FAIL Out of scope
+FAIL out of scope
+PASS D063
+FAIL R011 \[differentiator\] (active) owner:M005/S01
+PASS S02: Implement detectRecurrencePattern and previewShiftConflicts in @repo/caluno-core
+PASS S06: Hardening, accessibility, and deployment readiness

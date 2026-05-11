@@ -3,7 +3,7 @@
   import type { CalendarControllerActionState } from '$lib/offline/calendar-controller';
   import type { CalendarRealtimeDiagnostics } from '$lib/offline/sync-engine';
   import type { CreatePrefillPayload } from '$lib/schedule/create-prefill';
-  import type { ScheduleLoadStatus } from '$lib/server/schedule';
+  import type { ScheduleLoadStatus, ScheduleRecurrenceSuggestion } from '$lib/server/schedule';
   import { summarizeScheduleActions, type CalendarWeekBoardModel } from '$lib/schedule/board';
   import ShiftDayColumn from './ShiftDayColumn.svelte';
   import ShiftEditorDialog from './ShiftEditorDialog.svelte';
@@ -14,6 +14,7 @@
     scheduleReason: string | null;
     scheduleMessage: string;
     createPrefill?: CreatePrefillPayload | null;
+    recurrenceSuggestion?: ScheduleRecurrenceSuggestion | null;
     actionStates?: CalendarControllerActionState[];
     realtimeDiagnostics?: CalendarRealtimeDiagnostics | null;
     pendingActionKey: string | null;
@@ -29,6 +30,7 @@
     scheduleReason,
     scheduleMessage,
     createPrefill = null,
+    recurrenceSuggestion = null,
     actionStates = [],
     realtimeDiagnostics = null,
     pendingActionKey,
@@ -100,6 +102,7 @@
       formId="create:week"
       visibleWeekStart={board.visibleWeekStart}
       {createPrefill}
+      {recurrenceSuggestion}
       actionStates={actionStates}
       defaultDayKey={board.days[0]?.dayKey ?? board.visibleWeekStart}
       {pendingActionKey}

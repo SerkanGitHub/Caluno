@@ -1,0 +1,4 @@
+apps/web/src/lib/components/calendar/ShiftCard.svelte
+  78:class="inline-state tone-warning shift-card__conflict"
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte
+  65:class="inline-state tone-warning shift-day-column__conflict"

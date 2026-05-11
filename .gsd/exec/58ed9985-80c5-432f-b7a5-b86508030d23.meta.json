@@ -1,0 +1,18 @@
+{
+  "id": "58ed9985-80c5-432f-b7a5-b86508030d23",
+  "runtime": "bash",
+  "purpose": "M005 S02 slice verification: recurrence+conflicts contract tests",
+  "script_chars": 149,
+  "started_at": "2026-05-11T09:02:41.242Z",
+  "finished_at": "2026-05-11T09:02:42.977Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 1735,
+  "stdout_bytes": 357,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/58ed9985-80c5-432f-b7a5-b86508030d23.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/58ed9985-80c5-432f-b7a5-b86508030d23.stderr"
+}

@@ -1,0 +1,17 @@
+Existing predictive helper references:
+
+Core schedule subpath exports:
+./schedule/board -> ./src/schedule/board.ts
+./schedule/conflicts -> ./src/schedule/conflicts.ts
+./schedule/create-prefill -> ./src/schedule/create-prefill.ts
+./schedule/recurrence -> ./src/schedule/recurrence.ts
+./schedule/types -> ./src/schedule/types.ts
+
+App-local schedule re-export shims:
+- apps/mobile/src/lib/schedule/create-prefill-arrival.ts
+- apps/web/src/lib/schedule/board.ts
+- apps/web/src/lib/schedule/conflicts.ts
+- apps/web/src/lib/schedule/create-prefill.ts
+- apps/web/src/lib/schedule/recurrence.ts
+- apps/web/src/lib/schedule/route-contract.ts
+- apps/web/src/lib/schedule/types.ts

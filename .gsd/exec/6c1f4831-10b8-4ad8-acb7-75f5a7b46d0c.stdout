@@ -1,0 +1,26 @@
+20:import { _resolveActionSearchParams, load as calendarPageLoad } from '../../src/routes/(app)/calendars/[calendarId]/+page.server';
+133:function createThenableBuilder<T>(
+308:    const result = (await calendarPageLoad({
+325:    } as unknown as Parameters<typeof calendarPageLoad>[0])) as Exclude<
+326:      Awaited<ReturnType<typeof calendarPageLoad>>,
+344:    const shiftsBuilder = createThenableBuilder(
+373:    const result = (await calendarPageLoad({
+404:    } as unknown as Parameters<typeof calendarPageLoad>[0])) as Exclude<
+405:      Awaited<ReturnType<typeof calendarPageLoad>>,
+425:    const shiftsBuilder = createThenableBuilder({ data: [], error: null });
+427:    const result = (await calendarPageLoad({
+446:    } as unknown as Parameters<typeof calendarPageLoad>[0])) as Exclude<
+447:      Awaited<ReturnType<typeof calendarPageLoad>>,
+466:    const shiftsBuilder = createThenableBuilder({ data: [], error: null });
+468:    const result = (await calendarPageLoad({
+487:    } as unknown as Parameters<typeof calendarPageLoad>[0])) as Exclude<
+488:      Awaited<ReturnType<typeof calendarPageLoad>>,
+635:  it('keeps the denied contract for out-of-scope calendar ids without loading schedule data', async () => {
+638:    const result = (await calendarPageLoad({
+655:    } as unknown as Parameters<typeof calendarPageLoad>[0])) as Exclude<
+656:      Awaited<ReturnType<typeof calendarPageLoad>>,
+666:  it('surfaces invalid week params as typed visible-week metadata while staying on a bounded fallback week', async () => {
+670:    const shiftsBuilder = createThenableBuilder({ data: [], error: null });
+672:    const result = (await calendarPageLoad({
+689:    } as unknown as Parameters<typeof calendarPageLoad>[0])) as Exclude<
+690:      Awaited<ReturnType<typeof calendarPageLoad>>,

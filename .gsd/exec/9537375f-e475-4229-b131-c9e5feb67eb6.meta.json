@@ -1,0 +1,18 @@
+{
+  "id": "9537375f-e475-4229-b131-c9e5feb67eb6",
+  "runtime": "python",
+  "purpose": "find protected route tests around calendar load and prefill",
+  "script_chars": 252,
+  "started_at": "2026-05-11T09:10:20.733Z",
+  "finished_at": "2026-05-11T09:10:20.784Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 51,
+  "stdout_bytes": 3129,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/9537375f-e475-4229-b131-c9e5feb67eb6.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/9537375f-e475-4229-b131-c9e5feb67eb6.stderr"
+}

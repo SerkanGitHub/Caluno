@@ -1,0 +1,6 @@
+2:import { deriveVisibleWeekConflicts, previewShiftConflicts } from '@repo/caluno-core/schedule/conflicts';
+5:function buildDraft(overrides: Partial<NormalizedScheduleShiftDraft> = {}): NormalizedScheduleShiftDraft {
+260:describe('previewShiftConflicts', () => {
+262:    const conflicts = previewShiftConflicts(buildDraft(), [
+312:  it('returns an empty preview when the schedule is clear after filtering invalid, cross-calendar, and touching rows', () => {
+314:      previewShiftConflicts(buildDraft(), [

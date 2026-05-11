@@ -1,0 +1,18 @@
+{
+  "id": "edacec2c-2a79-48ec-b121-46d57d447923",
+  "runtime": "bash",
+  "purpose": "find schedule seed SQL entries for alpha shared shifts",
+  "script_chars": 506,
+  "started_at": "2026-05-11T09:08:41.891Z",
+  "finished_at": "2026-05-11T09:08:42.226Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 335,
+  "stdout_bytes": 210,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/edacec2c-2a79-48ec-b121-46d57d447923.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/edacec2c-2a79-48ec-b121-46d57d447923.stderr"
+}

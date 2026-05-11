@@ -13,13 +13,13 @@
 
 ## Slices
 
-- [ ] **S01: S01** `risk:low` `depends:[]`
+- [x] **S01: S01** `risk:low` `depends:[]`
   > After this: A written feature brief (M005-CONTEXT.md) with specific predictive features scoped, explicit launch criteria, and a decomposed slice roadmap.
 
-- [ ] **S02: Implement detectRecurrencePattern and previewShiftConflicts in @repo/caluno-core** `risk:low` `depends:[S01]`
+- [x] **S02: S02** `risk:low` `depends:[]`
   > After this: Unit tests pass for both helpers. detectRecurrencePattern returns a suggestion for ≥3 same-weekday-same-hour shifts in 30 days and null otherwise. previewShiftConflicts returns overlapping shifts for a draft against existing shifts and empty array when clear.
 
-- [ ] **S03: Wire recurrence suggestion into web shift create dialog** `risk:medium` `depends:[S02]`
+- [ ] **S03: S03** `risk:medium` `depends:[]`
   > After this: Opening the web shift create dialog on a calendar with a known pattern surfaces a suggestion chip. Accepting pre-fills recurrence fields. Dismissing leaves the form blank. Browser E2E covers both paths.
 
 - [ ] **S04: Wire clash advisory into web shift editor** `risk:medium` `depends:[S02]`

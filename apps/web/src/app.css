@@ -535,6 +535,8 @@ h3 {
 .recurrence-fields,
 .recurrence-fields__header,
 .recurrence-fields__grid,
+.recurrence-suggestion,
+.recurrence-suggestion__actions,
 .calendar-form-actions,
 .calendar-toolbar__notes {
   display: grid;
@@ -754,6 +756,44 @@ h3 {
   background: rgba(255, 255, 255, 0.03);
 }
 
+.recurrence-fields__state {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.9rem 1rem;
+  border-radius: 18px;
+  border: 1px solid rgba(143, 211, 193, 0.18);
+  background: rgba(143, 211, 193, 0.06);
+}
+
+.recurrence-fields__state p {
+  color: var(--muted);
+}
+
+.recurrence-suggestion {
+  padding: 1rem;
+  border-radius: 18px;
+  border: 1px solid rgba(244, 162, 89, 0.22);
+  background:
+    linear-gradient(135deg, rgba(244, 162, 89, 0.12), rgba(143, 211, 193, 0.05) 70%),
+    rgba(255, 255, 255, 0.03);
+}
+
+.recurrence-suggestion p {
+  color: var(--muted);
+}
+
+.recurrence-suggestion__actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: start;
+}
+
+.recurrence-suggestion__dismiss {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
 .recurrence-fields__grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -851,7 +891,8 @@ h3 {
 
   .shift-card__actions,
   .calendar-form-actions,
-  .shift-day-column__pills {
+  .shift-day-column__pills,
+  .recurrence-suggestion__actions {
     flex-direction: column;
     align-items: stretch;
   }

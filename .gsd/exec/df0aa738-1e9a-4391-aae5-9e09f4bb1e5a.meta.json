@@ -1,0 +1,18 @@
+{
+  "id": "df0aa738-1e9a-4391-aae5-9e09f4bb1e5a",
+  "runtime": "python",
+  "purpose": "extract line numbers for shift editor dialog predictive fields",
+  "script_chars": 371,
+  "started_at": "2026-05-11T09:08:03.822Z",
+  "finished_at": "2026-05-11T09:08:03.870Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 48,
+  "stdout_bytes": 1704,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/df0aa738-1e9a-4391-aae5-9e09f4bb1e5a.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/df0aa738-1e9a-4391-aae5-9e09f4bb1e5a.stderr"
+}

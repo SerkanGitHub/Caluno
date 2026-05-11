@@ -1,0 +1,8 @@
+201:export const seededSchedule = {
+241:      title: 'Alpha opening sweep',
+248:      title: 'Alpha opening sweep',
+363:    leadingConstraints: ['Alice Owner:Alpha opening sweep:0'],
+635:        schedule: seededSchedule
+738:  const { page, flow, calendarId, visibleWeekStart = seededSchedule.visibleWeek.start, focusShiftIds = [], phase } = params;
+1279:      visibleWeekStart: params.visibleWeekStart ?? seededSchedule.visibleWeek.start,
+1280:      visibleWeekEndExclusive: seededSchedule.visibleWeek.endExclusive,

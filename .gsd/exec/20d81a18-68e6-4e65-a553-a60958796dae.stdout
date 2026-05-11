@@ -1,0 +1,4 @@
+apps/web/src/lib/schedule/recurrence.ts
+apps/web/src/lib/schedule/board.ts
+packages/caluno-core/src/schedule/board.ts
+167:export function toDateTimeLocalValue(value: string | null | undefined): string {

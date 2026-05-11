@@ -1,0 +1,54 @@
+
+Running 5 tests using 1 worker
+
+  ✓  1 tests/e2e/calendar-shifts.spec.ts:43:1 › seeded member can prove the trusted-online Thursday overlap warning while the Wednesday touch boundary stays clean (2.3s)
+  ✓  2 tests/e2e/calendar-shifts.spec.ts:138:1 › browse suggestion handoff creates a visible shift on the intended day and does not reopen after reload (2.7s)
+  ✘  3 tests/e2e/calendar-shifts.spec.ts:223:1 › weekly recurrence suggestion accept path pre-fills weekly cadence truthfully and resets after a successful create (12.0s)
+  -  4 tests/e2e/calendar-shifts.spec.ts:309:1 › weekly recurrence suggestion dismiss path keeps the form blank, stays hidden for the current instance, and returns after reload
+  -  5 tests/e2e/calendar-shifts.spec.ts:415:1 › seeded member still gets the explicit denied surface for an unauthorized calendar route
+
+
+  1) tests/e2e/calendar-shifts.spec.ts:223:1 › weekly recurrence suggestion accept path pre-fills weekly cadence truthfully and resets after a successful create › phase: submit a truthful bounded create, then prove success reset restores blank fields and a fresh suggestion surface 
+
+    Error: expected the create dialog recurrence cadence to reset after the trusted create succeeded
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m""[39m
+    Received: [31m"weekly"[39m
+
+    Call Log:
+    - Timeout 10000ms exceeded while waiting on the predicate
+
+      281 |     await expect(page.locator('[data-testid^="shift-card-"]').filter({ hasText: createdTitle }).first()).toBeVisible();
+      282 |
+    > 283 |     await expect
+          |     ^
+      284 |       .poll(async () => (await readCreateShiftRecurrenceSnapshot(page)).selectedCadence, {
+      285 |         message: 'expected the create dialog recurrence cadence to reset after the trusted create succeeded'
+      286 |       })
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:283:5
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:274:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-weekly-rec-5ab69-s-after-a-successful-create/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-weekly-rec-5ab69-s-after-a-successful-create/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/calendar-shifts-weekly-rec-5ab69-s-after-a-successful-create/error-context.md
+
+    attachment #5: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-weekly-rec-5ab69-s-after-a-successful-create/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/calendar-shifts-weekly-rec-5ab69-s-after-a-successful-create/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/calendar-shifts.spec.ts:223:1 › weekly recurrence suggestion accept path pre-fills weekly cadence truthfully and resets after a successful create 
+  2 did not run
+  2 passed (19.1s)

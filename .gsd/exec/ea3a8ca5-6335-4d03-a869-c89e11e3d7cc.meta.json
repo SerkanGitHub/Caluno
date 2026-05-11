@@ -1,0 +1,18 @@
+{
+  "id": "ea3a8ca5-6335-4d03-a869-c89e11e3d7cc",
+  "runtime": "bash",
+  "purpose": "find seeded alpha opening sweep rows outside visible week",
+  "script_chars": 676,
+  "started_at": "2026-05-11T09:08:41.889Z",
+  "finished_at": "2026-05-11T09:08:42.857Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 968,
+  "stdout_bytes": 1048576,
+  "stderr_bytes": 0,
+  "stdout_truncated": true,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/ea3a8ca5-6335-4d03-a869-c89e11e3d7cc.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/ea3a8ca5-6335-4d03-a869-c89e11e3d7cc.stderr"
+}

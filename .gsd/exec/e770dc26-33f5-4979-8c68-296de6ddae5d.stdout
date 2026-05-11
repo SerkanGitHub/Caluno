@@ -1,0 +1,12 @@
+30:export type ShiftCardModel = {
+34:  startAt: string;
+35:  endAt: string;
+43:  seriesId: string | null;
+45:  sourceKind: 'single' | 'series';
+186:export function buildDefaultCreateTimes(dayKey: string | null | undefined): { startAt: string; endAt: string } {
+190:    startAt: `${safeDayKey}T09:00`,
+191:    endAt: `${safeDayKey}T13:00`
+246:    startAt: shift.startAt,
+247:    endAt: shift.endAt,
+256:    seriesId: shift.seriesId,
+258:    sourceKind: shift.sourceKind,

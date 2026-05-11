@@ -1,0 +1,11 @@
+
+ RUN  v3.2.4 /Users/serkanyeniay/dev/Caluno/apps/web
+
+ ✓ tests/schedule/conflicts.unit.test.ts (5 tests) 12ms
+ ✓ tests/schedule/recurrence.unit.test.ts (11 tests) 14ms
+
+ Test Files  2 passed (2)
+      Tests  16 passed (16)
+   Start at  11:02:00
+   Duration  667ms (transform 90ms, setup 0ms, collect 132ms, tests 26ms, environment 0ms, prepare 179ms)
+

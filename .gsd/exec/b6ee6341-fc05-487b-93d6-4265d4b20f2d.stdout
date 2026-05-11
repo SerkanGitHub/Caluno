@@ -1,0 +1,208 @@
+Schedule-related files:
+- packages/caluno-core/src/schedule/board.ts
+- packages/caluno-core/src/schedule/conflicts.ts
+- packages/caluno-core/src/schedule/create-prefill.ts
+- packages/caluno-core/src/schedule/recurrence.ts
+- packages/caluno-core/src/schedule/types.ts
+
+Potential symbols:
+packages/caluno-core/src/offline/sync-engine.ts:4:import type { CalendarScheduleView, CalendarShift, ScheduleActionState, VisibleWeek } from '../schedule/types';
+packages/caluno-core/src/offline/sync-engine.ts:544:  shifts: CalendarShift[];
+packages/caluno-core/src/offline/sync-engine.ts:564:export function flattenScheduleShifts(schedule: CalendarScheduleView): CalendarShift[] {
+packages/caluno-core/src/offline/sync-engine.ts:568:export function sortScheduleShifts(shifts: CalendarShift[]): CalendarShift[] {
+packages/caluno-core/src/offline/sync-engine.ts:579:  shiftsById: Map<string, CalendarShift>,
+packages/caluno-core/src/offline/sync-engine.ts:590:      if (!Array.isArray(entry.payload.createdShifts) || entry.payload.createdShifts.some((shift) => !isCalendarShift(shift))) {
+packages/caluno-core/src/offline/sync-engine.ts:615:      if (!isCalendarShift(entry.payload.previousShift) || !isCalendarShift(entry.payload.nextShift)) {
+packages/caluno-core/src/offline/sync-engine.ts:637:      if (!isCalendarShift(entry.payload.previousShift) || !isCalendarShift(entry.payload.nextShift)) {
+packages/caluno-core/src/offline/sync-engine.ts:659:      if (!isCalendarShift(entry.payload.deletedShift)) {
+packages/caluno-core/src/offline/sync-engine.ts:713:        recurrenceCadence: entry.payload.fields.recurrenceCadence ?? '',
+packages/caluno-core/src/offline/sync-engine.ts:714:        recurrenceInterval: entry.payload.fields.recurrenceInterval ?? '',
+packages/caluno-core/src/offline/sync-engine.ts:787:function isCalendarShift(value: unknown): value is CalendarShift {
+packages/caluno-core/src/offline/sync-engine.ts:792:  const candidate = value as Partial<CalendarShift>;
+packages/caluno-core/src/offline/mutation-queue.ts:1:import type { CalendarShift } from '../schedule/types';
+packages/caluno-core/src/offline/mutation-queue.ts:15:  recurrenceCadence?: string;
+packages/caluno-core/src/offline/mutation-queue.ts:16:  recurrenceInterval?: string;
+packages/caluno-core/src/offline/mutation-queue.ts:28:  createdShifts: CalendarShift[];
+packages/caluno-core/src/offline/mutation-queue.ts:34:  previousShift: CalendarShift;
+packages/caluno-core/src/offline/mutation-queue.ts:35:  nextShift: CalendarShift;
+packages/caluno-core/src/offline/mutation-queue.ts:41:  previousShift: CalendarShift;
+packages/caluno-core/src/offline/mutation-queue.ts:42:  nextShift: CalendarShift;
+packages/caluno-core/src/offline/mutation-queue.ts:48:  deletedShift: CalendarShift;
+packages/caluno-core/src/offline/mutation-queue.ts:295:      return isOfflineMutationFields(candidate.fields) && Array.isArray(candidate.createdShifts) && candidate.createdShifts.every(isCalendarShift);
+packages/caluno-core/src/offline/mutation-queue.ts:300:        isCalendarShift(candidate.previousShift) &&
+packages/caluno-core/src/offline/mutation-queue.ts:301:        isCalendarShift(candidate.nextShift)
+packages/caluno-core/src/offline/mutation-queue.ts:304:      return isOfflineShiftMutationFields(candidate.fields) && isCalendarShift(candidate.deletedShift);
+packages/caluno-core/src/offline/mutation-queue.ts:318:    (candidate.recurrenceCadence === undefined || typeof candidate.recurrenceCadence === 'string') &&
+packages/caluno-core/src/offline/mutation-queue.ts:319:    (candidate.recurrenceInterval === undefined || typeof candidate.recurrenceInterval === 'string') &&
+packages/caluno-core/src/offline/mutation-queue.ts:347:function isCalendarShift(value: unknown): value is CalendarShift {
+packages/caluno-core/src/offline/mutation-queue.ts:352:  const candidate = value as Partial<CalendarShift>;
+packages/caluno-core/src/offline/types.ts:1:import type { CalendarShift, VisibleWeek } from '../schedule/types';
+packages/caluno-core/src/offline/types.ts:12:  shifts: CalendarShift[];
+apps/mobile/src/lib/offline/controller.ts:3:  normalizeShiftDraft,
+apps/mobile/src/lib/offline/controller.ts:5:} from '@repo/caluno-core/schedule/recurrence';
+apps/mobile/src/lib/offline/controller.ts:11:  CalendarShift,
+apps/mobile/src/lib/offline/controller.ts:12:  CalendarShiftDiagnostic,
+apps/mobile/src/lib/offline/controller.ts:56:  shiftDiagnostics: Record<string, CalendarShiftDiagnostic[]>;
+apps/mobile/src/lib/offline/controller.ts:732:): Record<string, CalendarShiftDiagnostic[]> {
+apps/mobile/src/lib/offline/controller.ts:733:  const diagnostics = new Map<string, CalendarShiftDiagnostic[]>();
+apps/mobile/src/lib/offline/controller.ts:764:function diagnosticsForQueueEntry(entry: OfflineMutationQueueEntry): CalendarShiftDiagnostic[] {
+apps/mobile/src/lib/offline/controller.ts:765:  const diagnostics: CalendarShiftDiagnostic[] = [];
+apps/mobile/src/lib/offline/controller.ts:794:function dedupeDiagnostics(input: CalendarShiftDiagnostic[]): CalendarShiftDiagnostic[] {
+apps/mobile/src/lib/offline/controller.ts:843:  const draftResult = normalizeShiftDraft({
+apps/mobile/src/lib/offline/controller.ts:848:    recurrence: {
+apps/mobile/src/lib/offline/controller.ts:849:      cadence: fields.recurrenceCadence || null,
+apps/mobile/src/lib/offline/controller.ts:850:      interval: parseOptionalInteger(fields.recurrenceInterval ?? ''),
+apps/mobile/src/lib/offline/controller.ts:878:  const createdShifts: CalendarShift[] = occurrences.map((occurrence, index) => ({
+apps/mobile/src/lib/offline/controller.ts:881:    seriesId: draftResult.value.recurrence ? `local-series-${params.operationId}` : null,
+apps/mobile/src/lib/offline/controller.ts:932:  const draftResult = normalizeShiftDraft({
+apps/mobile/src/lib/offline/controller.ts:937:    recurrence: null
+apps/mobile/src/lib/offline/controller.ts:952:  const nextShift: CalendarShift = {
+apps/mobile/src/lib/offline/controller.ts:1023:  const nextShift: CalendarShift = {
+apps/mobile/src/lib/offline/controller.ts:1156:function cloneShiftDiagnostics(input: Record<string, CalendarShiftDiagnostic[]>): Record<string, CalendarShiftDiagnostic[]> {
+apps/mobile/src/lib/offline/controller.ts:1165:    recurrenceCadence: readFormValue(formData, 'recurrenceCadence'),
+apps/mobile/src/lib/offline/controller.ts:1166:    recurrenceInterval: readFormValue(formData, 'recurrenceInterval'),
+apps/mobile/src/lib/offline/controller.ts:1230:      return 'Choose a recurrence cadence before creating a recurring local shift.';
+apps/mobile/src/lib/offline/controller.ts:1232:      return 'That recurrence cadence is not supported for local-first writes.';
+apps/mobile/src/lib/offline/controller.ts:1234:      return 'The recurrence interval must be at least 1.';
+packages/caluno-core/src/index.ts:12:export * from './schedule/conflicts';
+packages/caluno-core/src/index.ts:14:export * from './schedule/recurrence';
+apps/mobile/src/lib/offline/transport.ts:2:import { normalizeShiftDraft, normalizeVisibleRange } from '@repo/caluno-core/schedule/recurrence';
+apps/mobile/src/lib/offline/transport.ts:5:  CalendarShift,
+apps/mobile/src/lib/offline/transport.ts:68:  recurrenceCadence: string;
+apps/mobile/src/lib/offline/transport.ts:69:  recurrenceInterval: string;
+apps/mobile/src/lib/offline/transport.ts:81:const recurrenceFrequencyByCadence = {
+apps/mobile/src/lib/offline/transport.ts:202:  const normalized = normalizeShiftDraft({
+apps/mobile/src/lib/offline/transport.ts:207:    recurrence: {
+apps/mobile/src/lib/offline/transport.ts:208:      cadence: fields.recurrenceCadence || null,
+apps/mobile/src/lib/offline/transport.ts:209:      interval: parseOptionalInteger(fields.recurrenceInterval),
+apps/mobile/src/lib/offline/transport.ts:226:  if (!normalized.value.recurrence) {
+apps/mobile/src/lib/offline/transport.ts:308:      recurrence_cadence: normalized.value.recurrence.cadence,
+apps/mobile/src/lib/offline/transport.ts:309:      recurrence_interval: normalized.value.recurrence.interval,
+apps/mobile/src/lib/offline/transport.ts:310:      repeat_count: normalized.value.recurrence.repeatCount,
+apps/mobile/src/lib/offline/transport.ts:311:      repeat_until: normalized.value.recurrence.repeatUntil?.toISOString() ?? null,
+apps/mobile/src/lib/offline/transport.ts:326:        ? 'The recurring shift create request timed out before the series could be confirmed.'
+apps/mobile/src/lib/offline/transport.ts:327:        : 'The recurring shift series could not be created, so no occurrences were added.',
+apps/mobile/src/lib/offline/transport.ts:339:    recurrence: normalized.value.recurrence
+apps/mobile/src/lib/offline/transport.ts:356:        ? 'The recurring occurrence write timed out, so the series was rolled back.'
+apps/mobile/src/lib/offline/transport.ts:357:        : 'The recurring occurrence write failed, so the series was rolled back and the board stayed unchanged.',
+apps/mobile/src/lib/offline/transport.ts:384:        ? 'The recurring creator-assignment write timed out, so the series was rolled back.'
+apps/mobile/src/lib/offline/transport.ts:385:        : 'The recurring creator-assignment write failed, so the series was rolled back and the board stayed unchanged.',
+apps/mobile/src/lib/offline/transport.ts:393:  const recurringCreateOutcome = successOutcome({
+apps/mobile/src/lib/offline/transport.ts:397:    message: 'The recurring shift series, concrete occurrences, and creator assignments were created inside the current trusted calendar.',
+apps/mobile/src/lib/offline/transport.ts:404:  return recurringCreateOutcome;
+apps/mobile/src/lib/offline/transport.ts:444:  const draftResult = normalizeShiftDraft({
+apps/mobile/src/lib/offline/transport.ts:449:    recurrence: null
+apps/mobile/src/lib/offline/transport.ts:1013:    recurrenceCadence: readFormValue(formData, 'recurrenceCadence'),
+apps/mobile/src/lib/offline/transport.ts:1014:    recurrenceInterval: readFormValue(formData, 'recurrenceInterval'),
+apps/mobile/src/lib/offline/transport.ts:1050:  recurrence: NormalizedScheduleRecurrence;
+apps/mobile/src/lib/offline/transport.ts:1053:    freq: recurrenceFrequencyByCadence[params.recurrence.cadence],
+apps/mobile/src/lib/offline/transport.ts:1054:    interval: params.recurrence.interval,
+apps/mobile/src/lib/offline/transport.ts:1055:    count: params.recurrence.repeatCount ?? undefined,
+apps/mobile/src/lib/offline/transport.ts:1056:    until: params.recurrence.repeatUntil ?? undefined,
+apps/mobile/src/lib/offline/transport.ts:1108:      return 'Choose a recurrence cadence before creating a recurring shift.';
+apps/mobile/src/lib/offline/transport.ts:1110:      return 'That recurrence cadence is not supported.';
+apps/mobile/src/lib/offline/transport.ts:1112:      return 'The recurrence interval must be at least 1.';
+apps/mobile/src/lib/offline/transport.ts:1134:function mapShiftRow(row: ShiftRow): CalendarShift {
+apps/mobile/src/lib/offline/transport.ts:1147:function compareShiftTimes(left: Pick<CalendarShift, 'startAt' | 'endAt' | 'title'>, right: Pick<CalendarShift, 'startAt' | 'endAt' | 'title'>) {
+packages/caluno-core/src/route-contract.ts:18:export type CalendarShift = {
+packages/caluno-core/src/route-contract.ts:29:export type CalendarShiftDay = {
+packages/caluno-core/src/route-contract.ts:32:  shifts: CalendarShift[];
+packages/caluno-core/src/route-contract.ts:40:  days: CalendarShiftDay[];
+apps/mobile/src/lib/offline/repository.ts:673:    candidate.shifts.every(isCalendarShift) &&
+apps/mobile/src/lib/offline/repository.ts:739:function isCalendarShift(value: unknown) {
+packages/caluno-core/src/schedule/board.ts:6:  CalendarShift,
+packages/caluno-core/src/schedule/board.ts:7:  CalendarShiftDiagnostic,
+packages/caluno-core/src/schedule/board.ts:10:import { deriveVisibleWeekConflicts } from './conflicts';
+packages/caluno-core/src/schedule/board.ts:18:  conflictingShiftIds: string[];
+packages/caluno-core/src/schedule/board.ts:27:  conflictDayKeys: string[];
+packages/caluno-core/src/schedule/board.ts:46:  statusBadges: CalendarShiftDiagnostic[];
+packages/caluno-core/src/schedule/board.ts:47:  conflict: ConflictSurfaceModel | null;
+packages/caluno-core/src/schedule/board.ts:61:  conflict: ConflictSurfaceModel | null;
+packages/caluno-core/src/schedule/board.ts:82:  conflict: BoardConflictSummaryModel | null;
+packages/caluno-core/src/schedule/board.ts:109:      shiftDiagnostics?: Record<string, CalendarShiftDiagnostic[]>;
+packages/caluno-core/src/schedule/board.ts:120:  const conflicts = deriveVisibleWeekConflicts(schedule);
+packages/caluno-core/src/schedule/board.ts:134:    conflict: buildBoardConflictModel(schedule, conflicts),
+packages/caluno-core/src/schedule/board.ts:139:    days: schedule.days.map((day) => buildDayColumn(day, todayKey, runtime?.shiftDiagnostics ?? {}, conflicts))
+packages/caluno-core/src/schedule/board.ts:143:export function sortShiftsForBoard(shifts: CalendarShift[]): CalendarShift[] {
+packages/caluno-core/src/schedule/board.ts:198:  shiftDiagnostics: Record<string, CalendarShiftDiagnostic[]>,
+packages/caluno-core/src/schedule/board.ts:199:  conflicts: ReturnType<typeof deriveVisibleWeekConflicts>
+packages/caluno-core/src/schedule/board.ts:202:  const dayConflict = buildDayConflictModel(day, conflicts.days[day.dayKey] ?? null);
+packages/caluno-core/src/schedule/board.ts:204:    buildShiftCardModel(shift, day.shifts.length, shiftDiagnostics, conflicts.shifts[shift.id] ?? null)
+packages/caluno-core/src/schedule/board.ts:227:    conflict: dayConflict
+packages/caluno-core/src/schedule/board.ts:232:  shift: CalendarShift,
+packages/caluno-core/src/schedule/board.ts:234:  shiftDiagnostics: Record<string, CalendarShiftDiagnostic[]>,
+packages/caluno-core/src/schedule/board.ts:260:    conflict: buildShiftConflictModel(shiftConflict)
+packages/caluno-core/src/schedule/board.ts:266:  conflicts: ReturnType<typeof deriveVisibleWeekConflicts>
+packages/caluno-core/src/schedule/board.ts:268:  if (!conflicts.board) {
+packages/caluno-core/src/schedule/board.ts:272:  const conflictedDayLabels = schedule.days
+packages/caluno-core/src/schedule/board.ts:273:    .filter((day) => conflicts.board?.conflictDayKeys.includes(day.dayKey))
+packages/caluno-core/src/schedule/board.ts:277:    overlapCount: conflicts.board.overlapCount,
+packages/caluno-core/src/schedule/board.ts:278:    dayCount: conflicts.board.conflictDayCount,
+packages/caluno-core/src/schedule/board.ts:279:    shiftCount: conflicts.board.conflictingShiftCount,
+packages/caluno-core/src/schedule/board.ts:280:    conflictDayKeys: conflicts.board.conflictDayKeys,
+packages/caluno-core/src/schedule/board.ts:281:    label: `${conflicts.board.overlapCount} overlap ${conflicts.board.overlapCount === 1 ? 'pair' : 'pairs'} in view`,
+packages/caluno-core/src/schedule/board.ts:283:      conflictedDayLabels.length === 1
+packages/caluno-core/src/schedule/board.ts:284:        ? `${conflictedDayLabels[0]} contains ${conflicts.board.conflictingShiftCount} conflicting visible ${conflicts.board.conflictingShiftCount === 1 ? 'shift' : 'shifts'}.`
+packages/caluno-core/src/schedule/board.ts:285:        : `${conflictedDayLabels.length} visible days contain ${conflicts.board.conflictingShiftCount} conflicting shifts: ${formatInlineList(conflictedDayLabels)}.`
+packages/caluno-core/src/schedule/board.ts:297:  const conflictingShifts = sortShiftsForBoard(day.shifts).filter((shift) => dayConflict.conflictingShiftIds.includes(shift.id));
+packages/caluno-core/src/schedule/board.ts:301:    conflictingShiftIds: dayConflict.conflictingShiftIds,
+packages/caluno-core/src/schedule/board.ts:303:    detail: formatConflictShiftList(conflictingShifts)
+packages/caluno-core/src/schedule/board.ts:316:    conflictingShiftIds: shiftConflict.conflictingShiftIds,
+packages/caluno-core/src/schedule/board.ts:318:    detail: formatConflictShiftList(shiftConflict.conflictingShifts)
+packages/caluno-core/src/schedule/board.ts:323:  shifts: Array<Pick<CalendarShift, 'id' | 'title' | 'startAt' | 'endAt'>>
+packages/caluno-core/src/schedule/recurrence.ts:6:  type NormalizedScheduleShiftDraft,
+packages/caluno-core/src/schedule/recurrence.ts:9:  type ScheduleShiftDraftInput,
+packages/caluno-core/src/schedule/recurrence.ts:23:const recurrenceFrequencyByCadence: Record<ScheduleRecurrenceCadence, number> = {
+packages/caluno-core/src/schedule/recurrence.ts:81:export function normalizeShiftDraft(
+packages/caluno-core/src/schedule/recurrence.ts:82:  input: ScheduleShiftDraftInput
+packages/caluno-core/src/schedule/recurrence.ts:83:): ScheduleValidationResult<NormalizedScheduleShiftDraft> {
+packages/caluno-core/src/schedule/recurrence.ts:119:  const recurrenceResult = normalizeRecurrence(input.recurrence ?? null, endAt);
+packages/caluno-core/src/schedule/recurrence.ts:120:  if (!recurrenceResult.ok) {
+packages/caluno-core/src/schedule/recurrence.ts:121:    return recurrenceResult;
+packages/caluno-core/src/schedule/recurrence.ts:133:      recurrence: recurrenceResult.value
+packages/caluno-core/src/schedule/recurrence.ts:139:  shift: NormalizedScheduleShiftDraft;
+packages/caluno-core/src/schedule/recurrence.ts:144:  if (!shift.recurrence) {
+packages/caluno-core/src/schedule/recurrence.ts:151:    freq: recurrenceFrequencyByCadence[shift.recurrence.cadence],
+packages/caluno-core/src/schedule/recurrence.ts:152:    interval: shift.recurrence.interval,
+packages/caluno-core/src/schedule/recurrence.ts:153:    count: shift.recurrence.repeatCount ?? undefined,
+packages/caluno-core/src/schedule/recurrence.ts:154:    until: shift.recurrence.repeatUntil ?? undefined,
+packages/caluno-core/src/schedule/recurrence.ts:184:  input: ScheduleShiftDraftInput;
+packages/caluno-core/src/schedule/recurrence.ts:187:  const shiftResult = normalizeShiftDraft(params.input);
+packages/caluno-core/src/schedule/recurrence.ts:207:  input: ScheduleShiftDraftInput['recurrence'],
+packages/caluno-core/src/schedule/recurrence.ts:232:      field: 'recurrence.cadence'
+packages/caluno-core/src/schedule/recurrence.ts:241:      field: 'recurrence.cadence'
+packages/caluno-core/src/schedule/recurrence.ts:250:      field: 'recurrence.interval'
+packages/caluno-core/src/schedule/recurrence.ts:259:      field: 'recurrence.repeatCount'
+packages/caluno-core/src/schedule/recurrence.ts:268:      field: 'recurrence.repeatUntil'
+packages/caluno-core/src/schedule/recurrence.ts:276:      field: 'recurrence.repeatUntil'
+packages/caluno-core/src/schedule/recurrence.ts:284:      field: 'recurrence.repeatUntil'
+packages/caluno-core/src/schedule/recurrence.ts:300:  shift: NormalizedScheduleShiftDraft;
+packages/caluno-core/src/schedule/types.ts:41:export type ScheduleShiftDraftInput = {
+packages/caluno-core/src/schedule/types.ts:47:  recurrence?: ScheduleRecurrenceInput | null;
+packages/caluno-core/src/schedule/types.ts:63:export type NormalizedScheduleShiftDraft = {
+packages/caluno-core/src/schedule/types.ts:70:  recurrence: NormalizedScheduleRecurrence | null;
+packages/caluno-core/src/schedule/types.ts:112:export type CalendarShift = {
+packages/caluno-core/src/schedule/types.ts:123:export type CalendarShiftDay = {
+packages/caluno-core/src/schedule/types.ts:126:  shifts: CalendarShift[];
+packages/caluno-core/src/schedule/types.ts:134:  days: CalendarShiftDay[];
+packages/caluno-core/src/schedule/types.ts:180:export type CalendarShiftDiagnostic = {
+apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte:141:  {#if board.conflict}
+apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte:144:      data-testid="board-conflict-summary"
+apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte:145:      data-conflict-days={board.conflict.dayCount}
+apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte:146:      data-conflict-shifts={board.conflict.shiftCount}
+apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte:147:      data-conflict-pairs={board.conflict.overlapCount}
+apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte:150:      <strong>{board.conflict.label}</strong>
+apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte:151:      <p>{board.conflict.detail}</p>
+apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte:191:          {#if day.conflict}
+apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte:192:            <article class="inline-state tone-warning" data-testid={`day-conflict-summary-${day.dayKey}`}>
+apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte:193:              <strong>{day.conflict.label}</strong>
+apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte:194:              <p>{day.conflict.detail}</p>
+apps/mobile/src/lib/components/calendar/ShiftCard.svelte:28:  class={`shift-card framed-panel shift-card--${shift.density} ${shift.conflict ? 'shift-card--conflict' : ''}`}
+apps/mobile/src/lib/components/calendar/ShiftCard.svelte:32:  data-conflict-overlaps={shift.conflict?.overlapCount ?? 0}
+apps/mobile/src/lib/components/calendar/ShiftCard.svelte:55:    {#if shift.conflict}
+apps/mobile/src/lib/components/calendar/ShiftCard.svelte:56:      <span class="pill pill-warning" data-testid={`shift-conflict-pill-${shift.id}`}>{shift.conflict.label}</span>
+apps/mobile/src/lib/components/calendar/ShiftCard.svelte:75:  {#if shift.conflict}
+apps/mobile/src/lib/components/calendar/ShiftCard.svelte:76:    <article class="inline-state tone-warning" data-testid={`shift-conflict-summary-${shift.id}`}>
+apps/mobile/src/lib/components/calendar/ShiftCard.svelte:77:      <strong>{shift.conflict.label}</strong>
+apps/mobile/src/lib/components/calendar/ShiftCard.svelte:78:      <p>{shift.conflict.detail}</p>
+apps/mobile/src/lib/components/calendar/ShiftCard.svelte:138:  .shift-card--conflict {

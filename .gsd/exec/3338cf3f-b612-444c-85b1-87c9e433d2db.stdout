@@ -1,0 +1,5 @@
+18:### R011 — Caluno provides predictive scheduling assistance that helps users anticipate better coordination options from their real schedule data.
+21:- Description: Caluno provides predictive scheduling assistance that helps users anticipate better coordination options from their real schedule data.
+24:- Primary owning slice: M005/S01
+27:- Notes: M005 takes ownership of R011. S01 defines the concrete feature set; subsequent M005 slices implement and validate it.
+262:| R011 | differentiator | active | M005/S01 | none | unmapped |

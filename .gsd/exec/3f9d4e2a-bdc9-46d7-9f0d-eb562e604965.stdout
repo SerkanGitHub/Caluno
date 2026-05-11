@@ -1,0 +1,11 @@
+
+ RUN  v3.2.4 /Users/serkanyeniay/dev/Caluno/apps/web
+
+ ✓ tests/schedule/board.unit.test.ts (3 tests) 25ms
+ ✓ tests/schedule/server-actions.unit.test.ts (21 tests) 26ms
+
+ Test Files  2 passed (2)
+      Tests  24 passed (24)
+   Start at  11:02:00
+   Duration  718ms (transform 132ms, setup 0ms, collect 184ms, tests 51ms, environment 0ms, prepare 123ms)
+

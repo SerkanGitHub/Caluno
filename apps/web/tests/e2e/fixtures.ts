@@ -410,6 +410,27 @@ export type CreateShiftPrefillSnapshot = {
   endValue: string | null;
 };
 
+export type CreateShiftRecurrenceSnapshot = {
+  open: boolean;
+  suggestionVisible: boolean;
+  suggestionCadence: string | null;
+  suggestionInterval: string | null;
+  suggestionWeekday: number | null;
+  suggestionMatchCount: number | null;
+  suggestionText: string | null;
+  acceptVisible: boolean;
+  dismissVisible: boolean;
+  selectedCadence: string | null;
+  intervalValue: string;
+  repeatCountValue: string;
+  repeatUntilValue: string;
+  fieldStateCadence: string | null;
+  fieldStateInterval: string | null;
+  fieldStateRepeatCount: string | null;
+  fieldStateRepeatUntil: string | null;
+  fieldSuggestionState: string | null;
+};
+
 async function readFlowSurfaceSnapshot(page: Page): Promise<FlowSurfaceSnapshot> {
   return page.evaluate(() => {
     const text = (selector: string) => document.querySelector<HTMLElement>(selector)?.textContent?.trim() ?? null;
@@ -1441,6 +1462,52 @@ export async function readCreateShiftPrefillSnapshot(page: Page): Promise<Create
   };
 }
 
+export async function readCreateShiftRecurrenceSnapshot(page: Page): Promise<CreateShiftRecurrenceSnapshot> {
+  const editor = page.getByTestId('create-shift-editor');
+  await expect(editor).toBeVisible();
+
+  const isOpen = await editor.evaluate((element) => (element instanceof HTMLDetailsElement ? element.open : false));
+  if (!isOpen) {
+    await editor.locator('summary').click();
+  }
+
+  const suggestion = page.getByTestId('recurrence-suggestion');
+  const fieldState = page.getByTestId('recurrence-field-state');
+  const form = editor.locator('form');
+  const checkedCadence = form.locator('input[name="recurrenceCadence"]:checked');
+  const suggestionVisible = (await suggestion.count()) > 0;
+
+  const parseNumber = (value: string | null) => {
+    if (!value) {
+      return null;
+    }
+
+    const parsed = Number.parseInt(value, 10);
+    return Number.isFinite(parsed) ? parsed : null;
+  };
+
+  return {
+    open: await editor.evaluate((element) => (element instanceof HTMLDetailsElement ? element.open : false)),
+    suggestionVisible,
+    suggestionCadence: suggestionVisible ? await suggestion.getAttribute('data-cadence') : null,
+    suggestionInterval: suggestionVisible ? await suggestion.getAttribute('data-interval') : null,
+    suggestionWeekday: parseNumber(suggestionVisible ? await suggestion.getAttribute('data-weekday') : null),
+    suggestionMatchCount: parseNumber(suggestionVisible ? await suggestion.getAttribute('data-match-count') : null),
+    suggestionText: suggestionVisible ? (await suggestion.textContent())?.trim() ?? null : null,
+    acceptVisible: (await page.getByTestId('recurrence-suggestion-accept').count()) > 0,
+    dismissVisible: (await page.getByTestId('recurrence-suggestion-dismiss').count()) > 0,
+    selectedCadence: (await checkedCadence.count()) > 0 ? await checkedCadence.first().inputValue() : null,
+    intervalValue: await form.locator('input[name="recurrenceInterval"]').inputValue(),
+    repeatCountValue: await form.locator('input[name="repeatCount"]').inputValue(),
+    repeatUntilValue: await form.locator('input[name="repeatUntil"]').inputValue(),
+    fieldStateCadence: await fieldState.getAttribute('data-cadence'),
+    fieldStateInterval: await fieldState.getAttribute('data-interval'),
+    fieldStateRepeatCount: await fieldState.getAttribute('data-repeat-count'),
+    fieldStateRepeatUntil: await fieldState.getAttribute('data-repeat-until'),
+    fieldSuggestionState: await fieldState.getAttribute('data-suggestion-state')
+  };
+}
+
 export function expectedCreateShiftPrefillValues(snapshot: Pick<FindTimeSuggestionCtaSnapshot, 'startAt' | 'endAt'>) {
   return {
     startValue: toUtcDateTimeLocalValue(snapshot.startAt),
@@ -1455,6 +1522,7 @@ export async function submitShiftEditorForm(
     startAt?: string;
     endAt?: string;
     recurrenceCadence?: '' | 'daily' | 'weekly' | 'monthly';
+    recurrenceInterval?: string;
     repeatCount?: string;
     repeatUntil?: string;
   }
@@ -1492,6 +1560,10 @@ export async function submitShiftEditorForm(
 
     if (typeof nextValues.endAt === 'string') {
       setTextInput('input[name="endAt"]', nextValues.endAt);
+    }
+
+    if (typeof nextValues.recurrenceInterval === 'string') {
+      setTextInput('input[name="recurrenceInterval"]', nextValues.recurrenceInterval);
     }
 
     if (typeof nextValues.repeatCount === 'string') {

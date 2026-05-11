@@ -1,0 +1,18 @@
+{
+  "id": "4387f68f-6ca4-4c6f-b6fc-be3e6132c1a1",
+  "runtime": "python",
+  "purpose": "extract line numbers for previewShiftConflicts tests",
+  "script_chars": 271,
+  "started_at": "2026-05-11T09:08:56.902Z",
+  "finished_at": "2026-05-11T09:08:56.953Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 51,
+  "stdout_bytes": 506,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/4387f68f-6ca4-4c6f-b6fc-be3e6132c1a1.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/4387f68f-6ca4-4c6f-b6fc-be3e6132c1a1.stderr"
+}

@@ -1,16 +1,16 @@
 {
   "nodes": [
     {
-      "id": "milestone:M004",
-      "label": "M004: M004",
+      "id": "milestone:M005",
+      "label": "M005: Predictive assistance and release hardening",
       "type": "milestone",
-      "description": "Active milestone: M004",
+      "description": "Active milestone: M005",
       "confidence": "EXTRACTED",
       "sourceFile": "STATE.md"
     },
     {
-      "id": "concept:phase:validating-milestone",
-      "label": "Phase: validating-milestone",
+      "id": "concept:phase:planning",
+      "label": "Phase: planning",
       "type": "concept",
       "confidence": "EXTRACTED",
       "sourceFile": "STATE.md"
@@ -459,6 +459,13 @@
       "confidence": "EXTRACTED"
     },
     {
+      "id": "milestone:M004",
+      "label": "M004: M004",
+      "type": "milestone",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M004/M004-ROADMAP.md"
+    },
+    {
       "id": "slice:M004:S01",
       "label": "S01: S01",
       "type": "slice",
@@ -481,6 +488,38 @@
     {
       "id": "task:M004:S02:T01",
       "label": "T01: Update M004 roadmap vision and defer R011",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "slice:M005:S01",
+      "label": "S01: Define predictive feature set and launch criteria",
+      "type": "slice",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M005/slices/S01/S01-PLAN.md"
+    },
+    {
+      "id": "task:M005:S01:T01",
+      "label": "T01: Validate M005-CONTEXT.md completeness and record slice artifact",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "slice:M005:S02",
+      "label": "S02: Implement detectRecurrencePattern and previewShiftConflicts in @repo/caluno-core",
+      "type": "slice",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M005/slices/S02/S02-PLAN.md"
+    },
+    {
+      "id": "task:M005:S02:T01",
+      "label": "T01: Add deterministic recurrence-pattern detection to the shared schedule core",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M005:S02:T02",
+      "label": "T02: Add advisory conflict-preview helper with overlap regression coverage",
       "type": "task",
       "confidence": "EXTRACTED"
     },
@@ -1415,6 +1454,36 @@
       "confidence": "EXTRACTED"
     },
     {
+      "from": "milestone:M005",
+      "to": "slice:M005:S01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M005:S01",
+      "to": "task:M005:S01:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M005",
+      "to": "slice:M005:S02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M005:S02",
+      "to": "task:M005:S02:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M005:S02",
+      "to": "task:M005:S02:T02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
       "from": "milestone:M003",
       "to": "decision:M003:1",
       "type": "relates_to",
@@ -1787,5 +1856,5 @@
       "confidence": "EXTRACTED"
     }
   ],
-  "builtAt": "2026-05-06T16:02:08.079Z"
+  "builtAt": "2026-05-11T09:06:26.612Z"
 }

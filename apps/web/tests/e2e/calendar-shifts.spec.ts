@@ -5,6 +5,7 @@ import {
   openFindTimeRoute,
   readBoardConflictSummary,
   readCreateShiftPrefillSnapshot,
+  readCreateShiftRecurrenceSnapshot,
   readDayConflictSummary,
   readFindTimeBrowseWindowCtaSnapshot,
   readShiftConflictSummary,
@@ -25,6 +26,18 @@ test.describe.configure({ mode: 'serial' });
 
 function dayColumn(page: import('@playwright/test').Page, dayKey: string) {
   return page.getByTestId(`day-column-${dayKey}`);
+}
+
+async function openCreateShiftEditor(page: import('@playwright/test').Page) {
+  const editor = page.getByTestId('create-shift-editor');
+  const isOpen = await editor.evaluate((element) => (element instanceof HTMLDetailsElement ? element.open : false));
+
+  if (!isOpen) {
+    await editor.locator('summary').click();
+  }
+
+  await expect(editor).toHaveAttribute('open', '');
+  return editor;
 }
 
 test('seeded member can prove the trusted-online Thursday overlap warning while the Wednesday touch boundary stays clean', async ({
@@ -204,6 +217,198 @@ test('browse suggestion handoff creates a visible shift on the intended day and 
         message: 'expected reload to keep the cleaned calendar URL instead of restoring one-shot handoff params'
       })
       .toBe(`http://127.0.0.1:4174/calendars/${seededCalendars.alphaShared}?start=${browseSuggestion.targetWeekStart}`);
+  });
+});
+
+test('weekly recurrence suggestion accept path pre-fills weekly cadence truthfully and resets after a successful create', async ({
+  page,
+  flow
+}) => {
+  const createdTitle = 'Recurrence suggestion accept proof';
+
+  await test.step('phase: sign in and open the Alpha week with the seeded recurrence pattern', async () => {
+    flow.mark('login', seededUsers.alphaMember.email);
+    await signInThroughUi(page, seededUsers.alphaMember);
+
+    await openCalendarWeek({
+      page,
+      flow,
+      calendarId: seededCalendars.alphaShared,
+      visibleWeekStart: seededSchedule.visibleWeek.start,
+      focusShiftIds: seededSchedule.recurrenceSuggestion.matchingShiftIds,
+      phase: 'recurrence-suggestion-accept'
+    });
+
+    await expect(page.getByTestId('calendar-shell')).toBeVisible();
+  });
+
+  await test.step('phase: accept the calm recurrence suggestion and verify only weekly plus interval one are prefilled', async () => {
+    const editor = await openCreateShiftEditor(page);
+    const initialSnapshot = await readCreateShiftRecurrenceSnapshot(page);
+    expect(initialSnapshot.suggestionVisible).toBe(true);
+    expect(initialSnapshot.suggestionCadence).toBe(seededSchedule.recurrenceSuggestion.cadence);
+    expect(initialSnapshot.suggestionInterval).toBe('1');
+    expect(initialSnapshot.suggestionWeekday).toBe(seededSchedule.recurrenceSuggestion.weekday);
+    expect(initialSnapshot.suggestionMatchCount).toBe(seededSchedule.recurrenceSuggestion.matchingShiftIds.length);
+    expect(initialSnapshot.selectedCadence).toBe('');
+    expect(initialSnapshot.intervalValue).toBe('');
+    expect(initialSnapshot.repeatCountValue).toBe('');
+    expect(initialSnapshot.repeatUntilValue).toBe('');
+    expect(initialSnapshot.fieldSuggestionState).toBe('idle');
+
+    await editor.getByTestId('recurrence-suggestion-accept').dispatchEvent('click');
+
+    const acceptedSnapshot = await readCreateShiftRecurrenceSnapshot(page);
+    expect(acceptedSnapshot.suggestionVisible).toBe(false);
+    expect(acceptedSnapshot.selectedCadence).toBe('weekly');
+    expect(acceptedSnapshot.intervalValue).toBe('1');
+    expect(acceptedSnapshot.repeatCountValue).toBe('');
+    expect(acceptedSnapshot.repeatUntilValue).toBe('');
+    expect(acceptedSnapshot.fieldStateCadence).toBe('weekly');
+    expect(acceptedSnapshot.fieldStateInterval).toBe('1');
+    expect(acceptedSnapshot.fieldStateRepeatCount).toBe('');
+    expect(acceptedSnapshot.fieldStateRepeatUntil).toBe('');
+    expect(acceptedSnapshot.fieldSuggestionState).toBe('accepted');
+  });
+
+  await test.step('phase: submit a truthful bounded create, then prove success reset restores blank fields and a fresh suggestion surface', async () => {
+    const editor = page.getByTestId('create-shift-editor');
+    await submitShiftEditorForm(editor, {
+      title: createdTitle,
+      repeatCount: '2'
+    });
+
+    await expect(page.locator('[data-testid^="shift-card-"]').filter({ hasText: createdTitle }).first()).toBeVisible();
+
+    await expect
+      .poll(async () => (await readCreateShiftRecurrenceSnapshot(page)).selectedCadence, {
+        message: 'expected the create dialog recurrence cadence to reset after the trusted create succeeded'
+      })
+      .toBe('');
+
+    const resetSnapshot = await readCreateShiftRecurrenceSnapshot(page);
+    expect(resetSnapshot.selectedCadence).toBe('');
+    expect(resetSnapshot.intervalValue).toBe('');
+    expect(resetSnapshot.repeatCountValue).toBe('');
+    expect(resetSnapshot.repeatUntilValue).toBe('');
+    expect(['idle', 'absent']).toContain(resetSnapshot.fieldSuggestionState);
+
+    await page.reload();
+    await expect(page.getByTestId('calendar-shell')).toBeVisible();
+
+    const reloadedSnapshot = await readCreateShiftRecurrenceSnapshot(page);
+    expect(reloadedSnapshot.suggestionVisible).toBe(true);
+    expect(reloadedSnapshot.selectedCadence).toBe('');
+    expect(reloadedSnapshot.intervalValue).toBe('');
+    expect(reloadedSnapshot.repeatCountValue).toBe('');
+    expect(reloadedSnapshot.repeatUntilValue).toBe('');
+    expect(reloadedSnapshot.fieldSuggestionState).toBe('idle');
+  });
+});
+
+test('weekly recurrence suggestion dismiss path keeps the form blank, stays hidden for the current instance, and returns after reload', async ({
+  page,
+  flow
+}) => {
+  await test.step('phase: sign in and open the Alpha week with the seeded recurrence pattern', async () => {
+    flow.mark('login', seededUsers.alphaMember.email);
+    await signInThroughUi(page, seededUsers.alphaMember);
+
+    await openCalendarWeek({
+      page,
+      flow,
+      calendarId: seededCalendars.alphaShared,
+      visibleWeekStart: seededSchedule.visibleWeek.start,
+      focusShiftIds: seededSchedule.recurrenceSuggestion.matchingShiftIds,
+      phase: 'recurrence-suggestion-dismiss'
+    });
+
+    await expect(page.getByTestId('calendar-shell')).toBeVisible();
+  });
+
+  await test.step('phase: dismiss the suggestion and prove recurrence fields stay blank while remaining editable', async () => {
+    const editor = await openCreateShiftEditor(page);
+    const initialSnapshot = await readCreateShiftRecurrenceSnapshot(page);
+    expect(initialSnapshot.suggestionVisible).toBe(true);
+    expect(initialSnapshot.selectedCadence).toBe('');
+
+    await editor.getByTestId('recurrence-suggestion-dismiss').dispatchEvent('click');
+
+    const dismissedSnapshot = await readCreateShiftRecurrenceSnapshot(page);
+    expect(dismissedSnapshot.suggestionVisible).toBe(false);
+    expect(dismissedSnapshot.selectedCadence).toBe('');
+    expect(dismissedSnapshot.intervalValue).toBe('');
+    expect(dismissedSnapshot.repeatCountValue).toBe('');
+    expect(dismissedSnapshot.repeatUntilValue).toBe('');
+    expect(dismissedSnapshot.fieldStateCadence).toBe('one-off');
+    expect(dismissedSnapshot.fieldStateInterval).toBe('');
+    expect(dismissedSnapshot.fieldStateRepeatCount).toBe('');
+    expect(dismissedSnapshot.fieldStateRepeatUntil).toBe('');
+    expect(dismissedSnapshot.fieldSuggestionState).toBe('dismissed');
+
+    const form = editor.locator('form');
+    await form.evaluate((formElement) => {
+      if (!(formElement instanceof HTMLFormElement)) {
+        throw new Error('Shift editor form element not found.');
+      }
+
+      const setTextInput = (selector: string, value: string) => {
+        const input = formElement.querySelector(selector);
+        if (!(input instanceof HTMLInputElement)) {
+          throw new Error(`Missing input for selector: ${selector}`);
+        }
+
+        input.value = value;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      };
+
+      const radios = Array.from(formElement.querySelectorAll('input[name="recurrenceCadence"]')).filter(
+        (candidate): candidate is HTMLInputElement => candidate instanceof HTMLInputElement
+      );
+      for (const candidate of radios) {
+        candidate.checked = candidate.value === 'weekly';
+      }
+
+      const weeklyRadio = radios.find((candidate) => candidate.value === 'weekly');
+      weeklyRadio?.dispatchEvent(new Event('input', { bubbles: true }));
+      weeklyRadio?.dispatchEvent(new Event('change', { bubbles: true }));
+
+      setTextInput('input[name="recurrenceInterval"]', '2');
+      setTextInput('input[name="repeatCount"]', '2');
+    });
+
+    const manualEditSnapshot = await readCreateShiftRecurrenceSnapshot(page);
+    expect(manualEditSnapshot.suggestionVisible).toBe(false);
+    expect(manualEditSnapshot.selectedCadence).toBe('weekly');
+    expect(manualEditSnapshot.intervalValue).toBe('2');
+    expect(manualEditSnapshot.repeatCountValue).toBe('2');
+    expect(manualEditSnapshot.repeatUntilValue).toBe('');
+  });
+
+  await test.step('phase: reopen the dialog on the same page and keep the dismissed suggestion hidden until fresh loader data arrives', async () => {
+    const editor = await openCreateShiftEditor(page);
+    await editor.locator('summary').click();
+    await expect(editor).not.toHaveAttribute('open', '');
+
+    const reopenedSnapshot = await readCreateShiftRecurrenceSnapshot(page);
+    expect(reopenedSnapshot.suggestionVisible).toBe(false);
+    expect(reopenedSnapshot.selectedCadence).toBe('');
+    expect(reopenedSnapshot.intervalValue).toBe('');
+    expect(reopenedSnapshot.repeatCountValue).toBe('');
+    expect(reopenedSnapshot.repeatUntilValue).toBe('');
+    expect(reopenedSnapshot.fieldSuggestionState).toBe('dismissed');
+
+    await page.reload();
+    await expect(page.getByTestId('calendar-shell')).toBeVisible();
+
+    const reloadedSnapshot = await readCreateShiftRecurrenceSnapshot(page);
+    expect(reloadedSnapshot.suggestionVisible).toBe(true);
+    expect(reloadedSnapshot.selectedCadence).toBe('');
+    expect(reloadedSnapshot.intervalValue).toBe('');
+    expect(reloadedSnapshot.repeatCountValue).toBe('');
+    expect(reloadedSnapshot.repeatUntilValue).toBe('');
+    expect(reloadedSnapshot.fieldSuggestionState).toBe('idle');
   });
 });
 

@@ -1,0 +1,18 @@
+{
+  "id": "c23adf42-8714-4abe-b8f5-e65e903efe07",
+  "runtime": "python",
+  "purpose": "extract line numbers for recurrence helper contract tests",
+  "script_chars": 280,
+  "started_at": "2026-05-11T09:09:37.704Z",
+  "finished_at": "2026-05-11T09:09:37.761Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 57,
+  "stdout_bytes": 345,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/c23adf42-8714-4abe-b8f5-e65e903efe07.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/c23adf42-8714-4abe-b8f5-e65e903efe07.stderr"
+}

@@ -1,0 +1,28 @@
+16:    createPrefill?: CreatePrefillPayload | null;
+32:    createPrefill = null,
+41:  const createPrefillKey = $derived.by(() =>
+42:    mode === 'create' && createPrefill
+43:      ? `${createPrefill.source}:${createPrefill.startAt}:${createPrefill.endAt}`
+103:    if (mode === 'create' && createPrefill) {
+104:      return createPrefill.startAtLocal;
+110:    if (mode === 'create' && createPrefill) {
+111:      return createPrefill.endAtLocal;
+118:    if (!createPrefillKey) {
+123:    if (lastAutoOpenedPrefillKey === createPrefillKey) {
+128:    lastAutoOpenedPrefillKey = createPrefillKey;
+132:<details
+135:  data-testid={`${mode}-shift-editor`}
+136:  data-create-source={mode === 'create' ? createPrefill?.source ?? 'manual' : ''}
+137:  data-open-on-arrival={mode === 'create' && createPrefill ? 'true' : 'false'}
+150:    {#if mode === 'create' && createPrefill}
+153:        data-testid="create-prefill-source"
+154:        data-prefill-source={createPrefill.source}
+155:        data-prefill-start={createPrefill.startAt}
+156:        data-prefill-end={createPrefill.endAt}
+210:                    <input type="radio" name="recurrenceCadence" value="" checked />
+216:                    <input type="radio" name="recurrenceCadence" value="daily" />
+222:                    <input type="radio" name="recurrenceCadence" value="weekly" />
+228:                    <input type="radio" name="recurrenceCadence" value="monthly" />
+242:                <input class="input" type="number" min="1" step="1" name="repeatCount" value="" />
+247:                <input class="input" type="datetime-local" name="repeatUntil" value="" />
+255:        <article class={`inline-state ${tone}`} data-testid={`${mode}-state`}>

@@ -1,0 +1,18 @@
+169:export async function loadCalendarScheduleView(params: {
+179:    .from('shifts')
+288:export function normalizeCreateShiftFields(formData: FormData): {
+308:export function normalizeShiftMutationFields(formData: FormData): {
+322:export function validateCreateShiftForm(params: {
+326:  const fields = normalizeCreateShiftFields(params.formData);
+350:  const fields = normalizeCreateShiftFields(params.formData);
+382:  const normalized = validateCreateShiftForm({
+401:    const insertResult = (await params.supabase.from('shifts').insert({
+437:        .from('shifts')
+517:  const shiftsInsert = (await params.supabase.from('shifts').insert(occurrenceRows)) as SupabaseResult<null>;
+596:  const fields = normalizeShiftMutationFields(params.formData);
+670:    .from('shifts')
+711:  const fields = normalizeShiftMutationFields(params.formData);
+784:    .from('shifts')
+824:  const fields = normalizeShiftMutationFields(params.formData);
+876:    .from('shifts')
+1071:    .from('shifts')
