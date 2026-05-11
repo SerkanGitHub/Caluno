@@ -1,0 +1,18 @@
+{
+  "id": "16e048f5-bff3-48db-a017-90843052c6ea",
+  "runtime": "bash",
+  "purpose": "probe /signin page load basics on local dev server",
+  "script_chars": 956,
+  "started_at": "2026-05-11T16:39:06.038Z",
+  "finished_at": "2026-05-11T16:39:06.525Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 487,
+  "stdout_bytes": 366,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/16e048f5-bff3-48db-a017-90843052c6ea.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/16e048f5-bff3-48db-a017-90843052c6ea.stderr"
+}

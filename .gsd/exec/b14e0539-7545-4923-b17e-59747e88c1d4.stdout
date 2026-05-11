@@ -1,0 +1,53 @@
+{
+  "attrs": {
+    "isolated": "isolated",
+    "swStatus": "ready",
+    "swDetail": "activated"
+  },
+  "logs": []
+}
+
+--- build log tail ---
+.svelte-kit/output/server/entries/pages/_layout.svelte.js                                            0.77 kB
+.svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/find-time/_page.ts.js           0.97 kB
+.svelte-kit/output/server/chunks/access.js                                                           1.02 kB
+.svelte-kit/output/server/chunks/utils.js                                                            1.15 kB
+.svelte-kit/output/server/entries/fallbacks/error.svelte.js                                          1.16 kB
+.svelte-kit/output/server/entries/endpoints/(auth)/callback/_server.ts.js                            1.26 kB
+.svelte-kit/output/server/chunks/index.js                                                            1.44 kB
+.svelte-kit/output/server/entries/hooks.server.js                                                    2.25 kB
+.svelte-kit/output/server/entries/pages/(app)/_layout.ts.js                                          2.71 kB
+.svelte-kit/output/server/entries/pages/(app)/_layout.server.ts.js                                   3.00 kB
+.svelte-kit/output/server/chunks/route-contract.js                                                   3.09 kB
+.svelte-kit/output/server/entries/pages/_page.svelte.js                                              3.13 kB
+.svelte-kit/output/server/entries/pages/(auth)/signin/_page.svelte.js                                3.16 kB
+.svelte-kit/output/server/chunks/internal.js                                                         3.23 kB
+.svelte-kit/output/server/entries/pages/(auth)/signin/_page.server.ts.js                             3.32 kB
+.svelte-kit/output/server/chunks/app-shell.js                                                        3.68 kB
+.svelte-kit/output/server/chunks/auth-flow.js                                                        4.10 kB
+.svelte-kit/output/server/chunks/create-prefill.js                                                   4.11 kB
+.svelte-kit/output/server/chunks/exports.js                                                          5.59 kB
+.svelte-kit/output/server/entries/pages/(app)/groups/_page.server.ts.js                              6.06 kB
+.svelte-kit/output/server/chunks/attributes.js                                                       6.43 kB
+.svelte-kit/output/server/chunks/recurrence.js                                                       8.57 kB
+.svelte-kit/output/server/entries/pages/(app)/groups/_page.svelte.js                                11.31 kB
+.svelte-kit/output/server/chunks/board.js                                                           15.58 kB
+.svelte-kit/output/server/chunks/render-context.js                                                  17.98 kB
+.svelte-kit/output/server/remote-entry.js                                                           24.19 kB
+.svelte-kit/output/server/chunks/renderer.js                                                        31.25 kB
+.svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/find-time/_page.svelte.js      35.53 kB
+.svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/find-time/_page.server.ts.js   40.09 kB
+.svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/_page.svelte.js                44.25 kB
+.svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/_page.server.ts.js             44.63 kB
+.svelte-kit/output/server/chunks/shared.js                                                          48.67 kB
+.svelte-kit/output/server/chunks/root.js                                                            84.77 kB
+.svelte-kit/output/server/index.js                                                                 136.91 kB
+✓ built in 3.04s
+
+Run npm run preview to preview your production build locally.
+
+> Using @sveltejs/adapter-node
+  ✔ done
+
+--- preview log tail ---
+  ➜  Local:   http://127.0.0.1:4275/

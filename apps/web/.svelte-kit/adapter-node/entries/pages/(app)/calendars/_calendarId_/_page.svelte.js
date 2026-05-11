@@ -1,432 +1,101 @@
-import { a as attr_class, d as derived, e as ensure_array_like, h as head } from "../../../../../chunks/renderer.js";
-import { e as escape_html, a as attr } from "../../../../../chunks/attributes.js";
+import { a as attr_class, e as ensure_array_like, d as derived, h as head } from "../../../../../chunks/renderer.js";
+import { a as attr, e as escape_html } from "../../../../../chunks/attributes.js";
 import "@sveltejs/kit/internal";
 import "../../../../../chunks/exports.js";
 import "../../../../../chunks/utils.js";
 import "@sveltejs/kit/internal/server";
 import "../../../../../chunks/root.js";
 import "../../../../../chunks/state.svelte.js";
-import "../../../../../chunks/recurrence.js";
+import { p as previewShiftConflicts, s as summarizeScheduleActions, b as buildCalendarWeekBoard } from "../../../../../chunks/board.js";
+import { n as normalizeShiftDraft } from "../../../../../chunks/recurrence.js";
 import "@supabase/ssr";
-function deriveVisibleWeekConflicts(schedule) {
-  const days = {};
-  const shifts = {};
-  const invalidShiftIds = new Set(findDuplicateShiftIds(schedule.days));
-  const conflictDayKeys = [];
-  const conflictingShiftIds = /* @__PURE__ */ new Set();
-  let totalOverlapCount = 0;
-  for (const day of schedule.days) {
-    const dayResult = deriveDayConflicts(day.dayKey, day.shifts, invalidShiftIds);
-    for (const conflict of dayResult.shiftConflicts) {
-      shifts[conflict.shiftId] = conflict;
-      conflictingShiftIds.add(conflict.shiftId);
-    }
-    if (dayResult.dayConflict) {
-      days[day.dayKey] = dayResult.dayConflict;
-      conflictDayKeys.push(day.dayKey);
-      totalOverlapCount += dayResult.dayConflict.overlapCount;
-    }
-  }
-  return {
-    board: totalOverlapCount > 0 ? {
-      overlapCount: totalOverlapCount,
-      conflictDayCount: conflictDayKeys.length,
-      conflictingShiftCount: conflictingShiftIds.size,
-      conflictDayKeys
-    } : null,
-    days,
-    shifts,
-    invalidShiftIds: [...invalidShiftIds].sort()
-  };
-}
-function deriveDayConflicts(dayKey, dayShifts, invalidShiftIds) {
-  const validShifts = [];
-  for (const shift of sortCalendarShifts(dayShifts)) {
-    if (invalidShiftIds.has(shift.id)) {
-      continue;
-    }
-    const normalized = normalizeShiftForConflict(dayKey, shift);
-    if (!normalized) {
-      invalidShiftIds.add(shift.id);
-      continue;
-    }
-    validShifts.push(normalized);
-  }
-  if (validShifts.length < 2) {
-    return {
-      dayConflict: null,
-      shiftConflicts: []
-    };
-  }
-  const conflictsByShiftId = /* @__PURE__ */ new Map();
-  const conflictPairs = [];
-  for (let index = 0; index < validShifts.length; index += 1) {
-    const current = validShifts[index];
-    for (let nextIndex = index + 1; nextIndex < validShifts.length; nextIndex += 1) {
-      const next = validShifts[nextIndex];
-      if (next.startAt >= current.endAt) {
-        break;
-      }
-      if (!rangesOverlap(current, next)) {
-        continue;
-      }
-      addConflictCounterpart(conflictsByShiftId, current, next);
-      addConflictCounterpart(conflictsByShiftId, next, current);
-      conflictPairs.push({
-        leftShiftId: current.id,
-        rightShiftId: next.id
-      });
-    }
-  }
-  if (conflictPairs.length === 0) {
-    return {
-      dayConflict: null,
-      shiftConflicts: []
-    };
-  }
-  const conflictingShiftIds = [...conflictsByShiftId.keys()].sort();
-  const shiftConflicts = conflictingShiftIds.map((shiftId) => {
-    const conflictingShifts = [...conflictsByShiftId.get(shiftId)?.values() ?? []];
-    const sortedConflictingShifts = sortConflictingShifts(conflictingShifts);
-    return {
-      shiftId,
-      dayKey,
-      overlapCount: sortedConflictingShifts.length,
-      conflictingShiftIds: sortedConflictingShifts.map((shift) => shift.id),
-      conflictingShifts: sortedConflictingShifts
-    };
-  });
-  return {
-    dayConflict: {
-      dayKey,
-      overlapCount: conflictPairs.length,
-      conflictingShiftIds,
-      conflictPairs
-    },
-    shiftConflicts
-  };
-}
-function normalizeShiftForConflict(dayKey, shift) {
-  const start = new Date(shift.startAt);
-  const end = new Date(shift.endAt);
-  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || end.getTime() <= start.getTime()) {
-    return null;
-  }
-  if (shift.startAt.slice(0, 10) !== dayKey) {
-    return null;
-  }
-  return {
-    id: shift.id,
-    title: shift.title,
-    dayKey,
-    startAt: shift.startAt,
-    endAt: shift.endAt
-  };
-}
-function sortCalendarShifts(shifts) {
-  return [...shifts].sort((left, right) => {
-    return left.startAt.localeCompare(right.startAt) || left.endAt.localeCompare(right.endAt) || left.title.localeCompare(right.title) || left.id.localeCompare(right.id);
-  });
-}
-function findDuplicateShiftIds(days) {
-  const counts = /* @__PURE__ */ new Map();
-  for (const day of days) {
-    for (const shift of day.shifts) {
-      counts.set(shift.id, (counts.get(shift.id) ?? 0) + 1);
-    }
-  }
-  return [...counts.entries()].filter(([, count]) => count > 1).map(([shiftId]) => shiftId).sort();
-}
-function addConflictCounterpart(conflictsByShiftId, shift, counterpart) {
-  const existing = conflictsByShiftId.get(shift.id) ?? /* @__PURE__ */ new Map();
-  existing.set(counterpart.id, counterpart);
-  conflictsByShiftId.set(shift.id, existing);
-}
-function sortConflictingShifts(shifts) {
-  return [...shifts].sort((left, right) => {
-    return left.startAt.localeCompare(right.startAt) || left.endAt.localeCompare(right.endAt) || left.title.localeCompare(right.title) || left.id.localeCompare(right.id);
-  });
-}
-function rangesOverlap(left, right) {
-  return left.startAt < right.endAt && right.startAt < left.endAt;
-}
-function buildCalendarWeekBoard(schedule, options) {
-  const visibleWeek = schedule.visibleWeek;
-  const todayKey = toDayKey(options?.now ?? null);
-  const startDate = parseUtcDate(visibleWeek.start);
-  const endDate = parseUtcDate(addDayKey(visibleWeek.endExclusive, -1));
-  const runtime = options?.runtime;
-  const conflicts = deriveVisibleWeekConflicts(schedule);
-  return {
-    visibleWeekStart: visibleWeek.start,
-    visibleWeekEndExclusive: visibleWeek.endExclusive,
-    rangeLabel: `${formatMonthDay(startDate)} — ${formatMonthDay(endDate)}, ${startDate.getUTCFullYear()}`,
-    caption: buildVisibleWeekCaption(visibleWeek, "server-sync"),
-    sourceLabel: buildVisibleWeekSourceLabel(visibleWeek),
-    sourceTone: visibleWeek.source === "fallback-invalid" ? "warning" : "neutral",
-    previousWeekStart: addDayKey(visibleWeek.start, -7),
-    nextWeekStart: addDayKey(visibleWeek.start, 7),
-    totalShifts: schedule.totalShifts,
-    hasShifts: schedule.totalShifts > 0,
-    statusBadges: buildBoardStatusBadges(),
-    conflict: buildBoardConflictModel(schedule, conflicts),
-    syncPhaseLabel: formatSyncPhaseLabel("idle"),
-    lastSyncAttemptLabel: runtime?.lastSyncAttemptAt ?? null,
-    lastFailure: runtime?.lastFailure ?? null,
-    lastSyncError: runtime?.lastSyncError ?? null,
-    days: schedule.days.map((day) => buildDayColumn(day, todayKey, {}, conflicts))
-  };
-}
-function sortShiftsForBoard(shifts) {
-  return [...shifts].sort((left, right) => {
-    return left.startAt.localeCompare(right.startAt) || left.endAt.localeCompare(right.endAt) || left.title.localeCompare(right.title) || left.id.localeCompare(right.id);
-  });
-}
-function summarizeScheduleActions(states) {
-  return states.filter((state) => Boolean(state)).map((state) => ({
-    id: state.id,
-    label: formatActionLabel(state.action),
-    tone: mapActionTone(state.status),
-    state
-  }));
-}
-function toDateTimeLocalValue(value) {
-  if (!value) {
-    return "";
-  }
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    return "";
-  }
-  const year = parsed.getUTCFullYear();
-  const month = `${parsed.getUTCMonth() + 1}`.padStart(2, "0");
-  const day = `${parsed.getUTCDate()}`.padStart(2, "0");
-  const hours = `${parsed.getUTCHours()}`.padStart(2, "0");
-  const minutes = `${parsed.getUTCMinutes()}`.padStart(2, "0");
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-}
-function buildDefaultCreateTimes(dayKey) {
-  const safeDayKey = dayKey && /^\d{4}-\d{2}-\d{2}$/.test(dayKey) ? dayKey : "2026-04-20";
-  return {
-    startAt: `${safeDayKey}T09:00`,
-    endAt: `${safeDayKey}T13:00`
-  };
-}
-function buildDayColumn(day, todayKey, shiftDiagnostics, conflicts) {
-  const date = parseUtcDate(day.dayKey);
-  const dayConflict = buildDayConflictModel(day, conflicts.days[day.dayKey] ?? null);
-  const shifts = sortShiftsForBoard(day.shifts).map(
-    (shift) => buildShiftCardModel(shift, day.shifts.length, shiftDiagnostics, conflicts.shifts[shift.id] ?? null)
-  );
-  return {
-    dayKey: day.dayKey,
-    label: day.label,
-    weekdayLabel: date.toLocaleDateString("en-US", {
-      weekday: "long",
-      timeZone: "UTC"
-    }),
-    dayNumberLabel: date.toLocaleDateString("en-US", {
-      day: "numeric",
-      timeZone: "UTC"
-    }),
-    monthLabel: date.toLocaleDateString("en-US", {
-      month: "short",
-      timeZone: "UTC"
-    }),
-    isToday: todayKey === day.dayKey,
-    isEmpty: shifts.length === 0,
-    density: shifts.length === 0 ? "empty" : shifts.length >= 3 ? "busy" : "quiet",
-    shiftCount: shifts.length,
-    shifts,
-    conflict: dayConflict
-  };
-}
-function buildShiftCardModel(shift, dayShiftCount, shiftDiagnostics, shiftConflict) {
-  const start = new Date(shift.startAt);
-  const end = new Date(shift.endAt);
-  const durationMinutes = Math.max(1, Math.round((end.getTime() - start.getTime()) / 6e4));
-  const durationHours = durationMinutes / 60;
-  return {
-    id: shift.id,
-    title: shift.title,
-    dayKey: shift.startAt.slice(0, 10),
-    startAt: shift.startAt,
-    endAt: shift.endAt,
-    startTimeLabel: formatTime(start),
-    endTimeLabel: formatTime(end),
-    rangeLabel: `${formatTime(start)} → ${formatTime(end)}`,
-    durationLabel: durationMinutes % 60 === 0 ? `${durationHours.toFixed(0)}h block` : `${durationHours.toFixed(1)}h block`,
-    occurrenceLabel: shift.occurrenceIndex ? `Occurrence ${shift.occurrenceIndex}` : null,
-    sourceLabel: shift.sourceKind === "series" ? "Recurring series" : "One-off shift",
-    density: dayShiftCount >= 3 ? "busy" : "quiet",
-    seriesId: shift.seriesId,
-    occurrenceIndex: shift.occurrenceIndex,
-    sourceKind: shift.sourceKind,
-    statusBadges: shiftDiagnostics[shift.id] ?? [],
-    conflict: buildShiftConflictModel(shiftConflict)
-  };
-}
-function buildBoardConflictModel(schedule, conflicts) {
-  if (!conflicts.board) {
-    return null;
-  }
-  const conflictedDayLabels = schedule.days.filter((day) => conflicts.board?.conflictDayKeys.includes(day.dayKey)).map((day) => day.label);
-  return {
-    overlapCount: conflicts.board.overlapCount,
-    dayCount: conflicts.board.conflictDayCount,
-    shiftCount: conflicts.board.conflictingShiftCount,
-    conflictDayKeys: conflicts.board.conflictDayKeys,
-    label: `${conflicts.board.overlapCount} overlap ${conflicts.board.overlapCount === 1 ? "pair" : "pairs"} in view`,
-    detail: conflictedDayLabels.length === 1 ? `${conflictedDayLabels[0]} contains ${conflicts.board.conflictingShiftCount} conflicting visible ${conflicts.board.conflictingShiftCount === 1 ? "shift" : "shifts"}.` : `${conflictedDayLabels.length} visible days contain ${conflicts.board.conflictingShiftCount} conflicting shifts: ${formatInlineList(conflictedDayLabels)}.`
-  };
-}
-function buildDayConflictModel(day, dayConflict) {
-  if (!dayConflict) {
-    return null;
-  }
-  const conflictingShifts = sortShiftsForBoard(day.shifts).filter((shift) => dayConflict.conflictingShiftIds.includes(shift.id));
-  return {
-    overlapCount: dayConflict.overlapCount,
-    conflictingShiftIds: dayConflict.conflictingShiftIds,
-    label: `${dayConflict.overlapCount} overlap ${dayConflict.overlapCount === 1 ? "pair" : "pairs"}`,
-    detail: formatConflictShiftList(conflictingShifts)
-  };
-}
-function buildShiftConflictModel(shiftConflict) {
-  if (!shiftConflict) {
-    return null;
-  }
-  return {
-    overlapCount: shiftConflict.overlapCount,
-    conflictingShiftIds: shiftConflict.conflictingShiftIds,
-    label: `Overlaps ${shiftConflict.overlapCount} visible ${shiftConflict.overlapCount === 1 ? "shift" : "shifts"}`,
-    detail: formatConflictShiftList(shiftConflict.conflictingShifts)
-  };
-}
-function formatConflictShiftList(shifts) {
-  const items = [...shifts].sort((left, right) => {
-    return left.startAt.localeCompare(right.startAt) || left.endAt.localeCompare(right.endAt) || left.title.localeCompare(right.title) || left.id.localeCompare(right.id);
-  }).map((shift) => {
-    return `${shift.title} (${formatTime(new Date(shift.startAt))} → ${formatTime(new Date(shift.endAt))})`;
-  });
-  if (items.length <= 2) {
-    return items.join(" · ");
-  }
-  return `${items.slice(0, 2).join(" · ")} +${items.length - 2} more`;
-}
-function formatInlineList(items) {
-  if (items.length <= 1) {
-    return items[0] ?? "";
-  }
-  if (items.length === 2) {
-    return `${items[0]} and ${items[1]}`;
-  }
-  return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`;
-}
-function buildBoardStatusBadges(runtime) {
-  {
+function deriveShiftEditorClashes(params) {
+  if (!params.calendarId) {
     return [];
   }
-}
-function buildVisibleWeekCaption(visibleWeek, boardSource) {
-  if (visibleWeek.source === "query") {
-    return boardSource === "cached-local" ? "Visible week chosen from the route query and reopened from browser-local continuity." : "Visible week chosen from the route query.";
-  }
-  if (visibleWeek.source === "fallback-invalid") {
-    return "The requested week was malformed, so the board fell back to the current trusted week.";
-  }
-  return boardSource === "cached-local" ? "Showing the current week from browser-local continuity." : "Showing the current trusted week.";
-}
-function buildVisibleWeekSourceLabel(visibleWeek) {
-  if (visibleWeek.source === "query") {
-    return `Visible week start: ${visibleWeek.start}`;
-  }
-  if (visibleWeek.source === "fallback-invalid") {
-    return `Invalid requested week ${visibleWeek.requestedStart ?? "unknown"}. Showing ${visibleWeek.start} instead.`;
-  }
-  return `Default visible week start: ${visibleWeek.start}`;
-}
-function formatActionLabel(action) {
-  switch (action) {
-    case "create":
-      return "Create shift";
-    case "edit":
-      return "Edit shift";
-    case "move":
-      return "Move shift";
-    case "delete":
-      return "Delete shift";
-  }
-}
-function mapActionTone(status) {
-  switch (status) {
-    case "success":
-      return "success";
-    case "pending-local":
-    case "timeout":
-      return "warning";
-    case "validation-error":
-    case "forbidden":
-    case "write-error":
-    case "malformed-response":
-    case "local-write-failed":
-    case "queue-persist-failed":
-      return "danger";
-  }
-}
-function formatSyncPhaseLabel(phase) {
-  switch (phase) {
-    case "idle":
-      return "Sync idle";
-    case "draining":
-      return "Sync draining reconnect queue";
-    case "paused-retryable":
-      return "Sync paused with retryable work";
-  }
-}
-function formatMonthDay(date) {
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    timeZone: "UTC"
+  const draftResult = normalizeShiftDraft({
+    calendarId: params.calendarId,
+    title: params.mode === "move" ? params.fallbackTitle ?? params.title : params.title,
+    startAt: params.startAt,
+    endAt: params.endAt,
+    recurrence: null
   });
-}
-function formatTime(date) {
-  return date.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: "UTC"
-  });
-}
-function parseUtcDate(dayKey) {
-  return /* @__PURE__ */ new Date(`${dayKey}T00:00:00.000Z`);
-}
-function addDayKey(dayKey, amount) {
-  const next = new Date(parseUtcDate(dayKey).getTime() + amount * DAY_IN_MS);
-  return next.toISOString().slice(0, 10);
-}
-function toDayKey(value) {
-  if (!value || Number.isNaN(value.getTime())) {
-    return null;
+  if (!draftResult.ok) {
+    return [];
   }
-  return new Date(Date.UTC(value.getUTCFullYear(), value.getUTCMonth(), value.getUTCDate())).toISOString().slice(0, 10);
+  return previewShiftConflicts(
+    draftResult.value,
+    params.existingShifts.filter((candidate) => candidate.id !== params.shiftId)
+  );
 }
-const DAY_IN_MS = 24 * 60 * 60 * 1e3;
 function ShiftEditorDialog($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
+    const weekdayLabels = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ];
     let {
       action,
       mode,
       formId,
       visibleWeekStart,
+      createPrefill = null,
+      recurrenceSuggestion = null,
+      existingShifts = [],
       actionStates = [],
       shift = null,
       defaultDayKey = null,
       pendingActionKey,
       enhanceMutation
     } = $$props;
-    const defaultTimes = derived(() => buildDefaultCreateTimes(defaultDayKey));
+    const advisoryCalendarId = derived(() => existingShifts[0]?.calendarId ?? null);
+    const currentSuggestionKey = derived(() => buildSuggestionKey(recurrenceSuggestion));
+    const suggestionWeekdayLabel = derived(() => recurrenceSuggestion ? weekdayLabels[recurrenceSuggestion.weekday] ?? "weekly" : "weekly");
+    const suggestionToneCopy = derived(() => {
+      if (!recurrenceSuggestion) {
+        return null;
+      }
+      return `Recent shifts suggest a calm ${suggestionWeekdayLabel().toLowerCase()} ${recurrenceSuggestion.startTime}–${recurrenceSuggestion.endTime} rhythm.`;
+    });
+    let draftTitle = "";
+    let draftStartAt = "";
+    let draftEndAt = "";
+    const advisoryConflicts = derived(() => deriveShiftEditorClashes({
+      mode,
+      calendarId: advisoryCalendarId(),
+      shiftId: shift?.id ?? null,
+      title: draftTitle,
+      fallbackTitle: shift?.title ?? "",
+      startAt: draftStartAt,
+      endAt: draftEndAt,
+      existingShifts
+    }));
+    const advisoryOverlapLabel = derived(() => advisoryConflicts().length === 1 ? "1 overlapping shift" : `${advisoryConflicts().length} overlapping shifts`);
+    const suggestionState = derived(() => {
+      if (!currentSuggestionKey()) {
+        return "absent";
+      }
+      if (dismissedSuggestionKey === currentSuggestionKey()) {
+        return "dismissed";
+      }
+      if (acceptedSuggestionKey === currentSuggestionKey()) {
+        return "accepted";
+      }
+      return "idle";
+    });
+    const shouldShowSuggestion = derived(() => mode === "create" && Boolean(recurrenceSuggestion) && suggestionState() === "idle");
+    let open = false;
+    let recurrenceCadence = "";
+    let recurrenceInterval = "";
+    let repeatCount = "";
+    let repeatUntil = "";
+    let acceptedSuggestionKey = null;
+    let dismissedSuggestionKey = null;
     const isSubmitting = derived(() => pendingActionKey === formId);
     const actionTarget = derived(() => `?/${mode === "create" ? "createShift" : mode === "edit" ? "editShift" : "moveShift"}&start=${visibleWeekStart}`);
     const scopedState = derived(() => actionStates.find((state) => state.formId === formId) ?? null);
@@ -466,15 +135,52 @@ function ShiftEditorDialog($$renderer, $$props) {
       }
       return "Save new timing";
     });
-    const titleValue = derived(() => {
-      if (mode === "move") {
-        return shift?.title ?? "";
+    function buildSuggestionKey(suggestion) {
+      if (!suggestion) {
+        return null;
       }
-      return shift?.title ?? "";
-    });
-    const startValue = derived(() => toDateTimeLocalValue(shift?.startAt) || defaultTimes().startAt);
-    const endValue = derived(() => toDateTimeLocalValue(shift?.endAt) || defaultTimes().endAt);
-    $$renderer2.push(`<details${attr_class(`shift-editor ${mode === "create" ? "shift-editor--create" : ""}`)}><summary${attr_class(`button ${mode === "create" ? "button-primary" : "button-secondary"}`)}>${escape_html(summaryLabel())}</summary> <div class="shift-editor__panel framed-panel"><div class="shift-editor__header"><div><p class="panel-kicker">${escape_html(mode === "create" ? "Local-first create" : mode === "edit" ? "Local-first edit" : "Local-first move")}</p> <h3>${escape_html(heading())}</h3></div> <span class="pill pill-neutral">UTC times</span></div> <form method="POST"${attr("action", actionTarget())} class="stacked-form"><input type="hidden" name="visibleWeekStart"${attr("value", visibleWeekStart)}/> `);
+      return [
+        suggestion.exemplarShiftId,
+        suggestion.cadence,
+        suggestion.interval,
+        suggestion.weekday,
+        suggestion.startTime,
+        suggestion.endTime,
+        suggestion.matchCount,
+        suggestion.matchingShiftIds.join(",")
+      ].join(":");
+    }
+    function formatAdvisoryWindow(conflict) {
+      const start = new Date(conflict.startAt);
+      const end = new Date(conflict.endAt);
+      if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+        return `${conflict.startAt} → ${conflict.endAt}`;
+      }
+      const sameDay = conflict.startAt.slice(0, 10) === conflict.endAt.slice(0, 10);
+      if (sameDay) {
+        return `${formatUtcMonthDay(start)} · ${formatUtcTime(start)}–${formatUtcTime(end)} UTC`;
+      }
+      return `${formatUtcMonthDay(start)} ${formatUtcTime(start)} → ${formatUtcMonthDay(end)} ${formatUtcTime(end)} UTC`;
+    }
+    function formatUtcMonthDay(date) {
+      return date.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+    }
+    function formatUtcTime(date) {
+      return date.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: false,
+        timeZone: "UTC"
+      });
+    }
+    $$renderer2.push(`<details${attr_class(`shift-editor ${mode === "create" ? "shift-editor--create" : ""}`)}${attr("open", open, true)}${attr("data-testid", `${mode}-shift-editor`)}${attr("data-create-source", mode === "create" ? createPrefill?.source ?? "manual" : "")}${attr("data-open-on-arrival", mode === "create" && createPrefill ? "true" : "false")}><summary${attr_class(`button ${mode === "create" ? "button-primary" : "button-secondary"}`)}>${escape_html(summaryLabel())}</summary> <div class="shift-editor__panel framed-panel"><div class="shift-editor__header"><div><p class="panel-kicker">${escape_html(mode === "create" ? "Local-first create" : mode === "edit" ? "Local-first edit" : "Local-first move")}</p> <h3>${escape_html(heading())}</h3></div> <span class="pill pill-neutral">UTC times</span></div> `);
+    if (mode === "create" && createPrefill) {
+      $$renderer2.push("<!--[0-->");
+      $$renderer2.push(`<article class="inline-state tone-neutral" data-testid="create-prefill-source"${attr("data-prefill-source", createPrefill.source)}${attr("data-prefill-start", createPrefill.startAt)}${attr("data-prefill-end", createPrefill.endAt)}><strong>From Find time</strong> <p>The dialog opened from a shared free-time suggestion and preserved the exact slot window.</p></article>`);
+    } else {
+      $$renderer2.push("<!--[-1-->");
+    }
+    $$renderer2.push(`<!--]--> <form method="POST"${attr("action", actionTarget())} class="stacked-form"><input type="hidden" name="visibleWeekStart"${attr("value", visibleWeekStart)}/> `);
     if (shift) {
       $$renderer2.push("<!--[0-->");
       $$renderer2.push(`<input type="hidden" name="shiftId"${attr("value", shift.id)}/>`);
@@ -484,15 +190,40 @@ function ShiftEditorDialog($$renderer, $$props) {
     $$renderer2.push(`<!--]--> <fieldset class="shift-editor__fieldset"${attr("disabled", isSubmitting(), true)}>`);
     if (mode !== "move") {
       $$renderer2.push("<!--[0-->");
-      $$renderer2.push(`<label class="field"><span>Title</span> <input class="input" name="title"${attr("value", titleValue())} placeholder="Opening shift" required=""/></label>`);
+      $$renderer2.push(`<label class="field"><span>Title</span> <input class="input" name="title"${attr("value", draftTitle)} placeholder="Opening shift" required=""/></label>`);
     } else {
       $$renderer2.push("<!--[-1-->");
       $$renderer2.push(`<div class="code-strip shift-editor__locked-title"><span>Shift title</span> <code>${escape_html(shift?.title ?? "Unknown shift")}</code></div> <input type="hidden" name="title"${attr("value", shift?.title ?? "")}/>`);
     }
-    $$renderer2.push(`<!--]--> <div class="calendar-form-grid"><label class="field"><span>Start</span> <input class="input" type="datetime-local" name="startAt"${attr("value", startValue())} required=""/></label> <label class="field"><span>End</span> <input class="input" type="datetime-local" name="endAt"${attr("value", endValue())} required=""/></label></div> `);
+    $$renderer2.push(`<!--]--> <div class="calendar-form-grid"><label class="field"><span>Start</span> <input class="input" type="datetime-local" name="startAt"${attr("value", draftStartAt)} required=""/></label> <label class="field"><span>End</span> <input class="input" type="datetime-local" name="endAt"${attr("value", draftEndAt)} required=""/></label></div> `);
+    if (advisoryConflicts().length > 0) {
+      $$renderer2.push("<!--[0-->");
+      $$renderer2.push(`<article class="inline-state tone-warning clash-advisory" data-testid="clash-advisory"${attr("data-overlap-count", advisoryConflicts().length)}${attr("data-conflicting-shift-ids", advisoryConflicts().map((conflict) => conflict.id).join(","))} aria-live="polite" aria-atomic="true"><div class="clash-advisory__header"><div><p class="panel-kicker">Heads up</p> <strong>${escape_html(advisoryOverlapLabel())}</strong></div> <span class="pill pill-conflict">Warning only</span></div> <p>This draft overlaps another visible-week shift in the same calendar. You can still save it if the overlap is intentional.</p> <ul class="clash-advisory__list"><!--[-->`);
+      const each_array = ensure_array_like(advisoryConflicts());
+      for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
+        let conflict = each_array[$$index];
+        $$renderer2.push(`<li><strong>${escape_html(conflict.title)}</strong> <span>${escape_html(formatAdvisoryWindow(conflict))}</span></li>`);
+      }
+      $$renderer2.push(`<!--]--></ul></article>`);
+    } else {
+      $$renderer2.push("<!--[-1-->");
+    }
+    $$renderer2.push(`<!--]--> `);
     if (mode === "create") {
       $$renderer2.push("<!--[0-->");
-      $$renderer2.push(`<div class="recurrence-fields"><div class="recurrence-fields__header"><div><p class="panel-kicker">Bounded recurrence</p> <h3>Optional repeat rule</h3></div> <span class="pill pill-neutral">Count or until required</span></div> <div class="calendar-form-grid recurrence-fields__grid"><fieldset class="field recurrence-cadence-group"><span>Cadence</span> <div class="recurrence-cadence-options"><label class="recurrence-cadence-option is-selected"><input type="radio" name="recurrenceCadence" value="" checked=""/> <strong>One-off</strong> <small>No repeats</small></label> <label class="recurrence-cadence-option"><input type="radio" name="recurrenceCadence" value="daily"/> <strong>Daily</strong> <small>Every day</small></label> <label class="recurrence-cadence-option"><input type="radio" name="recurrenceCadence" value="weekly"/> <strong>Weekly</strong> <small>Weekly cadence</small></label> <label class="recurrence-cadence-option"><input type="radio" name="recurrenceCadence" value="monthly"/> <strong>Monthly</strong> <small>Monthly cadence</small></label></div></fieldset> <label class="field"><span>Interval</span> <input class="input" type="number" min="1" step="1" name="recurrenceInterval" value=""/></label> <label class="field"><span>Repeat count</span> <input class="input" type="number" min="1" step="1" name="repeatCount" value=""/></label> <label class="field"><span>Repeat until</span> <input class="input" type="datetime-local" name="repeatUntil" value=""/></label></div></div>`);
+      $$renderer2.push(`<div class="recurrence-fields"><div class="recurrence-fields__header"><div><p class="panel-kicker">Bounded recurrence</p> <h3>Optional repeat rule</h3></div> <span class="pill pill-neutral">Count or until required</span></div> <div class="recurrence-fields__state" data-testid="recurrence-field-state"${attr("data-cadence", "one-off")}${attr("data-interval", recurrenceInterval)}${attr("data-repeat-count", repeatCount)}${attr("data-repeat-until", repeatUntil)}${attr("data-suggestion-state", suggestionState())}><strong>${escape_html("One-off shift")}</strong> <p>`);
+      {
+        $$renderer2.push("<!--[-1-->");
+        $$renderer2.push(`Leave this blank for a single shift, or choose a cadence below.`);
+      }
+      $$renderer2.push(`<!--]--></p></div> `);
+      if (shouldShowSuggestion() && recurrenceSuggestion) {
+        $$renderer2.push("<!--[0-->");
+        $$renderer2.push(`<article class="recurrence-suggestion" data-testid="recurrence-suggestion"${attr("data-cadence", recurrenceSuggestion.cadence)}${attr("data-interval", recurrenceSuggestion.interval)}${attr("data-weekday", recurrenceSuggestion.weekday)}${attr("data-match-count", recurrenceSuggestion.matchCount)}${attr("data-exemplar-shift-id", recurrenceSuggestion.exemplarShiftId)}><div><p class="panel-kicker">Calm suggestion</p> <strong>${escape_html(suggestionWeekdayLabel())} ${escape_html(recurrenceSuggestion.startTime)}–${escape_html(recurrenceSuggestion.endTime)}</strong> <p>${escape_html(suggestionToneCopy())}</p></div> <div class="recurrence-suggestion__actions"><button class="button button-secondary" type="button" data-testid="recurrence-suggestion-accept">Use weekly suggestion</button> <button class="button button-secondary recurrence-suggestion__dismiss" type="button" data-testid="recurrence-suggestion-dismiss">Dismiss suggestion</button></div></article>`);
+      } else {
+        $$renderer2.push("<!--[-1-->");
+      }
+      $$renderer2.push(`<!--]--> <div class="calendar-form-grid recurrence-fields__grid"><fieldset class="field recurrence-cadence-group"><span>Cadence</span> <div class="recurrence-cadence-options"><label${attr_class(`recurrence-cadence-option ${"is-selected"}`)}><input type="radio" name="recurrenceCadence" value=""${attr("checked", recurrenceCadence === "", true)}/> <strong>One-off</strong> <small>No repeats</small></label> <label${attr_class(`recurrence-cadence-option ${""}`)}><input type="radio" name="recurrenceCadence" value="daily"${attr("checked", recurrenceCadence === "daily", true)}/> <strong>Daily</strong> <small>Every day</small></label> <label${attr_class(`recurrence-cadence-option ${""}`)}><input type="radio" name="recurrenceCadence" value="weekly"${attr("checked", recurrenceCadence === "weekly", true)}/> <strong>Weekly</strong> <small>Weekly cadence</small></label> <label${attr_class(`recurrence-cadence-option ${""}`)}><input type="radio" name="recurrenceCadence" value="monthly"${attr("checked", recurrenceCadence === "monthly", true)}/> <strong>Monthly</strong> <small>Monthly cadence</small></label></div></fieldset> <label class="field"><span>Interval</span> <input class="input" type="number" min="1" step="1" name="recurrenceInterval"${attr("value", recurrenceInterval)}/></label> <label class="field"><span>Repeat count</span> <input class="input" type="number" min="1" step="1" name="repeatCount"${attr("value", repeatCount)}/></label> <label class="field"><span>Repeat until</span> <input class="input" type="datetime-local" name="repeatUntil"${attr("value", repeatUntil)}/></label></div></div>`);
     } else {
       $$renderer2.push("<!--[-1-->");
     }
@@ -511,6 +242,7 @@ function ShiftCard($$renderer, $$props) {
     let {
       shift,
       visibleWeekStart,
+      existingShifts = [],
       actionStates = [],
       pendingActionKey,
       enhanceMutation
@@ -561,6 +293,7 @@ function ShiftCard($$renderer, $$props) {
       mode: "edit",
       formId: `edit:${shift.id}`,
       visibleWeekStart,
+      existingShifts,
       actionStates,
       shift,
       pendingActionKey,
@@ -572,6 +305,7 @@ function ShiftCard($$renderer, $$props) {
       mode: "move",
       formId: `move:${shift.id}`,
       visibleWeekStart,
+      existingShifts,
       actionStates,
       shift,
       pendingActionKey,
@@ -592,6 +326,7 @@ function ShiftDayColumn($$renderer, $$props) {
     let {
       day,
       visibleWeekStart,
+      existingShifts = [],
       actionStates = [],
       pendingActionKey,
       enhanceMutation
@@ -630,6 +365,7 @@ function ShiftDayColumn($$renderer, $$props) {
         ShiftCard($$renderer2, {
           shift,
           visibleWeekStart,
+          existingShifts,
           actionStates,
           pendingActionKey,
           enhanceMutation
@@ -647,6 +383,9 @@ function CalendarWeekBoard($$renderer, $$props) {
       scheduleStatus,
       scheduleReason,
       scheduleMessage,
+      createPrefill = null,
+      recurrenceSuggestion = null,
+      existingShifts = [],
       actionStates = [],
       realtimeDiagnostics = null,
       pendingActionKey,
@@ -680,6 +419,9 @@ function CalendarWeekBoard($$renderer, $$props) {
       mode: "create",
       formId: "create:week",
       visibleWeekStart: board.visibleWeekStart,
+      createPrefill,
+      recurrenceSuggestion,
+      existingShifts,
       actionStates,
       defaultDayKey: board.days[0]?.dayKey ?? board.visibleWeekStart,
       pendingActionKey,
@@ -787,6 +529,7 @@ function CalendarWeekBoard($$renderer, $$props) {
         ShiftDayColumn($$renderer2, {
           day,
           visibleWeekStart: board.visibleWeekStart,
+          existingShifts,
           actionStates,
           pendingActionKey,
           enhanceMutation
@@ -810,8 +553,11 @@ function _page($$renderer, $$props) {
     const calendarView = derived(() => data.calendarView ?? null);
     const readyView = derived(() => calendarView()?.kind === "calendar" ? calendarView() : null);
     const deniedView = derived(() => calendarView()?.kind === "denied" ? calendarView() : null);
+    const readyCreatePrefill = derived(() => readyView()?.createPrefill ?? null);
+    const readyRecurrenceSuggestion = derived(() => readyView()?.recurrenceSuggestion ?? null);
     const relatedCalendars = derived(() => readyView()?.group?.calendars ?? appShell()?.calendars ?? []);
     const effectiveSchedule = derived(() => readyView()?.schedule ?? null);
+    const existingShifts = derived(() => effectiveSchedule()?.status === "ready" ? effectiveSchedule().days.flatMap((day) => day.shifts) : []);
     const board = derived(() => effectiveSchedule() ? buildCalendarWeekBoard(effectiveSchedule(), {
       now: /* @__PURE__ */ new Date(),
       runtime: void 0
@@ -869,7 +615,7 @@ function _page($$renderer, $$props) {
       $$renderer2.push("<!--[-1-->");
       $$renderer2.push(`Offline continuity failed closed on this route instead of guessing whether the calendar should be visible.`);
     }
-    $$renderer2.push(`<!--]--></p> <div class="status-stack"><article${attr_class(`status-card ${routeTone()}`)} data-testid="calendar-route-state"><span class="status-card__label">Route state</span> <strong>${escape_html(calendarState().mode)}</strong> <p>${escape_html(calendarState().detail)}</p> `);
+    $$renderer2.push(`<!--]--></p> <div class="status-stack"><article${attr_class(`status-card ${routeTone()}`)} data-testid="calendar-route-state"${attr("data-route-mode", calendarState().mode)}${attr("data-route-reason", calendarState().reason ?? "none")}><span class="status-card__label">Route state</span> <strong>${escape_html(calendarState().mode)}</strong> <p>${escape_html(calendarState().detail)}</p> `);
     if (calendarState().reason) {
       $$renderer2.push("<!--[0-->");
       $$renderer2.push(`<code>${escape_html(calendarState().reason)}</code>`);
@@ -911,12 +657,15 @@ function _page($$renderer, $$props) {
           $$renderer2.push("<!--[-1-->");
           $$renderer2.push(`A calm week board for multi-shift days: local writes render immediately, while trusted server actions stay authoritative for confirmation.`);
         }
-        $$renderer2.push(`<!--]--></p> <div class="calendar-board__meta"><span class="pill pill-active">${escape_html(readyView().calendar.isDefault ? "Default calendar" : "Secondary calendar")}</span> <span class="pill pill-neutral">${escape_html(readyView().group?.role ?? "member")} access</span> <span class="pill pill-neutral">${escape_html(effectiveSchedule().totalShifts)} visible shifts</span> <span${attr_class(`pill ${"pill-neutral"}`)}>${escape_html("Trusted online")}</span> <span${attr_class(`pill ${"pill-neutral"}`)}>${escape_html("idle")}</span> <span${attr_class(`pill ${realtimeDiagnostics.channelState === "ready" ? "pill-active" : realtimeDiagnostics.channelState === "retrying" ? "pill-danger" : "pill-expired"}`)}>realtime ${escape_html(realtimeDiagnostics.channelState)}</span></div></header> `);
+        $$renderer2.push(`<!--]--></p> <div class="hero-actions" data-testid="calendar-find-time-entry"><a class="button button-primary" data-testid="find-time-entrypoint"${attr("href", `/calendars/${readyView().calendar.id}/find-time?duration=60&start=${effectiveSchedule().visibleWeek.start}`)}>Browse truthful find-time</a> <span class="pill pill-neutral">Server-shaped availability</span></div> <div class="calendar-board__meta"><span class="pill pill-active">${escape_html(readyView().calendar.isDefault ? "Default calendar" : "Secondary calendar")}</span> <span class="pill pill-neutral">${escape_html(readyView().group?.role ?? "member")} access</span> <span class="pill pill-neutral">${escape_html(effectiveSchedule().totalShifts)} visible shifts</span> <span${attr_class(`pill ${"pill-neutral"}`)}>${escape_html("Trusted online")}</span> <span${attr_class(`pill ${"pill-neutral"}`)}>${escape_html("idle")}</span> <span${attr_class(`pill ${realtimeDiagnostics.channelState === "ready" ? "pill-active" : realtimeDiagnostics.channelState === "retrying" ? "pill-danger" : "pill-expired"}`)}>realtime ${escape_html(realtimeDiagnostics.channelState)}</span></div></header> `);
         CalendarWeekBoard($$renderer2, {
           board: board(),
           scheduleStatus: effectiveSchedule().status,
           scheduleReason: effectiveSchedule().reason,
           scheduleMessage: effectiveSchedule().message,
+          createPrefill: readyCreatePrefill(),
+          recurrenceSuggestion: readyRecurrenceSuggestion(),
+          existingShifts: existingShifts(),
           actionStates: [],
           realtimeDiagnostics,
           pendingActionKey,

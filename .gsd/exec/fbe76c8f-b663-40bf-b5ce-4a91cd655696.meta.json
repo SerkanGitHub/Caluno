@@ -1,0 +1,18 @@
+{
+  "id": "fbe76c8f-b663-40bf-b5ce-4a91cd655696",
+  "runtime": "bash",
+  "purpose": "S05 closeout verify mobile playwright smoke",
+  "script_chars": 231,
+  "started_at": "2026-05-11T16:17:47.086Z",
+  "finished_at": "2026-05-11T16:18:34.898Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 47812,
+  "stdout_bytes": 1633,
+  "stderr_bytes": 816,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/fbe76c8f-b663-40bf-b5ce-4a91cd655696.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/fbe76c8f-b663-40bf-b5ce-4a91cd655696.stderr"
+}

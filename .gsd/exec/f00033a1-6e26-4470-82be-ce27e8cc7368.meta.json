@@ -1,0 +1,18 @@
+{
+  "id": "f00033a1-6e26-4470-82be-ce27e8cc7368",
+  "runtime": "bash",
+  "purpose": "M005 S06 T01 isolated continuity and realtime route-state assertions after excluding preview gate",
+  "script_chars": 826,
+  "started_at": "2026-05-11T16:31:11.548Z",
+  "finished_at": "2026-05-11T16:31:56.946Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 45398,
+  "stdout_bytes": 3841,
+  "stderr_bytes": 816,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/f00033a1-6e26-4470-82be-ce27e8cc7368.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/f00033a1-6e26-4470-82be-ce27e8cc7368.stderr"
+}

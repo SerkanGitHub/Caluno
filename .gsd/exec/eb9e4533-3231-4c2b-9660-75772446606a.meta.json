@@ -1,0 +1,18 @@
+{
+  "id": "eb9e4533-3231-4c2b-9660-75772446606a",
+  "runtime": "bash",
+  "purpose": "probe runtime surface service worker failure detail on /signin",
+  "script_chars": 791,
+  "started_at": "2026-05-11T16:38:23.021Z",
+  "finished_at": "2026-05-11T16:38:56.558Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 33537,
+  "stdout_bytes": 0,
+  "stderr_bytes": 307,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/eb9e4533-3231-4c2b-9660-75772446606a.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/eb9e4533-3231-4c2b-9660-75772446606a.stderr"
+}

@@ -1,0 +1,18 @@
+{
+  "attrs": {
+    "isolated": "isolated",
+    "swStatus": "error",
+    "swDetail": "Failed to register a ServiceWorker for scope ('http://127.0.0.1:4274/') with script ('http://127.0.0.1:4274/service-worker.js'): ServiceWorker script evaluation"
+  },
+  "logs": [
+    "console:debug:[vite] connecting...",
+    "pageerror:TypeError:Failed to register a ServiceWorker for scope ('http://127.0.0.1:4274/') with script ('http://127.0.0.1:4274/service-worker.js'): ServiceWorker script evaluation failed",
+    "console:debug:[vite] connected."
+  ]
+}
+
+--- vite log tail ---
+
+  VITE v7.3.2  ready in 465 ms
+
+  ➜  Local:   http://127.0.0.1:4274/

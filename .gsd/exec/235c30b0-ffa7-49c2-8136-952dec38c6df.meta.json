@@ -1,0 +1,18 @@
+{
+  "id": "235c30b0-ffa7-49c2-8136-952dec38c6df",
+  "runtime": "bash",
+  "purpose": "probe service-worker module evaluation in a browser page with matching public env",
+  "script_chars": 1781,
+  "started_at": "2026-05-11T16:39:45.674Z",
+  "finished_at": "2026-05-11T16:39:50.003Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 4329,
+  "stdout_bytes": 640,
+  "stderr_bytes": 322,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/235c30b0-ffa7-49c2-8136-952dec38c6df.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/235c30b0-ffa7-49c2-8136-952dec38c6df.stderr"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "8748ac7a-937a-4bdd-bd59-e6c491671dc8",
+  "runtime": "bash",
+  "purpose": "T03 workspace build verification",
+  "script_chars": 253,
+  "started_at": "2026-05-11T16:51:23.926Z",
+  "finished_at": "2026-05-11T16:51:32.185Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 8259,
+  "stdout_bytes": 22356,
+  "stderr_bytes": 16,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/8748ac7a-937a-4bdd-bd59-e6c491671dc8.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/8748ac7a-937a-4bdd-bd59-e6c491671dc8.stderr"
+}

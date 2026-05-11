@@ -1,0 +1,18 @@
+{
+  "id": "2af493dc-8f0c-4a8a-8276-828f97558aa3",
+  "runtime": "bash",
+  "purpose": "verify dedicated predictive accessibility axe proof in calendar-shifts spec",
+  "script_chars": 422,
+  "started_at": "2026-05-11T16:46:08.855Z",
+  "finished_at": "2026-05-11T16:46:45.111Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 36256,
+  "stdout_bytes": 237,
+  "stderr_bytes": 2681,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/2af493dc-8f0c-4a8a-8276-828f97558aa3.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/2af493dc-8f0c-4a8a-8276-828f97558aa3.stderr"
+}

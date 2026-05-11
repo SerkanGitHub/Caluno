@@ -91,7 +91,7 @@ Consumes the S03 bounded recurrence-suggestion contract plus the S04 clash-advis
   - Files: `apps/mobile/src/routes/calendars/[calendarId]/+page.svelte`, `apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte`, `apps/mobile/src/lib/components/calendar/ShiftCard.svelte`, `apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte`
   - Verify: pnpm --dir apps/mobile check
 
-- [ ] **T04: Add mobile predictive Playwright helpers and prove accept/dismiss plus clash smoke flows** `est:55m`
+- [x] **T04: Add mobile predictive Playwright helpers and prove accept/dismiss plus clash smoke flows** `est:55m`
   ---
   estimated_steps: 7
   estimated_files: 2

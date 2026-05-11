@@ -1,0 +1,51 @@
+
+Running 1 test using 1 worker
+
+  ✘  1 tests/e2e/calendar-offline.spec.ts:88:1 › previously synced calendar weeks reopen offline, keep local writes across reload, deny unsynced ids fail closed, and drain cleanly after reconnect (14.9s)
+
+
+  1) tests/e2e/calendar-offline.spec.ts:88:1 › previously synced calendar weeks reopen offline, keep local writes across reload, deny unsynced ids fail closed, and drain cleanly after reconnect › phase: warm the preview runtime, sign in online, and open the deterministic Alpha week 
+
+    Error: expected the service worker registration to reach an installable or ready state
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoMatch[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected pattern: [32m/installed|ready/[39m
+    Received string:  [31m"error"[39m
+
+    Call Log:
+    - Timeout 15000ms exceeded while waiting on the predicate
+
+       at fixtures.ts:857
+
+      855 |   await expect(runtimeSurface).toBeVisible();
+      856 |   await expect(runtimeSurface).toHaveAttribute('data-offline-proof-surface', 'service-worker-preview');
+    > 857 |   await expect
+          |   ^
+      858 |     .poll(
+      859 |       async () => runtimeSurface.getAttribute('data-service-worker-status'),
+      860 |       {
+        at expectRuntimeSurfaceReady (/Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/fixtures.ts:857:3)
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-offline.spec.ts:100:5
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-offline.spec.ts:96:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/calendar-offline-previousl-04d98-ain-cleanly-after-reconnect/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/calendar-offline-previousl-04d98-ain-cleanly-after-reconnect/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/calendar-offline-previousl-04d98-ain-cleanly-after-reconnect/error-context.md
+
+    attachment #5: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/calendar-offline-previousl-04d98-ain-cleanly-after-reconnect/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/calendar-offline-previousl-04d98-ain-cleanly-after-reconnect/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/calendar-offline.spec.ts:88:1 › previously synced calendar weeks reopen offline, keep local writes across reload, deny unsynced ids fail closed, and drain cleanly after reconnect 

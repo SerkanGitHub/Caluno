@@ -1,0 +1,18 @@
+{
+  "id": "dad83499-764b-4dba-90d4-a17fcca0d5e1",
+  "runtime": "bash",
+  "purpose": "S05 closeout verify web advisory unit",
+  "script_chars": 122,
+  "started_at": "2026-05-11T16:17:39.601Z",
+  "finished_at": "2026-05-11T16:17:41.488Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 1887,
+  "stdout_bytes": 305,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/dad83499-764b-4dba-90d4-a17fcca0d5e1.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/dad83499-764b-4dba-90d4-a17fcca0d5e1.stderr"
+}

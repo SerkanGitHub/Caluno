@@ -1,5 +1,5 @@
 import { fail, redirect } from "@sveltejs/kit";
-import { n as normalizeJoinCode } from "../../../../chunks/contract.js";
+import { n as normalizeJoinCode } from "../../../../chunks/access.js";
 import { e as extractReasonCode } from "../../../../chunks/auth-flow.js";
 const GROUP_CREATE_CODES = ["AUTH_REQUIRED", "GROUP_NAME_REQUIRED"];
 const GROUP_JOIN_CODES = [

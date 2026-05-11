@@ -1,0 +1,16 @@
+route-state text assertions:
+apps/web/tests/e2e/calendar-sync.spec.ts:146:await expect(page.getByTestId('calendar-route-state')).toContainText('trusted-online');
+apps/web/tests/e2e/calendar-sync.spec.ts:159:await expect(collaborator.page.getByTestId('calendar-route-state')).toContainText('trusted-online');
+apps/web/tests/e2e/calendar-offline.spec.ts:120:await expect(page.getByTestId('calendar-route-state')).toContainText('trusted-online');
+apps/web/tests/e2e/calendar-offline.spec.ts:161:await expect(page.getByTestId('calendar-route-state')).toContainText('cached-offline');
+apps/web/tests/e2e/calendar-offline.spec.ts:296:await expect(page.getByTestId('calendar-route-state')).toContainText('cached-offline');
+apps/web/tests/e2e/calendar-offline.spec.ts:340:await expect(page.getByTestId('calendar-route-state')).toContainText('offline-denied');
+apps/web/tests/e2e/calendar-offline.spec.ts:341:await expect(page.getByTestId('calendar-route-state')).toContainText('calendar-not-synced');
+apps/web/tests/e2e/calendar-offline.spec.ts:361:await expect(page.getByTestId('calendar-route-state')).toContainText('cached-offline');
+fixture seam:
+apps/web/tests/e2e/fixtures.ts:502:calendarRouteMode: text('[data-testid="calendar-route-state"] strong'),
+apps/web/tests/e2e/fixtures.ts:503:calendarRouteReason: text('[data-testid="calendar-route-state"] code'),
+apps/web/tests/e2e/fixtures.ts:504:calendarRouteDetail: text('[data-testid="calendar-route-state"] p'),
+apps/web/tests/e2e/fixtures.ts:821:const routeState = page.getByTestId('calendar-route-state');
+apps/web/tests/e2e/fixtures.ts:822:if ((await routeState.count()) > 0 && ((await routeState.textContent()) ?? '').includes('trusted-online')) {
+axe packages: ['none']

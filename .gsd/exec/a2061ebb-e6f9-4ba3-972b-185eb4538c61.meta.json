@@ -1,0 +1,18 @@
+{
+  "id": "a2061ebb-e6f9-4ba3-972b-185eb4538c61",
+  "runtime": "bash",
+  "purpose": "rerun targeted predictive accessibility spec after clearing stale dev server",
+  "script_chars": 310,
+  "started_at": "2026-05-11T16:42:53.271Z",
+  "finished_at": "2026-05-11T16:43:42.005Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 48734,
+  "stdout_bytes": 4651,
+  "stderr_bytes": 3427,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/a2061ebb-e6f9-4ba3-972b-185eb4538c61.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/a2061ebb-e6f9-4ba3-972b-185eb4538c61.stderr"
+}

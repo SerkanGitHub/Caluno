@@ -1,0 +1,18 @@
+{
+  "id": "3fa66d22-08b4-4bce-9c82-e34e720a8251",
+  "runtime": "bash",
+  "purpose": "verify previously failing offline and sync playwright suites under preview-backed web server",
+  "script_chars": 343,
+  "started_at": "2026-05-11T16:47:48.814Z",
+  "finished_at": "2026-05-11T16:48:39.985Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 51171,
+  "stdout_bytes": 748,
+  "stderr_bytes": 9022,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/3fa66d22-08b4-4bce-9c82-e34e720a8251.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/3fa66d22-08b4-4bce-9c82-e34e720a8251.stderr"
+}

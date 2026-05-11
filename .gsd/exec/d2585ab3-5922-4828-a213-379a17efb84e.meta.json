@@ -1,0 +1,18 @@
+{
+  "id": "d2585ab3-5922-4828-a213-379a17efb84e",
+  "runtime": "bash",
+  "purpose": "M005 S06 T01 prove route-state text scrapes are removed from targeted web E2E files",
+  "script_chars": 394,
+  "started_at": "2026-05-11T16:32:17.777Z",
+  "finished_at": "2026-05-11T16:32:17.818Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 41,
+  "stdout_bytes": 48,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/d2585ab3-5922-4828-a213-379a17efb84e.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/d2585ab3-5922-4828-a213-379a17efb84e.stderr"
+}

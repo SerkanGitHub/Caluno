@@ -1,7 +1,7 @@
 import { W as WORKER_ISOLATION_HEADERS } from "../chunks/runtime.js";
 import { createServerClient } from "@supabase/ssr";
 import { p as public_env } from "../chunks/shared-server.js";
-function readSupabasePublicEnv(source = public_env) {
+function readSupabasePublicEnv$1(source = {}) {
   const url = source.PUBLIC_SUPABASE_URL?.trim();
   const publishableKey = source.PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim();
   if (!url || !publishableKey) {
@@ -18,6 +18,9 @@ function readSupabasePublicEnv(source = public_env) {
     url,
     publishableKey
   };
+}
+function readSupabasePublicEnv(source = public_env) {
+  return readSupabasePublicEnv$1(source);
 }
 function createSupabaseServerClient(event) {
   const { url, publishableKey } = readSupabasePublicEnv();

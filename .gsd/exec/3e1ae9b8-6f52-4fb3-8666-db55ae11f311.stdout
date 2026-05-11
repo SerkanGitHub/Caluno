@@ -1,0 +1,56 @@
+
+Running 4 tests using 1 worker
+
+  ✘  1 tests/e2e/calendar-offline.spec.ts:63:1 › preview proof surface exposes isolation headers and a live service worker before offline continuity begins (15.1s)
+  -  2 tests/e2e/calendar-offline.spec.ts:88:1 › previously synced calendar weeks reopen offline, keep local writes across reload, deny unsynced ids fail closed, and drain cleanly after reconnect
+  ✓  3 tests/e2e/calendar-sync.spec.ts:111:1 › online collaborators see shared shift changes propagate live within the same trusted calendar week (7.0s)
+  ✓  4 tests/e2e/calendar-sync.spec.ts:327:1 › realtime refreshes stay scoped when a collaborator is viewing a different visible week (5.4s)
+
+
+  1) tests/e2e/calendar-offline.spec.ts:63:1 › preview proof surface exposes isolation headers and a live service worker before offline continuity begins › phase: keep the service-worker inspection surface ready for the offline proof 
+
+    Error: expected the service worker registration to reach an installable or ready state
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoMatch[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected pattern: [32m/installed|ready/[39m
+    Received string:  [31m"error"[39m
+
+    Call Log:
+    - Timeout 15000ms exceeded while waiting on the predicate
+
+       at fixtures.ts:857
+
+      855 |   await expect(runtimeSurface).toBeVisible();
+      856 |   await expect(runtimeSurface).toHaveAttribute('data-offline-proof-surface', 'service-worker-preview');
+    > 857 |   await expect
+          |   ^
+      858 |     .poll(
+      859 |       async () => runtimeSurface.getAttribute('data-service-worker-status'),
+      860 |       {
+        at expectRuntimeSurfaceReady (/Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/fixtures.ts:857:3)
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-offline.spec.ts:81:5
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-offline.spec.ts:80:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/calendar-offline-preview-p-92077-e-offline-continuity-begins/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/calendar-offline-preview-p-92077-e-offline-continuity-begins/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/calendar-offline-preview-p-92077-e-offline-continuity-begins/error-context.md
+
+    attachment #5: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/calendar-offline-preview-p-92077-e-offline-continuity-begins/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/calendar-offline-preview-p-92077-e-offline-continuity-begins/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/calendar-offline.spec.ts:63:1 › preview proof surface exposes isolation headers and a live service worker before offline continuity begins 
+  1 did not run
+  2 passed (31.6s)

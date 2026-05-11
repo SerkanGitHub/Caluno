@@ -1,0 +1,7 @@
+
+Running 1 test using 1 worker
+
+  ✓  1 tests/e2e/calendar-shifts.spec.ts:496:1 › predictive create editor stays free of new WCAG 2.1 AA violations in the seeded recurrence suggestion flow (2.1s)
+
+  1 passed (10.0s)
+duration_ms=36200

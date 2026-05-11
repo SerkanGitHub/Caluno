@@ -1,0 +1,26 @@
+[
+  {
+    "kind": "bash",
+    "toolCallId": "call_LCGA0jEl73py3grKPwSaD1Za|OAqOGFUSYNdWvnQQ2Coz9ieSPrA0y1zHbqLXM1++KfpyJHFjTZqZfttFTefeus7tBDmOZUhJsBTlq5Q38WgnHibhlguB/qULSkXNJPOqV5/z+Nn1ITjyMBRp6/hgeJdM9rEBLEoea7PSYL3oeQdD+vViiIC5qF8Kz2GmOgsa3Eop8Wuu04vMWOC0Jq87OfE9HSbarD8PF42K9RN3k4d8jqj+Oeuss6GT/HtQw8oTGWyoib/+OEADaYdz6tdJi5RcW59PbGZYAfQrRQptJYSm+SDl2p4myPOtCq79AJXXRww92uYwM7pLtvPD1SEXBWv+/kFPDk3CAmayHIQ+j/eLiMc0OLZdNBkeVSTiN81llS+AYIRp/IzjNofg2xUpayy6H5W9c/NpbTzOUTxsugb6bg==",
+    "command": "mobile-predictive supabase reset pnpm build",
+    "exitCode": 0,
+    "outputSnippet": "No prior gsd_exec runs match those filters.",
+    "timestamp": 1778518226591
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_31He26UcBnSEGx0IHv2G7c8P|7GnMhCHKK8wHZM77mukHjy9eYd8in3MNMEmCzJzu+O8A7YYRAp9BCBCn9brcFw7wtjreqfadV3xUlFSgVTmZuuBHwIBF+bje8eJGkjJqtktaIyf6hAo0j6C8U1ELz+csnV6dFloocqb1NyXC7+9h2qYnltJT0H5yFbIlCAJSOGqfZQiRlAbX7aeA60laOYcrKhEZOuJ9ek1Q+aT6O66CcQbYIIFPjzULwQnyUhVuYG4i7D1cO1eMf1gzmDqDgo8vrWkrHMmMdThXYvlMqTCo3QHr7JhM907rK0IfzmxxUXDwhuAZu319sn/GlFyV44SVW8M90wvBROdJ4pZB05ulol1yqT781+uRXLoze8/i2eGUsX1YS8knnoFGCgHs+Pkne9Rfv0qdkkZM+FzZPC0MOw==",
+    "command": "",
+    "exitCode": 0,
+    "outputSnippet": "gsd_exec[857de169-30f5-4c08-8bc7-322f51bd1b90] runtime=bash exit=0 duration=42237ms\n  stdout: 1014B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/857de169-30f5-4c08-8bc7-322f51bd1b90.stdout\n  stderr: 816B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/857de169-30f5-4c08-8bc7-322f51bd1b90.stderr\n--- digest ---\ntime stays fail-closed and out-of-scope tap is rejected (1.8s)\n  ✓  6 tests/e2e/mobile-predictive.spec.ts:19:1 › mobile create sheet exposes recurrence suggestion lifecycle and advisory-only clash",
+    "timestamp": 1778518232318
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_Svi5jqmn98FqLlN4g3m6aR7s|PHPBIV+Pq61KAbPJwfi42wRry6MtaeCqhBYGmMEkHXzyvw3Y2IdkMVyQJt9jZsuzCxgVyEF3N7IThfqsHY3sY9NVCdcj5zmOvH9jzyCc2pJy9KxxwuzQJBNRMayw8PN4aaEF9vDL+XTm81HVx6jmzXbx9jGwEAnuNvKTzd3bG86up6RvHhRqvgPJNa4fLRokkkKiOycPIAcxt8COmmmyCXVBUx5u1I/kNnL+p7CvKFB1wdXwGvnbb1xMRkaoV7krbZ/gdz6hhGjhEcaMXrxdnHh7oGD9IlasMhE7lOE6dxDJrs2b6egMUyJyHszJ+lMvVHyIH/biT2Z4qSbZOXLvHSP68XJSwY6EJs3iBjq0jFLP0A/Krc8nsFWbjBqaJ62CPtumGkLcWCRHA1iEOwkAfQ==",
+    "command": "",
+    "exitCode": 0,
+    "outputSnippet": "gsd_exec[8748ac7a-937a-4bdd-bd59-e6c491671dc8] runtime=bash exit=0 duration=8259ms\n  stdout: 22356B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/8748ac7a-937a-4bdd-bd59-e6c491671dc8.stdout\n  stderr: 16B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/8748ac7a-937a-4bdd-bd59-e6c491671dc8.stderr\n--- digest ---\n ✓ built in 3.52s\nweb:build: \nweb:build: Run npm run preview to preview your production build locally.\nweb:build: \nweb:build: > Using @sveltejs/adapter-node\nweb:build:   ✔ done\n\n Tasks:    2 succes",
+    "timestamp": 1778518283923
+  }
+]

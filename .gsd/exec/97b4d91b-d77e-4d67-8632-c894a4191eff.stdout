@@ -1,0 +1,43 @@
+apps/mobile/tests/e2e/mobile-predictive.spec.ts:27:  const routeState = page.getByTestId('calendar-route-state');
+apps/mobile/tests/e2e/mobile-predictive.spec.ts:28:  await expect(routeState).toHaveAttribute('data-recurrence-suggestion-status', 'ready');
+apps/mobile/tests/e2e/mobile-predictive.spec.ts:29:  await expect(routeState).toHaveAttribute('data-recurrence-suggestion-reason', 'none');
+apps/mobile/tests/e2e/mobile-predictive.spec.ts:31:    (await routeState.getAttribute('data-recurrence-suggestion-match-count')) ?? '0',
+apps/mobile/tests/e2e/mobile-predictive.spec.ts:35:  const recurrenceExemplarShiftId = (await routeState.getAttribute('data-recurrence-suggestion-exemplar-shift-id')) ?? 'none';
+apps/mobile/tests/e2e/mobile-predictive.spec.ts:59:  await expect(page.getByTestId('recurrence-suggestion')).toHaveAttribute('data-exemplar-shift-id', recurrenceExemplarShiftId);
+apps/mobile/tests/e2e/mobile-predictive.spec.ts:61:  await page.getByTestId('recurrence-suggestion-dismiss').dispatchEvent('click');
+apps/mobile/tests/e2e/mobile-predictive.spec.ts:90:  await expect(routeState).toHaveAttribute('data-recurrence-suggestion-status', 'ready');
+apps/mobile/tests/e2e/mobile-predictive.spec.ts:92:    .poll(async () => Number.parseInt((await routeState.getAttribute('data-recurrence-suggestion-match-count')) ?? '0', 10), {
+apps/mobile/tests/e2e/mobile-predictive.spec.ts:111:  await page.getByTestId('recurrence-suggestion-accept').dispatchEvent('click');
+apps/mobile/src/routes/calendars/[calendarId]/+page.svelte:750:    data-testid="calendar-route-state"
+apps/mobile/src/routes/calendars/[calendarId]/+page.svelte:770:    data-recurrence-suggestion-scope={recurrenceSuggestionStatus.scopeKey}
+apps/mobile/src/routes/calendars/[calendarId]/+page.svelte:771:    data-recurrence-suggestion-status={recurrenceSuggestionStatus.status}
+apps/mobile/src/routes/calendars/[calendarId]/+page.svelte:772:    data-recurrence-suggestion-reason={recurrenceSuggestionStatus.reason ?? 'none'}
+apps/mobile/src/routes/calendars/[calendarId]/+page.svelte:773:    data-recurrence-suggestion-match-count={recurrenceSuggestion?.matchCount ?? 0}
+apps/mobile/src/routes/calendars/[calendarId]/+page.svelte:774:    data-recurrence-suggestion-exemplar-shift-id={recurrenceSuggestion?.exemplarShiftId ?? 'none'}
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:489:              class="inline-state tone-warning clash-advisory"
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:490:              data-testid="clash-advisory"
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:497:              <div class="clash-advisory__header">
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:505:              <ul class="clash-advisory__list">
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:527:                class="inline-state recurrence-field-state"
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:528:                data-testid="recurrence-field-state"
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:555:                  class="recurrence-suggestion"
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:556:                  data-testid="recurrence-suggestion"
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:569:                  <div class="recurrence-suggestion__actions">
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:573:                      data-testid="recurrence-suggestion-accept"
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:579:                      class="button button-secondary recurrence-suggestion__dismiss"
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:581:                      data-testid="recurrence-suggestion-dismiss"
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:666:  .clash-advisory__header,
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:667:  .recurrence-suggestion__actions {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:676:  .clash-advisory__header {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:687:  .clash-advisory__list,
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:688:  .clash-advisory__list li,
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:689:  .recurrence-suggestion {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:730:  .recurrence-suggestion p,
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:731:  .clash-advisory__list span {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:823:  .recurrence-suggestion {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:829:  .recurrence-field-state {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:833:  .recurrence-suggestion {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:837:  .clash-advisory__list {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:841:  .clash-advisory__list li {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:878:    .recurrence-suggestion__actions {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:883:    .recurrence-suggestion__actions {

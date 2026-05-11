@@ -1,0 +1,18 @@
+{
+  "id": "012ae51e-3f83-4a2d-a124-3322603728c7",
+  "runtime": "bash",
+  "purpose": "M005 S06 T01 rerun calendar-sync spec on fresh reset after route-mode contract change",
+  "script_chars": 450,
+  "started_at": "2026-05-11T16:32:26.277Z",
+  "finished_at": "2026-05-11T16:33:06.907Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 40630,
+  "stdout_bytes": 517,
+  "stderr_bytes": 4919,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/012ae51e-3f83-4a2d-a124-3322603728c7.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/012ae51e-3f83-4a2d-a124-3322603728c7.stderr"
+}

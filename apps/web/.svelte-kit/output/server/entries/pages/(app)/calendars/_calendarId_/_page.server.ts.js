@@ -1,9 +1,113 @@
 import { fail } from "@sveltejs/kit";
 import { a as describeDeniedCalendarReason } from "../../../../../chunks/app-shell.js";
+import { r as resolveTrustedCalendarFromAppShell, a as resolveVisibleWeek$1 } from "../../../../../chunks/route-contract.js";
+import { s as stripCreatePrefillSearchParams, p as parseCreatePrefill } from "../../../../../chunks/create-prefill.js";
+import { a as normalizeVisibleRange, n as normalizeShiftDraft, d as detectRecurrencePattern } from "../../../../../chunks/recurrence.js";
 import { randomUUID } from "node:crypto";
 import * as rrulePkg from "rrule";
-import { r as resolveCalendarAccess } from "../../../../../chunks/contract.js";
-import { n as normalizeVisibleRange, a as normalizeShiftDraft } from "../../../../../chunks/recurrence.js";
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+function isUuidLike$1(value) {
+  return typeof value === "string" && UUID_PATTERN.test(value);
+}
+function sanitizeTargetPath(calendarId, rawPath) {
+  const value = typeof rawPath === "string" ? rawPath.trim() : null;
+  if (!value) {
+    return { ok: true, targetPath: `/calendars/${calendarId}` };
+  }
+  if (!value.startsWith("/") || value.startsWith("//") || /:\/\//.test(value)) {
+    return { ok: false, reason: "unsafe-path-prefix" };
+  }
+  const normalized = value.replace(/\/+$/, "") || "/";
+  if (normalized !== value) {
+    return { ok: false, reason: "path-not-normalized" };
+  }
+  const isAllowed = normalized === "/groups" || normalized === `/calendars/${calendarId}` || normalized.startsWith(`/calendars/${calendarId}?`);
+  if (!isAllowed) {
+    return { ok: false, reason: "path-out-of-scope" };
+  }
+  return { ok: true, targetPath: normalized };
+}
+async function dispatchCalendarChange(params) {
+  if (!isUuidLike$1(params.calendarId)) {
+    return {
+      ok: false,
+      degraded: true,
+      reason: "invalid-calendar-id",
+      detail: `Dispatch skipped: calendarId "${String(params.calendarId).slice(0, 36)}" is not a valid UUID.`
+    };
+  }
+  if (params.shiftId != null && params.shiftId !== "" && !isUuidLike$1(params.shiftId)) {
+    return {
+      ok: false,
+      degraded: true,
+      reason: "invalid-shift-id",
+      detail: `Dispatch skipped: shiftId "${String(params.shiftId).slice(0, 36)}" is not a valid UUID.`
+    };
+  }
+  const pathResult = sanitizeTargetPath(params.calendarId, params.targetPath ?? null);
+  if (!pathResult.ok) {
+    return {
+      ok: false,
+      degraded: true,
+      reason: "invalid-target-path",
+      detail: `Dispatch skipped: targetPath rejected with reason "${pathResult.reason}".`
+    };
+  }
+  const payload = {
+    calendarId: params.calendarId,
+    changeType: params.changeType,
+    targetPath: pathResult.targetPath,
+    shiftId: params.shiftId ?? null,
+    occurredAt: params.occurredAt ?? (/* @__PURE__ */ new Date()).toISOString(),
+    headline: params.headline ?? void 0,
+    body: params.body ?? void 0
+  };
+  const timeoutMs = params.timeoutMs ?? 5e3;
+  try {
+    const dispatchPromise = Promise.resolve(
+      params.supabase.functions.invoke("notify-calendar-change", {
+        body: payload
+      })
+    );
+    const timeoutPromise = new Promise(
+      (_, reject) => setTimeout(() => reject(new Error("dispatch-timeout")), timeoutMs)
+    );
+    const result = await Promise.race([dispatchPromise, timeoutPromise]);
+    if (result && typeof result === "object" && "error" in result && result.error != null) {
+      return {
+        ok: false,
+        degraded: true,
+        reason: "dispatch-error",
+        detail: `Dispatch degraded: ${String(result.error.message ?? result.error).slice(0, 200)}`
+      };
+    }
+    if (!result || typeof result !== "object" || !("data" in result)) {
+      return {
+        ok: false,
+        degraded: true,
+        reason: "dispatch-malformed",
+        detail: "Dispatch degraded: edge function returned an unexpected response shape."
+      };
+    }
+    return { ok: true, calendarId: params.calendarId, changeType: params.changeType };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    if (message === "dispatch-timeout" || /timeout/i.test(message)) {
+      return {
+        ok: false,
+        degraded: true,
+        reason: "dispatch-timeout",
+        detail: `Dispatch timed out after ${timeoutMs}ms — canonical schedule write is unaffected.`
+      };
+    }
+    return {
+      ok: false,
+      degraded: true,
+      reason: "dispatch-error",
+      detail: `Dispatch degraded unexpectedly: ${message.slice(0, 200)}`
+    };
+  }
+}
 const rruleModule = rrulePkg;
 const RRule = rruleModule.RRule ?? rruleModule.default?.RRule;
 const recurrenceFrequencyByCadence = {
@@ -74,41 +178,28 @@ async function loadCalendarScheduleView(params) {
     shiftIds: mappedShifts.map((shift) => shift.id)
   };
 }
-function resolveTrustedCalendarFromAppShell(params) {
-  if (!Array.isArray(params.memberships) || !Array.isArray(params.calendars)) {
-    return {
-      ok: false,
-      reason: "group-membership-missing",
-      failurePhase: "calendar-authorization"
-    };
+async function loadCalendarRecurrenceSuggestion(params) {
+  const lookbackStartAt = addUtcDays(new Date(params.visibleWeek.endAt), -30).toISOString();
+  const result = await params.supabase.from("shifts").select("id, calendar_id, series_id, title, start_at, end_at, occurrence_index, source_kind").eq("calendar_id", params.calendarId).gte("start_at", lookbackStartAt).lt("start_at", params.visibleWeek.endAt).order("start_at", { ascending: true }).order("end_at", { ascending: true });
+  if (result.error || !Array.isArray(result.data)) {
+    return null;
   }
-  if (!isUuidLike(params.calendarId)) {
-    return {
-      ok: false,
-      reason: "calendar-id-invalid",
-      failurePhase: "calendar-param"
-    };
+  if (result.data.some((row) => !isShiftRow(row))) {
+    return null;
   }
-  const accessResult = resolveCalendarAccess({
-    calendars: params.calendars,
-    memberships: params.memberships,
-    calendarId: params.calendarId,
-    userId: params.userId
-  });
-  if (!accessResult.allowed) {
-    const reason = accessResult.reason === "authenticated-group-member" ? "group-membership-missing" : accessResult.reason;
-    return {
-      ok: false,
-      reason,
-      failurePhase: reason === "calendar-missing" ? "calendar-lookup" : "calendar-authorization"
-    };
+  const suggestion = detectRecurrencePattern(result.data.map(mapShiftRow));
+  if (suggestion) {
+    console.info("calendar.recurrence-suggestion.computed", {
+      calendarId: params.calendarId,
+      visibleWeekStart: params.visibleWeek.start,
+      visibleWeekEndAt: params.visibleWeek.endAt,
+      lookbackStartAt,
+      exemplarShiftId: suggestion.exemplarShiftId,
+      matchCount: suggestion.matchCount,
+      matchingShiftIds: suggestion.matchingShiftIds
+    });
   }
-  return {
-    ok: true,
-    calendar: params.calendars.find((calendar) => calendar.id === params.calendarId),
-    memberships: params.memberships,
-    calendars: params.calendars
-  };
+  return suggestion;
 }
 function normalizeCreateShiftFields(formData) {
   return {
@@ -213,15 +304,44 @@ async function createScheduleShift(params) {
         fields
       });
     }
-    return actionSuccess({
+    const assignmentsInsert2 = await params.supabase.from("shift_assignments").insert(
+      buildShiftAssignmentInsertRows({
+        shiftIds: [generatedShiftId],
+        memberId: params.userId,
+        createdBy: params.userId
+      })
+    );
+    if (assignmentsInsert2.error) {
+      await params.supabase.from("shifts").delete().eq("id", generatedShiftId).eq("calendar_id", params.calendarId);
+      return actionFailure({
+        action: "create",
+        visibleWeek,
+        status: isTimeoutMessage(assignmentsInsert2.error.message) ? 504 : 400,
+        actionStatus: isTimeoutMessage(assignmentsInsert2.error.message) ? "timeout" : "write-error",
+        reason: isTimeoutMessage(assignmentsInsert2.error.message) ? "SCHEDULE_CREATE_TIMEOUT" : "SCHEDULE_CREATE_ASSIGNMENT_FAILED",
+        message: isTimeoutMessage(assignmentsInsert2.error.message) ? "The creator assignment write timed out, so the shift create was rolled back." : "The creator assignment could not be written, so the shift create was rolled back and the board stayed unchanged.",
+        fields,
+        shiftId: generatedShiftId,
+        affectedShiftIds: [generatedShiftId]
+      });
+    }
+    const singleResult = actionSuccess({
       action: "create",
       visibleWeek,
       reason: "SHIFT_CREATED",
-      message: "The shift was created inside the current trusted calendar.",
+      message: "The shift was created inside the current trusted calendar with creator assignment attribution.",
       fields,
       shiftId: generatedShiftId,
       affectedShiftIds: [generatedShiftId]
     });
+    void dispatchCalendarChange({
+      supabase: params.supabase,
+      calendarId: params.calendarId,
+      changeType: "create",
+      shiftId: generatedShiftId,
+      targetPath: `/calendars/${params.calendarId}`
+    });
+    return singleResult;
   }
   const generatedSeriesId = randomUUID();
   const seriesInsert = await params.supabase.from("shift_series").insert({
@@ -269,16 +389,45 @@ async function createScheduleShift(params) {
     });
   }
   const affectedShiftIds = occurrenceRows.map((row) => row.id);
-  return actionSuccess({
+  const assignmentsInsert = await params.supabase.from("shift_assignments").insert(
+    buildShiftAssignmentInsertRows({
+      shiftIds: affectedShiftIds,
+      memberId: params.userId,
+      createdBy: params.userId
+    })
+  );
+  if (assignmentsInsert.error) {
+    await params.supabase.from("shift_series").delete().eq("id", generatedSeriesId).eq("calendar_id", params.calendarId);
+    return actionFailure({
+      action: "create",
+      visibleWeek,
+      status: isTimeoutMessage(assignmentsInsert.error.message) ? 504 : 400,
+      actionStatus: isTimeoutMessage(assignmentsInsert.error.message) ? "timeout" : "write-error",
+      reason: isTimeoutMessage(assignmentsInsert.error.message) ? "SCHEDULE_CREATE_TIMEOUT" : "SCHEDULE_CREATE_ASSIGNMENT_FAILED",
+      message: isTimeoutMessage(assignmentsInsert.error.message) ? "The recurring creator-assignment write timed out, so the series was rolled back." : "The recurring creator-assignment write failed, so the series was rolled back and the board stayed unchanged.",
+      fields,
+      seriesId: generatedSeriesId,
+      affectedShiftIds
+    });
+  }
+  const recurringResult = actionSuccess({
     action: "create",
     visibleWeek,
     reason: "SHIFT_CREATED",
-    message: "The recurring shift series and its concrete occurrences were created inside the current trusted calendar.",
+    message: "The recurring shift series, concrete occurrences, and creator assignments were created inside the current trusted calendar.",
     fields,
     seriesId: generatedSeriesId,
     affectedShiftIds,
     shiftId: affectedShiftIds[0] ?? null
   });
+  void dispatchCalendarChange({
+    supabase: params.supabase,
+    calendarId: params.calendarId,
+    changeType: "create",
+    shiftId: affectedShiftIds[0] ?? null,
+    targetPath: `/calendars/${params.calendarId}`
+  });
+  return recurringResult;
 }
 async function editScheduleShift(params) {
   const visibleWeek = resolveVisibleWeek(params.searchParams);
@@ -352,7 +501,7 @@ async function editScheduleShift(params) {
     start_at: draftResult.value.startAt.toISOString(),
     end_at: draftResult.value.endAt.toISOString()
   }).eq("id", fields.shiftId).eq("calendar_id", params.calendarId).select("id, calendar_id, series_id, title, start_at, end_at, occurrence_index, source_kind");
-  return finalizeSingleShiftMutation({
+  const editResult = finalizeSingleShiftMutation({
     action: "edit",
     visibleWeek,
     fields,
@@ -361,6 +510,16 @@ async function editScheduleShift(params) {
     successMessage: "The shift details were updated inside the current trusted calendar.",
     writeResult: updateResult
   });
+  if (editResult.state.status === "success") {
+    void dispatchCalendarChange({
+      supabase: params.supabase,
+      calendarId: params.calendarId,
+      changeType: "edit",
+      shiftId: editResult.state.shiftId,
+      targetPath: `/calendars/${params.calendarId}`
+    });
+  }
+  return editResult;
 }
 async function moveScheduleShift(params) {
   const visibleWeek = resolveVisibleWeek(params.searchParams);
@@ -432,7 +591,7 @@ async function moveScheduleShift(params) {
     start_at: visibleRangeResult.value.startAt.toISOString(),
     end_at: visibleRangeResult.value.endAt.toISOString()
   }).eq("id", fields.shiftId).eq("calendar_id", params.calendarId).select("id, calendar_id, series_id, title, start_at, end_at, occurrence_index, source_kind");
-  return finalizeSingleShiftMutation({
+  const moveResult = finalizeSingleShiftMutation({
     action: "move",
     visibleWeek,
     fields,
@@ -441,6 +600,16 @@ async function moveScheduleShift(params) {
     successMessage: "The shift range was moved inside the current trusted calendar.",
     writeResult: updateResult
   });
+  if (moveResult.state.status === "success") {
+    void dispatchCalendarChange({
+      supabase: params.supabase,
+      calendarId: params.calendarId,
+      changeType: "move",
+      shiftId: moveResult.state.shiftId,
+      targetPath: `/calendars/${params.calendarId}`
+    });
+  }
+  return moveResult;
 }
 async function deleteScheduleShift(params) {
   const visibleWeek = resolveVisibleWeek(params.searchParams);
@@ -489,16 +658,26 @@ async function deleteScheduleShift(params) {
       shiftId: fields.shiftId
     });
   }
-  const deleteResult = await params.supabase.from("shifts").delete().eq("id", fields.shiftId).eq("calendar_id", params.calendarId).select("id, calendar_id, series_id, title, start_at, end_at, occurrence_index, source_kind");
-  return finalizeSingleShiftMutation({
+  const deleteWriteResult = await params.supabase.from("shifts").delete().eq("id", fields.shiftId).eq("calendar_id", params.calendarId).select("id, calendar_id, series_id, title, start_at, end_at, occurrence_index, source_kind");
+  const deleteResult = finalizeSingleShiftMutation({
     action: "delete",
     visibleWeek,
     fields,
     submittedShiftId: fields.shiftId,
     successReason: "SHIFT_DELETED",
     successMessage: "The shift was deleted from the current trusted calendar.",
-    writeResult: deleteResult
+    writeResult: deleteWriteResult
   });
+  if (deleteResult.state.status === "success") {
+    void dispatchCalendarChange({
+      supabase: params.supabase,
+      calendarId: params.calendarId,
+      changeType: "delete",
+      shiftId: deleteResult.state.shiftId,
+      targetPath: `/calendars/${params.calendarId}`
+    });
+  }
+  return deleteResult;
 }
 function actionSuccess(params) {
   return {
@@ -678,6 +857,13 @@ function buildRecurringShiftInsertRows(params) {
     created_by: params.userId
   }));
 }
+function buildShiftAssignmentInsertRows(params) {
+  return params.shiftIds.map((shiftId) => ({
+    shift_id: shiftId,
+    member_id: params.memberId,
+    created_by: params.createdBy
+  }));
+}
 function expandRecurringOccurrences(normalizedShift) {
   if (!normalizedShift.recurrence) {
     return [
@@ -837,7 +1023,7 @@ async function requireAuthenticatedUser(locals) {
   return authState.authStatus === "authenticated" && authState.user ? authState.user : null;
 }
 function buildAuthRequiredActionState(action, url) {
-  const visibleWeek = resolveVisibleWeek(url.searchParams);
+  const visibleWeek = resolveVisibleWeek$1(url.searchParams);
   return {
     action,
     status: "forbidden",
@@ -860,8 +1046,8 @@ function respondWithActionResult(key, result) {
     [key]: result.state
   };
 }
-function resolveActionSearchParams(url, formData) {
-  const searchParams = new URLSearchParams(url.searchParams);
+function _resolveActionSearchParams(url, formData) {
+  const searchParams = stripCreatePrefillSearchParams(url.searchParams);
   const submittedWeekStart = formData.get("visibleWeekStart");
   if (!searchParams.get("start") && typeof submittedWeekStart === "string" && submittedWeekStart.trim()) {
     searchParams.set("start", submittedWeekStart.trim());
@@ -890,6 +1076,12 @@ const load = async ({ params, parent, url, locals }) => {
     calendarId: calendarState.calendar.id,
     searchParams: url.searchParams
   });
+  const recurrenceSuggestion = await loadCalendarRecurrenceSuggestion({
+    supabase: locals.supabase,
+    calendarId: calendarState.calendar.id,
+    visibleWeek: schedule.visibleWeek
+  });
+  const createPrefill = parseCreatePrefill(url.searchParams);
   return {
     calendarView: {
       kind: "calendar",
@@ -897,14 +1089,16 @@ const load = async ({ params, parent, url, locals }) => {
       group,
       welcome: url.searchParams.get("welcome"),
       visibleWeek: schedule.visibleWeek,
-      schedule
+      schedule,
+      recurrenceSuggestion,
+      createPrefill
     }
   };
 };
 const actions = {
   createShift: async ({ request, locals, params, url }) => {
     const formData = await request.formData();
-    const actionSearchParams = resolveActionSearchParams(url, formData);
+    const actionSearchParams = _resolveActionSearchParams(url, formData);
     const user = await requireAuthenticatedUser(locals);
     if (!user) {
       return fail(401, {
@@ -922,7 +1116,7 @@ const actions = {
   },
   editShift: async ({ request, locals, params, url }) => {
     const formData = await request.formData();
-    const actionSearchParams = resolveActionSearchParams(url, formData);
+    const actionSearchParams = _resolveActionSearchParams(url, formData);
     const user = await requireAuthenticatedUser(locals);
     if (!user) {
       return fail(401, {
@@ -940,7 +1134,7 @@ const actions = {
   },
   moveShift: async ({ request, locals, params, url }) => {
     const formData = await request.formData();
-    const actionSearchParams = resolveActionSearchParams(url, formData);
+    const actionSearchParams = _resolveActionSearchParams(url, formData);
     const user = await requireAuthenticatedUser(locals);
     if (!user) {
       return fail(401, {
@@ -958,7 +1152,7 @@ const actions = {
   },
   deleteShift: async ({ request, locals, params, url }) => {
     const formData = await request.formData();
-    const actionSearchParams = resolveActionSearchParams(url, formData);
+    const actionSearchParams = _resolveActionSearchParams(url, formData);
     const user = await requireAuthenticatedUser(locals);
     if (!user) {
       return fail(401, {
@@ -976,6 +1170,7 @@ const actions = {
   }
 };
 export {
+  _resolveActionSearchParams,
   actions,
   load
 };

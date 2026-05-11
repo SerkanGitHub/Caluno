@@ -1,0 +1,8 @@
+
+Running 2 tests using 1 worker
+
+  ✓  1 tests/e2e/calendar-sync.spec.ts:111:1 › online collaborators see shared shift changes propagate live within the same trusted calendar week (6.1s)
+  ✓  2 tests/e2e/calendar-sync.spec.ts:327:1 › realtime refreshes stay scoped when a collaborator is viewing a different visible week (5.3s)
+
+  2 passed (13.3s)
+VERIFICATION_OK duration_ms=40547 command='npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/calendar-sync.spec.ts'

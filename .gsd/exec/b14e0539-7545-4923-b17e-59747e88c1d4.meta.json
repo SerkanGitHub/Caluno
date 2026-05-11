@@ -1,0 +1,18 @@
+{
+  "id": "b14e0539-7545-4923-b17e-59747e88c1d4",
+  "runtime": "bash",
+  "purpose": "probe service worker readiness against build+preview web server",
+  "script_chars": 1940,
+  "started_at": "2026-05-11T16:40:10.763Z",
+  "finished_at": "2026-05-11T16:40:21.025Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 10262,
+  "stdout_bytes": 4036,
+  "stderr_bytes": 322,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/b14e0539-7545-4923-b17e-59747e88c1d4.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/b14e0539-7545-4923-b17e-59747e88c1d4.stderr"
+}

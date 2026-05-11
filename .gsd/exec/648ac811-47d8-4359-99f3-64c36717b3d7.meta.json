@@ -1,0 +1,18 @@
+{
+  "id": "648ac811-47d8-4359-99f3-64c36717b3d7",
+  "runtime": "bash",
+  "purpose": "rerun full calendar-shifts predictive suite after cleanup hardening",
+  "script_chars": 310,
+  "started_at": "2026-05-11T16:44:18.667Z",
+  "finished_at": "2026-05-11T16:45:06.517Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 47850,
+  "stdout_bytes": 4690,
+  "stderr_bytes": 3800,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/648ac811-47d8-4359-99f3-64c36717b3d7.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/648ac811-47d8-4359-99f3-64c36717b3d7.stderr"
+}

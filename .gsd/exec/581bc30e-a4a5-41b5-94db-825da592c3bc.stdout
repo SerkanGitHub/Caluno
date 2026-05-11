@@ -1,0 +1,358 @@
+ROOT FILES
+- apps/mobile/build
+- apps/mobile/node_modules/@playwright
+- apps/mobile/playwright.config.ts
+- apps/mobile/tests/mobile-predictive.unit.test.ts
+- apps/mobile/tests/mobile-shift-editor-predictive.unit.test.ts
+- apps/web/build
+- apps/web/node_modules/@playwright
+- apps/web/playwright.config.ts
+- apps/web/playwright.offline.config.ts
+- apps/web/test-results/e2e-offline
+- packages/caluno-core/src/offline
+
+PACKAGE SCRIPTS
+[package.json]
+- build: turbo run build
+- dev: turbo run dev
+- test: turbo run test
+- lint: turbo run lint
+- paraglide:compile: turbo run paraglide:compile
+- format: prettier --write .
+- check: turbo run check
+- gsd: node --max-old-space-size=8192 $(which gsd)
+- gsd:mem: node gsd-memory-logger.js
+
+[apps/web/package.json]
+- build: vite build
+- check: svelte-kit sync && svelte-check --tsconfig ./tsconfig.json
+- check:watch: svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch
+- dev: vite dev --port 5174
+- prepare: svelte-kit sync || echo ''
+- preview: vite preview
+- test: vitest run
+- test:watch: vitest
+- test:e2e: playwright test tests/e2e/auth-groups-access.spec.ts
+- test:e2e:headed: playwright test tests/e2e/auth-groups-access.spec.ts --headed
+
+[apps/mobile/package.json]
+- build: vite build
+- check: svelte-kit sync && svelte-check --tsconfig ./tsconfig.json
+- check:watch: svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch
+- dev: vite dev --port 4173
+- prepare: svelte-kit sync || echo ''
+- preview: vite preview
+- test: vitest run
+- test:watch: vitest
+- test:e2e: playwright test tests/e2e/auth-scope.spec.ts tests/e2e/calendar-offline.spec.ts tests/e2e/find-time-handoff.spec.ts tests/e2e/calendar-notifications.spec.ts tests/e2e/mobile-assembly.spec.ts
+- test:e2e:headed: playwright test tests/e2e/auth-scope.spec.ts tests/e2e/calendar-offline.spec.ts tests/e2e/find-time-handoff.spec.ts tests/e2e/calendar-notifications.spec.ts tests/e2e/mobile-assembly.spec.ts --headed
+- cap:sync: cap sync
+- cap:add:ios: cap add ios
+- cap:add:android: cap add android
+
+[packages/caluno-core/package.json]
+
+
+AXE REFERENCES
+
+PREDICTIVE/ASSERTION REFERENCES
+apps/mobile/src/routes/groups/+page.svelte:257:    data-route-mode={routeMode}
+.gsd/milestones/M005/M005-ROADMAP.md:3:**Vision:** Deliver predictive scheduling assistance and harden the product for launch, building on the now-complete cross-platform coordination loop from M001–M004. Users get smarter coordination help derived from their real schedule data, and the product is reliable, accessible, and deployable.
+.gsd/milestones/M005/M005-ROADMAP.md:8:- R011 (predictive scheduling assistance) is validated
+.gsd/milestones/M005/M005-ROADMAP.md:12:- Explicit UI and diagnostics exist for predictive features and hardening outcomes
+.gsd/milestones/M005/M005-ROADMAP.md:17:  > After this: A written feature brief (M005-CONTEXT.md) with specific predictive features scoped, explicit launch criteria, and a decomposed slice roadmap.
+apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte:386:    data-route-mode={routeMode}
+apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte:389:    data-top-pick-count={routeState?.topPickCount ?? 0}
+apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte:549:            data-top-pick-count={routeState.topPickCount}
+apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte:552:            <section class="result-panel framed-panel" data-testid="find-time-top-picks" data-top-pick-count={routeState.topPickCount}>
+apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte:563:                <article class="empty-panel" data-testid="find-time-top-picks-empty">
+apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte:574:                      data-testid={`find-time-top-pick-${index}`}
+apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte:579:                      data-top-pick-rank={window.topPickRank ?? index + 1}
+apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte:599:                        <section class="detail-panel" data-testid={`find-time-top-pick-${index}-free-members`}>
+apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte:606:                          data-testid={`find-time-top-pick-${index}-blocked-members`}
+apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte:625:                          data-testid={`find-time-top-pick-${index}-nearby-leading`}
+apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte:642:                          data-testid={`find-time-top-pick-${index}-nearby-trailing`}
+apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte:662:                            data-testid={`find-time-top-pick-${index}-cta`}
+apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte:672:                          <p class="find-time-handoff-unavailable" data-testid={`find-time-top-pick-${index}-cta-unavailable`}>
+apps/mobile/src/routes/calendars/[calendarId]/+page.svelte:752:    data-route-mode={runtimeState?.routeMode ?? routeMode}
+apps/mobile/src/routes/calendars/[calendarId]/+page.svelte:770:    data-recurrence-suggestion-scope={recurrenceSuggestionStatus.scopeKey}
+apps/mobile/src/routes/calendars/[calendarId]/+page.svelte:771:    data-recurrence-suggestion-status={recurrenceSuggestionStatus.status}
+apps/mobile/src/routes/calendars/[calendarId]/+page.svelte:772:    data-recurrence-suggestion-reason={recurrenceSuggestionStatus.reason ?? 'none'}
+apps/mobile/src/routes/calendars/[calendarId]/+page.svelte:773:    data-recurrence-suggestion-match-count={recurrenceSuggestion?.matchCount ?? 0}
+apps/mobile/src/routes/calendars/[calendarId]/+page.svelte:774:    data-recurrence-suggestion-exemplar-shift-id={recurrenceSuggestion?.exemplarShiftId ?? 'none'}
+apps/mobile/src/lib/offline/transport.ts:205:            ? 'The bounded recurrence history query timed out, so predictive hints stayed hidden.'
+apps/mobile/src/lib/offline/transport.ts:206:            : result.detail ?? 'The bounded recurrence history query failed, so predictive hints stayed hidden.',
+apps/mobile/src/lib/offline/transport.ts:218:          message: 'The bounded recurrence history query returned malformed data, so predictive hints stayed hidden.',
+apps/mobile/src/lib/offline/transport.ts:238:      console.info('mobile.calendar.recurrence-suggestion.computed', {
+.gsd/milestones/M005/slices/S01/S01-UAT.md:1:# S01: Define predictive feature set and launch criteria — UAT
+.gsd/milestones/M005/slices/S01/S01-UAT.md:6:# S01: Define predictive feature set and launch criteria — UAT
+.gsd/milestones/M005/slices/S01/S01-UAT.md:23:Open `.gsd/milestones/M005/M005-CONTEXT.md` and confirm it visibly contains predictive feature scoping, launch criteria, and out-of-scope sections for M005.
+.gsd/milestones/M005/slices/S01/S01-UAT.md:33:5. **Expected:** The context document fully scopes the predictive work and defines what is intentionally deferred.
+.gsd/milestones/M005/slices/S01/S01-UAT.md:40:4. **Expected:** The decision log, requirement tracking, and roadmap all point to the same predictive-assistance milestone plan without contradiction.
+.gsd/milestones/M005/slices/S01/S01-UAT.md:52:- `M005-CONTEXT.md` is missing predictive feature names, launch criteria, or out-of-scope content.
+.gsd/milestones/M005/slices/S01/S01-UAT.md:59:- Runtime correctness of predictive helpers or UI integration.
+.gsd/milestones/M005/slices/S04/S04-PLAN.md:8:- `apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte` renders a warning-only `data-testid="clash-advisory"` surface when the current draft overlaps same-calendar visible-week shifts and hides it for clear/touching-boundary drafts.
+.gsd/milestones/M005/slices/S04/S04-PLAN.md:27:- Adds an explicit pre-submit inspection surface (`data-testid="clash-advisory"`) plus Playwright advisory snapshots so future agents can distinguish overlapping versus clear drafts before submit without inferring from post-save board conflicts.
+.gsd/milestones/M005/slices/S04/S04-PLAN.md:41:- [x] **T02: Add live clash-advisory state and warning-only UI to the shared shift editor** `est:1h`
+apps/mobile/package.json:15:    "test:e2e": "playwright test tests/e2e/auth-scope.spec.ts tests/e2e/calendar-offline.spec.ts tests/e2e/find-time-handoff.spec.ts tests/e2e/calendar-notifications.spec.ts tests/e2e/mobile-assembly.spec.ts",
+apps/mobile/package.json:16:    "test:e2e:headed": "playwright test tests/e2e/auth-scope.spec.ts tests/e2e/calendar-offline.spec.ts tests/e2e/find-time-handoff.spec.ts tests/e2e/calendar-notifications.spec.ts tests/e2e/mobile-assembly.spec.ts --headed",
+.gsd/milestones/M005/slices/S01/S01-SUMMARY.md:6:  - A validated predictive-feature brief and milestone roadmap that downstream implementation slices can execute without reinterpreting scope.
+.gsd/milestones/M005/slices/S01/S01-SUMMARY.md:21:  - D063 remains the authoritative decision for the predictive feature set; no new architectural decision was required during closeout.
+.gsd/milestones/M005/slices/S01/S01-SUMMARY.md:34:# S01: Define predictive feature set and launch criteria
+.gsd/milestones/M005/slices/S01/S01-SUMMARY.md:36:**Validated the M005 predictive-assistance brief, launch criteria, decision mapping, and downstream slice chain so implementation slices can proceed from a fixed plan.**
+.gsd/milestones/M005/slices/S01/S01-SUMMARY.md:40:S01 closed as an artifact-validation slice rather than a code-change slice. The existing M005 planning artifacts already satisfied the slice goal: M005-CONTEXT.md contains the scoped predictive feature brief, covers both detectRecurrencePattern and previewShiftConflicts, defines launch criteria, and records out-of-scope work; DECISIONS.md already includes D063; REQUIREMENTS.md already maps R011 ownership to M005/S01; and the roadmap already decomposes the implementation path through S02–S06. No new architectural decisions or requirement changes were needed during closeout because the milestone-planning outputs were already complete and internally consistent.
+.gsd/milestones/M005/slices/S01/S01-SUMMARY.md:48:- R011 — S01 defined the concrete predictive-assistance scope, launch criteria, and requirement ownership so the implementation slices can build and later validate the feature.
+.gsd/milestones/M005/slices/S01/S01-SUMMARY.md:72:This slice proves planning readiness only; predictive behavior, UI surfaces, and launch hardening remain for S02–S06.
+.gsd/milestones/M005/slices/S01/S01-SUMMARY.md:80:- `.gsd/milestones/M005/M005-CONTEXT.md` — Validated as the authoritative predictive feature brief; no closeout-time edits required.
+.gsd/milestones/M005/slices/S01/S01-SUMMARY.md:81:- `.gsd/DECISIONS.md` — Verified that D063 already records the predictive feature-set decision.
+.gsd/milestones/M005/slices/S04/S04-RESEARCH.md:7:- **R011 support:** this is the first web surface for predictive clash preview.
+.gsd/milestones/M005/slices/S04/S04-RESEARCH.md:26:- Render the result as a non-blocking warning article with `data-testid="clash-advisory"`. Good minimum payload: overlap count plus conflicting titles/time windows. Keep the submit button enabled even when conflicts exist.
+.gsd/milestones/M005/slices/S04/S04-RESEARCH.md:46:1. Open the seeded create dialog with an overlapping time (Kitchen prep / Supplier call window already exists in `supabase/seed.sql:320-348` and `apps/web/tests/e2e/fixtures.ts:195-249`) and prove `data-testid="clash-advisory"` appears **before** submit.
+.gsd/milestones/M005/slices/S01/S01-PLAN.md:1:# S01: Define predictive feature set and launch criteria
+.gsd/milestones/M005/slices/S01/S01-PLAN.md:3:**Goal:** Confirm that M005-CONTEXT.md is complete with predictive feature set, launch criteria, and decomposed slice roadmap — all prerequisites for S02–S06 implementation.
+.gsd/milestones/M005/slices/S01/S01-PLAN.md:4:**Demo:** A written feature brief (M005-CONTEXT.md) with specific predictive features scoped, explicit launch criteria, and a decomposed slice roadmap.
+.gsd/milestones/M005/slices/S01/S01-PLAN.md:8:- M005-CONTEXT.md exists with ≥4 sections, covers both predictive features (detectRecurrencePattern + previewShiftConflicts), defines launch criteria, and lists out-of-scope items. D063 decision is recorded. Downstream roadmap slices S02–S06 are defined.
+.gsd/milestones/M005/slices/S01/S01-PLAN.md:17:  M005-CONTEXT.md was produced during milestone planning and already contains the full predictive feature brief. This task verifies the file is complete and records any missing decisions or requirement mappings so S02–S06 can proceed without ambiguity.
+.gsd/milestones/M005/slices/S01/tasks/T01-SUMMARY.md:18:# T01: Verified that the existing M005 planning artifacts already fully define the predictive feature brief, decision mapping, requirement ownership, and downstream slice chain.
+.gsd/milestones/M005/slices/S01/tasks/T01-SUMMARY.md:20:**Verified that the existing M005 planning artifacts already fully define the predictive feature brief, decision mapping, requirement ownership, and downstream slice chain.**
+.gsd/milestones/M005/slices/S01/tasks/T01-SUMMARY.md:24:Read `.gsd/milestones/M005/M005-CONTEXT.md`, `.gsd/DECISIONS.md`, `.gsd/REQUIREMENTS.md`, and `.gsd/milestones/M005/M005-ROADMAP.md` against the task contract. Confirmed `M005-CONTEXT.md` is non-empty and contains the required sections for predictive feature set, launch criteria, out-of-scope, and open questions. Confirmed decision `D063` is present and records the chosen predictive scope (build `detectRecurrencePattern` and `previewShiftConflicts`, defer quiet-time). Confirmed requirement `R011` is active and owned by `M005/S01`. Confirmed the roadmap already contains slices `S02` through `S06` with the intended dependency chain. Because every must-have was already satisfied, no file edits were required for this documentation/planning slice.
+apps/mobile/tests/mobile-shift-editor-predictive.unit.test.ts:12:} from '../src/lib/components/calendar/shift-editor-predictive';
+apps/mobile/tests/mobile-shift-editor-predictive.unit.test.ts:44:describe('mobile shift editor predictive helpers', () => {
+apps/mobile/tests/e2e/mobile-assembly.spec.ts:78:  await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'trusted-online');
+apps/mobile/tests/e2e/mobile-assembly.spec.ts:103:  await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'trusted-online');
+apps/mobile/tests/e2e/mobile-assembly.spec.ts:110:  await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'trusted-offline');
+apps/mobile/tests/e2e/mobile-assembly.spec.ts:114:  await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'trusted-online');
+apps/mobile/tests/e2e/mobile-assembly.spec.ts:157:  // created a shift in one of the seeded top-pick slots (see MEM027).
+apps/mobile/tests/e2e/mobile-assembly.spec.ts:159:    (await page.getByTestId('find-time-route-state').getAttribute('data-top-pick-count')) ?? '0',
+apps/mobile/tests/e2e/mobile-assembly.spec.ts:181:  await page.getByTestId('find-time-top-pick-0-cta').click();
+apps/mobile/tests/e2e/mobile-assembly.spec.ts:205:  // Derive the day-column test-id from the live top-pick slot so the assertion
+apps/mobile/tests/e2e/mobile-assembly.spec.ts:341:  await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'trusted-online');
+apps/mobile/tests/e2e/mobile-assembly.spec.ts:364:  await expect(page.getByTestId('find-time-top-picks')).toHaveCount(0);
+.gsd/milestones/M005/slices/S04/S04-UAT.md:20:4. Confirm the warning surface with `data-testid="clash-advisory"` appears and describes the overlap calmly.
+.gsd/milestones/M005/slices/S01/tasks/T01-PLAN.md:9:M005-CONTEXT.md was produced during milestone planning and already contains the full predictive feature brief. This task verifies the file is complete and records any missing decisions or requirement mappings so S02–S06 can proceed without ambiguity.
+.gsd/milestones/M005/slices/S01/tasks/T01-PLAN.md:12:1. Confirm `.gsd/milestones/M005/M005-CONTEXT.md` exists and has ≥4 sections covering: predictive feature set, launch criteria, out-of-scope, and open questions.
+apps/mobile/tests/e2e/mobile-predictive.spec.ts:28:  await expect(routeState).toHaveAttribute('data-recurrence-suggestion-status', 'ready');
+apps/mobile/tests/e2e/mobile-predictive.spec.ts:29:  await expect(routeState).toHaveAttribute('data-recurrence-suggestion-reason', 'none');
+apps/mobile/tests/e2e/mobile-predictive.spec.ts:31:    (await routeState.getAttribute('data-recurrence-suggestion-match-count')) ?? '0',
+apps/mobile/tests/e2e/mobile-predictive.spec.ts:35:  const recurrenceExemplarShiftId = (await routeState.getAttribute('data-recurrence-suggestion-exemplar-shift-id')) ?? 'none';
+apps/mobile/tests/e2e/mobile-predictive.spec.ts:59:  await expect(page.getByTestId('recurrence-suggestion')).toHaveAttribute('data-exemplar-shift-id', recurrenceExemplarShiftId);
+apps/mobile/tests/e2e/mobile-predictive.spec.ts:61:  await page.getByTestId('recurrence-suggestion-dismiss').dispatchEvent('click');
+apps/mobile/tests/e2e/mobile-predictive.spec.ts:90:  await expect(routeState).toHaveAttribute('data-recurrence-suggestion-status', 'ready');
+apps/mobile/tests/e2e/mobile-predictive.spec.ts:92:    .poll(async () => Number.parseInt((await routeState.getAttribute('data-recurrence-suggestion-match-count')) ?? '0', 10), {
+apps/mobile/tests/e2e/mobile-predictive.spec.ts:111:  await page.getByTestId('recurrence-suggestion-accept').dispatchEvent('click');
+apps/mobile/src/lib/components/MobileShell.svelte:102:  data-route-mode={routeMode}
+apps/mobile/tests/e2e/calendar-offline.spec.ts:33:  await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'trusted-online');
+apps/mobile/tests/e2e/calendar-offline.spec.ts:41:  await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'trusted-offline');
+apps/mobile/tests/e2e/calendar-offline.spec.ts:69:  await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'cached-offline');
+apps/mobile/tests/e2e/calendar-offline.spec.ts:70:  await expect(page.getByTestId('calendar-sync-strip')).toHaveAttribute('data-route-mode', 'cached-offline');
+apps/mobile/tests/e2e/calendar-offline.spec.ts:85:  await expect(page.getByTestId('calendar-route-state')).toHaveAttribute('data-route-mode', 'trusted-online');
+.gsd/milestones/M005/slices/S04/S04-SUMMARY.md:31:  - `data-testid="clash-advisory"` provides an explicit pre-submit inspection surface for browser automation and future regression diagnosis.
+.gsd/milestones/M005/slices/S04/S04-SUMMARY.md:48:S04 closed the web pre-submit conflict-advisory loop on top of the shared overlap contract from S02. T01 derived a same-calendar visible-week `existingShifts` list once from the protected calendar route’s ready `effectiveSchedule` payload and threaded it through `CalendarWeekBoard`, `ShiftDayColumn`, `ShiftCard`, and the shared `ShiftEditorDialog` so create, edit, and move entrypoints all see the same authorized week context without widening data scope or adding fetches. T02 then added live advisory state in `ShiftEditorDialog` via a pure `deriveShiftEditorClashes()` helper that normalizes the draft, reuses `previewShiftConflicts()`, excludes the current shift during edit/move flows, suppresses malformed or touching-boundary drafts, and renders a calm warning-only `data-testid="clash-advisory"` surface while keeping submit enabled. The dialog now explicitly clears advisory-bearing local draft state on close and successful submit so SvelteKit `update({ reset: false })` does not leak stale warnings into later sessions. T03 finished the browser proof by stabilizing `calendar-shifts.spec.ts` against mutable shared seed state, self-healing missing Thursday anchors when necessary, asserting advisory content against the currently rendered conflict IDs, and covering both overlapping-save and clear-create scenarios. A reviewer subagent found no closeout-blocking issues.
+.gsd/milestones/M005/slices/S04/S04-SUMMARY.md:56:- R011 — Advanced predictive scheduling assistance by adding a truthful pre-submit clash advisory surface on web shift creation, extending the predictive/helpful guidance loop beyond recurrence suggestions while staying within trusted schedule scope.
+.gsd/milestones/M005/slices/S04/S04-SUMMARY.md:76:T03 also corrected a stale recurrence-suggestion assertion in the shared Playwright file because the required end-to-end verification command runs the entire `calendar-shifts.spec.ts` suite against mutable seed history.
+.gsd/milestones/M005/slices/S04/S04-SUMMARY.md:80:This slice proves only the web advisory surface; mobile parity remains for S05, and overall predictive-assistance validation plus broader hardening remain for S06.
+apps/mobile/tests/e2e/find-time-handoff.spec.ts:59:  await expect(page.getByTestId('find-time-route-state')).toHaveAttribute('data-top-pick-count', String(seededFindTime.topPickCount));
+apps/mobile/tests/e2e/find-time-handoff.spec.ts:76:  await expect(page.getByTestId('find-time-results')).toHaveAttribute('data-top-pick-count', String(seededFindTime.topPickCount));
+apps/mobile/tests/e2e/find-time-handoff.spec.ts:81:      const topPicks = document.querySelector('[data-testid="find-time-top-picks"]');
+apps/mobile/tests/e2e/find-time-handoff.spec.ts:93:  // if another spec has created a shift in the seeded top-pick slot (see MEM027).
+apps/mobile/tests/e2e/find-time-handoff.spec.ts:149:  await page.getByTestId('find-time-top-pick-0-cta').click();
+apps/mobile/tests/e2e/find-time-handoff.spec.ts:209:  await expect(page.getByTestId('find-time-route-state')).toHaveAttribute('data-top-pick-count', '0');
+apps/mobile/tests/e2e/find-time-handoff.spec.ts:212:  await expect(page.getByTestId('find-time-top-picks')).toHaveCount(0);
+apps/mobile/tests/e2e/find-time-handoff.spec.ts:235:  await expect(page.getByTestId('find-time-route-state')).toHaveAttribute('data-top-pick-count', '0');
+apps/mobile/tests/e2e/find-time-handoff.spec.ts:237:  await expect(page.getByTestId('find-time-top-picks')).toHaveCount(0);
+apps/mobile/tests/mobile-predictive.unit.test.ts:176:    expect(consoleInfo).toHaveBeenCalledWith('mobile.calendar.recurrence-suggestion.computed', {
+apps/mobile/tests/mobile-predictive.unit.test.ts:207:      message: 'The bounded recurrence history query timed out, so predictive hints stayed hidden.',
+apps/mobile/tests/mobile-predictive.unit.test.ts:272:      message: 'The bounded recurrence history query returned malformed data, so predictive hints stayed hidden.',
+apps/mobile/tests/mobile-find-time.unit.test.ts:392:  it('returns no-results, browse-only, and ready top-pick partitions deterministically', async () => {
+apps/mobile/tests/e2e/fixtures.ts:1038:    rank: await card.getAttribute('data-top-pick-rank'),
+apps/mobile/tests/e2e/fixtures.ts:1052:  return readFindTimeCardSnapshot(page, `find-time-top-pick-${index}`);
+apps/mobile/tests/e2e/fixtures.ts:1074:  return readFindTimeSuggestionCtaSnapshot(page, `find-time-top-pick-${index}-cta`);
+apps/mobile/tests/e2e/fixtures.ts:1147:  const suggestion = editor.getByTestId('recurrence-suggestion');
+apps/mobile/tests/e2e/fixtures.ts:1170:    acceptVisible: (await editor.getByTestId('recurrence-suggestion-accept').count()) > 0,
+apps/mobile/tests/e2e/fixtures.ts:1171:    dismissVisible: (await editor.getByTestId('recurrence-suggestion-dismiss').count()) > 0,
+apps/mobile/tests/e2e/fixtures.ts:1188:  const advisory = editor.getByTestId('clash-advisory');
+apps/mobile/src/lib/components/calendar/SyncStatusStrip.svelte:95:  data-route-mode={routeMode}
+apps/web/tests/routes/protected-routes.unit.test.ts:519:    expect(consoleInfo).toHaveBeenCalledWith('calendar.recurrence-suggestion.computed', {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:15:  } from './shift-editor-predictive';
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:489:              class="inline-state tone-warning clash-advisory"
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:490:              data-testid="clash-advisory"
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:497:              <div class="clash-advisory__header">
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:505:              <ul class="clash-advisory__list">
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:555:                  class="recurrence-suggestion"
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:556:                  data-testid="recurrence-suggestion"
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:569:                  <div class="recurrence-suggestion__actions">
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:573:                      data-testid="recurrence-suggestion-accept"
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:579:                      class="button button-secondary recurrence-suggestion__dismiss"
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:581:                      data-testid="recurrence-suggestion-dismiss"
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:666:  .clash-advisory__header,
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:667:  .recurrence-suggestion__actions {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:676:  .clash-advisory__header {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:687:  .clash-advisory__list,
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:688:  .clash-advisory__list li,
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:689:  .recurrence-suggestion {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:730:  .recurrence-suggestion p,
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:731:  .clash-advisory__list span {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:823:  .recurrence-suggestion {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:833:  .recurrence-suggestion {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:837:  .clash-advisory__list {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:841:  .clash-advisory__list li {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:878:    .recurrence-suggestion__actions {
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte:883:    .recurrence-suggestion__actions {
+apps/web/tests/e2e/find-time.spec.ts:64:    await expect(page.getByTestId('find-time-results')).toHaveAttribute('data-top-pick-count', String(seededFindTime.topPickCount));
+apps/web/tests/e2e/find-time.spec.ts:69:        const topPicks = document.querySelector('[data-testid="find-time-top-picks"]');
+apps/web/tests/e2e/find-time.spec.ts:80:    await expect(page.getByTestId('find-time-top-picks')).toBeVisible();
+apps/web/tests/e2e/find-time.spec.ts:116:    await expect(page.getByTestId('find-time-top-pick-0-free-members')).toContainText('Alice Owner');
+apps/web/tests/e2e/find-time.spec.ts:117:    await expect(page.getByTestId('find-time-top-pick-0-free-members')).toContainText('Bob Member');
+apps/web/tests/e2e/find-time.spec.ts:118:    await expect(page.getByTestId('find-time-top-pick-0-free-members')).toContainText('Dana Multi-Group');
+apps/web/tests/e2e/find-time.spec.ts:119:    await expect(page.getByTestId('find-time-top-pick-0-blocked-members')).toContainText(
+apps/web/tests/e2e/find-time.spec.ts:122:    await expect(page.getByTestId('find-time-top-pick-0-nearby-leading')).toContainText(
+apps/web/tests/e2e/find-time.spec.ts:125:    await expect(page.getByTestId('find-time-top-pick-0-nearby-trailing')).toContainText(
+apps/web/tests/e2e/find-time.spec.ts:164:  await test.step('phase: confirm the chosen top-pick CTA targets the slot week instead of the earlier search anchor week', async () => {
+apps/web/tests/e2e/find-time.spec.ts:175:      throw new Error('Expected a deterministic top-pick suggestion href before clicking the handoff CTA.');
+apps/web/tests/e2e/find-time.spec.ts:179:    await page.getByTestId('find-time-top-pick-0-cta').click();
+apps/web/tests/e2e/find-time.spec.ts:266:    await expect(page.getByTestId('find-time-top-picks')).toHaveCount(0);
+.gsd/milestones/M005/slices/S04/tasks/T03-SUMMARY.md:23:The Playwright advisory helper work was already present in fixtures, so this continuation focused on making the web shift-editor browser proof deterministic. I updated calendar-shifts.spec.ts to provision the expected Thursday overlap anchors (Kitchen prep and Supplier call) only when a prior run or shared database drift had removed them, reload back to a clean create-dialog state, assert the pre-submit clash advisory against the actual visible conflicting IDs returned by the helper, and clean up any synthesized anchors after the warned save proof. During authoritative verification, the spec then exposed an older recurrence-suggestion assertion that was pinned to a stale historical match count; I tightened that test to prove the live weekly suggestion is present without assuming an immutable count from mutable seed history. The full calendar-shifts Playwright file now passes end-to-end.
+.gsd/milestones/M005/slices/S04/tasks/T03-PLAN.md:32:2. Add a Playwright scenario in `apps/web/tests/e2e/calendar-shifts.spec.ts` that opens the seeded Alpha create dialog, enters an overlapping Thursday window, proves `clash-advisory` appears before submit, verifies the save button remains usable, and confirms the shift still saves.
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:475:          data-top-pick-count={search.topPicks.length}
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:478:          <section class="find-time-top-picks framed-panel" data-testid="find-time-top-picks" data-top-pick-count={search.topPicks.length}>
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:491:              <article class="find-time-empty-panel" data-testid="find-time-top-picks-empty">
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:496:              <div class="find-time-top-pick-grid">
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:501:                    class="framed-panel find-time-card find-time-card--top-pick"
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:502:                    data-testid={`find-time-top-pick-${index}`}
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:503:                    data-top-pick-rank={window.topPickRank ?? ''}
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:552:                      <section class="find-time-detail-panel" data-testid={`find-time-top-pick-${index}-free-members`}>
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:563:                        data-testid={`find-time-top-pick-${index}-blocked-members`}
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:582:                        data-testid={`find-time-top-pick-${index}-nearby-leading`}
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:599:                        data-testid={`find-time-top-pick-${index}-nearby-trailing`}
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:619:                          data-testid={`find-time-top-pick-${index}-cta`}
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:629:                        <p class="find-time-card__handoff-unavailable" data-testid={`find-time-top-pick-${index}-cta-unavailable`}>
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:787:  .find-time-top-picks,
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:789:  .find-time-top-pick-grid,
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:842:  .find-time-top-picks,
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:849:  .find-time-top-pick-grid {
+apps/web/src/routes/(app)/calendars/[calendarId]/find-time/+page.svelte:864:  .find-time-card--top-pick {
+apps/web/tests/e2e/calendar-shifts.spec.ts:505:      phase: 'recurrence-suggestion-accept'
+apps/web/tests/e2e/calendar-shifts.spec.ts:526:    await editor.getByTestId('recurrence-suggestion-accept').dispatchEvent('click');
+apps/web/tests/e2e/calendar-shifts.spec.ts:594:      phase: 'recurrence-suggestion-dismiss'
+apps/web/tests/e2e/calendar-shifts.spec.ts:607:    await editor.getByTestId('recurrence-suggestion-dismiss').dispatchEvent('click');
+.gsd/milestones/M005/slices/S04/tasks/T02-PLAN.md:7:# T02: Add live clash-advisory state and warning-only UI to the shared shift editor
+.gsd/milestones/M005/slices/S04/tasks/T02-PLAN.md:17:# T02: Add live clash-advisory state and warning-only UI to the shared shift editor
+.gsd/milestones/M005/slices/S04/tasks/T02-PLAN.md:40:4. Render a warning-only advisory article with `data-testid="clash-advisory"`, overlap count, conflicting titles/windows, and calm explanatory copy/ARIA-friendly structure.
+.gsd/milestones/M005/slices/S04/tasks/T02-PLAN.md:57:- Signals added/changed: `data-testid="clash-advisory"` plus advisory metadata/content in the shared dialog.
+.gsd/milestones/M005/slices/S04/tasks/T02-SUMMARY.md:12:  - Kept the clash surface warning-only with data-testid="clash-advisory" and explicit close/success draft resets so SvelteKit's update({ reset: false }) does not leave stale advisory state behind.
+.gsd/milestones/M005/slices/S04/tasks/T02-SUMMARY.md:25:Reworked the shared web ShiftEditorDialog to use controlled local title/start/end draft state instead of submit-only derived values, then threaded that live draft through a new deriveShiftEditorClashes() helper that normalizes the draft, suppresses malformed/inverted inputs to no preview, and excludes the current shift ID during edit and move flows before calling the shared previewShiftConflicts() helper. Added a warning-only advisory article with data-testid="clash-advisory", overlap metadata, calm explanatory copy, and per-conflict title/window details while leaving submit fully enabled. Also reset the advisory-bearing draft state on dialog close and on successful create/edit/move completion so SvelteKit's non-resetting form update path does not leak stale overlap warnings into the next session, and added matching warning-surface styling in app.css.
+apps/web/tests/e2e/fixtures.ts:1379:    rank: await card.getAttribute('data-top-pick-rank'),
+apps/web/tests/e2e/fixtures.ts:1392:  return readFindTimeCardSnapshot(page, `find-time-top-pick-${index}`);
+apps/web/tests/e2e/fixtures.ts:1414:  return readFindTimeSuggestionCtaSnapshot(page, `find-time-top-pick-${index}-cta`);
+apps/web/tests/e2e/fixtures.ts:1485:  const suggestion = page.getByTestId('recurrence-suggestion');
+apps/web/tests/e2e/fixtures.ts:1508:    acceptVisible: (await page.getByTestId('recurrence-suggestion-accept').count()) > 0,
+apps/web/tests/e2e/fixtures.ts:1509:    dismissVisible: (await page.getByTestId('recurrence-suggestion-dismiss').count()) > 0,
+apps/web/tests/e2e/fixtures.ts:1531:  const advisory = editor.getByTestId('clash-advisory');
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:460:            class="inline-state tone-warning clash-advisory"
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:461:            data-testid="clash-advisory"
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:467:            <div class="clash-advisory__header">
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:477:            <ul class="clash-advisory__list">
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:521:                class="recurrence-suggestion"
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:522:                data-testid="recurrence-suggestion"
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:535:                <div class="recurrence-suggestion__actions">
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:539:                    data-testid="recurrence-suggestion-accept"
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:545:                    class="button button-secondary recurrence-suggestion__dismiss"
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:547:                    data-testid="recurrence-suggestion-dismiss"
+apps/web/src/app.css:538:.recurrence-suggestion,
+apps/web/src/app.css:539:.recurrence-suggestion__actions,
+apps/web/src/app.css:772:.recurrence-suggestion {
+apps/web/src/app.css:781:.recurrence-suggestion p {
+apps/web/src/app.css:785:.recurrence-suggestion__actions {
+apps/web/src/app.css:793:.recurrence-suggestion__dismiss {
+apps/web/src/app.css:797:.clash-advisory,
+apps/web/src/app.css:798:.clash-advisory__header,
+apps/web/src/app.css:799:.clash-advisory__list,
+apps/web/src/app.css:800:.clash-advisory__list li {
+apps/web/src/app.css:805:.clash-advisory {
+apps/web/src/app.css:811:.clash-advisory__header {
+apps/web/src/app.css:816:.clash-advisory > p,
+apps/web/src/app.css:817:.clash-advisory__list span {
+apps/web/src/app.css:821:.clash-advisory__list {
+apps/web/src/app.css:826:.clash-advisory__list li {
+apps/web/src/app.css:928:  .recurrence-suggestion__actions {
+apps/web/src/lib/server/schedule.ts:260:    console.info('calendar.recurrence-suggestion.computed', {
+.gsd/milestones/M005/M005-CONTEXT.md:5:M005 delivers predictive scheduling assistance and hardens the product for launch. It builds directly on the complete cross-platform coordination loop from M001–M004: trusted shared calendars, offline continuity, find-time matching, and cross-surface notification delivery are all working. The goal now is to make the product smarter about anticipating scheduling needs and ready for real users at scale.
+.gsd/milestones/M005/M005-CONTEXT.md:7:All predictive features are implemented as pure TypeScript over existing Supabase schedule data — no external ML service, no new backend infrastructure beyond what already exists. The existing `shifts`, `shift_series`, find-time matcher/ranking, and conflict detection substrate supply all the raw material needed.
+.gsd/milestones/M005/M005-CONTEXT.md:9:**R011 ownership:** This milestone owns and must validate R011 (predictive scheduling assistance).
+.gsd/milestones/M005/M005-CONTEXT.md:37:**What's new:** A `previewShiftConflicts(draft: NormalizedScheduleShiftDraft, existingShifts: CalendarShift[])` pure helper. A non-blocking advisory in the shift editor (`data-testid="clash-advisory"`).
+.gsd/milestones/M005/M005-CONTEXT.md:73:- Clash advisory renders `data-testid="clash-advisory"`
+.gsd/milestones/M005/M005-CONTEXT.md:79:- Two stale M004 test assertions fixed: `calendar-offline.spec.ts` route-mode expectation and `mobile-assembly.spec.ts` top-pick ordering
+.gsd/milestones/M005/slices/S03/S03-PLAN.md:14:- **Abuse**: query-param tampering must not widen predictive evidence beyond the authorized `calendarId` plus the fixed trailing window.
+.gsd/milestones/M005/slices/S03/S03-PLAN.md:35:- Add a positive-path server log when a recurrence suggestion is computed and stable DOM inspection hooks for the suggestion surface (`data-testid="recurrence-suggestion"`, accept/dismiss controls, and recurrence field state) so future agents can tell whether the hint was generated, surfaced, accepted, or dismissed without guessing.
+.gsd/milestones/M005/slices/S03/S03-PLAN.md:39:- [x] **T01: Add a bounded recurrence-suggestion route contract and truthful weekly fixture baseline** `est:70m`
+.gsd/milestones/M005/slices/S03/tasks/T01-SUMMARY.md:13:  - Added a separate fail-closed recurrence-suggestion loader that queries same-calendar shifts in the trailing 30-day window ending at visibleWeek.endAt and returns null on error, timeout, or malformed rows.
+.gsd/milestones/M005/slices/S03/S03-RESEARCH.md:7:- **R011 support:** this is the first web surface for the new predictive recurrence contract.
+.gsd/milestones/M005/slices/S03/S03-RESEARCH.md:12:1. **The loader has no predictive hint yet.** `apps/web/src/routes/(app)/calendars/[calendarId]/+page.server.ts` loads `schedule` plus `createPrefill`, but nothing for recurrence suggestions. The schedule loader in `apps/web/src/lib/server/schedule.ts:169-205` queries only the visible week (`.lt('start_at', visibleWeek.endAt)` / `.gt('end_at', visibleWeek.startAt)`), so S03 needs an additional same-calendar history query instead of reusing visible-week data.
+.gsd/milestones/M005/slices/S03/S03-RESEARCH.md:22:- Add a **separate server-side recurrence-suggestion load helper** near `loadCalendarScheduleView()` in `apps/web/src/lib/server/schedule.ts`, then thread its result through `+page.server.ts` into `+page.svelte` → `CalendarWeekBoard.svelte` → `ShiftEditorDialog.svelte`.
+.gsd/milestones/M005/slices/S03/S03-RESEARCH.md:29:- Add explicit `data-testid`s for the predictive surface (`recurrence-suggestion`, `recurrence-suggestion-accept`, `recurrence-suggestion-dismiss`) and accessible labels/button text.
+.gsd/milestones/M005/slices/S03/S03-RESEARCH.md:36:- `apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte` — pass create-only predictive props into the create dialog.
+.gsd/milestones/M005/slices/S03/S03-RESEARCH.md:62:- Do not widen scope beyond the permitted calendar; R002 still applies even though the feature feels “predictive.”
+.gsd/milestones/M005/slices/S05/S05-UAT.md:6:# UAT — Mobile predictive scheduling surfaces
+.gsd/milestones/M005/slices/S05/S05-UAT.md:18:2. Confirm the route diagnostics expose a ready recurrence-suggestion state before opening the create sheet.
+.gsd/milestones/M005/slices/S05/S05-UAT.md:31:- The route exposes explicit predictive state rather than requiring inference from missing UI.
+.gsd/milestones/M005/slices/S05/S05-UAT.md:35:- Overlaps in the visible week show `clash-advisory`; clear drafts do not.
+.gsd/milestones/M005/slices/S03/S03-SUMMARY.md:6:  - A bounded recurrence suggestion contract that downstream slices can reuse for predictive assistance without widening calendar scope.
+.gsd/milestones/M005/slices/S03/S03-SUMMARY.md:7:  - A verified web create-dialog pattern for surfaced, accepted, dismissed, and rehydrated predictive hints.
+.gsd/milestones/M005/slices/S03/S03-SUMMARY.md:29:  - Use a separate recurrence-suggestion loader that is scoped to the authorized calendar id and a fixed trailing 30-day window ending at the visible week’s exclusive end, and fail closed to null on query errors or malformed rows.
+.gsd/milestones/M005/slices/S03/S03-SUMMARY.md:37:  - Positive-path server log: `calendar.recurrence-suggestion.computed` with calendar/week/lookback and matched ids metadata.
+.gsd/milestones/M005/slices/S03/S03-SUMMARY.md:38:  - Stable create-dialog hooks: `data-testid="recurrence-suggestion"`, `recurrence-suggestion-accept`, and `recurrence-suggestion-dismiss`.
+.gsd/milestones/M005/slices/S03/S03-SUMMARY.md:55:T01 added a separate fail-closed recurrence-suggestion loader on the protected calendar route. It queries only same-calendar shifts inside the trailing 30-day window ending at the visible week’s exclusive end, validates rows before mapping them into detectRecurrencePattern, and logs a positive-path `calendar.recurrence-suggestion.computed` event only when a concrete suggestion exists. The seeded Alpha fixtures were updated to contain a truthful weekly Monday pattern inside that lookback window while preserving the existing visible-week proof shifts used elsewhere.
+.gsd/milestones/M005/slices/S03/S03-SUMMARY.md:57:T02 wired that nullable suggestion through the web create flow so `ShiftEditorDialog` renders a calm, keyboard-accessible suggestion surface with stable test hooks (`data-testid="recurrence-suggestion"`, `recurrence-suggestion-accept`, `recurrence-suggestion-dismiss`) and suggestion-state diagnostics for field snapshots. Accepting the suggestion pre-fills weekly cadence with interval `1` while leaving repeat bounds blank; dismissing the suggestion leaves the form blank, keeps the fields editable, hides the suggestion for the current page instance, and allows it to return after fresh loader data on reload.
+.gsd/milestones/M005/slices/S03/S03-SUMMARY.md:100:S04 should add the non-blocking clash advisory to the web shift editor. S05 should carry the same predictive surfaces onto mobile. S06 should finish accessibility/build hardening and validate R011 at milestone close.
+.gsd/milestones/M005/slices/S03/S03-SUMMARY.md:104:- `apps/web/src/lib/server/schedule.ts` — Added the bounded recurrence-suggestion loader, positive-path log, and supporting server-side validation logic.
+.gsd/milestones/M005/slices/S02/S02-SUMMARY.md:6:  - A shared `detectRecurrencePattern` contract for recurrence-suggestion UI slices.
+.gsd/milestones/M005/slices/S02/S02-SUMMARY.md:28:  - Pure predictive helpers should derive their evidence window from provided data rather than `Date.now()` to stay deterministic.
+.gsd/milestones/M005/slices/S02/S02-SUMMARY.md:44:**Shipped deterministic shared recurrence-suggestion and advisory conflict-preview helpers in @repo/caluno-core with passing contract and regression coverage for downstream web/mobile wiring.**
+.gsd/milestones/M005/slices/S02/S02-SUMMARY.md:48:S02 completed the shared schedule-core contracts that M005’s predictive UI slices depend on. T01 added `detectRecurrencePattern` to the recurrence module and exported the shared suggestion shape so consumers can derive a weekly suggestion from historical shifts without relying on wall-clock time. The helper sorts inputs deterministically, anchors its 30-day lookback window to the latest valid shift in the provided array, groups evidence by UTC weekday plus exact start/end window, and fails closed for malformed, inverted, duplicate, or otherwise unusable rows. The recurrence contract tests now prove the positive path plus under-threshold, out-of-window, split-window, malformed, inverted, duplicate, and empty-input negatives. T02 added `previewShiftConflicts` to the conflicts module as an advisory-only helper for draft-vs-existing overlap preview. It normalizes the draft range, filters existing shifts to the same calendar, rejects malformed or inverted rows, and returns overlapping `CalendarShift[]` rows in the same stable start/end/title/id order already used by visible-week conflict derivation. The conflicts test suite now covers overlapping previews, touching-boundary negatives, cross-calendar exclusion, malformed and inverted rows, and clear-state behavior, while board and server-action regressions confirmed the refactor did not change baseline visible conflict semantics. A reviewer and a security/parsing pass both found the slice ready to close; only non-blocking follow-up ideas were noted for future hardening.
+.gsd/milestones/M005/slices/S02/S02-SUMMARY.md:56:- R011 — Established and verified the shared predictive recurrence-suggestion and advisory conflict-preview helper contracts that downstream web/mobile slices will wire into the product experience.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:6:  - Mobile parity for predictive recurrence suggestion and clash-advisory UI on create/edit/move flows.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:11:    provides: Bounded recurrence-suggestion semantics and web predictive-create contract.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:13:    provides: Shared clash-advisory rule and non-blocking conflict behavior.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:27:  - apps/mobile/tests/mobile-predictive.unit.test.ts
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:29:  - apps/mobile/tests/e2e/mobile-predictive.spec.ts
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:31:  - Shared clash-advisory derivation now lives in `@repo/caluno-core` so web and mobile reuse identical overlap and self-exclusion behavior.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:33:  - Mobile predictive UI uses explicit route diagnostics plus stable sheet test hooks instead of inferring state from chip presence alone.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:35:  - Use route-owned predictive loader state with explicit diagnostics (`calendar-route-state`) so mobile UI can distinguish ready, empty, dismissed, and fail-closed states.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:37:  - Expose stable `data-testid` hooks for predictive suggestion and clash-advisory states so Playwright can prove behavior without brittle selector coupling.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:39:  - `data-testid="calendar-route-state"` now exposes recurrence-suggestion load state on the mobile calendar route.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:40:  - `data-testid="recurrence-suggestion"`, `recurrence-suggestion-accept`, `recurrence-suggestion-dismiss`, and `data-testid="recurrence-field-state"` provide inspectable predictive UI states in `ShiftEditorSheet`.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:41:  - `data-testid="clash-advisory"` exposes overlap guidance before submit for mobile create/edit/move flows.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:55:**Mobile ShiftEditorSheet now reaches parity with web predictive-create behavior by loading bounded recurrence suggestions, reusing the shared clash helper, and exposing stable diagnostics proved by mobile smoke coverage.**
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:59:S05 closed the mobile parity gap for predictive schedule assistance without widening data scope. T01 moved deriveShiftEditorClashes() into @repo/caluno-core and left the existing web import surface as a thin re-export, so overlap previews and self-exclusion rules are now shared between web and mobile. T02 added a bounded mobile recurrence-suggestion loader in the offline transport that queries only the same calendar over the trailing 30 days ending at visibleWeek.endAt, then fail-closes to null on timeout, query, or malformed data while surfacing explicit route diagnostics on data-testid="calendar-route-state". T03 verified the existing mobile route→board→card→sheet flow already threaded visible-week existingShifts plus recurrenceSuggestion through create, edit, and move entrypoints, and that ShiftEditorSheet already rendered the stable predictive hooks recurrence-suggestion, recurrence-suggestion-accept, recurrence-suggestion-dismiss, recurrence-field-state, and clash-advisory without overwriting draft timing when a weekly suggestion is accepted. T04 verified the dedicated mobile Playwright helper/spec surface already exercised suggestion visible → dismiss → close/reopen hidden → reload visible → accept plus overlap/clear advisory behavior on the real Alpha shared-calendar route. Fresh closeout verification re-ran the slice plan commands and confirmed green unit, typecheck, and end-to-end proof. This advances R011 by delivering the mobile predictive surfaces and shared overlap logic needed for cross-platform predictive assistance; formal requirement validation remains with S06 hardening/validation.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:63:Fresh closeout verification passed all slice-plan commands: (1) `pnpm --dir apps/mobile check` → exit 0 in 4103ms with `svelte-check found 0 errors and 0 warnings`; (2) `pnpm --dir apps/web exec vitest run tests/schedule/shift-editor-advisory.unit.test.ts` → exit 0 in 1887ms with 3/3 tests passing; (3) `pnpm --dir apps/mobile exec vitest run tests/mobile-predictive.unit.test.ts` → exit 0 in 1836ms with 4/4 tests passing; (4) `npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/mobile-predictive.spec.ts tests/e2e/find-time-handoff.spec.ts tests/e2e/mobile-assembly.spec.ts` → exit 0 in 47812ms with 10/10 Playwright tests passing. Additional observability inspection confirmed the planned predictive diagnostics hooks remain present in the route, sheet, and E2E spec surfaces.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:67:- R011 — Delivered mobile predictive-create and clash-advisory surfaces, shared overlap logic, explicit diagnostics, and passing mobile smoke coverage needed for cross-platform predictive scheduling assistance.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:87:T03 and T04 completed as verification-first tasks because the expected mobile predictive wiring and smoke specs were already present in the repository; closeout focused on re-verifying them with fresh evidence rather than introducing additional code changes.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:95:S06 should use these stable mobile diagnostics and shared predictive hooks while validating R011 and completing launch hardening, accessibility, and deployment readiness.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:104:- `apps/mobile/src/lib/offline/transport.ts` — Added bounded recurrence-suggestion loading with fail-closed result handling.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:105:- `apps/mobile/src/routes/calendars/[calendarId]/+page.svelte` — Owned recurrence suggestion state/diagnostics and threaded predictive props into the mobile calendar board.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:108:- `apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte` — Rendered stable recurrence suggestion and clash-advisory hooks while preserving draft timing on accept.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:109:- `apps/mobile/tests/mobile-predictive.unit.test.ts` — Covered bounded query shape plus ready/empty/timeout/query-error/malformed fail-closed loader behavior.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:110:- `apps/mobile/tests/e2e/fixtures.ts` — Exposed deterministic helpers for reading mobile recurrence suggestion and clash-advisory state in Playwright.
+.gsd/milestones/M005/slices/S05/S05-SUMMARY.md:111:- `apps/mobile/tests/e2e/mobile-predictive.spec.ts` — Proved dismiss/reload/accept suggestion flow and overlap/clear advisory behavior on the real mobile route.
+.gsd/milestones/M005/slices/S03/tasks/T02-PLAN.md:46:3. Render a dismissible suggestion surface with stable test ids (`recurrence-suggestion`, `recurrence-suggestion-accept`, `recurrence-suggestion-dismiss`), accessible button text, and calm contextual copy.
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:3:**Goal:** Carry the web predictive-create contract onto mobile by loading truthful same-calendar recurrence suggestions for the visible week context, threading visible-week shifts into `ShiftEditorSheet`, and rendering stable recurrence-suggestion plus clash-advisory surfaces with mobile Playwright proof.
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:9:- **Goal:** Carry the web predictive-create contract onto mobile without widening data scope.
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:10:- **Demo:** On the mobile calendar route, `ShiftEditorSheet` shows a truthful recurrence suggestion when the same-calendar 30-day history supports it, shows a non-blocking `clash-advisory` when the current draft overlaps visible-week shifts, and Playwright mobile smoke proves accept/dismiss plus overlap/clear behavior.
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:12:- `apps/mobile/src/lib/offline/transport.ts` adds a bounded recurrence-suggestion loader that mirrors the web query contract: same `calendarId`, trailing 30-day lookback ending at `visibleWeek.endAt`, sorted rows, and fail-closed `null` on timeout/query/malformed data.
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:13:- `apps/mobile/src/routes/calendars/[calendarId]/+page.svelte` derives mobile `existingShifts`, owns nullable recurrence-suggestion state, and clears suggestion state explicitly for cached-offline or unavailable route modes instead of guessing from visible-week data.
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:14:- `apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte` exposes the same stable predictive hooks used on web: `data-testid="recurrence-suggestion"`, `recurrence-suggestion-accept`, `recurrence-suggestion-dismiss`, `data-testid="recurrence-field-state"`, and `data-testid="clash-advisory"`.
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:20:- `pnpm --dir apps/mobile exec vitest run tests/mobile-predictive.unit.test.ts`
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:21:- `npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/mobile-predictive.spec.ts tests/e2e/find-time-handoff.spec.ts tests/e2e/mobile-assembly.spec.ts`
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:28:- **Re-verify**: mobile create/edit/move flows, find-time handoff create prefill, and predictive-create behavior on the permitted Alpha shared calendar week.
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:37:- `pnpm --dir apps/mobile exec vitest run tests/mobile-predictive.unit.test.ts`
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:38:- `npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/mobile-predictive.spec.ts tests/e2e/find-time-handoff.spec.ts tests/e2e/mobile-assembly.spec.ts`
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:40:- Runtime signals: `data-testid="calendar-route-state"` should expose recurrence-suggestion load state so future agents can distinguish `ready`/`empty` from fail-closed paths without inferring from missing UI alone.
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:41:- Inspection surfaces: mobile sheet hooks `recurrence-suggestion`, `recurrence-field-state`, and `clash-advisory` provide explicit proof points for Playwright and future debugging.
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:45:- Consumes the S03 bounded recurrence-suggestion semantics and the S04 shared clash-advisory rule, then closes mobile parity for predictive create/edit surfaces on the phone calendar route. S06 remains responsible for milestone-wide hardening, accessibility/build readiness, and formal `R011` validation.
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:53:Consumes the S03 bounded recurrence-suggestion contract plus the S04 clash-advisory pattern and closes mobile parity on the real calendar route; only S06 hardening/validation remains before milestone closure.
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:57:- Adds mobile route-state diagnostics for recurrence-suggestion loading and stable predictive sheet hooks (`recurrence-suggestion`, accept/dismiss controls, `recurrence-field-state`, `clash-advisory`) so absent, dismissed, accepted, and overlapping states are explicitly inspectable.
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:72:- [x] **T02: Add bounded mobile recurrence-suggestion loading and route-level diagnostics** `est:1h`
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:80:  - Files: `apps/mobile/src/lib/offline/transport.ts`, `apps/mobile/src/routes/calendars/[calendarId]/+page.svelte`, `apps/mobile/tests/mobile-predictive.unit.test.ts`
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:81:  - Verify: pnpm --dir apps/mobile exec vitest run tests/mobile-predictive.unit.test.ts && pnpm --dir apps/mobile check
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:83:- [x] **T03: Wire suggestion and clash-advisory UI into all mobile `ShiftEditorSheet` entrypoints** `est:1h15m`
+.gsd/milestones/M005/slices/S05/S05-PLAN.md:94:- [x] **T04: Add mobile predictive Playwright helpers and prove accept/dismiss plus clash smoke flows** `est:55m`

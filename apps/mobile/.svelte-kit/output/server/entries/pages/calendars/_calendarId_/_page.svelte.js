@@ -3,9 +3,9 @@ import { p as page } from "../../../../chunks/index2.js";
 import { o as onDestroy } from "../../../../chunks/index-server.js";
 import { d as describeDeniedCalendarReason } from "../../../../chunks/app-shell.js";
 import { M as MobileShell } from "../../../../chunks/MobileShell.js";
+import * as rrulePkg from "rrule";
 /* empty css                                                                          */
 import "../../../../chunks/repository.js";
-import * as rrulePkg from "rrule";
 import "@capacitor/network";
 import "@capacitor/app";
 import { p as primaryCalendarLandingHref } from "../../../../chunks/load-app-shell.js";
@@ -77,6 +77,14 @@ const RRule = rruleModule.RRule ?? rruleModule.default?.RRule;
 function _page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     var $$store_subs;
+    function createRecurrenceSuggestionDiagnostic(params) {
+      return {
+        scopeKey: params.scopeKey,
+        status: params.status,
+        reason: params.reason,
+        message: params.message
+      };
+    }
     const authState = derived(() => page.data.authState);
     const protectedEntry = derived(() => page.data.protectedEntry);
     const attemptedCalendarId = derived(() => page.params.calendarId ?? "");
@@ -88,6 +96,12 @@ function _page($$renderer, $$props) {
       status: "none",
       cleanedSearchParams: new URLSearchParams()
     };
+    let recurrenceSuggestionStatus = createRecurrenceSuggestionDiagnostic({
+      scopeKey: "uninitialized",
+      status: "inactive",
+      reason: "RECURRENCE_SUGGESTION_INACTIVE",
+      message: "Trusted online recurrence suggestions are inactive until a permitted calendar week is active."
+    });
     let runtimeState = null;
     let runtime = null;
     let runtimeSubscription = null;
@@ -150,7 +164,7 @@ function _page($$renderer, $$props) {
       primaryLabel: appShell()?.primaryCalendar?.name ?? null,
       shellTestId: "calendar-shell",
       children: ($$renderer3) => {
-        $$renderer3.push(`<section class="calendar-route svelte-7ipbkm" data-testid="calendar-route-state"${attr("data-shell-bootstrap", shellBootstrapMode)}${attr("data-route-mode", routeMode())}${attr("data-shell-snapshot-origin", snapshotOrigin())}${attr("data-snapshot-origin", runtimeState?.snapshotOrigin ?? "none")}${attr("data-visible-week-source", visibleWeek().source)}${attr("data-visible-week-start", visibleWeek().start)}${attr("data-board-source", runtimeState?.boardSource ?? "none")}${attr("data-queue-state", runtimeState?.queueState ?? "idle")}${attr("data-pending-count", runtimeState?.pendingQueueLength ?? 0)}${attr("data-retryable-count", runtimeState?.retryableQueueLength ?? 0)}${attr("data-sync-phase", runtimeState?.syncPhase ?? "idle")}${attr("data-last-retryable-reason", runtimeState?.lastRetryableFailure?.reason ?? "none")}${attr("data-denied-reason", deniedState()?.reason ?? protectedEntry().denialReasonCode ?? "none")}${attr("data-failure-phase", deniedState()?.failurePhase ?? shellFailure()?.failurePhase ?? (protectedEntry().routeMode === "denied" ? "continuity" : "none"))}${attr("data-attempted-calendar-id", attemptedCalendarId())}${attr("data-create-prefill-status", createPrefillArrival.status)}${attr("data-create-prefill-source", "none")}${attr("data-create-prefill-start", "none")}${attr("data-create-prefill-end", "none")}${attr("data-notification-route-result", routeDiagnostics().code)}${attr("data-notification-route-reason", routeDiagnostics().reason ?? "none")}>`);
+        $$renderer3.push(`<section class="calendar-route svelte-7ipbkm" data-testid="calendar-route-state"${attr("data-shell-bootstrap", shellBootstrapMode)}${attr("data-route-mode", runtimeState?.routeMode ?? routeMode())}${attr("data-shell-snapshot-origin", snapshotOrigin())}${attr("data-snapshot-origin", runtimeState?.snapshotOrigin ?? "none")}${attr("data-visible-week-source", visibleWeek().source)}${attr("data-visible-week-start", visibleWeek().start)}${attr("data-board-source", runtimeState?.boardSource ?? "none")}${attr("data-queue-state", runtimeState?.queueState ?? "idle")}${attr("data-pending-count", runtimeState?.pendingQueueLength ?? 0)}${attr("data-retryable-count", runtimeState?.retryableQueueLength ?? 0)}${attr("data-sync-phase", runtimeState?.syncPhase ?? "idle")}${attr("data-last-retryable-reason", runtimeState?.lastRetryableFailure?.reason ?? "none")}${attr("data-denied-reason", deniedState()?.reason ?? protectedEntry().denialReasonCode ?? "none")}${attr("data-failure-phase", deniedState()?.failurePhase ?? shellFailure()?.failurePhase ?? (protectedEntry().routeMode === "denied" ? "continuity" : "none"))}${attr("data-attempted-calendar-id", attemptedCalendarId())}${attr("data-create-prefill-status", createPrefillArrival.status)}${attr("data-create-prefill-source", "none")}${attr("data-create-prefill-start", "none")}${attr("data-create-prefill-end", "none")}${attr("data-recurrence-suggestion-scope", recurrenceSuggestionStatus.scopeKey)}${attr("data-recurrence-suggestion-status", recurrenceSuggestionStatus.status)}${attr("data-recurrence-suggestion-reason", recurrenceSuggestionStatus.reason ?? "none")}${attr("data-recurrence-suggestion-match-count", 0)}${attr("data-recurrence-suggestion-exemplar-shift-id", "none")}${attr("data-notification-route-result", routeDiagnostics().code)}${attr("data-notification-route-reason", routeDiagnostics().reason ?? "none")}>`);
         if (shellFailure()) {
           $$renderer3.push("<!--[1-->");
           $$renderer3.push(`<article class="hero-card framed-panel tone-danger svelte-7ipbkm" data-testid="mobile-shell-load-failure"><p class="panel-kicker svelte-7ipbkm">Shell load failed</p> <h2 class="svelte-7ipbkm">Protected content stayed hidden.</h2> <p class="panel-copy svelte-7ipbkm">${escape_html(shellFailure().detail)}</p> <div class="meta-strip svelte-7ipbkm"><code class="svelte-7ipbkm">${escape_html(shellFailure().reasonCode)}</code> <code class="svelte-7ipbkm">${escape_html(shellFailure().failurePhase)}</code></div> <button class="button button-primary svelte-7ipbkm" type="button"${attr("disabled", !shellFailure().retryable, true)}>Retry trusted load</button></article>`);

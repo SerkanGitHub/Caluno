@@ -25,10 +25,10 @@
 - [x] **S04: S04** `risk:medium` `depends:[]`
   > After this: Creating a shift on web that would overlap an existing one shows a non-blocking advisory before confirm. The user can still save. Browser E2E covers conflict and clear scenarios.
 
-- [ ] **S05: S05** `risk:medium` `depends:[]`
+- [x] **S05: S05** `risk:medium` `depends:[]`
   > After this: ShiftEditorSheet on mobile renders both the suggestion chip and the clash advisory when applicable. Playwright mobile smoke passes.
 
-- [ ] **S06: Hardening, accessibility, and deployment readiness** `risk:low` `depends:[S05]`
+- [ ] **S06: S06** `risk:low` `depends:[]`
   > After this: axe-core scan reports zero new WCAG 2.1 AA violations. Stale M004 E2E assertions fixed. pnpm build passes for web and mobile. R011 marked validated.
 
 ## Boundary Map

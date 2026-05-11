@@ -1,3 +1,4 @@
+import "../../../chunks/recurrence.js";
 import "@supabase/ssr";
 function buildProtectedAppShellFromSnapshot(snapshot) {
   const calendars = snapshot.calendars.map((calendar) => ({
