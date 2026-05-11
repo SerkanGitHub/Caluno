@@ -1,3 +1,4 @@
+import AxeBuilder from '@axe-core/playwright';
 import {
   expect,
   expectedCreateShiftPrefillValues,
@@ -300,9 +301,9 @@ test('overlapping Thursday create drafts show a warning-only advisory before sub
       throw new Error('Expected the saved proof shift id before cleanup.');
     }
 
-    const cleanupShiftIds = [savedShiftId, ...synthesizedBaselineShiftIds];
+    await cleanupProofShifts(page, [createdTitle]);
 
-    for (const shiftId of cleanupShiftIds) {
+    for (const shiftId of synthesizedBaselineShiftIds) {
       const shiftCard = page.getByTestId(`shift-card-${shiftId}`);
       if ((await shiftCard.count()) === 0) {
         continue;
@@ -310,13 +311,19 @@ test('overlapping Thursday create drafts show a warning-only advisory before sub
 
       await expect(shiftCard).toBeVisible();
       await shiftCard.getByRole('button', { name: 'Delete shift' }).click();
-      await expect(shiftCard).toHaveCount(0);
+      await expect
+        .poll(async () => page.getByTestId(`shift-card-${shiftId}`).count(), {
+          timeout: 20_000,
+          message: `expected synthesized baseline shift ${shiftId} to disappear after cleanup`
+        })
+        .toBe(0);
     }
 
     await page.reload();
     await expect(page.getByTestId('calendar-shell')).toBeVisible();
+    await expect(page.getByTestId(`shift-card-${savedShiftId}`)).toHaveCount(0);
 
-    for (const shiftId of cleanupShiftIds) {
+    for (const shiftId of synthesizedBaselineShiftIds) {
       await expect(page.getByTestId(`shift-card-${shiftId}`)).toHaveCount(0);
     }
   });
@@ -483,6 +490,44 @@ test('browse suggestion handoff creates a visible shift on the intended day and 
 
   await test.step('phase: delete the handoff proof shift so later serial runs return to the seeded week state', async () => {
     await cleanupProofShifts(page, [createdTitle]);
+  });
+});
+
+test('predictive create editor stays free of new WCAG 2.1 AA violations in the seeded recurrence suggestion flow', async ({
+  page,
+  flow
+}) => {
+  await test.step('phase: sign in and open the seeded predictive create surface', async () => {
+    flow.mark('login', seededUsers.alphaMember.email);
+    await signInThroughUi(page, seededUsers.alphaMember);
+
+    await openCalendarWeek({
+      page,
+      flow,
+      calendarId: seededCalendars.alphaShared,
+      visibleWeekStart: seededSchedule.visibleWeek.start,
+      focusShiftIds: seededSchedule.recurrenceSuggestion.matchingShiftIds,
+      phase: 'recurrence-suggestion-accessibility'
+    });
+
+    await expect(page.getByTestId('calendar-shell')).toBeVisible();
+    await cleanupProofShifts(page, ['Recurrence suggestion accept proof']);
+  });
+
+  await test.step('phase: open the real predictive editor and scope axe to the live subtree', async () => {
+    const editor = await openCreateShiftEditor(page);
+    await expect(editor).toHaveAttribute('open', '');
+    await expect(page.getByTestId('recurrence-suggestion')).toBeVisible();
+    await expect(page.getByTestId('recurrence-suggestion-accept')).toBeVisible();
+    await expect(page.getByTestId('recurrence-suggestion-dismiss')).toBeVisible();
+
+    const scan = await new AxeBuilder({ page }).include('[data-testid="create-shift-editor"]').analyze();
+    expect(scan.violations, JSON.stringify(scan.violations, null, 2)).toEqual([]);
+
+    await syncCalendarFlowContext(page, flow, {
+      focusShiftIds: seededSchedule.recurrenceSuggestion.matchingShiftIds,
+      note: 'axe verified the seeded predictive create editor subtree with the live recurrence suggestion surface visible'
+    });
   });
 });
 

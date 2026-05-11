@@ -90,10 +90,10 @@ export default defineConfig({
     navigationTimeout: 20_000
   },
   webServer: {
-    command: 'pnpm exec vite dev --host 127.0.0.1 --port 4174 --strictPort',
+    command: 'pnpm build && pnpm exec vite preview --host 127.0.0.1 --port 4174 --strictPort',
     url: baseURL,
     reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    timeout: 180_000,
     env: {
       ...process.env,
       ...publicEnv
