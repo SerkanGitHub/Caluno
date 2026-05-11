@@ -1,0 +1,52 @@
+
+Running 1 test using 1 worker
+
+  ✘  1 tests/e2e/calendar-shifts.spec.ts:84:1 › overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully (13.0s)
+
+
+  1) tests/e2e/calendar-shifts.spec.ts:84:1 › overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully › phase: submit the warned draft and confirm the overlapping shift still saves 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoHaveCount[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator:  getByTestId('day-column-2026-04-16').locator('[data-testid^="shift-card-"]').filter({ hasText: 'Overlap advisory proof' })
+    Expected: [32m1[39m
+    Received: [31m3[39m
+    Timeout:  10000ms
+
+    Call log:
+    [2m  - Expect "toHaveCount" with timeout 10000ms[22m
+    [2m  - waiting for getByTestId('day-column-2026-04-16').locator('[data-testid^="shift-card-"]').filter({ hasText: 'Overlap advisory proof' })[22m
+    [2m    14 × locator resolved to 3 elements[22m
+    [2m       - unexpected value "3"[22m
+
+
+      162 |
+      163 |     await expect(dayColumn(page, overlapDayKey)).toContainText(createdTitle);
+    > 164 |     await expect(dayColumn(page, overlapDayKey).locator('[data-testid^="shift-card-"]').filter({ hasText: createdTitle })).toHaveCount(1);
+          |                                                                                                                            ^
+      165 |     await expect(editor).not.toHaveAttribute('open', '');
+      166 |   });
+      167 | });
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:164:124
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:158:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/error-context.md
+
+    attachment #5: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/calendar-shifts.spec.ts:84:1 › overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully 

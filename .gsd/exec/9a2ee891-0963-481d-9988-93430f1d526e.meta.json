@@ -1,0 +1,18 @@
+{
+  "id": "9a2ee891-0963-481d-9988-93430f1d526e",
+  "runtime": "bash",
+  "purpose": "M005-S04-T01 svelte-check",
+  "script_chars": 101,
+  "started_at": "2026-05-11T10:34:57.086Z",
+  "finished_at": "2026-05-11T10:35:00.700Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 3614,
+  "stdout_bytes": 4138,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/9a2ee891-0963-481d-9988-93430f1d526e.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/9a2ee891-0963-481d-9988-93430f1d526e.stderr"
+}

@@ -1,0 +1,14 @@
+Error: Unable to read local Supabase status for Playwright. Run `supabase db reset --local` before `pnpm -C apps/web playwright test ...`. Original error: Command failed: supabase status --output env
+supabase_db_caluno container is not ready: starting
+Try rerunning the command with --debug to troubleshoot the error.
+
+    at readLocalSupabasePublicEnv (file:///Users/serkanyeniay/dev/Caluno/apps/web/playwright.config.ts:45:11)
+    at file:///Users/serkanyeniay/dev/Caluno/apps/web/playwright.config.ts:71:19
+    at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+    at onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:639:26)
+    at requireOrImport (/Users/serkanyeniay/dev/Caluno/node_modules/.pnpm/playwright@1.59.1/node_modules/playwright/lib/transform/transform.js:216:12)
+    at loadUserConfig (/Users/serkanyeniay/dev/Caluno/node_modules/.pnpm/playwright@1.59.1/node_modules/playwright/lib/common/configLoader.js:107:46)
+    at loadConfig (/Users/serkanyeniay/dev/Caluno/node_modules/.pnpm/playwright@1.59.1/node_modules/playwright/lib/common/configLoader.js:119:22)
+    at loadConfigFromFile (/Users/serkanyeniay/dev/Caluno/node_modules/.pnpm/playwright@1.59.1/node_modules/playwright/lib/common/configLoader.js:331:10)
+    at runTests (/Users/serkanyeniay/dev/Caluno/node_modules/.pnpm/playwright@1.59.1/node_modules/playwright/lib/testActions.js:51:18)
+    at i.<anonymous> (/Users/serkanyeniay/dev/Caluno/node_modules/.pnpm/playwright@1.59.1/node_modules/playwright/lib/program.js:56:7)

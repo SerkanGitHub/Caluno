@@ -1,0 +1,18 @@
+{
+  "id": "8f53a1ae-f35f-45f5-bcf0-e6e546a78574",
+  "runtime": "bash",
+  "purpose": "S04 verify playwright calendar shifts",
+  "script_chars": 111,
+  "started_at": "2026-05-11T11:09:19.309Z",
+  "finished_at": "2026-05-11T11:09:37.073Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 17764,
+  "stdout_bytes": 4333,
+  "stderr_bytes": 1119,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/8f53a1ae-f35f-45f5-bcf0-e6e546a78574.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/8f53a1ae-f35f-45f5-bcf0-e6e546a78574.stderr"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "14e80ea2-156f-4911-a438-0a77155f8614",
+  "runtime": "bash",
+  "purpose": "T02 targeted verification: offline queue unit test for recurring create reconciliation",
+  "script_chars": 314,
+  "started_at": "2026-05-11T10:23:32.416Z",
+  "finished_at": "2026-05-11T10:23:34.032Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 1616,
+  "stdout_bytes": 316,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/14e80ea2-156f-4911-a438-0a77155f8614.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/14e80ea2-156f-4911-a438-0a77155f8614.stderr"
+}

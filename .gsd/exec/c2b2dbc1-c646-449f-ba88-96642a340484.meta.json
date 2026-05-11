@@ -1,0 +1,18 @@
+{
+  "id": "c2b2dbc1-c646-449f-ba88-96642a340484",
+  "runtime": "bash",
+  "purpose": "rerun S04 playwright verification to capture failure details",
+  "script_chars": 111,
+  "started_at": "2026-05-11T10:59:47.523Z",
+  "finished_at": "2026-05-11T11:00:07.413Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 19890,
+  "stdout_bytes": 4984,
+  "stderr_bytes": 3730,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/c2b2dbc1-c646-449f-ba88-96642a340484.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/c2b2dbc1-c646-449f-ba88-96642a340484.stderr"
+}

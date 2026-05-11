@@ -524,6 +524,31 @@
       "confidence": "EXTRACTED"
     },
     {
+      "id": "slice:M005:S03",
+      "label": "S03: Wire recurrence suggestion into web shift create dialog",
+      "type": "slice",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M005/slices/S03/S03-PLAN.md"
+    },
+    {
+      "id": "task:M005:S03:T01",
+      "label": "T01: Add a bounded recurrence-suggestion route contract and truthful weekly fixture baseline",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M005:S03:T02",
+      "label": "T02: Wire the create-dialog suggestion UX and prove accept/dismiss flows in Playwright",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "slice:M005:S04",
+      "label": "M005/S04",
+      "type": "slice",
+      "confidence": "EXTRACTED"
+    },
+    {
       "id": "decision:M003:1",
       "label": "**@repo/caluno-core as the shared product-contract boundary.** Kept all shared rules — trust contracts, offline helpers, schedule logic, find-time matching/ranking, notification contracts — in a pure workspace package. App-local wrappers own only Svelte/runtime integration. Chose this over duplicating logic in each app or importing across app boundaries.",
       "type": "decision",
@@ -1484,6 +1509,30 @@
       "confidence": "EXTRACTED"
     },
     {
+      "from": "milestone:M005",
+      "to": "slice:M005:S03",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M005:S03",
+      "to": "task:M005:S03:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M005:S03",
+      "to": "task:M005:S03:T02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "milestone:M005",
+      "to": "slice:M005:S04",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
       "from": "milestone:M003",
       "to": "decision:M003:1",
       "type": "relates_to",
@@ -1856,5 +1905,5 @@
       "confidence": "EXTRACTED"
     }
   ],
-  "builtAt": "2026-05-11T09:06:26.612Z"
+  "builtAt": "2026-05-11T10:28:29.889Z"
 }

@@ -1,0 +1,18 @@
+{
+  "id": "1b3b63bc-4efa-464d-9201-7039a025ca62",
+  "runtime": "bash",
+  "purpose": "Verify M005 S04 T03 Playwright advisory coverage on reset seed",
+  "script_chars": 111,
+  "started_at": "2026-05-11T11:05:45.799Z",
+  "finished_at": "2026-05-11T11:06:07.153Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 21354,
+  "stdout_bytes": 4972,
+  "stderr_bytes": 3730,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/1b3b63bc-4efa-464d-9201-7039a025ca62.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/1b3b63bc-4efa-464d-9201-7039a025ca62.stderr"
+}

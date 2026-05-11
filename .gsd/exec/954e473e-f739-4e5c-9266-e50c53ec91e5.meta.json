@@ -1,0 +1,18 @@
+{
+  "id": "954e473e-f739-4e5c-9266-e50c53ec91e5",
+  "runtime": "bash",
+  "purpose": "S03 slice verification: supabase reset + calendar shifts playwright",
+  "script_chars": 156,
+  "started_at": "2026-05-11T10:26:05.509Z",
+  "finished_at": "2026-05-11T10:26:47.595Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 42086,
+  "stdout_bytes": 900,
+  "stderr_bytes": 6784,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/954e473e-f739-4e5c-9266-e50c53ec91e5.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/954e473e-f739-4e5c-9266-e50c53ec91e5.stderr"
+}

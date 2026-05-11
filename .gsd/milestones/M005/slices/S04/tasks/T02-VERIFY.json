@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T02",
+  "unitId": "M005/S04/T02",
+  "timestamp": 1778496206415,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "pnpm --dir apps/web exec svelte-check --tsconfig ./tsconfig.json",
+      "exitCode": 0,
+      "durationMs": 2718,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/web exec vitest run tests/schedule/conflicts.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 1242,
+      "verdict": "pass"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+
+ RUN  v3.2.4 /Users/serkanyeniay/dev/Caluno/apps/web
+
+ ✓ tests/schedule/conflicts.unit.test.ts (5 tests) 12ms
+ ✓ tests/schedule/board.unit.test.ts (3 tests) 22ms
+ ✓ tests/routes/protected-routes.unit.test.ts (21 tests) 34ms
+
+ Test Files  3 passed (3)
+      Tests  29 passed (29)
+   Start at  12:35:43
+   Duration  731ms (transform 296ms, setup 0ms, collect 469ms, tests 68ms, environment 0ms, prepare 197ms)
+

@@ -1,0 +1,18 @@
+{
+  "id": "bedcf3ce-c7d1-451f-9b3f-fd01c68a615c",
+  "runtime": "bash",
+  "purpose": "S04 verify conflicts unit",
+  "script_chars": 110,
+  "started_at": "2026-05-11T11:09:19.308Z",
+  "finished_at": "2026-05-11T11:09:20.976Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 1668,
+  "stdout_bytes": 293,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/bedcf3ce-c7d1-451f-9b3f-fd01c68a615c.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/bedcf3ce-c7d1-451f-9b3f-fd01c68a615c.stderr"
+}

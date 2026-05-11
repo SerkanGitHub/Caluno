@@ -1,0 +1,18 @@
+{
+  "id": "743ae694-b962-4788-a74e-06e995a7148e",
+  "runtime": "bash",
+  "purpose": "T02 final svelte-check",
+  "script_chars": 101,
+  "started_at": "2026-05-11T10:42:17.679Z",
+  "finished_at": "2026-05-11T10:42:21.170Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 3491,
+  "stdout_bytes": 611,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/743ae694-b962-4788-a74e-06e995a7148e.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/743ae694-b962-4788-a74e-06e995a7148e.stderr"
+}

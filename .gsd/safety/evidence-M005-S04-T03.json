@@ -1,0 +1,160 @@
+[
+  {
+    "kind": "bash",
+    "toolCallId": "call_8KxVTXZtCz7aSQVM5H551qnJ|GLRHKx7jMZuCboHZ6Jda9iCB4Z1yfQKf4zry0HqgzxFsA2HRlblXHg96+pmRfcGAzzMOmQ5x6P6eIpcrjOXbQBJoFWJ32QS0xMrTVi9yaa4Z3EMsnDen9BZpBnl3fAa1C3TLzBfsjHhK6FW6wUOAVDgXQWDB4rMfllRg/5gLDUvINANGvPF9YHifZ5mgGH5sxtQLwXco5lVZMELVFmnTSwT/bZtSeCgWEhApFgyVmMSzi20ggCvYHCIMjJE/25reYefqITVs5YGEwfEdkat/q4S+WCv0r37sc9w+y+4WO0kWJTAVM1hhCQAddTtno1eieMmHF3MYCDTYPeNhmJxqFGHFsqW9403tiUQrFOVWxJsCtP0ZJDjrsGFLmLhIo2mwokpPmnlH3dM3yhjfgCGNEA==",
+    "command": "playwright test tests/e2e/calendar-shifts.spec.ts",
+    "exitCode": 0,
+    "outputSnippet": "No prior gsd_exec runs match those filters.",
+    "timestamp": 1778507010020
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_MiAZbZiU5A4fE8oGVTNT1dXD|NehkEj0kVovwzE5mFt/MkmAv+A8db4aAa7WA86Km8sJXyOChITV+v6vGNNWE6p1lBObE/1PbbVgkaLps9USs5cBAtpdYX/S86xXHpe27WKjSM9bfYRlxc6cL9NrKGfzHMtkEV2IrwMG1G5UnkW3xm1DnjYpED0oHZdLmz9YvsMHD/O2xfoX+vb9SGfmzPjoQ/n6S6F/d6znn2a3//VxYb1WyS5ujOoumgrTMDcRjv/qxx26QKhBpcIDVzuV+Iq8oTKh1jwny5cExcg2Mj05THl4Z9JfzsYZRAG61EQFCREXTp5oCycOn2R3btMwlj/g3mFEaTpaxDIXhvinIdyFkSXv+CXaMzYnayTAyOWBHwsXE1Ua2E6rF+l7pakcsbWxIpU1ZK6FmZm4IeFdMKDRVpA==",
+    "command": "rg -n \"clash-advisory|deriveShiftEditorClashes|existingShifts|normalizeShiftDraft|previewShiftConflicts\" apps/web/src apps/web/tests/e2e -S",
+    "exitCode": 0,
+    "outputSnippet": "apps/web/src/app.css:797:.clash-advisory,\napps/web/src/app.css:798:.clash-advisory__header,\napps/web/src/app.css:799:.clash-advisory__list,\napps/web/src/app.css:800:.clash-advisory__list li {\napps/web/src/app.css:805:.clash-advisory {\napps/web/src/app.css:811:.clash-advisory__header {\napps/web/src/app.css:816:.clash-advisory > p,\napps/web/src/app.css:817:.clash-advisory__list span {\napps/web/src/app.css:821:.clash-advisory__list {\napps/web/src/app.css:826:.clash-advisory__list li {\napps/web/test",
+    "timestamp": 1778507029288
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_ypa8mxS2pKx9CP7fjHe4rurf|kggv1d5HtoJohnactJAySraGk/2LBAZbzeZoH6Wi4nfgDtYd2xjlJOhPx+oPTV6ZQO2qhS/Baqc+3i9mk55zALsHlEZbs1zzbdEio5+eqn4SrfX5OChWtbZlCZfoPMhzt6g0vIWCv+NLk/NWkDfV31CIS48HAshW58aDB5gH1nyK2Lt0vC6qqa1RaYV1p2WmfsvNuoSHi93+frfiXTTS3yiyiimsJcGVz2shEq9sV3nJqlBtAjJbe9klfblveFfOQir/qfLYtP7Nf+fhaha0OlPtkTN2CPsIxXOTpuL7/vOm57vHWTj0oG9dd1XuO+cFR2rxlr/F/N/rsPWVJAdSmNZ4/11t7xqFux+Cq4GELmdOuhHUFN/7by6z05dVUEdsL0gOTKs/JLYarLKql0+TWA==",
+    "command": "python3 - <<'PY'\nfrom pathlib import Path\np=Path('apps/web/tests/e2e/calendar-shifts.spec.ts')\nfor i,line in enumerate(p.read_text().splitlines(),1):\n    if 1 <= i <= 280:\n        pass\nprint('done')\nPY",
+    "exitCode": 0,
+    "outputSnippet": "done\n",
+    "timestamp": 1778507029288
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_pEzR7AgX1AOTWMhg9i0Q4CQl|mMD3+RGLTcukpxkO9vC1T+GUZhOR3ZEbMeqSVca0oOB95FV/Fqmc3XC/pEb/D+V/9fP4lr/IO2/rh9UrcPDbHn1jkKPeEqBAWAYLLQtHihmyIOPrIZTADLm7HvSuXWS4hC2xLhGOxan+knidW7T/Mhw8cEsAE0zwH+6SmFqi+xC3tJXHnqbGid6zHfKeukGQ9o/oNwr7amqPHEHEmpdCuBVgDNLZUyDnoY2Y/7IQWY+1EbD9oFhfPMKUjpqxIKLNIin35Ij9jMkhdft9mgK3pISK5PvAZMjaAWb19fUkNVqZuSh2vFZb48b3/amG49zmB/ZdXFI0PHTdEAx8qwP7uDLzZjxFKMEDeKyxeQSBZ/EvVvnBxohStQFcQNxoD5m2ZippV/Ns3bU3umtw2LfOkA==",
+    "command": "rg -n \"Kitchen prep|Supplier call|Morning intake|Afternoon handoff|Alpha opening sweep\" apps/web -S",
+    "exitCode": 0,
+    "outputSnippet": "apps/web/tests/routes/protected-routes.unit.test.ts:121:        title: 'Alpha opening sweep',\napps/web/tests/routes/protected-routes.unit.test.ts:375:            title: 'Alpha opening sweep',\napps/web/tests/routes/protected-routes.unit.test.ts:385:            title: 'Afternoon handoff',\napps/web/tests/routes/protected-routes.unit.test.ts:403:            title: 'Alpha opening sweep',\napps/web/tests/routes/protected-routes.unit.test.ts:413:            title: 'Alpha opening sweep',\napps/web/tests/r",
+    "timestamp": 1778507042178
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_Vj1BdBEgOpNRY6h07HBGm6y0|6KpGqLXWcou3RUaHh/euy+KzB4FgY7lCCJPk/G/vRzAtSGLxxt/CtpLZBHslOBRcx+YJmV0KSxcClPHmzxeZoRQSMGfnTqToiROda8qVFHfDMMQMyb03SINr880jAAEyYzvbrO5clCwoqBhR99wiC0qEMCz09u7c1L2VmxFKSn6W+wlvidhVhLfVOnbqeD9ADZh/sHyJ6ro/GXweE0D/4GUdhCvu2+GYcKUsjKaYlspHCx2036309D4UMjVCMx0v5mIOX0XFlYM0O9KHvAn156hN8qFksvtlpmFOd4sn1DmrJMCpMDf2IUYrXQ5tp3hK8zeoPacWCe/LZzRN9vjTbRfR9oRsAjOs7B0sUTDcWfdRIGohCoM5+ut0uRU4zdWfVtlxRP2pM4KbDQlZL8XUbA==",
+    "command": "rg -n \"3 visible shifts|visible shifts|Alpha shared\" apps/web/tests -S",
+    "exitCode": 0,
+    "outputSnippet": "apps/web/tests/routes/protected-routes.unit.test.ts:70:              name: 'Alpha shared',\napps/web/tests/routes/protected-routes.unit.test.ts:82:          name: 'Alpha shared',\napps/web/tests/routes/protected-routes.unit.test.ts:89:        name: 'Alpha shared',\napps/web/tests/routes/protected-routes.unit.test.ts:310:      calendars: [{ id: 'aaaaaaaa-aaaa-1111-1111-111111111111', groupId: 'group-a', name: 'Alpha shared', isDefault: true }]\napps/web/tests/routes/protected-routes.unit.test.ts:335:",
+    "timestamp": 1778507053127
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_MBo0wLpsSz9Ez3NsZVw4X5th|EODWQJniDjET8zmPD+LkPtWm5Qd1Gjgqojx5fkuLhvXVYkViYyrF9K6v1f7LIJUEgQ5SdfPnFsuT8TiLJQ9z6Gb/y/5p70cB57Qt8crAiauFyxG7iW5ypUScXj7O0lrc/Do9/bm9y+dOka0GGvo4919R209w/ZsZrAnW4PgSkJppp3JzWRbYxtLsBmTshayeoiTwLr2e3KRtIccZ9hxl84TpcM1nR2tx8ybzc+JUukSyOONQpX1Y6uFqd+MG/BJ0cMN63ETHpKrTzRg9h+ke2n4XFPWxTVzT8S1sfu6F8qSfhIycwsx4IfX8PuhwAiEhC1d6V/NyKPGpg3qI1nBo6eky7NOIqH3TJBMFcOhvW5FhpFE5M9pgVwkAqerQsIbNEmkoLbZneCC/L1ttMIjM0A==",
+    "command": "rg -n \"seed|reset|playwright|test:|db:|supabase|sqlite|postgres\" apps/web package.json pnpm-workspace.yaml -S",
+    "exitCode": 0,
+    "outputSnippet": "apps/web/tests/e2e/calendar-shifts.spec.ts:301:    flow.mark('login', seededUsers.alphaMember.email);\napps/web/tests/e2e/calendar-shifts.spec.ts:302:    await signInThroughUi(page, seededUsers.alphaMember);\napps/web/tests/e2e/calendar-shifts.spec.ts:307:      calendarId: seededCalendars.alphaShared,\napps/web/tests/e2e/calendar-shifts.spec.ts:308:      visibleWeekStart: seededSchedule.visibleWeek.start,\napps/web/tests/e2e/calendar-shifts.spec.ts:316:      calendarId: seededCalendars.alphaShared,\n",
+    "timestamp": 1778507063370
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_Xsy4gxg8CygUUCyYi4GljbaV|vSXCh0yKAoWhQeq20g4ylTbKWhH9p9PRxPLRI/lEzje+TGVaHOhfb3ygp6Ij7MTl88nM6NYMw/tw51zrwgShgvJUYMzw4JVU4uvWRq7poh4a8uwjRNYVEwcY0kSopavP+I8u3v9YcfH5AFs/OuWofozNf4FidYRvo7e3KDlQrkEQZr+RlkTcRqG863eFB96uammz42e/03pcwHZ3yMlT4m3t+N5gBh4jSqc8RSE0K81WXpjNXC+Zh+XsT1Fylod53xFoOP8RwB/uldThTHRq6u1Zno1SSU/UCNyaIC5g2zw5GDT8wgsY8cT/tez6UE8EQcvIJ3+buKG5R4uuuIYZKSekhh5woWREq1VV9O6xkZsCvHOhOYSJnFCx/39ntQMtvwQyNfQAJjRKie67ynKylA==",
+    "command": "find apps/web/tests -maxdepth 2 -type f \\( -name '*setup*' -o -name 'playwright*.ts' -o -name 'global*' \\) | sort",
+    "exitCode": 0,
+    "outputSnippet": "(no output)",
+    "timestamp": 1778507063371
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_O1TyyxQgP3OJrsgvjPhxPvx5|mTyeslVZ5M2G/ff6nNf9sINo3igLwjWoQdDHSlzGKjh1OhzcUkZ9WKB586Cu3qbXuNlC234NzBZ/86b+YZX4yefktJjrgb29bFt3B/HYR2EI9hS9kIoBhBhyg9MTkrQXxfApehu2IqORx1fnVM6TeAgOd6qrPOp9lgLuM+zm6c/ARtq6j74mGeSdcYB1vvFpXseltm7xjd+hb5y9+gDfFoJ9YaEJKGAJj8q+alWuHzUesrFkWrwDRQh1VFAksJlrZoTkxmHSFeLz5IOoZt02HqUWEkttpFdIS6OsT7cmyKXxTfVJyuCPdYl8KCdNpM/VLcq2f1xsJ2PU/Cv8+U32RKnz9GsyhvIXxgo947Bj/44lZ1n+H/c+3Xm4ISS96/NsLBu5BGm/yZGtCQSA0WCVxw==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778507140333
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_94M0WYNYvUClH1VWClT9Z3Bq|RE3x9Pl39Pdn43YT2IFvMVmKJxMA8RMdLuWc9ZtwvnrV+5vs0KaGHhEREzkFZ2xg6o/Nltub1eGNLQzl4R3mrSDQmnRFQYPs1rTMc0xxAVHoWAb4kAyvBUmb0Y6r+GyWgNKjgQibo4FNl+4O6dQ/31Sr6fmUe/VvDEPcMr3V2fpyfyoEXkV8ydvTey4Bipk9YS0obBQypl4az3sjqsTNKHwrRGz3QG/v4XdsqNXRCyJT6coKTOMhBl6smU89RPWAveflXxXQD4YCXehM11F6MQwZRc4mStXdiBZyOgTIPxQvd2aB6WtEA037/mOV2AryN3hchj6PKHdgJjfVkMrbPVGdsOmm6hq2HCJ6M254O37pOYFVg3Z9h03UVyHk6q59CCz8tOEAdscgLOUXfXfXGg==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778507161584
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_49yMM2moqkZA1Y4zq1vAemBa|/fIF/HhFx2ZMJ39gqb8hOtHUsBNl3Bu55OP3xVOwC5QUglq5nymLGQRRe5ZMdBaopDoWT70nA2s7379n8C9RmovJ3UOKP5ltprYjNmzvY9kOvNv8NXtjKHnDUYR9gu8VoT9EtXLieO+tERZqIG7QfDbZSFj65Sku2knLW0q3igy8ipwcnPs9wnEvp/U/LMN4GS0bp6yVYw4iNn+B+VJftbQsyu5SKCSMOKJ2cVBXWiIxa5lKK5CDzZijZQGfix+PeqccpFLoUlos+1jFYYT8B9Uf71vHppctGk9PXseEccG2XqehJmNo+vXPHMpng4JyDWojndvkBgCmDprB++oNz5KFrFNgv4gcxumUqTWEBPk6WRFDBx2f1fs6CzNJQdGSOaoUeCX4PkvclhG5bPNcnw==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778507176010
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_bUT5z2DNOpIk8vxAd67R0ERn|WbKvqoctCivuo6kN3NJ/UBsKfpXYGAY9L4IBglgPcSaxzZeB4gIaTA1/zHUmnXaMHvDnDzjqnZSkIjgt5QoNAS4obqOZXBxDnn5h6XlbOOP1YzR7DvQYkp3BUTuKltD4PnxBIdLXKl3y/e5+dA7xiiELgbYjoN31X69MZxFohbzVKJUclJyxHkakOd3nPurIvfcMKSxASlRnWfluM5C6sVw5KYVfoFDWyv2+ilXlBqtkkRnMQ5uuGbF0ed1zzlV2YJpQGusopUU9cLoNiwJE3VJIjqVWuzYRFqJGXKEe8xEXa5akyUbHe7Xoy2MYfpjUz8vvFn/G6FfsqHOLpt+UTrLzq0ZlCrSTvM/z7czI0U1e9yFEBIweKE91cn2tG0beTaM38pAHE7oK8yvueGocvA==",
+    "command": "python3 - <<'PY'\nfrom pathlib import Path\ntext=Path('apps/web/tests/e2e/calendar-shifts.spec.ts').read_text()\nfor needle in ['ensureThursdayOverlapBaseline', 'synthesizedBaselineShiftIds', 'cleanupShiftIds']:\n    print(needle, needle in text)\nPY",
+    "exitCode": 0,
+    "outputSnippet": "ensureThursdayOverlapBaseline True\nsynthesizedBaselineShiftIds True\ncleanupShiftIds True\n",
+    "timestamp": 1778507188165
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_VVo5UymAqiQtKEQ1FipI6hnY|3yKwAeJU3S/rciWjbHqGm5/tHs2OfGyhM6FmwAwJEE7mfhSjPx9yEoJiIgC8j2foohjF8E/ADWz+rJfKpM1UgXIu86D71i6U35KZKu6SNuruupTcuHnG4uQo+zsEkArndz1I2hnd57k2Jv0X3drCumLPepcWnrsGCkPmPx6Olcomao3RdoXfeZtiEoeufsxTigrZWkKXhecoGWt3NyEFUK4m7Y9JOE+E7w1blDq9LnoZbnY7p3jgS8MSI2/8lcsngMxr/EdtYP66IGvnBdhRut8b7sKu+MQweIt3gXf2pm3KLyrsZaL7FpBbHAWBsEM1F37hzJFJobxIIAsszr75mglqqVToQmWKZVMkGVIyW63/lDKI551up9E9CmK76yD4TTbyvvW1vJsBzmKJaQC45g==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778507202329
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_sAr0lXfjH0fcv7VmGbNyAhuw|A2EkEWrFGvOBlBEGWMd9LCH855vLlDNuFTuTxn1SoYLHXB3+0j1cOMlOUZV46dKiTlpn0/J6x61Ii8zAeyMBzadnxfIhUOVFLOdMv44YCpL7LG5yvVyuJgvuliOKdCvudX2WqKm0tRLhWuQZsFLdyurzGmAgC9JF+0XR44cTgBS759/gMQTXKyTqwIK4LBZaAY7MKX/kxn2VDA6OFOYHozZ+4Acakeua+KwDqXvDnnYiHZmfQ9RoqW5WIDNTyN9cI9KonrUa5qyH4zY3y2i7/P8JSXMegoT6rXZAetDcwo970alGK7O3La6XCP4vo8/n7Ts4W2cfcdW85c+iX0Dged4BbXugvovKCM3rNHiljsba86QX44hX6ASB6H4dWD26lC7CtPvXc7Ot5+dc2CcxCw==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778507221198
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_hfHj6ow2o49szSi5ZZuyAcup|WMOPvhzaqbT4bgMVT3Mm00f1FqmY1SURxOpyimrzrCb/K3AK+RKvAAGuaTRcALC4e6p4e5F7NtmbmxVO7JIuH0UO34EPqdB6SotkYDGVbHIOCPWacyfFDxkAPQB4VQwMLfkly52RUFMVgMqJ7AGfx0zbtui/ZSIV6/vpmNJ7yiGVGXKrh6yQwLQp6RE9T3mBOxd0L4X/UrBe2D76mUnFm6OchCiatQraT6YUxlsjpNT0XxqPyE4GbAsHyBCRfl5ctJVmVrT5ebRHQ5ll/Uva55ZUza0oySm9cK+uxc61+AVhpwWD/Pqgj+RfoqI5XB4tnJV0w2W795/gZqmA73zqTMyWwjs0dL2H2aiGvsxGU5ipLjhjHSPF3mEpE+i/EAw27EgNEEJ6RpL4Mwc36QABKA==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778507227108
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_UVQuQvMwfKqu0XvJfPPVjGAl|exINRGkSdOWEr0Hy9vq/x33VYwk4KbFmABt1X0X69fuEFy314KJ3cUQyETh9AkENIF9sxziQqxfnVHl5PzMJ3zp4usDLNAVBlsDCcO5xldi+660WATKYKiz4aChXWn/j6LPkIInzzX6ocx8E4uyybggCZO5op1mCj1TiH5URjbz+7pNOltfFmE/OblatuPtYTkXY6WfmNX09OM0wKCARQRzVM8borv0MpFtvQ9JAnVodNYrwwjtuGQaYQrU8on8qevkZO+KYpdGSMgckIDg8QuUc1lIBh0EbSRwKl3oavMstSF9NNWHWIzAB9t+aRsWFfK+k7FKIaojdEyB1cxh/wsGaE5opgJBqu6rS1+SNKoXuQ3p5n/nGVSIDj3eYgbFP4sX/oh8FaFW6SXtTxjzrkA==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778507244292
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_SkvQArFrp8pIGdkIv195rI5c|8UFX625Y/f9jpLJpmrZKmvzZnTAHIb8SGkHSLwFkdSISKeJlo6vb4vI9JpibQAyWPKyHPDEUq/aNNZuNUwv5M31znfw+FsnkbT94gi41qJx5XacMA+hJDRpu0/IlXQAHExHPXw0hse+80tjzWgZkFDy7ifT5gM4PH4jYv+NWZXhm5nUfpuRBOuBMcvDQfXeGKjgiStCd6eOpk9uXu6JY+U4uMf+r+FgVRBYgRxEsgWIeXjepYp+71MXBxFBv+Vze6pKcC+ZNMgIlC5k03Wtr5OiY5t7MwLOmdUsv7QYvb6rkv7HfzKaghoR3doVnHt1c7ZhH6dy4m/Z4aG61kFNl8WPbSfFJekck4vkZjka2wwZYaww0466ACUFkiZrPQrfngSekGOG5Yy/uhnDZNPf5Ww==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778507252129
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_lTrJ1AZpjMDiObRRMcBV1Pif|ADV96rNRGQWubdEh3hv3/bM3DbfsTcrRVVYJ0SpY4IhY5Iir6X6SHJeQzZHgTfC/aLm3fFWVC6bD8q+GLOAuReGk2baUp5805e+slhC2l7wLxko8afL/0KoXIwQ3jLKfsDqyXQcHImY1zw83yQriZUgIgr6NSjp/u0P0P0YfLkPLknFFIvJgXbMjyDSQ8eYHflqjPoZwhFNHi0rCV66Wdz8RUXFtmqk/zvkKN8eCm8vXgORZaqZkNqKVZKHv0S8Q88VfGMw41mfughHX2+VsB3tFOSuhRooVW1XWdpoJrxXmMK2FN67WDC7CLhWh7JXhYtAITMpRGcwKujnqYe697CS9hnkhEG6zrPO5pMTXq19J5WHP9ED9Lpj4bZTT6FKEz0rUizCxNBTTMW7t3LhwVQ==",
+    "command": "python3 - <<'PY'\nfrom pathlib import Path\ntext=Path('apps/web/tests/e2e/calendar-shifts.spec.ts').read_text()\nfor needle in ['overlapBaselineShiftIds','expect.arrayContaining(overlapBaselineShiftIds)','focusShiftIds: overlapBaselineShiftIds']:\n    print(needle, text.count(needle))\nPY",
+    "exitCode": 0,
+    "outputSnippet": "overlapBaselineShiftIds 4\nexpect.arrayContaining(overlapBaselineShiftIds) 1\nfocusShiftIds: overlapBaselineShiftIds 1\n",
+    "timestamp": 1778507260029
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_PmpPfKqw1JicuQTqQPuaeWQZ|0nvsyeTUJjoUVVfSjwuXzhu6ixFoM1ge1lt9gzmedPUILsMC4j4y8pCUQTMXvxA+3uskOnmgOnxJJvXrDiPRM5hCYqufMM43S/xEfa6l2fIhoVlVOZjK9d3T9cHZuzRoDnt5pbVJaMk6auHZOxrqxcJvUhHvFkVB2zB9rcXPWSPpLwSn2sIgmY35uF+vmem1wKL2lsv1qLcALXxWiFN98G5bRgxIdJsd5iiBcEBfearPCgFz9jWW63LmRdgGTZ+1WXex8wY12s9PSExMoIuRDLg9VwgIakQfNZqxUgn/Wd3kfA/EDemkUlcTQUxw2wyQI7wFlkULED/6Flecxyq61vNk8uUIkbEYYVd6G8EV08npSoPkXBhMRH79+H1ao0ox/g5TpegbzElm/kQ9cNsfyA==",
+    "command": "",
+    "exitCode": 0,
+    "outputSnippet": "gsd_exec[419b0abb-1b16-4639-b9c5-1546f94ee8fd] runtime=bash exit=1 duration=19264ms\n  stdout: 4465B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/419b0abb-1b16-4639-b9c5-1546f94ee8fd.stdout\n  stderr: 9698B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/419b0abb-1b16-4639-b9c5-1546f94ee8fd.stderr\n--- digest ---\n───────────────────────────────────────────────────────────────────────────────────────────\n\n  1 failed\n    tests/e2e/calendar-shifts.spec.ts:489:1 › weekly recurrence suggestion accept path pre-",
+    "timestamp": 1778507285773
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_K5k7c8SVhXqm1Mx9xFjsbm35|D8/UCnwOxM2LaHzR/2wUDXVmvzIK2ei/Q/UtWKrpaZ4N3QdBXGbuSUfT+R2bx0XOQnC68VezSXO/omiT9E+bUzPaCmnv9eZDRTrZwMK5HoAisGqDbwKUo3EAaawsFaMAOJuqziJjEY197OUbiEzl2UmN6Lc/1Ah3gwskLn7QoiAN0Mg7LKJG8dkVMpssjW32q3vBy8MMeIiqVvprgBsGji+D/odBgc1mKIXYLMUyhbqef9pWmMyh2CCkKTqvJh4vAqjSbDglhhaKyfLceCJarK4soBmAtcz3InUJ+WLtEHQ61iagoYTFbbZImhRYXjI8YvIDh01ZT+EKTaG01l4Nl5x37fP/7eYoyYIuVjIu1tNHP+/jXBUD2VrIcVuJ3e+b1yXnsGgPe72+MSj6M4Lgtw==",
+    "command": "find apps/web/test-results/e2e -maxdepth 2 -type f -name 'error-context.md' | sort",
+    "exitCode": 0,
+    "outputSnippet": "apps/web/test-results/e2e/calendar-shifts-weekly-rec-5ab69-s-after-a-successful-create/error-context.md\n",
+    "timestamp": 1778507318160
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_jZ6L7hsS0sBrewipkaYna6NE|bx1NwcYFmI5GYXvIo24abbRSmYeMbT4VR/wkE/pQ0RoJdXuAh+PMHPTcQpQAIjoFJPcis/E0ENtKynjChFJy9x/2dVwGqiH3dHIxbmB0lQwE/fjmM/2v7vIy73KNOOSnZsmJIBOVRpgDjIyvUweAUy87ruMrThGlnPISoUWplW/2HRK4K1mTupEIdkd/D/2oAoSmxgHn9eA+pCi3b6t3xSS8Bo4yCQfxmBzSVTUAalfSrFgDiCh7lpt/1EJbkjVNbXeS4Sy9LmFWPgxHzfROTmiNDCMjiV7DjBecVWw8PR+nGxFjBK/90xAlQR06kYipE9aKRbwchnG8RyvYM8POMyswZfyq1YHdCDJe0DIRpBGnajfV27GGzsOyWPsXYecEVlrq6UIMi7Xc/g4pkyVVNA==",
+    "command": "find apps/web/test-results/e2e -maxdepth 2 -type d | sort | tail -n 10",
+    "exitCode": 0,
+    "outputSnippet": "apps/web/test-results/e2e\napps/web/test-results/e2e/calendar-shifts-browse-sug-ee344-oes-not-reopen-after-reload\napps/web/test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully\napps/web/test-results/e2e/calendar-shifts-touching-b-4889b-advisory-free-before-submit\napps/web/test-results/e2e/calendar-shifts-weekly-rec-5ab69-s-after-a-successful-create\n",
+    "timestamp": 1778507318161
+  },
+  {
+    "kind": "edit",
+    "toolCallId": "call_uwFl06E4FSW2NvamkG94el4h|MC1AnFFEEe3Da97KqJDL6crEdMGxHF+0Pz65ERX3zNbuSQv+2jhudM7Mdnmu2ewOZRpMPLKrdWOxNMYSyWgHHSYdbxVZJ/xQ18qauL7RmmgqwgJ/aEIz+Tk/NRODdwFlIYV4O09nN47c99Qu2TOy4QMzc5BqNv6H0tNFTpQ66TGbagGuoct37lTo0j7v3WkyiGP3ewCxD55quWyFR5v5yW5pMcgfRRTRaR4IpHGijFN+i8di2OZnXRnPg+6jxUEyNiNPTZjXLoA6crMkmLL5ceiuFcQYmUSSKNUM9pb+loV4H36nzGqbUEP8eXk6cTL7VrloHz6apxz89HuQSA2oLsPMxqFffaD5lsP3Z3njjgz6yiXcCJZcpAB9nbtxmFJPKO1oN1hhof3Xx8A7AcPvYA==",
+    "path": "apps/web/tests/e2e/calendar-shifts.spec.ts",
+    "timestamp": 1778507337771
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_g69tbAMzyvrp4mYs56RUCU55|N3MQuxIrIDZHXDlUtOnnWFQq0bv0ug+SjQHbzPmpJkH5o3gy2SpWONZduOZHMBCuvjLHFo9Kn8nxDJMIYP2c9g6S5ga2sCJS1FaEmfemqmXa3iLA/Ca3uf7IcIRqJkG4z/qhXqMiheUYyfpMxSsXvq0dsMJDs5lQCwKn2V0I/FE/8EuiOX5Y6x9iepQiMPeIk1ARpJnT/JA8puRlW1zYVyAWSUWfEd5FoJ7RZ0PZwRsprK0nKCVf2LM/bjI55577/FJii4s03cadJKYQvNi7R7TIXtwrr2EGwxtmlyhgNq+qm7s8y+NRGVQhNJWcgDL8b6HBz61B4C35gRR6MZZIc03TZBmOjcULWbCIClGivVzHW6XElY1yiIheQKgMCviBvn5CD0us7Y+UpkO3AVZpOA==",
+    "command": "",
+    "exitCode": 0,
+    "outputSnippet": "gsd_exec[cefa5a5f-b5dc-4201-8280-81380d3280f3] runtime=bash exit=0 duration=26144ms\n  stdout: 1017B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/cefa5a5f-b5dc-4201-8280-81380d3280f3.stdout\n  stderr: 11936B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/cefa5a5f-b5dc-4201-8280-81380d3280f3.stderr\n--- digest ---\n weekly recurrence suggestion dismiss path keeps the form blank, stays hidden for the current instance, and returns after reload (2.9s)\n  ✓  6 tests/e2e/calendar-shifts.spec.ts:687:1 › seeded me",
+    "timestamp": 1778507344501
+  }
+]

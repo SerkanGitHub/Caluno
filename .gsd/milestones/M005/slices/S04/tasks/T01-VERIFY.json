@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T01",
+  "unitId": "M005/S04/T01",
+  "timestamp": 1778495794924,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "pnpm --dir apps/web exec svelte-check --tsconfig ./tsconfig.json",
+      "exitCode": 0,
+      "durationMs": 2708,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/web exec vitest run tests/routes/protected-routes.unit.test.ts tests/schedule/board.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 1451,
+      "verdict": "pass"
+    }
+  ],
+  "postExecutionChecks": [
+    {
+      "category": "pattern",
+      "target": "apps/web/tests/routes/protected-routes.unit.test.ts",
+      "passed": true,
+      "message": "File apps/web/tests/routes/protected-routes.unit.test.ts mixes async/await with .then() promise chaining — consider using consistent async style",
+      "blocking": false
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "a052afd2-b27c-453f-8672-4a3ea9c72b6c",
+  "runtime": "bash",
+  "purpose": "S03 verify playwright",
+  "script_chars": 119,
+  "started_at": "2026-05-11T10:19:50.615Z",
+  "finished_at": "2026-05-11T10:20:38.043Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 47428,
+  "stdout_bytes": 4416,
+  "stderr_bytes": 4173,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/a052afd2-b27c-453f-8672-4a3ea9c72b6c.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/a052afd2-b27c-453f-8672-4a3ea9c72b6c.stderr"
+}

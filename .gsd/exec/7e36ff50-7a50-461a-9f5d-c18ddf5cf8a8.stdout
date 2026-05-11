@@ -1,0 +1,66 @@
+
+Running 7 tests using 1 worker
+
+  ✘  1 tests/e2e/calendar-shifts.spec.ts:44:1 › overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully (2.7s)
+  -  2 tests/e2e/calendar-shifts.spec.ts:119:1 › touching-boundary create drafts stay advisory-free before submit
+  -  3 tests/e2e/calendar-shifts.spec.ts:173:1 › seeded member can prove the trusted-online Thursday overlap warning while the Wednesday touch boundary stays clean
+  -  4 tests/e2e/calendar-shifts.spec.ts:268:1 › browse suggestion handoff creates a visible shift on the intended day and does not reopen after reload
+  -  5 tests/e2e/calendar-shifts.spec.ts:353:1 › weekly recurrence suggestion accept path pre-fills weekly cadence truthfully and resets after a successful create
+  -  6 tests/e2e/calendar-shifts.spec.ts:439:1 › weekly recurrence suggestion dismiss path keeps the form blank, stays hidden for the current instance, and returns after reload
+  -  7 tests/e2e/calendar-shifts.spec.ts:545:1 › seeded member still gets the explicit denied surface for an unauthorized calendar route
+
+
+  1) tests/e2e/calendar-shifts.spec.ts:44:1 › overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully › phase: enter an overlapping Thursday window and prove the advisory appears before submit while save stays enabled 
+
+    Error: locator.getAttribute: Error: strict mode violation: getByTestId('clash-advisory') resolved to 12 elements:
+        1) <article aria-live="polite" aria-atomic="true" data-overlap-count="1" data-testid="clash-advisory" class="inline-state tone-warning clash-advisory" data-conflicting-shift-ids="bf8b5f2a-fb27-4433-9330-2b6703699ee9">…</article> aka getByTestId('clash-advisory').first()
+        2) <article aria-live="polite" aria-atomic="true" data-overlap-count="1" data-testid="clash-advisory" class="inline-state tone-warning clash-advisory" data-conflicting-shift-ids="bf8b5f2a-fb27-4433-9330-2b6703699ee9">…</article> aka locator('fieldset').filter({ hasText: 'Shift title Alpha opening sweep Start End Heads up 1 overlapping shift Warning' }).getByTestId('clash-advisory')
+        3) <article aria-live="polite" aria-atomic="true" data-overlap-count="2" data-testid="clash-advisory" class="inline-state tone-warning clash-advisory" data-conflicting-shift-ids="d7071cef-62ca-401f-bef0-03f1d605a8f9,aaaaaaaa-6666-1111-1111-111111111111">…</article> aka getByTestId('clash-advisory').nth(2)
+        4) <article aria-live="polite" aria-atomic="true" data-overlap-count="2" data-testid="clash-advisory" class="inline-state tone-warning clash-advisory" data-conflicting-shift-ids="d7071cef-62ca-401f-bef0-03f1d605a8f9,aaaaaaaa-6666-1111-1111-111111111111">…</article> aka locator('fieldset').filter({ hasText: 'Shift title Alpha opening sweep Start End Heads up 2 overlapping shifts Warning' }).getByTestId('clash-advisory')
+        5) <article aria-live="polite" aria-atomic="true" data-overlap-count="2" data-testid="clash-advisory" class="inline-state tone-warning clash-advisory" data-conflicting-shift-ids="aaaaaaaa-8888-1111-1111-333333333333,aaaaaaaa-6666-1111-1111-111111111111">…</article> aka getByTestId('clash-advisory').nth(4)
+        6) <article aria-live="polite" aria-atomic="true" data-overlap-count="2" data-testid="clash-advisory" class="inline-state tone-warning clash-advisory" data-conflicting-shift-ids="aaaaaaaa-8888-1111-1111-333333333333,aaaaaaaa-6666-1111-1111-111111111111">…</article> aka getByRole('group').filter({ hasText: 'Move timing Local-first move Move this shift UTC times Shift title Find time' }).getByTestId('clash-advisory')
+        7) <article aria-live="polite" aria-atomic="true" data-overlap-count="1" data-testid="clash-advisory" class="inline-state tone-warning clash-advisory" data-conflicting-shift-ids="d7071cef-62ca-401f-bef0-03f1d605a8f9">…</article> aka getByText('Heads up 1 overlapping shift Warning only This draft overlaps another visible-').nth(2)
+        8) <article aria-live="polite" aria-atomic="true" data-overlap-count="1" data-testid="clash-advisory" class="inline-state tone-warning clash-advisory" data-conflicting-shift-ids="d7071cef-62ca-401f-bef0-03f1d605a8f9">…</article> aka getByText('Heads up 1 overlapping shift Warning only This draft overlaps another visible-').nth(3)
+        9) <article aria-live="polite" aria-atomic="true" data-overlap-count="1" data-testid="clash-advisory" class="inline-state tone-warning clash-advisory" data-conflicting-shift-ids="aaaaaaaa-7777-1111-1111-222222222222">…</article> aka getByText('Heads up 1 overlapping shift Warning only This draft overlaps another visible-').nth(4)
+        10) <article aria-live="polite" aria-atomic="true" data-overlap-count="1" data-testid="clash-advisory" class="inline-state tone-warning clash-advisory" data-conflicting-shift-ids="aaaaaaaa-7777-1111-1111-222222222222">…</article> aka getByText('Heads up 1 overlapping shift Warning only This draft overlaps another visible-').nth(5)
+        ...
+
+    Call log:
+    [2m  - waiting for getByTestId('clash-advisory')[22m
+
+
+       at fixtures.ts:1545
+
+      1543 |   }
+      1544 |
+    > 1545 |   const overlapCountRaw = await advisory.getAttribute('data-overlap-count');
+           |                                          ^
+      1546 |   const overlapCount = overlapCountRaw ? Number.parseInt(overlapCountRaw, 10) : null;
+      1547 |   const conflictingShiftIds = ((await advisory.getAttribute('data-conflicting-shift-ids')) ?? '')
+      1548 |     .split(',')
+        at readCreateShiftClashAdvisory (/Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/fixtures.ts:1545:42)
+        at Object.expect.poll.message (/Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:80:26)
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:79:5
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:70:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/error-context.md
+
+    attachment #5: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/calendar-shifts.spec.ts:44:1 › overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully 
+  6 did not run

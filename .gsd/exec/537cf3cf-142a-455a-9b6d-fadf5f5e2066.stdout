@@ -1,0 +1,12 @@
+Loading svelte-check in workspace: /Users/serkanyeniay/dev/Caluno/apps/web
+Getting Svelte diagnostics...
+
+/Users/serkanyeniay/dev/Caluno/apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:566:23
+Error: Mixing old (on:change) and new syntaxes for event handling is not allowed. Use only the onchange syntax
+https://svelte.dev/e/mixed_event_handler_syntaxes (svelte)
+                      checked={recurrenceCadence === ''}
+                      on:change={() => setRecurrenceCadence('')}
+                    />
+
+====================================
+svelte-check found 1 error and 0 warnings in 1 file

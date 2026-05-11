@@ -1,0 +1,18 @@
+{
+  "id": "7bdc5ba7-b4ad-419b-b4e1-c63849526e51",
+  "runtime": "bash",
+  "purpose": "final playwright calendar-shifts e2e verification after syntax fix",
+  "script_chars": 111,
+  "started_at": "2026-05-11T10:51:37.742Z",
+  "finished_at": "2026-05-11T10:51:52.513Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 14771,
+  "stdout_bytes": 4595,
+  "stderr_bytes": 746,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/7bdc5ba7-b4ad-419b-b4e1-c63849526e51.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/7bdc5ba7-b4ad-419b-b4e1-c63849526e51.stderr"
+}

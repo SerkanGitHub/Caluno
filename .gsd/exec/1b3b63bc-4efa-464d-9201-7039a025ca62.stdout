@@ -1,0 +1,60 @@
+
+Running 7 tests using 1 worker
+
+  ✓  1 tests/e2e/calendar-shifts.spec.ts:123:1 › overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully (3.9s)
+  ✓  2 tests/e2e/calendar-shifts.spec.ts:237:1 › touching-boundary create drafts stay advisory-free before submit (3.1s)
+  ✘  3 tests/e2e/calendar-shifts.spec.ts:302:1 › seeded member can prove the trusted-online Thursday overlap warning while the Wednesday touch boundary stays clean (11.6s)
+  -  4 tests/e2e/calendar-shifts.spec.ts:398:1 › browse suggestion handoff creates a visible shift on the intended day and does not reopen after reload
+  -  5 tests/e2e/calendar-shifts.spec.ts:497:1 › weekly recurrence suggestion accept path pre-fills weekly cadence truthfully and resets after a successful create
+  -  6 tests/e2e/calendar-shifts.spec.ts:588:1 › weekly recurrence suggestion dismiss path keeps the form blank, stays hidden for the current instance, and returns after reload
+  -  7 tests/e2e/calendar-shifts.spec.ts:695:1 › seeded member still gets the explicit denied surface for an unauthorized calendar route
+
+
+  1) tests/e2e/calendar-shifts.spec.ts:302:1 › seeded member can prove the trusted-online Thursday overlap warning while the Wednesday touch boundary stays clean › phase: prove same-day multi-shift state is visible on load, including the seeded Thursday overlap and clean Wednesday boundary 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoHaveCount[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator:  getByTestId('day-column-2026-04-16').locator('[data-testid^="shift-card-"]')
+    Expected: [32m3[39m
+    Received: [31m1[39m
+    Timeout:  10000ms
+
+    Call log:
+    [2m  - Expect "toHaveCount" with timeout 10000ms[22m
+    [2m  - waiting for getByTestId('day-column-2026-04-16').locator('[data-testid^="shift-card-"]')[22m
+    [2m    14 × locator resolved to 1 element[22m
+    [2m       - unexpected value "1"[22m
+
+
+      353 |
+      354 |     const thursdayColumn = dayColumn(page, '2026-04-16');
+    > 355 |     await expect(thursdayColumn.locator('[data-testid^="shift-card-"]')).toHaveCount(3);
+          |                                                                          ^
+      356 |     await expect(thursdayColumn).toContainText('Alpha opening sweep');
+      357 |     await expect(thursdayColumn).toContainText('Kitchen prep');
+      358 |     await expect(thursdayColumn).toContainText('Supplier call');
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:355:74
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:330:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-seeded-mem-2da6e--touch-boundary-stays-clean/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-seeded-mem-2da6e--touch-boundary-stays-clean/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/calendar-shifts-seeded-mem-2da6e--touch-boundary-stays-clean/error-context.md
+
+    attachment #5: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-seeded-mem-2da6e--touch-boundary-stays-clean/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/calendar-shifts-seeded-mem-2da6e--touch-boundary-stays-clean/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/calendar-shifts.spec.ts:302:1 › seeded member can prove the trusted-online Thursday overlap warning while the Wednesday touch boundary stays clean 
+  4 did not run
+  2 passed (20.6s)

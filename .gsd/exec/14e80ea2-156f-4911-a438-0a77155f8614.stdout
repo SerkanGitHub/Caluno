@@ -1,0 +1,12 @@
+
+ RUN  v3.2.4 /Users/serkanyeniay/dev/Caluno/apps/web
+
+ ✓ tests/schedule/offline-queue.unit.test.ts (8 tests) 29ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  12:23:33
+   Duration  458ms (transform 92ms, setup 0ms, collect 156ms, tests 29ms, environment 0ms, prepare 51ms)
+
+
+DURATION_MS=1547

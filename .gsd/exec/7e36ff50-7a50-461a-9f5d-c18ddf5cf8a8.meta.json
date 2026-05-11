@@ -1,0 +1,18 @@
+{
+  "id": "7e36ff50-7a50-461a-9f5d-c18ddf5cf8a8",
+  "runtime": "bash",
+  "purpose": "rerun playwright calendar-shifts e2e after advisory polling fix",
+  "script_chars": 111,
+  "started_at": "2026-05-11T10:46:13.424Z",
+  "finished_at": "2026-05-11T10:46:19.030Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 5606,
+  "stdout_bytes": 8257,
+  "stderr_bytes": 746,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/7e36ff50-7a50-461a-9f5d-c18ddf5cf8a8.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/7e36ff50-7a50-461a-9f5d-c18ddf5cf8a8.stderr"
+}

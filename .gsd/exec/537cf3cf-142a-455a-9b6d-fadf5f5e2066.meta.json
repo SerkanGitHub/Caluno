@@ -1,0 +1,18 @@
+{
+  "id": "537cf3cf-142a-455a-9b6d-fadf5f5e2066",
+  "runtime": "bash",
+  "purpose": "T02 svelte-check rerun",
+  "script_chars": 101,
+  "started_at": "2026-05-11T10:41:56.103Z",
+  "finished_at": "2026-05-11T10:41:59.597Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 3494,
+  "stdout_bytes": 611,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/537cf3cf-142a-455a-9b6d-fadf5f5e2066.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/537cf3cf-142a-455a-9b6d-fadf5f5e2066.stderr"
+}

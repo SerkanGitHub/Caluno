@@ -1,0 +1,55 @@
+
+Running 7 tests using 1 worker
+
+  ✘  1 tests/e2e/calendar-shifts.spec.ts:84:1 › overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully (11.8s)
+  -  2 tests/e2e/calendar-shifts.spec.ts:176:1 › touching-boundary create drafts stay advisory-free before submit
+  -  3 tests/e2e/calendar-shifts.spec.ts:240:1 › seeded member can prove the trusted-online Thursday overlap warning while the Wednesday touch boundary stays clean
+  -  4 tests/e2e/calendar-shifts.spec.ts:335:1 › browse suggestion handoff creates a visible shift on the intended day and does not reopen after reload
+  -  5 tests/e2e/calendar-shifts.spec.ts:420:1 › weekly recurrence suggestion accept path pre-fills weekly cadence truthfully and resets after a successful create
+  -  6 tests/e2e/calendar-shifts.spec.ts:506:1 › weekly recurrence suggestion dismiss path keeps the form blank, stays hidden for the current instance, and returns after reload
+  -  7 tests/e2e/calendar-shifts.spec.ts:612:1 › seeded member still gets the explicit denied surface for an unauthorized calendar route
+
+
+  1) tests/e2e/calendar-shifts.spec.ts:84:1 › overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully › phase: enter an overlapping Thursday window and prove the advisory appears before submit while save stays enabled 
+
+    Error: expected the create dialog to render the pre-submit clash advisory for the seeded Thursday overlap
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m2[39m
+    Received: [31m3[39m
+
+    Call Log:
+    - Timeout 10000ms exceeded while waiting on the predicate
+
+      132 |     await expect(form.locator('input[name="endAt"]')).toHaveValue(overlapEndLocal);
+      133 |
+    > 134 |     await expect
+          |     ^
+      135 |       .poll(async () => (await readCreateShiftClashAdvisory(page)).overlapCount, {
+      136 |         message: 'expected the create dialog to render the pre-submit clash advisory for the seeded Thursday overlap'
+      137 |       })
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:134:5
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:115:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/error-context.md
+
+    attachment #5: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/calendar-shifts.spec.ts:84:1 › overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully 
+  6 did not run

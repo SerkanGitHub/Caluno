@@ -1,0 +1,18 @@
+{
+  "id": "92ed5234-a19b-4bca-a273-0b94e55945af",
+  "runtime": "bash",
+  "purpose": "final playwright calendar-shifts e2e verification after advisory proof updates",
+  "script_chars": 111,
+  "started_at": "2026-05-11T10:51:01.820Z",
+  "finished_at": "2026-05-11T10:51:03.946Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 2126,
+  "stdout_bytes": 868,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/92ed5234-a19b-4bca-a273-0b94e55945af.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/92ed5234-a19b-4bca-a273-0b94e55945af.stderr"
+}

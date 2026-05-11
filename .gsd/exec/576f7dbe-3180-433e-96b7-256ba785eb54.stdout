@@ -1,0 +1,11 @@
+
+ RUN  v3.2.4 /Users/serkanyeniay/dev/Caluno/apps/web
+
+ ✓ tests/schedule/recurrence.unit.test.ts (11 tests) 14ms
+ ✓ tests/routes/protected-routes.unit.test.ts (21 tests) 31ms
+
+ Test Files  2 passed (2)
+      Tests  32 passed (32)
+   Start at  12:25:58
+   Duration  515ms (transform 163ms, setup 0ms, collect 254ms, tests 45ms, environment 0ms, prepare 105ms)
+

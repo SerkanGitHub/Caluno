@@ -1,0 +1,18 @@
+{
+  "id": "4f228920-6f81-4d9b-959a-5d6b40145913",
+  "runtime": "bash",
+  "purpose": "rerun playwright calendar-shifts e2e after scoping create advisory helper",
+  "script_chars": 111,
+  "started_at": "2026-05-11T10:46:30.340Z",
+  "finished_at": "2026-05-11T10:46:44.908Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 14568,
+  "stdout_bytes": 4574,
+  "stderr_bytes": 746,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/4f228920-6f81-4d9b-959a-5d6b40145913.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/4f228920-6f81-4d9b-959a-5d6b40145913.stderr"
+}

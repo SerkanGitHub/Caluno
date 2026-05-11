@@ -1,0 +1,18 @@
+{
+  "id": "307b961a-e8f0-48f1-b42f-c1867581363e",
+  "runtime": "bash",
+  "purpose": "Verify M005 S04 T03 Playwright advisory coverage after cleanup hardening",
+  "script_chars": 111,
+  "started_at": "2026-05-11T11:04:10.769Z",
+  "finished_at": "2026-05-11T11:04:27.771Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 17002,
+  "stdout_bytes": 4499,
+  "stderr_bytes": 1119,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/307b961a-e8f0-48f1-b42f-c1867581363e.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/307b961a-e8f0-48f1-b42f-c1867581363e.stderr"
+}

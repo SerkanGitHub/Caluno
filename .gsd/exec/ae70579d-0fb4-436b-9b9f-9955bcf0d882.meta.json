@@ -1,0 +1,18 @@
+{
+  "id": "ae70579d-0fb4-436b-9b9f-9955bcf0d882",
+  "runtime": "bash",
+  "purpose": "T02 conflicts unit test rerun",
+  "script_chars": 110,
+  "started_at": "2026-05-11T10:41:56.104Z",
+  "finished_at": "2026-05-11T10:41:58.009Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 1905,
+  "stdout_bytes": 293,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/ae70579d-0fb4-436b-9b9f-9955bcf0d882.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/ae70579d-0fb4-436b-9b9f-9955bcf0d882.stderr"
+}

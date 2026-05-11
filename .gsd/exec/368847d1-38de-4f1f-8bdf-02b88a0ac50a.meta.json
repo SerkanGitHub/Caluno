@@ -1,0 +1,18 @@
+{
+  "id": "368847d1-38de-4f1f-8bdf-02b88a0ac50a",
+  "runtime": "bash",
+  "purpose": "rerun isolated overlap advisory playwright test after baseline-aware save assertion",
+  "script_chars": 155,
+  "started_at": "2026-05-11T10:50:54.823Z",
+  "finished_at": "2026-05-11T10:50:56.965Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 2142,
+  "stdout_bytes": 868,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/368847d1-38de-4f1f-8bdf-02b88a0ac50a.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/368847d1-38de-4f1f-8bdf-02b88a0ac50a.stderr"
+}

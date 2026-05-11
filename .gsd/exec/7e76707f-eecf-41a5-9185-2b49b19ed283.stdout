@@ -1,0 +1,74 @@
+Loading svelte-check in workspace: /Users/serkanyeniay/dev/Caluno/apps/web
+Getting Svelte diagnostics...
+
+/Users/serkanyeniay/dev/Caluno/apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:539:21
+Warn: Using `on:click` to listen to the click event is deprecated. Use the event attribute `onclick` instead
+https://svelte.dev/e/event_directive_deprecated (svelte)
+                    data-testid="recurrence-suggestion-accept"
+                    on:click={acceptSuggestion}
+                  >
+
+/Users/serkanyeniay/dev/Caluno/apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:547:21
+Warn: Using `on:click` to listen to the click event is deprecated. Use the event attribute `onclick` instead
+https://svelte.dev/e/event_directive_deprecated (svelte)
+                    data-testid="recurrence-suggestion-dismiss"
+                    on:click={dismissSuggestion}
+                  >
+
+/Users/serkanyeniay/dev/Caluno/apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:565:23
+Warn: Using `on:change` to listen to the change event is deprecated. Use the event attribute `onchange` instead
+https://svelte.dev/e/event_directive_deprecated (svelte)
+                      checked={recurrenceCadence === ''}
+                      on:change={() => setRecurrenceCadence('')}
+                    />
+
+/Users/serkanyeniay/dev/Caluno/apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:577:23
+Warn: Using `on:change` to listen to the change event is deprecated. Use the event attribute `onchange` instead
+https://svelte.dev/e/event_directive_deprecated (svelte)
+                      checked={recurrenceCadence === 'daily'}
+                      on:change={() => setRecurrenceCadence('daily')}
+                    />
+
+/Users/serkanyeniay/dev/Caluno/apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:589:23
+Warn: Using `on:change` to listen to the change event is deprecated. Use the event attribute `onchange` instead
+https://svelte.dev/e/event_directive_deprecated (svelte)
+                      checked={recurrenceCadence === 'weekly'}
+                      on:change={() => setRecurrenceCadence('weekly')}
+                    />
+
+/Users/serkanyeniay/dev/Caluno/apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:601:23
+Warn: Using `on:change` to listen to the change event is deprecated. Use the event attribute `onchange` instead
+https://svelte.dev/e/event_directive_deprecated (svelte)
+                      checked={recurrenceCadence === 'monthly'}
+                      on:change={() => setRecurrenceCadence('monthly')}
+                    />
+
+/Users/serkanyeniay/dev/Caluno/apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:618:19
+Warn: Using `on:input` to listen to the input event is deprecated. Use the event attribute `oninput` instead
+https://svelte.dev/e/event_directive_deprecated (svelte)
+                  value={recurrenceInterval}
+                  on:input={(event) => updateTextField(event, 'recurrenceInterval')}
+                />
+
+/Users/serkanyeniay/dev/Caluno/apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:631:19
+Warn: Using `on:input` to listen to the input event is deprecated. Use the event attribute `oninput` instead
+https://svelte.dev/e/event_directive_deprecated (svelte)
+                  value={repeatCount}
+                  on:input={(event) => updateTextField(event, 'repeatCount')}
+                />
+
+/Users/serkanyeniay/dev/Caluno/apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:642:19
+Warn: Using `on:input` to listen to the input event is deprecated. Use the event attribute `oninput` instead
+https://svelte.dev/e/event_directive_deprecated (svelte)
+                  value={repeatUntil}
+                  on:input={(event) => updateTextField(event, 'repeatUntil')}
+                />
+
+/Users/serkanyeniay/dev/Caluno/apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte:419:51
+Error: Cannot find name 'enhance'. (ts)
+
+    <form method="POST" action={actionTarget} use:enhance={enhanceMutation({ action, formId })} class="stacked-form">
+      <input type="hidden" name="visibleWeekStart" value={visibleWeekStart} />
+
+====================================
+svelte-check found 1 error and 9 warnings in 1 file

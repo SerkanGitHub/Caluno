@@ -19,10 +19,10 @@
 - [x] **S02: S02** `risk:low` `depends:[]`
   > After this: Unit tests pass for both helpers. detectRecurrencePattern returns a suggestion for ≥3 same-weekday-same-hour shifts in 30 days and null otherwise. previewShiftConflicts returns overlapping shifts for a draft against existing shifts and empty array when clear.
 
-- [ ] **S03: S03** `risk:medium` `depends:[]`
+- [x] **S03: S03** `risk:medium` `depends:[]`
   > After this: Opening the web shift create dialog on a calendar with a known pattern surfaces a suggestion chip. Accepting pre-fills recurrence fields. Dismissing leaves the form blank. Browser E2E covers both paths.
 
-- [ ] **S04: Wire clash advisory into web shift editor** `risk:medium` `depends:[S02]`
+- [ ] **S04: S04** `risk:medium` `depends:[]`
   > After this: Creating a shift on web that would overlap an existing one shows a non-blocking advisory before confirm. The user can still save. Browser E2E covers conflict and clear scenarios.
 
 - [ ] **S05: Mobile surfaces for recurrence suggestion and clash advisory** `risk:medium` `depends:[S03,S04]`

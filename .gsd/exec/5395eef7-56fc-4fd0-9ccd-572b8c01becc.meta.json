@@ -1,0 +1,18 @@
+{
+  "id": "5395eef7-56fc-4fd0-9ccd-572b8c01becc",
+  "runtime": "bash",
+  "purpose": "final clean playwright calendar-shifts e2e verification with overlap cleanup",
+  "script_chars": 111,
+  "started_at": "2026-05-11T10:56:48.017Z",
+  "finished_at": "2026-05-11T10:57:08.443Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 20426,
+  "stdout_bytes": 4972,
+  "stderr_bytes": 2984,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/5395eef7-56fc-4fd0-9ccd-572b8c01becc.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/5395eef7-56fc-4fd0-9ccd-572b8c01becc.stderr"
+}

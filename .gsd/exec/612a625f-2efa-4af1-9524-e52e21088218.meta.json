@@ -1,0 +1,18 @@
+{
+  "id": "612a625f-2efa-4af1-9524-e52e21088218",
+  "runtime": "bash",
+  "purpose": "sequential final clean playwright calendar-shifts e2e verification after supabase reset warmup",
+  "script_chars": 111,
+  "started_at": "2026-05-11T10:58:25.673Z",
+  "finished_at": "2026-05-11T10:58:45.437Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 19764,
+  "stdout_bytes": 1191,
+  "stderr_bytes": 8579,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/612a625f-2efa-4af1-9524-e52e21088218.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/612a625f-2efa-4af1-9524-e52e21088218.stderr"
+}

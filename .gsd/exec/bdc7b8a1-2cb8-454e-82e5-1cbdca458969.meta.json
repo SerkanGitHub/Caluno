@@ -1,0 +1,18 @@
+{
+  "id": "bdc7b8a1-2cb8-454e-82e5-1cbdca458969",
+  "runtime": "bash",
+  "purpose": "T02 shift editor advisory unit test",
+  "script_chars": 122,
+  "started_at": "2026-05-11T10:41:22.013Z",
+  "finished_at": "2026-05-11T10:41:24.091Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 2078,
+  "stdout_bytes": 307,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/bdc7b8a1-2cb8-454e-82e5-1cbdca458969.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/bdc7b8a1-2cb8-454e-82e5-1cbdca458969.stderr"
+}

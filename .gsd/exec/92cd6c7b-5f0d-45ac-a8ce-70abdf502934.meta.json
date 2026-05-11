@@ -1,0 +1,18 @@
+{
+  "id": "92cd6c7b-5f0d-45ac-a8ce-70abdf502934",
+  "runtime": "bash",
+  "purpose": "final clean playwright calendar-shifts e2e verification after cleanup reload",
+  "script_chars": 111,
+  "started_at": "2026-05-11T10:57:46.797Z",
+  "finished_at": "2026-05-11T10:57:47.808Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 1011,
+  "stdout_bytes": 0,
+  "stderr_bytes": 1529,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/92cd6c7b-5f0d-45ac-a8ce-70abdf502934.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/92cd6c7b-5f0d-45ac-a8ce-70abdf502934.stderr"
+}

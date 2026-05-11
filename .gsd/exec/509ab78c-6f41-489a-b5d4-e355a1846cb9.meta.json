@@ -1,0 +1,18 @@
+{
+  "id": "509ab78c-6f41-489a-b5d4-e355a1846cb9",
+  "runtime": "bash",
+  "purpose": "playwright calendar-shifts e2e after local supabase reset",
+  "script_chars": 111,
+  "started_at": "2026-05-11T10:53:42.892Z",
+  "finished_at": "2026-05-11T10:53:59.407Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 16515,
+  "stdout_bytes": 4784,
+  "stderr_bytes": 1119,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/509ab78c-6f41-489a-b5d4-e355a1846cb9.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/509ab78c-6f41-489a-b5d4-e355a1846cb9.stderr"
+}

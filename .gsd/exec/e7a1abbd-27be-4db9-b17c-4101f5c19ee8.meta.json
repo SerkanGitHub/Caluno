@@ -1,0 +1,18 @@
+{
+  "id": "e7a1abbd-27be-4db9-b17c-4101f5c19ee8",
+  "runtime": "bash",
+  "purpose": "reset local supabase db to restore playwright seed state",
+  "script_chars": 62,
+  "started_at": "2026-05-11T10:53:12.266Z",
+  "finished_at": "2026-05-11T10:53:37.700Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 25434,
+  "stdout_bytes": 0,
+  "stderr_bytes": 816,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/e7a1abbd-27be-4db9-b17c-4101f5c19ee8.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/e7a1abbd-27be-4db9-b17c-4101f5c19ee8.stderr"
+}

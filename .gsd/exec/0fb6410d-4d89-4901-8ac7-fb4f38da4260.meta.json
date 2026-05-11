@@ -1,0 +1,18 @@
+{
+  "id": "0fb6410d-4d89-4901-8ac7-fb4f38da4260",
+  "runtime": "bash",
+  "purpose": "T02 verification rerun: reset local supabase and run calendar shifts Playwright suite after reconciliation fix",
+  "script_chars": 353,
+  "started_at": "2026-05-11T10:23:37.723Z",
+  "finished_at": "2026-05-11T10:24:18.894Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 41171,
+  "stdout_bytes": 919,
+  "stderr_bytes": 6411,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/0fb6410d-4d89-4901-8ac7-fb4f38da4260.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/0fb6410d-4d89-4901-8ac7-fb4f38da4260.stderr"
+}

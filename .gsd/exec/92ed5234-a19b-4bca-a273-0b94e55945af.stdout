@@ -1,0 +1,22 @@
+SyntaxError: /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts: Unexpected token (172:0)
+
+  170 |     await expect(editor).not.toHaveAttribute('open', '');
+  171 |   });
+> 172 | });
+      | ^
+  173 |
+  174 | test('touching-boundary create drafts stay advisory-free before submit', async ({ page, flow }) => {
+  175 |   const clearTitle = 'Boundary clear advisory proof';
+
+   at calendar-shifts.spec.ts:172
+
+  170 |     await expect(editor).not.toHaveAttribute('open', '');
+  171 |   });
+> 172 | });
+  173 |
+  174 | test('touching-boundary create drafts stay advisory-free before submit', async ({ page, flow }) => {
+  175 |   const clearTitle = 'Boundary clear advisory proof';
+Error: No tests found.
+Make sure that arguments are regular expressions matching test files.
+You may need to escape symbols like "$" or "*" and quote the arguments.
+

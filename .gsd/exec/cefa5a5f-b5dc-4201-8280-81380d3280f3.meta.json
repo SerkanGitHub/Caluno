@@ -1,0 +1,18 @@
+{
+  "id": "cefa5a5f-b5dc-4201-8280-81380d3280f3",
+  "runtime": "bash",
+  "purpose": "Re-verify calendar shifts Playwright suite after stabilizing drift-prone assertions",
+  "script_chars": 111,
+  "started_at": "2026-05-11T13:49:04.505Z",
+  "finished_at": "2026-05-11T13:49:30.649Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 26144,
+  "stdout_bytes": 1017,
+  "stderr_bytes": 11936,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/cefa5a5f-b5dc-4201-8280-81380d3280f3.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/cefa5a5f-b5dc-4201-8280-81380d3280f3.stderr"
+}

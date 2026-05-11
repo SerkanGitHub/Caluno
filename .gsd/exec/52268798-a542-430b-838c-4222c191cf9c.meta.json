@@ -1,0 +1,18 @@
+{
+  "id": "52268798-a542-430b-838c-4222c191cf9c",
+  "runtime": "bash",
+  "purpose": "Final verify M005 S04 T03 Playwright advisory coverage",
+  "script_chars": 111,
+  "started_at": "2026-05-11T11:07:54.019Z",
+  "finished_at": "2026-05-11T11:08:15.342Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 21323,
+  "stdout_bytes": 1017,
+  "stderr_bytes": 9325,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/52268798-a542-430b-838c-4222c191cf9c.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/52268798-a542-430b-838c-4222c191cf9c.stderr"
+}

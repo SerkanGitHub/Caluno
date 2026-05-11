@@ -1,0 +1,18 @@
+{
+  "id": "f1ef7395-16bf-488f-8dae-538c553ebe56",
+  "runtime": "bash",
+  "purpose": "rerun playwright calendar-shifts e2e after deterministic draft input helper",
+  "script_chars": 111,
+  "started_at": "2026-05-11T10:47:39.149Z",
+  "finished_at": "2026-05-11T10:47:53.472Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 14323,
+  "stdout_bytes": 4522,
+  "stderr_bytes": 746,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/f1ef7395-16bf-488f-8dae-538c553ebe56.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/f1ef7395-16bf-488f-8dae-538c553ebe56.stderr"
+}

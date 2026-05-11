@@ -1,0 +1,18 @@
+{
+  "id": "7f9df07a-d425-4f31-8b36-9c27b1b43eb3",
+  "runtime": "bash",
+  "purpose": "Verify M005 S04 T03 Playwright advisory coverage",
+  "script_chars": 111,
+  "started_at": "2026-05-11T11:01:06.378Z",
+  "finished_at": "2026-05-11T11:01:26.494Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 20116,
+  "stdout_bytes": 4984,
+  "stderr_bytes": 3730,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/7f9df07a-d425-4f31-8b36-9c27b1b43eb3.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/7f9df07a-d425-4f31-8b36-9c27b1b43eb3.stderr"
+}

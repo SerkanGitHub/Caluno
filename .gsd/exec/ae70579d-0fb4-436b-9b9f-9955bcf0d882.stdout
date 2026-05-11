@@ -1,0 +1,10 @@
+
+ RUN  v3.2.4 /Users/serkanyeniay/dev/Caluno/apps/web
+
+ ✓ tests/schedule/conflicts.unit.test.ts (5 tests) 14ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  12:41:57
+   Duration  735ms (transform 47ms, setup 0ms, collect 50ms, tests 14ms, environment 0ms, prepare 59ms)
+

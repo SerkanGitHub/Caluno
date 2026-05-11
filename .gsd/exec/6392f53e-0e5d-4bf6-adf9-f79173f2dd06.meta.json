@@ -1,0 +1,18 @@
+{
+  "id": "6392f53e-0e5d-4bf6-adf9-f79173f2dd06",
+  "runtime": "bash",
+  "purpose": "run isolated overlap advisory playwright test after hydration guard",
+  "script_chars": 155,
+  "started_at": "2026-05-11T10:49:29.830Z",
+  "finished_at": "2026-05-11T10:49:45.799Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 15969,
+  "stdout_bytes": 4010,
+  "stderr_bytes": 1119,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/6392f53e-0e5d-4bf6-adf9-f79173f2dd06.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/6392f53e-0e5d-4bf6-adf9-f79173f2dd06.stderr"
+}

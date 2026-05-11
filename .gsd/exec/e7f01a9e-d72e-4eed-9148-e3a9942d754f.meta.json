@@ -1,0 +1,18 @@
+{
+  "id": "e7f01a9e-d72e-4eed-9148-e3a9942d754f",
+  "runtime": "bash",
+  "purpose": "T02 final conflicts unit test",
+  "script_chars": 110,
+  "started_at": "2026-05-11T10:42:17.680Z",
+  "finished_at": "2026-05-11T10:42:19.567Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 1887,
+  "stdout_bytes": 293,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/e7f01a9e-d72e-4eed-9148-e3a9942d754f.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/e7f01a9e-d72e-4eed-9148-e3a9942d754f.stderr"
+}

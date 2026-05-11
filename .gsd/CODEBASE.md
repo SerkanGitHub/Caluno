@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-05-11T09:06:28Z | Files: 500 | Described: 0/500
-<!-- gsd:codebase-meta {"generatedAt":"2026-05-11T09:06:28Z","fingerprint":"c566b554425d357978bfc4188b5a77f213833270","fileCount":500,"truncated":true} -->
+Generated: 2026-05-11T10:43:30Z | Files: 500 | Described: 0/500
+<!-- gsd:codebase-meta {"generatedAt":"2026-05-11T10:43:30Z","fingerprint":"263b2afff4b7211f675a99825bee02a57bc1ad82","fileCount":500,"truncated":true} -->
 Note: Truncated to first 500 files. Run with higher --max-files to include all.
 
 ### (root)/
@@ -667,6 +667,7 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/web/src/lib/schedule/create-prefill.ts`
 - `apps/web/src/lib/schedule/recurrence.ts`
 - `apps/web/src/lib/schedule/route-contract.ts`
+- `apps/web/src/lib/schedule/shift-editor-advisory.ts`
 - `apps/web/src/lib/schedule/types.ts`
 
 ### apps/web/src/lib/server/
@@ -720,10 +721,10 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 ### apps/web/test-results/e2e-offline/
 - `apps/web/test-results/e2e-offline/.last-run.json`
 
-### apps/web/test-results/e2e/calendar-offline-preview-p-92077-e-offline-continuity-begins/
-- `apps/web/test-results/e2e/calendar-offline-preview-p-92077-e-offline-continuity-begins/error-context.md`
-- `apps/web/test-results/e2e/calendar-offline-preview-p-92077-e-offline-continuity-begins/trace.zip`
-- `apps/web/test-results/e2e/calendar-offline-preview-p-92077-e-offline-continuity-begins/video.webm`
+### apps/web/test-results/e2e/calendar-shifts-weekly-rec-5ab69-s-after-a-successful-create/
+- `apps/web/test-results/e2e/calendar-shifts-weekly-rec-5ab69-s-after-a-successful-create/error-context.md`
+- `apps/web/test-results/e2e/calendar-shifts-weekly-rec-5ab69-s-after-a-successful-create/trace.zip`
+- `apps/web/test-results/e2e/calendar-shifts-weekly-rec-5ab69-s-after-a-successful-create/video.webm`
 
 ### apps/web/tests/access/
 - `apps/web/tests/access/policy-contract.unit.test.ts`
@@ -755,6 +756,7 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/web/tests/schedule/offline-store.unit.test.ts`
 - `apps/web/tests/schedule/recurrence.unit.test.ts`
 - `apps/web/tests/schedule/server-actions.unit.test.ts`
+- `apps/web/tests/schedule/shift-editor-advisory.unit.test.ts`
 - `apps/web/tests/schedule/sync-engine.unit.test.ts`
 
 ### packages/caluno-core/
@@ -780,5 +782,3 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `packages/caluno-core/src/schedule/board.ts`
 - `packages/caluno-core/src/schedule/conflicts.ts`
 - `packages/caluno-core/src/schedule/create-prefill.ts`
-- `packages/caluno-core/src/schedule/recurrence.ts`
-- `packages/caluno-core/src/schedule/types.ts`
