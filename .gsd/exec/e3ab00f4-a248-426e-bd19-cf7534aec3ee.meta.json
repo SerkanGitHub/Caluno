@@ -1,0 +1,18 @@
+{
+  "id": "e3ab00f4-a248-426e-bd19-cf7534aec3ee",
+  "runtime": "bash",
+  "purpose": "M005 S01 T01 exact plan verification command",
+  "script_chars": 210,
+  "started_at": "2026-05-11T08:49:00.094Z",
+  "finished_at": "2026-05-11T08:49:00.124Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 30,
+  "stdout_bytes": 3,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/e3ab00f4-a248-426e-bd19-cf7534aec3ee.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/e3ab00f4-a248-426e-bd19-cf7534aec3ee.stderr"
+}

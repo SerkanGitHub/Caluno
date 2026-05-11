@@ -1,0 +1,36 @@
+# M005: Predictive assistance and release hardening
+
+**Vision:** Deliver predictive scheduling assistance and harden the product for launch, building on the now-complete cross-platform coordination loop from M001–M004. Users get smarter coordination help derived from their real schedule data, and the product is reliable, accessible, and deployable.
+
+## Success Criteria
+
+- Predictive or anticipatory scheduling features are live and covered by unit and E2E tests
+- R011 (predictive scheduling assistance) is validated
+- Launch hardening: reliability, onboarding, performance, accessibility, observability, and deployment readiness are addressed
+- UX is refined for calmness, polish, and fit/finish
+- All trust, privacy, and authorization constraints from prior milestones are maintained
+- Explicit UI and diagnostics exist for predictive features and hardening outcomes
+
+## Slices
+
+- [ ] **S01: S01** `risk:low` `depends:[]`
+  > After this: A written feature brief (M005-CONTEXT.md) with specific predictive features scoped, explicit launch criteria, and a decomposed slice roadmap.
+
+- [ ] **S02: Implement detectRecurrencePattern and previewShiftConflicts in @repo/caluno-core** `risk:low` `depends:[S01]`
+  > After this: Unit tests pass for both helpers. detectRecurrencePattern returns a suggestion for ≥3 same-weekday-same-hour shifts in 30 days and null otherwise. previewShiftConflicts returns overlapping shifts for a draft against existing shifts and empty array when clear.
+
+- [ ] **S03: Wire recurrence suggestion into web shift create dialog** `risk:medium` `depends:[S02]`
+  > After this: Opening the web shift create dialog on a calendar with a known pattern surfaces a suggestion chip. Accepting pre-fills recurrence fields. Dismissing leaves the form blank. Browser E2E covers both paths.
+
+- [ ] **S04: Wire clash advisory into web shift editor** `risk:medium` `depends:[S02]`
+  > After this: Creating a shift on web that would overlap an existing one shows a non-blocking advisory before confirm. The user can still save. Browser E2E covers conflict and clear scenarios.
+
+- [ ] **S05: Mobile surfaces for recurrence suggestion and clash advisory** `risk:medium` `depends:[S03,S04]`
+  > After this: ShiftEditorSheet on mobile renders both the suggestion chip and the clash advisory when applicable. Playwright mobile smoke passes.
+
+- [ ] **S06: Hardening, accessibility, and deployment readiness** `risk:low` `depends:[S05]`
+  > After this: axe-core scan reports zero new WCAG 2.1 AA violations. Stale M004 E2E assertions fixed. pnpm build passes for web and mobile. R011 marked validated.
+
+## Boundary Map
+
+Not provided.

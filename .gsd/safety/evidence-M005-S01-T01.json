@@ -1,0 +1,18 @@
+[
+  {
+    "kind": "bash",
+    "toolCallId": "call_7pESEYl3y184hVWsMGgwtKSr|nQOi9d1AGmRi6aZ9Kt1CAjPQgRZithpQCNOC1dngFQxTqSDl+r2pXda4nTN2+9hqRDrrAWvnw4DkVLJeDKUbHhr2r9qFXWvULhXiO9GORG2Qt7D6tgW5kLz5CiL5O1kx8TgP9GRu4VPhnjoSfuZR+USiTQgYX7hjjOiKmZMmEOhDZmxAKJT/wieNMub5J0+siWORJYsEw4oEHqMSr953mC5kFYseCEnrznzSqQdHG3Rmb20Yyn+KJP//gbEN5D9T32meeEa6ElPTjvoKRqNArx+K3+t/4Xnu86zg3deRdIXScGsaQvyKNGyrXJ5GhkZb6VYpz6BvN9vjhKxjFPXEm24VeylexE5JUur97hYxVYabfFtLbQbBWjQtTuiDLzmzHkvc/1f5h2gyMPhXiX5u+Q==",
+    "command": "",
+    "exitCode": 0,
+    "outputSnippet": "gsd_exec[6f44a9af-c8be-4cc5-88b0-b6fd244d2c40] runtime=bash exit=0 duration=226ms\n  stdout: 92B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/6f44a9af-c8be-4cc5-88b0-b6fd244d2c40.stdout\n  stderr: 0B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/6f44a9af-c8be-4cc5-88b0-b6fd244d2c40.stderr\n--- digest ---\nsections=5\nD063=present\nR011=active owner=M005/S01\nroadmap=S02-S06 dependency chain present",
+    "timestamp": 1778489336363
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_3v2gM4vx9gq0ZQi9Gw2K9QgV|b4WsDTBwS5+0tqf3lQATUTDvy7K1nE9uYzMwO68GU4j8OAqgNHNG4hVPpAwWQn9nyi4laknyQQ9j1NeEdPB8XYaNbQugfXmtlEOI4Bc9juKk+TAeUiHzDvBsQSNkOy6ZOnD5dEeDVkd5xIKpoMWdpRhX3bodgxLpftfPpAbAgRJ2fJQAcz2RjlCBP6GbN73WTBmc/4wHRIF21jjNPSY0C/WbMiS9oMHKPIkcQ2Rjv3qJMWVBpouZYbH1jjLVC3nw8sYO95sgmnIre08J1I/Aygs653H+JC8j353Lbmq1r82Uo8wmmthNB1f3DBqHYvE1ExMC7rh7WC4zc7PNOSiinLP9ercfgcI0s46Lyjgirh/AqvSdg2US/9s1AsdQiZvEnt/VZxvQBKGfGyRklW6RMw==",
+    "command": "",
+    "exitCode": 0,
+    "outputSnippet": "gsd_exec[e3ab00f4-a248-426e-bd19-cf7534aec3ee] runtime=bash exit=0 duration=30ms\n  stdout: 3B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/e3ab00f4-a248-426e-bd19-cf7534aec3ee.stdout\n  stderr: 0B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/e3ab00f4-a248-426e-bd19-cf7534aec3ee.stderr\n--- digest ---\n13",
+    "timestamp": 1778489340091
+  }
+]
