@@ -481,6 +481,18 @@ describe('calendar route resolution', () => {
     expect(result.calendarView.visibleWeek.endExclusive).toBe('2026-04-27');
     expect(result.calendarView.schedule.totalShifts).toBe(2);
     expect(
+      result.calendarView.schedule.days.flatMap((day: { shifts: Array<{ id: string; calendarId: string }> }) => day.shifts)
+    ).toEqual([
+      expect.objectContaining({
+        id: 'aaaaaaaa-9999-1111-1111-111111111111',
+        calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111'
+      }),
+      expect.objectContaining({
+        id: 'aaaaaaaa-9999-1111-1111-222222222222',
+        calendarId: 'aaaaaaaa-aaaa-1111-1111-111111111111'
+      })
+    ]);
+    expect(
       result.calendarView.schedule.days.find((day: { dayKey: string }) => day.dayKey === '2026-04-20')?.shifts
     ).toHaveLength(1);
     expect(
@@ -547,6 +559,9 @@ describe('calendar route resolution', () => {
     expect(result.calendarView.kind).toBe('calendar');
     if (result.calendarView.kind === 'calendar') {
       expect(result.calendarView.visibleWeek.start).toBe('2026-04-27');
+      expect(
+        result.calendarView.schedule.days.flatMap((day: { shifts: unknown[] }) => day.shifts)
+      ).toEqual([]);
       expect(result.calendarView.createPrefill).toEqual({
         source: 'find-time',
         visibleWeekStart: '2026-04-27',

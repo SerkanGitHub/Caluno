@@ -2,11 +2,13 @@
   import type { SubmitFunction } from '@sveltejs/kit';
   import type { CalendarControllerActionState } from '$lib/offline/calendar-controller';
   import type { ShiftDayColumnModel } from '$lib/schedule/board';
+  import type { CalendarShift } from '$lib/server/schedule';
   import ShiftCard from './ShiftCard.svelte';
 
   type Props = {
     day: ShiftDayColumnModel;
     visibleWeekStart: string;
+    existingShifts?: CalendarShift[];
     actionStates?: CalendarControllerActionState[];
     pendingActionKey: string | null;
     enhanceMutation: (params: {
@@ -18,6 +20,7 @@
   let {
     day,
     visibleWeekStart,
+    existingShifts = [],
     actionStates = [],
     pendingActionKey,
     enhanceMutation
@@ -75,6 +78,7 @@
         <ShiftCard
           {shift}
           {visibleWeekStart}
+          {existingShifts}
           {actionStates}
           {pendingActionKey}
           {enhanceMutation}

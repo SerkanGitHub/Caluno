@@ -5,7 +5,7 @@
   import { buildDefaultCreateTimes, toDateTimeLocalValue } from '$lib/schedule/board';
   import type { CreatePrefillPayload } from '$lib/schedule/create-prefill';
   import type { ShiftCardModel } from '$lib/schedule/board';
-  import type { ScheduleRecurrenceSuggestion } from '$lib/server/schedule';
+  import type { CalendarShift, ScheduleRecurrenceSuggestion } from '$lib/server/schedule';
 
   type Mode = 'create' | 'edit' | 'move';
   type RecurrenceCadence = '' | 'daily' | 'weekly' | 'monthly';
@@ -17,6 +17,7 @@
     visibleWeekStart: string;
     createPrefill?: CreatePrefillPayload | null;
     recurrenceSuggestion?: ScheduleRecurrenceSuggestion | null;
+    existingShifts?: CalendarShift[];
     actionStates?: CalendarControllerActionState[];
     shift?: ShiftCardModel | null;
     defaultDayKey?: string | null;
@@ -36,6 +37,7 @@
     visibleWeekStart,
     createPrefill = null,
     recurrenceSuggestion = null,
+    existingShifts = [],
     actionStates = [],
     shift = null,
     defaultDayKey = null,

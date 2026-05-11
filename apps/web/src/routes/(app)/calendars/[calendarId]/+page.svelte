@@ -32,7 +32,7 @@
     type ShiftRealtimeSignal,
     type TrustedRemoteRefreshResult
   } from '$lib/offline/sync-engine';
-  import type { CalendarScheduleView, ScheduleRecurrenceSuggestion } from '$lib/server/schedule';
+  import type { CalendarScheduleView, CalendarShift, ScheduleRecurrenceSuggestion } from '$lib/server/schedule';
   import type { PageData } from './$types';
 
   type ReadyCalendarView = Extract<NonNullable<PageData['calendarView']>, { kind: 'calendar' }> & {
@@ -87,6 +87,11 @@
   );
   const relatedCalendars = $derived.by(() => readyView?.group?.calendars ?? appShell?.calendars ?? []);
   const effectiveSchedule = $derived(controllerState?.schedule ?? readyView?.schedule ?? null);
+  const existingShifts = $derived.by<CalendarShift[]>(() =>
+    effectiveSchedule?.status === 'ready'
+      ? effectiveSchedule.days.flatMap((day) => day.shifts)
+      : []
+  );
   const board = $derived.by(() =>
     effectiveSchedule
       ? buildCalendarWeekBoard(effectiveSchedule, {
@@ -831,6 +836,7 @@
           scheduleMessage={effectiveSchedule.message}
           createPrefill={readyCreatePrefill}
           recurrenceSuggestion={readyRecurrenceSuggestion}
+          {existingShifts}
           actionStates={controllerState?.actionStates ?? []}
           realtimeDiagnostics={realtimeDiagnostics}
           {pendingActionKey}

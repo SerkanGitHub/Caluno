@@ -16,8 +16,10 @@ function buildDraft(overrides: Partial<NormalizedScheduleShiftDraft> = {}): Norm
 }
 
 function buildShift(overrides: Partial<CalendarShift> & Pick<CalendarShift, 'id'>): CalendarShift {
+  const { id, ...rest } = overrides;
+
   return {
-    id: overrides.id,
+    id,
     calendarId: 'calendar-alpha',
     seriesId: null,
     title: 'Shift',
@@ -25,7 +27,7 @@ function buildShift(overrides: Partial<CalendarShift> & Pick<CalendarShift, 'id'
     endAt: '2026-04-16T10:00:00.000Z',
     occurrenceIndex: null,
     sourceKind: 'single',
-    ...overrides
+    ...rest
   };
 }
 

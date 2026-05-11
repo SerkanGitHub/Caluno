@@ -3,11 +3,13 @@
   import type { SubmitFunction } from '@sveltejs/kit';
   import type { CalendarControllerActionState } from '$lib/offline/calendar-controller';
   import type { ShiftCardModel } from '$lib/schedule/board';
+  import type { CalendarShift } from '$lib/server/schedule';
   import ShiftEditorDialog from './ShiftEditorDialog.svelte';
 
   type Props = {
     shift: ShiftCardModel;
     visibleWeekStart: string;
+    existingShifts?: CalendarShift[];
     actionStates?: CalendarControllerActionState[];
     pendingActionKey: string | null;
     enhanceMutation: (params: {
@@ -19,6 +21,7 @@
   let {
     shift,
     visibleWeekStart,
+    existingShifts = [],
     actionStates = [],
     pendingActionKey,
     enhanceMutation
@@ -105,6 +108,7 @@
       mode="edit"
       formId={`edit:${shift.id}`}
       {visibleWeekStart}
+      {existingShifts}
       {actionStates}
       {shift}
       {pendingActionKey}
@@ -116,6 +120,7 @@
       mode="move"
       formId={`move:${shift.id}`}
       {visibleWeekStart}
+      {existingShifts}
       {actionStates}
       {shift}
       {pendingActionKey}
