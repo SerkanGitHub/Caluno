@@ -1,0 +1,18 @@
+{
+  "id": "bb0d4a59-0f37-489c-80ff-8d2d2f002ea1",
+  "runtime": "python",
+  "purpose": "locate tests for conflict helper reuse",
+  "script_chars": 513,
+  "started_at": "2026-05-11T14:00:13.649Z",
+  "finished_at": "2026-05-11T14:00:13.711Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 62,
+  "stdout_bytes": 106,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/bb0d4a59-0f37-489c-80ff-8d2d2f002ea1.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/bb0d4a59-0f37-489c-80ff-8d2d2f002ea1.stderr"
+}

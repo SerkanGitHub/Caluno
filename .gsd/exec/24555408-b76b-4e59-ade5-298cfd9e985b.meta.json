@@ -1,0 +1,18 @@
+{
+  "id": "24555408-b76b-4e59-ade5-298cfd9e985b",
+  "runtime": "bash",
+  "purpose": "reproduce apps/mobile check failure for T04",
+  "script_chars": 65,
+  "started_at": "2026-05-11T14:35:48.568Z",
+  "finished_at": "2026-05-11T14:35:51.882Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 3314,
+  "stdout_bytes": 1433,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/24555408-b76b-4e59-ade5-298cfd9e985b.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/24555408-b76b-4e59-ade5-298cfd9e985b.stderr"
+}

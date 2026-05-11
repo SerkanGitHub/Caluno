@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T01",
+  "unitId": "M005/S05/T01",
+  "timestamp": 1778508634699,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "pnpm --dir apps/web exec vitest run tests/schedule/shift-editor-advisory.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 1287,
+      "verdict": "pass"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "e648cafe-de73-421c-ad26-6bf7bef7c6a7",
+  "runtime": "bash",
+  "purpose": "S05 verification: web clash advisory unit",
+  "script_chars": 103,
+  "started_at": "2026-05-11T14:56:47.468Z",
+  "finished_at": "2026-05-11T14:56:49.301Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 1833,
+  "stdout_bytes": 307,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/e648cafe-de73-421c-ad26-6bf7bef7c6a7.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/e648cafe-de73-421c-ad26-6bf7bef7c6a7.stderr"
+}

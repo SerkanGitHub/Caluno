@@ -1,0 +1,10 @@
+
+> mobile@0.0.1 check /Users/serkanyeniay/dev/Caluno/apps/mobile
+> svelte-kit sync && svelte-check --tsconfig ./tsconfig.json
+
+Loading svelte-check in workspace: /Users/serkanyeniay/dev/Caluno/apps/mobile
+Getting Svelte diagnostics...
+
+svelte-check found 0 errors and 0 warnings
+EXIT_CODE=0
+DURATION_MS=3555

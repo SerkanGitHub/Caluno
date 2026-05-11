@@ -1,0 +1,18 @@
+{
+  "id": "a19e91e6-512f-4aec-8bc6-f4636aff85c5",
+  "runtime": "bash",
+  "purpose": "Run mobile predictive helper unit tests with corrected pnpm invocation",
+  "script_chars": 125,
+  "started_at": "2026-05-11T16:13:51.975Z",
+  "finished_at": "2026-05-11T16:13:53.367Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 1392,
+  "stdout_bytes": 308,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/a19e91e6-512f-4aec-8bc6-f4636aff85c5.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/a19e91e6-512f-4aec-8bc6-f4636aff85c5.stderr"
+}

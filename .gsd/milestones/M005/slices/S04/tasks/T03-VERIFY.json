@@ -2,17 +2,15 @@
   "schemaVersion": 1,
   "taskId": "T03",
   "unitId": "M005/S04/T03",
-  "timestamp": 1778497731000,
-  "passed": false,
+  "timestamp": 1778507424619,
+  "passed": true,
   "discoverySource": "task-plan",
   "checks": [
     {
       "command": "pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts",
-      "exitCode": 1,
-      "durationMs": 15893,
-      "verdict": "fail"
+      "exitCode": 0,
+      "durationMs": 23528,
+      "verdict": "pass"
     }
-  ],
-  "retryAttempt": 1,
-  "maxRetries": 2
+  ]
 }

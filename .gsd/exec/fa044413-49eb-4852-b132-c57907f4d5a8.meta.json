@@ -1,0 +1,18 @@
+{
+  "id": "fa044413-49eb-4852-b132-c57907f4d5a8",
+  "runtime": "python",
+  "purpose": "locate mobile unit tests for calendar components/helpers",
+  "script_chars": 207,
+  "started_at": "2026-05-11T14:00:22.048Z",
+  "finished_at": "2026-05-11T14:00:22.095Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 47,
+  "stdout_bytes": 612,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/fa044413-49eb-4852-b132-c57907f4d5a8.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/fa044413-49eb-4852-b132-c57907f4d5a8.stderr"
+}

@@ -1,0 +1,49 @@
+
+Running 1 test using 1 worker
+
+  ✘  1 tests/e2e/find-time-handoff.spec.ts:28:1 › permitted member can enter from the real board, verify ranked results, hand a chosen slot into create, and reload without reopening (12.7s)
+
+
+  1) tests/e2e/find-time-handoff.spec.ts:28:1 › permitted member can enter from the real board, verify ranked results, hand a chosen slot into create, and reload without reopening 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('[data-testid^="find-time-browse-window-"][data-start-at="2026-04-15T08:30:00.000Z"][data-end-at="2026-04-15T09:30:00.000Z"]').first()
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 10000ms[22m
+    [2m  - waiting for locator('[data-testid^="find-time-browse-window-"][data-start-at="2026-04-15T08:30:00.000Z"][data-end-at="2026-04-15T09:30:00.000Z"]').first()[22m
+
+
+      113 |     )
+      114 |     .first();
+    > 115 |   await expect(focusedBrowseCard).toBeVisible();
+          |                                   ^
+      116 |   const focusedBrowseTestId = await focusedBrowseCard.getAttribute('data-testid');
+      117 |   const focusedBrowseIndex = Number.parseInt((focusedBrowseTestId ?? '').replace('find-time-browse-window-', ''), 10);
+      118 |
+        at /Users/serkanyeniay/dev/Caluno/apps/mobile/tests/e2e/find-time-handoff.spec.ts:115:35
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/find-time-handoff.spec.ts:28:1 › permitted member can enter from the real board, verify ranked results, hand a chosen slot into create, and reload without reopening 

@@ -1,0 +1,14 @@
+
+> mobile@0.0.1 test /Users/serkanyeniay/dev/Caluno/apps/mobile
+> vitest run tests/mobile-shift-editor-predictive.unit.test.ts
+
+
+ RUN  v3.2.4 /Users/serkanyeniay/dev/Caluno/apps/mobile
+
+ ✓ tests/mobile-shift-editor-predictive.unit.test.ts (4 tests) 10ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  16:27:49
+   Duration  326ms (transform 42ms, setup 0ms, collect 53ms, tests 10ms, environment 0ms, prepare 49ms)
+

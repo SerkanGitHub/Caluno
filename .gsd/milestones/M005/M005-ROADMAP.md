@@ -22,10 +22,10 @@
 - [x] **S03: S03** `risk:medium` `depends:[]`
   > After this: Opening the web shift create dialog on a calendar with a known pattern surfaces a suggestion chip. Accepting pre-fills recurrence fields. Dismissing leaves the form blank. Browser E2E covers both paths.
 
-- [ ] **S04: S04** `risk:medium` `depends:[]`
+- [x] **S04: S04** `risk:medium` `depends:[]`
   > After this: Creating a shift on web that would overlap an existing one shows a non-blocking advisory before confirm. The user can still save. Browser E2E covers conflict and clear scenarios.
 
-- [ ] **S05: Mobile surfaces for recurrence suggestion and clash advisory** `risk:medium` `depends:[S03,S04]`
+- [ ] **S05: S05** `risk:medium` `depends:[]`
   > After this: ShiftEditorSheet on mobile renders both the suggestion chip and the clash advisory when applicable. Playwright mobile smoke passes.
 
 - [ ] **S06: Hardening, accessibility, and deployment readiness** `risk:low` `depends:[S05]`

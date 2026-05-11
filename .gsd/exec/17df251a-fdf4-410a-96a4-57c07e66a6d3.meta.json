@@ -1,0 +1,18 @@
+{
+  "id": "17df251a-fdf4-410a-96a4-57c07e66a6d3",
+  "runtime": "bash",
+  "purpose": "apps/mobile Playwright predictive flow for T03",
+  "script_chars": 121,
+  "started_at": "2026-05-11T14:55:47.268Z",
+  "finished_at": "2026-05-11T14:55:54.469Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 7201,
+  "stdout_bytes": 230,
+  "stderr_bytes": 42,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/17df251a-fdf4-410a-96a4-57c07e66a6d3.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/17df251a-fdf4-410a-96a4-57c07e66a6d3.stderr"
+}

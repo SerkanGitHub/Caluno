@@ -1,0 +1,18 @@
+{
+  "id": "aa04fe20-1ab7-4c3c-bed0-5c2e4cf8f524",
+  "runtime": "bash",
+  "purpose": "S05 verify web shared advisory unit",
+  "script_chars": 122,
+  "started_at": "2026-05-11T16:07:56.437Z",
+  "finished_at": "2026-05-11T16:07:58.350Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 1913,
+  "stdout_bytes": 306,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/aa04fe20-1ab7-4c3c-bed0-5c2e4cf8f524.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/aa04fe20-1ab7-4c3c-bed0-5c2e4cf8f524.stderr"
+}

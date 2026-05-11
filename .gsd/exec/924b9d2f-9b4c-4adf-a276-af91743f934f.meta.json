@@ -1,0 +1,18 @@
+{
+  "id": "924b9d2f-9b4c-4adf-a276-af91743f934f",
+  "runtime": "bash",
+  "purpose": "debug mobile predictive spec after removing hard-coded route match count",
+  "script_chars": 161,
+  "started_at": "2026-05-11T14:43:10.636Z",
+  "finished_at": "2026-05-11T14:43:42.983Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 32347,
+  "stdout_bytes": 3504,
+  "stderr_bytes": 816,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/924b9d2f-9b4c-4adf-a276-af91743f934f.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/924b9d2f-9b4c-4adf-a276-af91743f934f.stderr"
+}

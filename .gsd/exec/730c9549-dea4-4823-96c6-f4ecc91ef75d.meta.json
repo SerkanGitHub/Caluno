@@ -1,0 +1,18 @@
+{
+  "id": "730c9549-dea4-4823-96c6-f4ecc91ef75d",
+  "runtime": "bash",
+  "purpose": "Verify shared shift editor advisory extraction via targeted web vitest suite",
+  "script_chars": 139,
+  "started_at": "2026-05-11T14:10:05.702Z",
+  "finished_at": "2026-05-11T14:10:07.219Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 1517,
+  "stdout_bytes": 305,
+  "stderr_bytes": 29,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/730c9549-dea4-4823-96c6-f4ecc91ef75d.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/730c9549-dea4-4823-96c6-f4ecc91ef75d.stderr"
+}

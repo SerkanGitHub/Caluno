@@ -1,0 +1,18 @@
+{
+  "id": "796f2b9e-6def-45a4-8491-be5f66933f54",
+  "runtime": "bash",
+  "purpose": "Run mobile type-check",
+  "script_chars": 28,
+  "started_at": "2026-05-11T15:02:47.407Z",
+  "finished_at": "2026-05-11T15:02:50.993Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 3586,
+  "stdout_bytes": 279,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/796f2b9e-6def-45a4-8491-be5f66933f54.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/796f2b9e-6def-45a4-8491-be5f66933f54.stderr"
+}

@@ -50,17 +50,19 @@ declare module '$env/static/private' {
 	export const PWD: string;
 	export const LANG: string;
 	export const NODE_PATH: string;
-	export const FORCE_COLOR: string;
 	export const pnpm_config_verify_deps_before_run: string;
-	export const DEBUG_COLORS: string;
 	export const SHLVL: string;
 	export const HOME: string;
 	export const LOGNAME: string;
 	export const PNPM_PACKAGE_NAME: string;
-	export const BROWSER: string;
 	export const npm_config_user_agent: string;
-	export const PLAYWRIGHT_TEST: string;
+	export const TEST: string;
+	export const VITEST: string;
 	export const NODE_ENV: string;
+	export const PROD: string;
+	export const DEV: string;
+	export const BASE_URL: string;
+	export const MODE: string;
 }
 
 /**
@@ -97,9 +99,7 @@ declare module '$env/static/private' {
  * The above values will be the same _even if_ different values for `ENVIRONMENT` or `PUBLIC_BASE_URL` are set at runtime, as they are statically replaced in your code with their build time values.
  */
 declare module '$env/static/public' {
-	export const PUBLIC_SITE_URL: string;
-	export const PUBLIC_SUPABASE_URL: string;
-	export const PUBLIC_SUPABASE_PUBLISHABLE_KEY: string;
+	
 }
 
 /**
@@ -161,17 +161,19 @@ declare module '$env/dynamic/private' {
 		PWD: string;
 		LANG: string;
 		NODE_PATH: string;
-		FORCE_COLOR: string;
 		pnpm_config_verify_deps_before_run: string;
-		DEBUG_COLORS: string;
 		SHLVL: string;
 		HOME: string;
 		LOGNAME: string;
 		PNPM_PACKAGE_NAME: string;
-		BROWSER: string;
 		npm_config_user_agent: string;
-		PLAYWRIGHT_TEST: string;
+		TEST: string;
+		VITEST: string;
 		NODE_ENV: string;
+		PROD: string;
+		DEV: string;
+		BASE_URL: string;
+		MODE: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
 	}
@@ -227,9 +229,6 @@ declare module '$env/dynamic/private' {
  */
 declare module '$env/dynamic/public' {
 	export const env: {
-		PUBLIC_SITE_URL: string;
-		PUBLIC_SUPABASE_URL: string;
-		PUBLIC_SUPABASE_PUBLISHABLE_KEY: string;
 		[key: `PUBLIC_${string}`]: string | undefined;
 	}
 }

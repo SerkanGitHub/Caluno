@@ -1,0 +1,113 @@
+
+Running 1 test using 1 worker
+
+  ✘  1 tests/e2e/mobile-predictive.spec.ts:9:1 › mobile create sheet exposes recurrence suggestion lifecycle and advisory-only clashes without clobbering draft timing (12.0s)
+
+
+  1) tests/e2e/mobile-predictive.spec.ts:9:1 › mobile create sheet exposes recurrence suggestion lifecycle and advisory-only clashes without clobbering draft timing 
+
+    TimeoutError: locator.click: Timeout 10000ms exceeded.
+    Call log:
+    [2m  - waiting for getByTestId('create-dismiss-button')[22m
+    [2m    - locator resolved to <button type="button" data-testid="create-dismiss-button" class="button button-secondary s-ioECgMUghHO9">Keep browsing</button>[22m
+    [2m  - attempting click action[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - <p class="panel-copy s-8y8AeCUBxk9c">The visible week is currently in step with the tr…</p> from <section data-network="online" data-pending-count="0" data-sync-phase="idle" data-queue-state="ready" data-retryable-count="0" data-board-source="server-sync" data-route-mode="trusted-online" class="sync-strip s-8y8AeCUBxk9c" data-testid="calendar-sync-strip" data-last-retryable-reason="none" data-snapshot-origin="server-sync">…</section> subtree intercepts pointer events[22m
+    [2m  - retrying click action[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - <a class="s-CAwEeGCu2Drb active" href="/calendars/aaaaaaaa-aaaa-1111-1111-111111111111">Alpha shared</a> from <nav aria-label="Primary mobile navigation" class="mobile-tab-bar framed-panel s-CAwEeGCu2Drb">…</nav> subtree intercepts pointer events[22m
+    [2m  - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <p class="panel-copy s-8y8AeCUBxk9c">The visible week is currently in step with the tr…</p> from <section data-network="online" data-pending-count="0" data-sync-phase="idle" data-queue-state="ready" data-retryable-count="0" data-board-source="server-sync" data-route-mode="trusted-online" class="sync-strip s-8y8AeCUBxk9c" data-testid="calendar-sync-strip" data-last-retryable-reason="none" data-snapshot-origin="server-sync">…</section> subtree intercepts pointer events[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    4 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <p class="panel-copy s-8y8AeCUBxk9c">The visible week is currently in step with the tr…</p> from <section data-network="online" data-pending-count="0" data-sync-phase="idle" data-queue-state="ready" data-retryable-count="0" data-board-source="server-sync" data-route-mode="trusted-online" class="sync-strip s-8y8AeCUBxk9c" data-testid="calendar-sync-strip" data-last-retryable-reason="none" data-snapshot-origin="server-sync">…</section> subtree intercepts pointer events[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 500ms[22m
+    [2m      - waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <a class="s-CAwEeGCu2Drb active" href="/calendars/aaaaaaaa-aaaa-1111-1111-111111111111">Alpha shared</a> from <nav aria-label="Primary mobile navigation" class="mobile-tab-bar framed-panel s-CAwEeGCu2Drb">…</nav> subtree intercepts pointer events[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 500ms[22m
+    [2m      - waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <p class="panel-copy s-8y8AeCUBxk9c">The visible week is currently in step with the tr…</p> from <section data-network="online" data-pending-count="0" data-sync-phase="idle" data-queue-state="ready" data-retryable-count="0" data-board-source="server-sync" data-route-mode="trusted-online" class="sync-strip s-8y8AeCUBxk9c" data-testid="calendar-sync-strip" data-last-retryable-reason="none" data-snapshot-origin="server-sync">…</section> subtree intercepts pointer events[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 500ms[22m
+    [2m      - waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <p class="panel-copy s-8y8AeCUBxk9c">The visible week is currently in step with the tr…</p> from <section data-network="online" data-pending-count="0" data-sync-phase="idle" data-queue-state="ready" data-retryable-count="0" data-board-source="server-sync" data-route-mode="trusted-online" class="sync-strip s-8y8AeCUBxk9c" data-testid="calendar-sync-strip" data-last-retryable-reason="none" data-snapshot-origin="server-sync">…</section> subtree intercepts pointer events[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 500ms[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - <p class="panel-copy s-8y8AeCUBxk9c">The visible week is currently in step with the tr…</p> from <section data-network="online" data-pending-count="0" data-sync-phase="idle" data-queue-state="ready" data-retryable-count="0" data-board-source="server-sync" data-route-mode="trusted-online" class="sync-strip s-8y8AeCUBxk9c" data-testid="calendar-sync-strip" data-last-retryable-reason="none" data-snapshot-origin="server-sync">…</section> subtree intercepts pointer events[22m
+    [2m  - retrying click action[22m
+    [2m    - waiting 500ms[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - <a class="s-CAwEeGCu2Drb active" href="/calendars/aaaaaaaa-aaaa-1111-1111-111111111111">Alpha shared</a> from <nav aria-label="Primary mobile navigation" class="mobile-tab-bar framed-panel s-CAwEeGCu2Drb">…</nav> subtree intercepts pointer events[22m
+    [2m  - retrying click action[22m
+    [2m    - waiting 500ms[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - <p class="panel-copy s-8y8AeCUBxk9c">The visible week is currently in step with the tr…</p> from <section data-network="online" data-pending-count="0" data-sync-phase="idle" data-queue-state="ready" data-retryable-count="0" data-board-source="server-sync" data-route-mode="trusted-online" class="sync-strip s-8y8AeCUBxk9c" data-testid="calendar-sync-strip" data-last-retryable-reason="none" data-snapshot-origin="server-sync">…</section> subtree intercepts pointer events[22m
+    [2m  - retrying click action[22m
+    [2m    - waiting 500ms[22m
+
+
+      35 |   await expect(page.getByTestId('recurrence-suggestion')).toHaveCount(0);
+      36 |
+    > 37 |   await page.getByTestId('create-dismiss-button').click();
+         |                                                   ^
+      38 |   await expect(page.getByTestId('create-shift-editor')).toHaveCount(0);
+      39 |
+      40 |   await page.getByTestId('create-shift-trigger-create-week').click();
+        at /Users/serkanyeniay/dev/Caluno/apps/mobile/tests/e2e/mobile-predictive.spec.ts:37:51
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/mobile-predictive.spec.ts:9:1 › mobile create sheet exposes recurrence suggestion lifecycle and advisory-only clashes without clobbering draft timing 

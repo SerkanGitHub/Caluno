@@ -1,0 +1,18 @@
+{
+  "id": "5dd7ebb0-5c3a-4799-8b7f-7f52295e8c7a",
+  "runtime": "bash",
+  "purpose": "Run focused mobile predictive Playwright proof",
+  "script_chars": 116,
+  "started_at": "2026-05-11T14:30:29.596Z",
+  "finished_at": "2026-05-11T14:30:45.716Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 16120,
+  "stdout_bytes": 4314,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/5dd7ebb0-5c3a-4799-8b7f-7f52295e8c7a.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/5dd7ebb0-5c3a-4799-8b7f-7f52295e8c7a.stderr"
+}

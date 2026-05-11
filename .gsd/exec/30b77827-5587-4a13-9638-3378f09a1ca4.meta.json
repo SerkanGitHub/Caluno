@@ -1,0 +1,18 @@
+{
+  "id": "30b77827-5587-4a13-9638-3378f09a1ca4",
+  "runtime": "bash",
+  "purpose": "S05 verification: apps/mobile check",
+  "script_chars": 46,
+  "started_at": "2026-05-11T14:56:47.466Z",
+  "finished_at": "2026-05-11T14:56:51.402Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 3936,
+  "stdout_bytes": 279,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/30b77827-5587-4a13-9638-3378f09a1ca4.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/30b77827-5587-4a13-9638-3378f09a1ca4.stderr"
+}

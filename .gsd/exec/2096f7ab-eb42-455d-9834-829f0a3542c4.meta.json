@@ -1,0 +1,18 @@
+{
+  "id": "2096f7ab-eb42-455d-9834-829f0a3542c4",
+  "runtime": "bash",
+  "purpose": "Verify mobile app typecheck",
+  "script_chars": 65,
+  "started_at": "2026-05-11T16:13:44.192Z",
+  "finished_at": "2026-05-11T16:13:47.755Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 3563,
+  "stdout_bytes": 279,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/2096f7ab-eb42-455d-9834-829f0a3542c4.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/2096f7ab-eb42-455d-9834-829f0a3542c4.stderr"
+}

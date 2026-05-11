@@ -1,0 +1,18 @@
+{
+  "id": "be5e0257-0313-4319-a4ec-7bb63f4a20bb",
+  "runtime": "bash",
+  "purpose": "Verify apps/mobile typecheck after recurrence suggestion route plumbing",
+  "script_chars": 65,
+  "started_at": "2026-05-11T14:21:10.285Z",
+  "finished_at": "2026-05-11T14:21:13.542Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 3257,
+  "stdout_bytes": 279,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/be5e0257-0313-4319-a4ec-7bb63f4a20bb.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/be5e0257-0313-4319-a4ec-7bb63f4a20bb.stderr"
+}

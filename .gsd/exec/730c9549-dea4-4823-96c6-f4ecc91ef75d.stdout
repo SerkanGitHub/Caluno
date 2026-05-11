@@ -1,0 +1,10 @@
+
+ RUN  v3.2.4 /Users/serkanyeniay/dev/Caluno/apps/web
+
+ ✓ tests/schedule/shift-editor-advisory.unit.test.ts (3 tests) 10ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  16:10:06
+   Duration  344ms (transform 43ms, setup 0ms, collect 50ms, tests 10ms, environment 0ms, prepare 53ms)
+

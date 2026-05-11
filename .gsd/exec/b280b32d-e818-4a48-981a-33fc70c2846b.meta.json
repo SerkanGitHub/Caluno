@@ -1,0 +1,18 @@
+{
+  "id": "b280b32d-e818-4a48-981a-33fc70c2846b",
+  "runtime": "bash",
+  "purpose": "verify apps/mobile check after predictive fixture updates",
+  "script_chars": 65,
+  "started_at": "2026-05-11T14:38:13.361Z",
+  "finished_at": "2026-05-11T14:38:16.574Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 3213,
+  "stdout_bytes": 279,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/b280b32d-e818-4a48-981a-33fc70c2846b.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/b280b32d-e818-4a48-981a-33fc70c2846b.stderr"
+}

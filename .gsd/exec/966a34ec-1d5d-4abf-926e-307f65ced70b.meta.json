@@ -1,0 +1,18 @@
+{
+  "id": "966a34ec-1d5d-4abf-926e-307f65ced70b",
+  "runtime": "bash",
+  "purpose": "Run mobile svelte-check after predictive wiring",
+  "script_chars": 65,
+  "started_at": "2026-05-11T14:27:54.290Z",
+  "finished_at": "2026-05-11T14:27:57.641Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 3351,
+  "stdout_bytes": 279,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/966a34ec-1d5d-4abf-926e-307f65ced70b.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/966a34ec-1d5d-4abf-926e-307f65ced70b.stderr"
+}

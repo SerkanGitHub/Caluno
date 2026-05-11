@@ -1,0 +1,21 @@
+
+> mobile@0.0.1 check /Users/serkanyeniay/dev/Caluno/apps/mobile
+> svelte-kit sync && svelte-check --tsconfig ./tsconfig.json
+
+Loading svelte-check in workspace: /Users/serkanyeniay/dev/Caluno/apps/mobile
+Getting Svelte diagnostics...
+
+/Users/serkanyeniay/dev/Caluno/apps/mobile/tests/e2e/mobile-predictive.spec.ts:29:101
+Error: No overload matches this call.
+  Overload 1 of 2, '(name: string, value: string | RegExp, options?: { ignoreCase?: boolean | undefined; timeout?: number | undefined; } | undefined): Promise<void>', gave the following error.
+    Argument of type 'string | null' is not assignable to parameter of type 'string | RegExp'.
+      Type 'null' is not assignable to type 'string | RegExp'.
+  Overload 2 of 2, '(name: string, options?: { timeout?: number | undefined; } | undefined): Promise<void>', gave the following error.
+    Argument of type 'string | null' is not assignable to parameter of type '{ timeout?: number | undefined; } | undefined'.
+      Type 'null' is not assignable to type '{ timeout?: number | undefined; } | undefined'. 
+  await expect(page.getByTestId('recurrence-suggestion')).toHaveAttribute('data-match-count', '3');
+  await expect(page.getByTestId('recurrence-suggestion')).toHaveAttribute('data-exemplar-shift-id', recurrenceExemplarShiftId);
+
+====================================
+svelte-check found 1 error and 0 warnings in 1 file
+ ELIFECYCLE  Command failed with exit code 1.

@@ -1,0 +1,12 @@
+apps/mobile/src/lib/schedule/create-prefill-arrival.ts
+apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte
+apps/mobile/src/lib/components/calendar/ShiftCard.svelte
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte
+apps/mobile/src/lib/components/calendar/SyncStatusStrip.svelte
+apps/mobile/src/routes/+layout.svelte
+apps/mobile/src/routes/+layout.ts
+apps/mobile/src/routes/+page.svelte
+apps/mobile/src/routes/calendars/[calendarId]/+page.svelte
+apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte
+apps/mobile/src/routes/groups/+page.svelte
+apps/mobile/src/routes/signin/+page.svelte

@@ -1,0 +1,18 @@
+{
+  "id": "f533e498-796c-4c51-a6cf-b2cd513c815b",
+  "runtime": "bash",
+  "purpose": "Re-run focused mobile predictive Playwright proof after using DOM-triggered modal button clicks",
+  "script_chars": 116,
+  "started_at": "2026-05-11T14:34:06.921Z",
+  "finished_at": "2026-05-11T14:34:23.115Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 16194,
+  "stdout_bytes": 10657,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/f533e498-796c-4c51-a6cf-b2cd513c815b.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/f533e498-796c-4c51-a6cf-b2cd513c815b.stderr"
+}

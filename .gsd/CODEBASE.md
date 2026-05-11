@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-05-11T10:43:30Z | Files: 500 | Described: 0/500
-<!-- gsd:codebase-meta {"generatedAt":"2026-05-11T10:43:30Z","fingerprint":"263b2afff4b7211f675a99825bee02a57bc1ad82","fileCount":500,"truncated":true} -->
+Generated: 2026-05-11T16:07:27Z | Files: 500 | Described: 0/500
+<!-- gsd:codebase-meta {"generatedAt":"2026-05-11T16:07:27Z","fingerprint":"6ecb65e64516628eebfc0365f2b2c19d51476c88","fileCount":500,"truncated":true} -->
 Note: Truncated to first 500 files. Run with higher --max-files to include all.
 
 ### (root)/
@@ -19,12 +19,6 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `gsd-memory-logger.js`
 - `package.json`
 - `README.md`
-
-### "apps/mobile/test-results/e2e/mobile-assembly-phase-4-\342\200\224--264e1-ds-in-the-permitted-context/
-- `"apps/mobile/test-results/e2e/mobile-assembly-phase-4-\342\200\224--264e1-ds-in-the-permitted-context/error-context.md"`
-- `"apps/mobile/test-results/e2e/mobile-assembly-phase-4-\342\200\224--264e1-ds-in-the-permitted-context/test-failed-1.png"`
-- `"apps/mobile/test-results/e2e/mobile-assembly-phase-4-\342\200\224--264e1-ds-in-the-permitted-context/trace.zip"`
-- `"apps/mobile/test-results/e2e/mobile-assembly-phase-4-\342\200\224--264e1-ds-in-the-permitted-context/video.webm"`
 
 ### .artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/
 - `.artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/accessibility.md`
@@ -252,6 +246,7 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 
 ### apps/mobile/src/lib/components/calendar/
 - `apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte`
+- `apps/mobile/src/lib/components/calendar/shift-editor-predictive.ts`
 - `apps/mobile/src/lib/components/calendar/ShiftCard.svelte`
 - `apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte`
 - `apps/mobile/src/lib/components/calendar/SyncStatusStrip.svelte`
@@ -317,11 +312,6 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 ### apps/mobile/test-results/e2e/
 - `apps/mobile/test-results/e2e/.last-run.json`
 
-### apps/mobile/test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/
-- `apps/mobile/test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/error-context.md`
-- `apps/mobile/test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/trace.zip`
-- `apps/mobile/test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/video.webm`
-
 ### apps/mobile/tests/
 - `apps/mobile/tests/auth-bootstrap.unit.test.ts`
 - `apps/mobile/tests/continuity-contract.unit.test.ts`
@@ -332,6 +322,8 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/mobile/tests/mobile-notification-contract.unit.test.ts`
 - `apps/mobile/tests/mobile-notification-router.unit.test.ts`
 - `apps/mobile/tests/mobile-notification-runtime.unit.test.ts`
+- `apps/mobile/tests/mobile-predictive.unit.test.ts`
+- `apps/mobile/tests/mobile-shift-editor-predictive.unit.test.ts`
 - `apps/mobile/tests/mobile-sync-runtime.unit.test.ts`
 - `apps/mobile/tests/shell-scope.unit.test.ts`
 - `apps/mobile/tests/trusted-core.unit.test.ts`
@@ -343,6 +335,7 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/mobile/tests/e2e/find-time-handoff.spec.ts`
 - `apps/mobile/tests/e2e/fixtures.ts`
 - `apps/mobile/tests/e2e/mobile-assembly.spec.ts`
+- `apps/mobile/tests/e2e/mobile-predictive.spec.ts`
 
 ### apps/web/
 - `apps/web/package.json`
@@ -721,11 +714,6 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 ### apps/web/test-results/e2e-offline/
 - `apps/web/test-results/e2e-offline/.last-run.json`
 
-### apps/web/test-results/e2e/calendar-shifts-weekly-rec-5ab69-s-after-a-successful-create/
-- `apps/web/test-results/e2e/calendar-shifts-weekly-rec-5ab69-s-after-a-successful-create/error-context.md`
-- `apps/web/test-results/e2e/calendar-shifts-weekly-rec-5ab69-s-after-a-successful-create/trace.zip`
-- `apps/web/test-results/e2e/calendar-shifts-weekly-rec-5ab69-s-after-a-successful-create/video.webm`
-
 ### apps/web/tests/access/
 - `apps/web/tests/access/policy-contract.unit.test.ts`
 
@@ -767,6 +755,7 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `packages/caluno-core/src/app-shell.ts`
 - `packages/caluno-core/src/index.ts`
 - `packages/caluno-core/src/route-contract.ts`
+- `packages/caluno-core/src/supabase.ts`
 
 ### packages/caluno-core/src/find-time/
 - `packages/caluno-core/src/find-time/matcher.ts`
@@ -782,3 +771,12 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `packages/caluno-core/src/schedule/board.ts`
 - `packages/caluno-core/src/schedule/conflicts.ts`
 - `packages/caluno-core/src/schedule/create-prefill.ts`
+- `packages/caluno-core/src/schedule/recurrence.ts`
+- `packages/caluno-core/src/schedule/shift-editor-advisory.ts`
+- `packages/caluno-core/src/schedule/types.ts`
+
+### packages/db/
+- `packages/db/package.json`
+
+### packages/db/src/
+- `packages/db/src/client.ts`

@@ -1,0 +1,18 @@
+{
+  "id": "6c1839aa-b05d-402e-9064-f42285c7a8d4",
+  "runtime": "python",
+  "purpose": "locate seed lines for predictive fixtures",
+  "script_chars": 281,
+  "started_at": "2026-05-11T13:59:00.111Z",
+  "finished_at": "2026-05-11T13:59:00.169Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 58,
+  "stdout_bytes": 723,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/6c1839aa-b05d-402e-9064-f42285c7a8d4.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/6c1839aa-b05d-402e-9064-f42285c7a8d4.stderr"
+}

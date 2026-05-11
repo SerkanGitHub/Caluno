@@ -1,0 +1,2 @@
+apps/web/tests/schedule/conflicts.unit.test.ts
+apps/web/tests/schedule/shift-editor-advisory.unit.test.ts

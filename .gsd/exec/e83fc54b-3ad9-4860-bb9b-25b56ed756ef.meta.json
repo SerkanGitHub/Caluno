@@ -1,0 +1,18 @@
+{
+  "id": "e83fc54b-3ad9-4860-bb9b-25b56ed756ef",
+  "runtime": "bash",
+  "purpose": "Re-run focused mobile predictive Playwright proof after forcing modal suggestion actions",
+  "script_chars": 116,
+  "started_at": "2026-05-11T14:33:13.747Z",
+  "finished_at": "2026-05-11T14:33:30.013Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 16266,
+  "stdout_bytes": 4045,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/e83fc54b-3ad9-4860-bb9b-25b56ed756ef.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/e83fc54b-3ad9-4860-bb9b-25b56ed756ef.stderr"
+}

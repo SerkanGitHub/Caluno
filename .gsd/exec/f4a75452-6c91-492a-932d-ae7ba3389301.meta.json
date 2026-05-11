@@ -1,0 +1,18 @@
+{
+  "id": "f4a75452-6c91-492a-932d-ae7ba3389301",
+  "runtime": "bash",
+  "purpose": "Run mobile predictive unit contract",
+  "script_chars": 75,
+  "started_at": "2026-05-11T15:02:47.405Z",
+  "finished_at": "2026-05-11T15:02:48.917Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 1512,
+  "stdout_bytes": 295,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/f4a75452-6c91-492a-932d-ae7ba3389301.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/f4a75452-6c91-492a-932d-ae7ba3389301.stderr"
+}

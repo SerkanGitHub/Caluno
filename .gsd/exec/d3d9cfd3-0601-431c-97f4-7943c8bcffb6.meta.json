@@ -1,0 +1,18 @@
+{
+  "id": "d3d9cfd3-0601-431c-97f4-7943c8bcffb6",
+  "runtime": "bash",
+  "purpose": "T02 mobile predictive unit verification",
+  "script_chars": 267,
+  "started_at": "2026-05-11T16:12:46.826Z",
+  "finished_at": "2026-05-11T16:12:48.512Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 1686,
+  "stdout_bytes": 313,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/d3d9cfd3-0601-431c-97f4-7943c8bcffb6.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/d3d9cfd3-0601-431c-97f4-7943c8bcffb6.stderr"
+}

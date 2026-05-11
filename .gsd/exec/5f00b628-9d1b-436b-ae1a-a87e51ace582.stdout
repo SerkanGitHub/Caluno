@@ -1,0 +1,11 @@
+apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte :: CalendarScheduleView
+apps/mobile/src/lib/offline/runtime.ts :: loadWeek, CalendarScheduleView
+apps/mobile/src/lib/offline/transport.ts :: loadWeek, CalendarScheduleView
+apps/mobile/src/lib/offline/controller.ts :: CalendarScheduleView
+apps/mobile/src/routes/calendars/[calendarId]/+page.svelte :: loadWeek, CalendarScheduleView
+packages/caluno-core/src/route-contract.ts :: CalendarScheduleView
+packages/caluno-core/src/schedule/conflicts.ts :: existingShifts, CalendarScheduleView, previewShiftConflicts
+packages/caluno-core/src/schedule/types.ts :: CalendarScheduleView
+packages/caluno-core/src/schedule/recurrence.ts :: detectRecurrencePattern
+packages/caluno-core/src/schedule/board.ts :: CalendarScheduleView
+packages/caluno-core/src/offline/sync-engine.ts :: CalendarScheduleView

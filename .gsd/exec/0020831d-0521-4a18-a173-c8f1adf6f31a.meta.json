@@ -1,0 +1,18 @@
+{
+  "id": "0020831d-0521-4a18-a173-c8f1adf6f31a",
+  "runtime": "bash",
+  "purpose": "S05 verification: mobile predictive unit",
+  "script_chars": 112,
+  "started_at": "2026-05-11T14:47:29.697Z",
+  "finished_at": "2026-05-11T14:47:31.021Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 1324,
+  "stdout_bytes": 295,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/0020831d-0521-4a18-a173-c8f1adf6f31a.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/0020831d-0521-4a18-a173-c8f1adf6f31a.stderr"
+}

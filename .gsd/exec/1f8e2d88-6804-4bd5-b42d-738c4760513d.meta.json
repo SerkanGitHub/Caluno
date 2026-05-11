@@ -1,0 +1,18 @@
+{
+  "id": "1f8e2d88-6804-4bd5-b42d-738c4760513d",
+  "runtime": "bash",
+  "purpose": "Run existing mobile create-flow Playwright test for live predictive diagnostics",
+  "script_chars": 168,
+  "started_at": "2026-05-11T14:28:49.072Z",
+  "finished_at": "2026-05-11T14:29:06.296Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 17224,
+  "stdout_bytes": 3748,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/1f8e2d88-6804-4bd5-b42d-738c4760513d.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/1f8e2d88-6804-4bd5-b42d-738c4760513d.stderr"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "699089c9-be85-4f5e-962c-5f96be2ff074",
+  "runtime": "bash",
+  "purpose": "final T04 verification apps/mobile check plus full mobile predictive smoke suite",
+  "script_chars": 263,
+  "started_at": "2026-05-11T14:44:31.248Z",
+  "finished_at": "2026-05-11T14:45:21.415Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 50167,
+  "stdout_bytes": 1912,
+  "stderr_bytes": 816,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/699089c9-be85-4f5e-962c-5f96be2ff074.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/699089c9-be85-4f5e-962c-5f96be2ff074.stderr"
+}

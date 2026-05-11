@@ -1,0 +1,51 @@
+
+Running 1 test using 1 worker
+
+  ✘  1 tests/e2e/mobile-predictive.spec.ts:9:1 › mobile create sheet exposes recurrence suggestion lifecycle and advisory-only clashes without clobbering draft timing (12.1s)
+
+
+  1) tests/e2e/mobile-predictive.spec.ts:9:1 › mobile create sheet exposes recurrence suggestion lifecycle and advisory-only clashes without clobbering draft timing 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoHaveAttribute[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator:  getByTestId('recurrence-field-state')
+    Expected: [32m"dismissed"[39m
+    Received: [31m"idle"[39m
+    Timeout:  10000ms
+
+    Call log:
+    [2m  - Expect "toHaveAttribute" with timeout 10000ms[22m
+    [2m  - waiting for getByTestId('recurrence-field-state')[22m
+    [2m    14 × locator resolved to <article data-interval="none" data-cadence="one-off" data-repeat-count="none" data-repeat-until="none" data-suggestion-state="idle" data-suggestion-match-count="3" data-testid="recurrence-field-state" class="inline-state recurrence-field-state s-ioECgMUghHO9" data-suggestion-exemplar-shift-id="aaaaaaaa-8888-1111-1111-555555555555">…</article>[22m
+    [2m       - unexpected value "idle"[22m
+
+
+      30 |
+      31 |   await page.getByTestId('recurrence-suggestion-dismiss').click({ force: true });
+    > 32 |   await expect(page.getByTestId('recurrence-field-state')).toHaveAttribute('data-suggestion-state', 'dismissed');
+         |                                                            ^
+      33 |   await expect(page.getByTestId('recurrence-suggestion')).toHaveCount(0);
+      34 |
+      35 |   await page.getByTestId('create-dismiss-button').click();
+        at /Users/serkanyeniay/dev/Caluno/apps/mobile/tests/e2e/mobile-predictive.spec.ts:32:60
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/mobile-predictive.spec.ts:9:1 › mobile create sheet exposes recurrence suggestion lifecycle and advisory-only clashes without clobbering draft timing 

@@ -1,0 +1,18 @@
+{
+  "id": "5b3a2f45-626f-45a5-8a72-6a2346815423",
+  "runtime": "bash",
+  "purpose": "re-run full T04 verification after predictive and mobile smoke fixes",
+  "script_chars": 263,
+  "started_at": "2026-05-11T14:40:23.205Z",
+  "finished_at": "2026-05-11T14:41:23.208Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 60003,
+  "stdout_bytes": 12130,
+  "stderr_bytes": 816,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/5b3a2f45-626f-45a5-8a72-6a2346815423.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/5b3a2f45-626f-45a5-8a72-6a2346815423.stderr"
+}

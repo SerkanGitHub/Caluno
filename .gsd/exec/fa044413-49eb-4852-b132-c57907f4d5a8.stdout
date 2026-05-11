@@ -1,0 +1,12 @@
+apps/mobile/tests/auth-bootstrap.unit.test.ts
+apps/mobile/tests/continuity-contract.unit.test.ts
+apps/mobile/tests/find-time-contract.unit.test.ts
+apps/mobile/tests/mobile-continuity.unit.test.ts
+apps/mobile/tests/mobile-create-prefill.unit.test.ts
+apps/mobile/tests/mobile-find-time.unit.test.ts
+apps/mobile/tests/mobile-notification-contract.unit.test.ts
+apps/mobile/tests/mobile-notification-router.unit.test.ts
+apps/mobile/tests/mobile-notification-runtime.unit.test.ts
+apps/mobile/tests/mobile-sync-runtime.unit.test.ts
+apps/mobile/tests/shell-scope.unit.test.ts
+apps/mobile/tests/trusted-core.unit.test.ts

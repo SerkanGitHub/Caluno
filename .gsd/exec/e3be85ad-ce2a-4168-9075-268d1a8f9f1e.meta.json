@@ -1,0 +1,18 @@
+{
+  "id": "e3be85ad-ce2a-4168-9075-268d1a8f9f1e",
+  "runtime": "bash",
+  "purpose": "Verify mobile predictive helper and transport unit tests for T03",
+  "script_chars": 162,
+  "started_at": "2026-05-11T16:06:40.898Z",
+  "finished_at": "2026-05-11T16:06:42.869Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 1971,
+  "stdout_bytes": 368,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/e3be85ad-ce2a-4168-9075-268d1a8f9f1e.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/e3be85ad-ce2a-4168-9075-268d1a8f9f1e.stderr"
+}

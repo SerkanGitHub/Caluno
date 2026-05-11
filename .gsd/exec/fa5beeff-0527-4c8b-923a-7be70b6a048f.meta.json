@@ -1,0 +1,18 @@
+{
+  "id": "fa5beeff-0527-4c8b-923a-7be70b6a048f",
+  "runtime": "bash",
+  "purpose": "full T04 verification supabase reset plus predictive and mobile smoke specs",
+  "script_chars": 231,
+  "started_at": "2026-05-11T14:38:21.570Z",
+  "finished_at": "2026-05-11T14:39:29.638Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 68068,
+  "stdout_bytes": 9120,
+  "stderr_bytes": 816,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/fa5beeff-0527-4c8b-923a-7be70b6a048f.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/fa5beeff-0527-4c8b-923a-7be70b6a048f.stderr"
+}

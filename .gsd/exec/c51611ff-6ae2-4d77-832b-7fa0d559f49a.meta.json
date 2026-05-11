@@ -1,0 +1,18 @@
+{
+  "id": "c51611ff-6ae2-4d77-832b-7fa0d559f49a",
+  "runtime": "python",
+  "purpose": "summarize predictive gaps between mobile and web",
+  "script_chars": 730,
+  "started_at": "2026-05-11T13:59:48.887Z",
+  "finished_at": "2026-05-11T13:59:48.946Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 59,
+  "stdout_bytes": 228,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/c51611ff-6ae2-4d77-832b-7fa0d559f49a.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/c51611ff-6ae2-4d77-832b-7fa0d559f49a.stderr"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "5f00b628-9d1b-436b-ae1a-a87e51ace582",
+  "runtime": "python",
+  "purpose": "search mobile schedule transport and recurrence usage",
+  "script_chars": 637,
+  "started_at": "2026-05-11T13:57:58.874Z",
+  "finished_at": "2026-05-11T13:57:58.943Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 69,
+  "stdout_bytes": 856,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/5f00b628-9d1b-436b-ae1a-a87e51ace582.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/5f00b628-9d1b-436b-ae1a-a87e51ace582.stderr"
+}

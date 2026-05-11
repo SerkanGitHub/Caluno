@@ -1,0 +1,11 @@
+
+Running 6 tests using 1 worker
+
+  ✓  1 tests/e2e/calendar-shifts.spec.ts:191:1 › overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully (7.9s)
+  ✓  2 tests/e2e/calendar-shifts.spec.ts:325:1 › touching-boundary create drafts stay advisory-free before submit (2.7s)
+  ✓  3 tests/e2e/calendar-shifts.spec.ts:390:1 › browse suggestion handoff creates a visible shift on the intended day and does not reopen after reload (3.7s)
+  ✓  4 tests/e2e/calendar-shifts.spec.ts:489:1 › weekly recurrence suggestion accept path pre-fills weekly cadence truthfully and resets after a successful create (3.9s)
+  ✓  5 tests/e2e/calendar-shifts.spec.ts:580:1 › weekly recurrence suggestion dismiss path keeps the form blank, stays hidden for the current instance, and returns after reload (2.8s)
+  ✓  6 tests/e2e/calendar-shifts.spec.ts:687:1 › seeded member still gets the explicit denied surface for an unauthorized calendar route (1.2s)
+
+  6 passed (25.4s)

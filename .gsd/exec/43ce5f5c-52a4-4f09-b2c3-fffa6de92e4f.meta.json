@@ -1,0 +1,18 @@
+{
+  "id": "43ce5f5c-52a4-4f09-b2c3-fffa6de92e4f",
+  "runtime": "bash",
+  "purpose": "debug mobile predictive spec after switching to dispatchEvent clicks",
+  "script_chars": 161,
+  "started_at": "2026-05-11T14:41:55.072Z",
+  "finished_at": "2026-05-11T14:42:38.174Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 43102,
+  "stdout_bytes": 4192,
+  "stderr_bytes": 816,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/43ce5f5c-52a4-4f09-b2c3-fffa6de92e4f.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/43ce5f5c-52a4-4f09-b2c3-fffa6de92e4f.stderr"
+}

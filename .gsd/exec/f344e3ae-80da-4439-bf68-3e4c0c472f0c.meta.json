@@ -1,0 +1,18 @@
+{
+  "id": "f344e3ae-80da-4439-bf68-3e4c0c472f0c",
+  "runtime": "python",
+  "purpose": "list mobile e2e specs",
+  "script_chars": 173,
+  "started_at": "2026-05-11T13:58:13.594Z",
+  "finished_at": "2026-05-11T13:58:13.647Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 53,
+  "stdout_bytes": 235,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/f344e3ae-80da-4439-bf68-3e4c0c472f0c.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/f344e3ae-80da-4439-bf68-3e4c0c472f0c.stderr"
+}

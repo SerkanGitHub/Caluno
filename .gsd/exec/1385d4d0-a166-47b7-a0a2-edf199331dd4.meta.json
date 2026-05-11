@@ -1,0 +1,18 @@
+{
+  "id": "1385d4d0-a166-47b7-a0a2-edf199331dd4",
+  "runtime": "bash",
+  "purpose": "Re-run focused mobile predictive Playwright proof after tightening seeded expectations",
+  "script_chars": 116,
+  "started_at": "2026-05-11T14:31:24.383Z",
+  "finished_at": "2026-05-11T14:31:40.452Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 16069,
+  "stdout_bytes": 4444,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/1385d4d0-a166-47b7-a0a2-edf199331dd4.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/1385d4d0-a166-47b7-a0a2-edf199331dd4.stderr"
+}

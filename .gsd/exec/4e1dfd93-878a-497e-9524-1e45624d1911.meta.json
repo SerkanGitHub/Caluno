@@ -1,0 +1,18 @@
+{
+  "id": "4e1dfd93-878a-497e-9524-1e45624d1911",
+  "runtime": "bash",
+  "purpose": "Verify mobile predictive recurrence transport unit coverage",
+  "script_chars": 112,
+  "started_at": "2026-05-11T14:18:34.540Z",
+  "finished_at": "2026-05-11T14:18:36.284Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 1744,
+  "stdout_bytes": 295,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/4e1dfd93-878a-497e-9524-1e45624d1911.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/4e1dfd93-878a-497e-9524-1e45624d1911.stderr"
+}

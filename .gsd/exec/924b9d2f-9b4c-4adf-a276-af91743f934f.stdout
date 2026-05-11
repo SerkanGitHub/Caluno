@@ -1,0 +1,42 @@
+
+Running 1 test using 1 worker
+
+  ✘  1 tests/e2e/mobile-predictive.spec.ts:19:1 › mobile create sheet exposes recurrence suggestion lifecycle and advisory-only clashes without clobbering draft timing (2.8s)
+
+
+  1) tests/e2e/mobile-predictive.spec.ts:19:1 › mobile create sheet exposes recurrence suggestion lifecycle and advisory-only clashes without clobbering draft timing 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m"1 overlap[7m [27min[7m this calendar[27m"[39m
+    Received: [31m"1 overlap[7mp[27min[7mg shift[27m"[39m
+
+      139 |   expect(advisorySnapshot.overlapCount).toBe(1);
+      140 |   expect(advisorySnapshot.conflictingShiftIds).toEqual([morningIntakeShiftId]);
+    > 141 |   expect(advisorySnapshot.label).toBe('1 overlap in this calendar');
+          |                                  ^
+      142 |   expect(advisorySnapshot.detail).toContain('Save stays enabled');
+      143 |   expect(advisorySnapshot.warningTone).toBe('Warning only');
+      144 |   expect(advisorySnapshot.text).toContain('Morning intake');
+        at /Users/serkanyeniay/dev/Caluno/apps/mobile/tests/e2e/mobile-predictive.spec.ts:141:34
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/mobile-predictive.spec.ts:19:1 › mobile create sheet exposes recurrence suggestion lifecycle and advisory-only clashes without clobbering draft timing 

@@ -1,0 +1,18 @@
+{
+  "id": "91687b9e-301a-4d0c-8d94-10511675027b",
+  "runtime": "bash",
+  "purpose": "Re-run focused mobile predictive Playwright proof after matching live suggestion count",
+  "script_chars": 116,
+  "started_at": "2026-05-11T14:32:33.715Z",
+  "finished_at": "2026-05-11T14:32:49.913Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 16198,
+  "stdout_bytes": 11098,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/91687b9e-301a-4d0c-8d94-10511675027b.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/91687b9e-301a-4d0c-8d94-10511675027b.stderr"
+}

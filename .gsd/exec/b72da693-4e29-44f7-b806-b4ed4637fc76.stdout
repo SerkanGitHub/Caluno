@@ -1,0 +1,10 @@
+
+ RUN  v3.2.4 /Users/serkanyeniay/dev/Caluno/apps/mobile
+
+ ✓ tests/mobile-predictive.unit.test.ts (4 tests) 15ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  18:07:57
+   Duration  687ms (transform 121ms, setup 0ms, collect 203ms, tests 15ms, environment 0ms, prepare 96ms)
+

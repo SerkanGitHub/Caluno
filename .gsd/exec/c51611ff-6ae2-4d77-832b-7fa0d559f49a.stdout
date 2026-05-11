@@ -1,0 +1,5 @@
+web_page: ['recurrenceSuggestion', 'existingShifts']
+mobile_page: []
+web_editor: ['recurrenceSuggestion', 'clash-advisory', 'existingShifts', 'recurrence-suggestion', 'recurrence-field-state']
+mobile_editor: []
+mobile_board: []

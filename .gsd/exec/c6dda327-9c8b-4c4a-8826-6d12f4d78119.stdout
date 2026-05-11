@@ -1,0 +1,15 @@
+apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte
+apps/mobile/src/lib/components/calendar/ShiftCard.svelte
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte
+apps/mobile/src/lib/components/calendar/SyncStatusStrip.svelte
+apps/mobile/tests/e2e/auth-scope.spec.ts
+apps/mobile/tests/e2e/calendar-notifications.spec.ts
+apps/mobile/tests/e2e/calendar-offline.spec.ts
+apps/mobile/tests/e2e/find-time-handoff.spec.ts
+apps/mobile/tests/e2e/fixtures.ts
+apps/mobile/tests/e2e/mobile-assembly.spec.ts
+packages/caluno-core/src/schedule/board.ts
+packages/caluno-core/src/schedule/conflicts.ts
+packages/caluno-core/src/schedule/create-prefill.ts
+packages/caluno-core/src/schedule/recurrence.ts
+packages/caluno-core/src/schedule/types.ts

@@ -1,0 +1,6 @@
+
+Running 1 test using 1 worker
+
+  ✓  1 tests/e2e/mobile-predictive.spec.ts:19:1 › mobile create sheet exposes recurrence suggestion lifecycle and advisory-only clashes without clobbering draft timing (3.1s)
+
+  1 passed (5.9s)

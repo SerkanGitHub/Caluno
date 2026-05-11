@@ -1,0 +1,18 @@
+{
+  "id": "c191c105-28e4-445e-bc1b-1e98ae9af26b",
+  "runtime": "bash",
+  "purpose": "Run mobile predictive Playwright smoke",
+  "script_chars": 116,
+  "started_at": "2026-05-11T16:14:03.840Z",
+  "finished_at": "2026-05-11T16:14:11.316Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 7476,
+  "stdout_bytes": 230,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/c191c105-28e4-445e-bc1b-1e98ae9af26b.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/c191c105-28e4-445e-bc1b-1e98ae9af26b.stderr"
+}

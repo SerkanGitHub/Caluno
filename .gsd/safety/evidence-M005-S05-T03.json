@@ -1,0 +1,50 @@
+[
+  {
+    "kind": "bash",
+    "toolCallId": "call_oYpIhZnT3ic1WX8vrAUPfd4B|W8xFt9vbgXuncD/9uBt7b1aPdi7Ow7FH4E4yXKGJZRM49cpl3PgYqcDKlFJN3i298Wh9SSLHFKHZHbCK7/rpfIMi7pyl2T4Q4v6D5x5t1vMLKP7fWKuvwMvynX5fzK48JQFSRzZbJxzTFIrI9V5zlM6TO879Q5UrL2FTylGWmxm8xO+6zxP8blwmmcaXHr329QHveiHEECc+rZY2P+Chjkg/NFTlPMJblgVZ3Lly7bOgCUoXggw8qW9mNF4kIV8iG+JRe0td47OaIkCqhxuyZqcvQMmS3OOo/mzGbtMtR6esptzqrgJMPpmWpDB3kNdTHAP+XOVaZBN3u660/R/QxjVlAc72iQqXMIsjyxpo5U4V9hLeTf9Y+LS+7YJCZjiVpURyypxvW2Sf9zkq3gcYkQ==",
+    "command": "rg -n \"shift-editor-predictive|mobile-predictive|recurrence-field-state|clash-advisory|recurrence-suggestion\" apps/mobile -S",
+    "exitCode": 0,
+    "outputSnippet": "apps/mobile/src/lib/offline/transport.ts:238:      console.info('mobile.calendar.recurrence-suggestion.computed', {\napps/mobile/src/routes/calendars/[calendarId]/+page.svelte:770:    data-recurrence-suggestion-scope={recurrenceSuggestionStatus.scopeKey}\napps/mobile/src/routes/calendars/[calendarId]/+page.svelte:771:    data-recurrence-suggestion-status={recurrenceSuggestionStatus.status}\napps/mobile/src/routes/calendars/[calendarId]/+page.svelte:772:    data-recurrence-suggestion-reason={recurre",
+    "timestamp": 1778516012815
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_AOTHYPUSgldqjMbsy5GsKmA2|7nBFwf11wxcabvTbE1JrJUi0UHF+eEih+ghtVY8UArwITqSQuvw3YlzBuF+/wLFoNjZO9Z83GmVoFjlCRKzDSLGoLrZ/a/U8EM0VlmcBdnbMYmxxVo9tbv7WikmgV5RYyBzszXbU2VpdrVwhVjH0aFpjnDV9V04Uv8E52aZ5HLogCEfq6YoDwNbzaxdPe2AJDs5JePMR8LGaLqToLcoXj51uCyDBVxZQfszHyK6MRKt43MV8yaz+A4UcuXZ+Y/S3yDRQxA0h6KvEhsTCvIQ3H59MqXp0z/3oiswK+a0zdUpYKSzmXRrTMsAUo6dZFC3y7ZIDCydcMtL3/aAWCR0t/EFuzcfW3XpJEw8UncnkzGiameNTpw9lI+FrYqqECtCOtVyknf1h61d6PZZBJvYmWQ==",
+    "command": "rg -n \"deriveMobileClashAdvisory|syncSuggestionLifecycle|acceptSuggestionDraft|dismissSuggestionDraft|resetCreateRecurrenceDraft\" apps/mobile/tests -S",
+    "exitCode": 0,
+    "outputSnippet": "apps/mobile/tests/mobile-shift-editor-predictive.unit.test.ts:5:  acceptSuggestionDraft,\napps/mobile/tests/mobile-shift-editor-predictive.unit.test.ts:7:  deriveMobileClashAdvisory,\napps/mobile/tests/mobile-shift-editor-predictive.unit.test.ts:9:  dismissSuggestionDraft,\napps/mobile/tests/mobile-shift-editor-predictive.unit.test.ts:10:  syncSuggestionLifecycle,\napps/mobile/tests/mobile-shift-editor-predictive.unit.test.ts:56:    lifecycle = syncSuggestionLifecycle({\napps/mobile/tests/mobile-shif",
+    "timestamp": 1778516016304
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_ZmKuL0me9A1X9TJK62oCdmAu|ezjYtVDWsX7J+S5AOPLAnq3oRL50HXMHd7iN/qP3xgFScHc38tLeR0VV7WE106o8i8JkXvIfP1yd1ibqo9dfRrUYLbK9NsrU/s28G1Op4zXXT/PGOeSZ+qVjpf+Ss3PaYCKTc8w2TTCulH8AMnwDOIW2AFOXkdNO/Q4ipFcVkSYWyt5Z55k4N3CoK/UTF9tQpy00TeXsB9JzY1j/nZWGGfzZQgTjktzQCq2Twki9Z6w15+O3lZqhUR6VHMCqg5++gMC4eNxSVi3BRCyTxr+A3dfym2cPPwwvJckshYpfJMSn3zrtvnsCubX8YIusG+XtU1YkGRUquevy+n6tCQ5m534Gwvfik1rO7dj9EtpPrOCjj0SS82AKaIP29HN+CNozCZr+HbDtx9gMA4zdWXWj9Q==",
+    "command": "",
+    "exitCode": 0,
+    "outputSnippet": "gsd_exec[8f746362-d0f0-4db4-a508-e4ed6e483430] runtime=bash exit=254 duration=337ms\n  stdout: 83B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/8f746362-d0f0-4db4-a508-e4ed6e483430.stdout\n  stderr: 0B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/8f746362-d0f0-4db4-a508-e4ed6e483430.stderr\n--- digest ---\nundefined\n ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command \"apps/mobile\" not found",
+    "timestamp": 1778516024189
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_pnllC6c53zQ0H31CST25vMd3|4A7Hl57dDQdnBRHxJt+D7Kemvs46dnIPJ2FQWUXFoG7m7yfCX7mbjhVN+Yg8rSrI/LeUGX3b2yTtJT+Q2at/N5Ru5vX9sB4PhiirHb2AQtFp8SADFWhh2np5+cR3mnTQT+ReDRdMFcF6gfUIlwE/pwdgx+9ryaWGrqRfuEdUD5i0DeKyruQu2LHl9XVqIar2sXFwPMVqN1Qc9Kg6a1Dqm35GlnkDU8C0n2ZTUfmb+nsPF1JlfiLei6bfeEpFT2cAse6s1FlMuaF9B5qLVnJAXYPZVV+LpK3tHZu2mWDbLYJ/ym4N9UmoczRphLR54XGaqRWe5KkhcCLu/m/s5N/Pm9gEvfwpZMklAY7J4w6msAXJlupnBzk8TvvdpLz9XOgqWlSf74QEFbA+gJ6F8ua1Kw==",
+    "command": "",
+    "exitCode": 0,
+    "outputSnippet": "gsd_exec[2096f7ab-eb42-455d-9834-829f0a3542c4] runtime=bash exit=0 duration=3563ms\n  stdout: 279B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/2096f7ab-eb42-455d-9834-829f0a3542c4.stdout\n  stderr: 0B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/2096f7ab-eb42-455d-9834-829f0a3542c4.stderr\n--- digest ---\n\n> mobile@0.0.1 check /Users/serkanyeniay/dev/Caluno/apps/mobile\n> svelte-kit sync && svelte-check --tsconfig ./tsconfig.json\n\nLoading svelte-check in workspace: /Users/serkanyeniay/dev/Caluno/apps/mo",
+    "timestamp": 1778516024189
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_mevW4Osqd81PfCt7SwSrQ9uO|DspUNAIUiftg4zUuOIpVSljIPcJ/m1EAfoRjz+I4PBwRQKQ1ug6F/reVhWlxm3Dtb5Mye2B64lTEkaEdr+9zUEtsXNj/FFzk5wyaBDDKbKO4ke6rnqxnQTIxHsiiP/JDZX/EXUY6v9ORQ9FKQxjRNHPloYSzLwdXbg79zIrL4dg4QoHc8qCvQ7pjMxAPBfc6lkikKcF3NmyxrRgC3LZ6lT4AaT79/s759Xs1/gvYJqGoiQQR+ANe06IXok6SRSUw1DUD8Ek+2ivru/vOxEO6vHgy+fHwUg27xWcpvi0gHjEP5AEnAsIeZuENqIhOsTHkosICZvzFsopAZXYf9a3T263mMarm5uMpD2rMge0TYejXNOcRqI13mQPAnZFbib2RHR0x5alv3SEhab1ObbHH9w==",
+    "command": "",
+    "exitCode": 0,
+    "outputSnippet": "gsd_exec[a19e91e6-512f-4aec-8bc6-f4636aff85c5] runtime=bash exit=0 duration=1392ms\n  stdout: 308B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/a19e91e6-512f-4aec-8bc6-f4636aff85c5.stdout\n  stderr: 0B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/a19e91e6-512f-4aec-8bc6-f4636aff85c5.stderr\n--- digest ---\n v3.2.4 /Users/serkanyeniay/dev/Caluno/apps/mobile\n\n ✓ tests/mobile-shift-editor-predictive.unit.test.ts (4 tests) 10ms\n\n Test Files  1 passed (1)\n      Tests  4 passed (4)\n   Start at  18:13:52\n   Du",
+    "timestamp": 1778516031974
+  },
+  {
+    "kind": "bash",
+    "toolCallId": "call_Kiq4RaDkq2YDyHHV3jtU8OaH|+jEXpSj/FBMpoxoEPqvVuY4V0VQX+TtsiUSFo0IlPyWaPv2yOzPdgBQgKgiP3Dy1p3e+lMFeU0X4qcE9aDqEL8pkEZmqJduB3xXZVxgfc/QuuHNi/E/00FUV0mIiZN0B/raQjaUBBKM0dtePVN0/lKqx66EunAFAMRF8pEriS/6kE3iW/j8B2E68CdZ6Zxh39XWd+rNJ0XuKDGIjtbIb3PrwMeF8d8KZiNNfOS0zD5wQo/YSCwEJhgcCIB0PeRS9kjyXkWQ59COV2CMneB4eEuYsPNZe0BLZqPJXRKezrCuVucr/V4Ox/fgB30Tt9T6pIG0VCwtvlu78vY5b3yyYDgVfpefi838TFrGfOtzjhlKknYDjvYjiCFyZTO+fldMAgVU3hTDMV9GNjZ/rztKgoA==",
+    "command": "",
+    "exitCode": 0,
+    "outputSnippet": "gsd_exec[c191c105-28e4-445e-bc1b-1e98ae9af26b] runtime=bash exit=0 duration=7476ms\n  stdout: 230B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/c191c105-28e4-445e-bc1b-1e98ae9af26b.stdout\n  stderr: 0B → /Users/serkanyeniay/dev/Caluno/.gsd/exec/c191c105-28e4-445e-bc1b-1e98ae9af26b.stderr\n--- digest ---\n\nRunning 1 test using 1 worker\n\n  ✓  1 tests/e2e/mobile-predictive.spec.ts:19:1 › mobile create sheet exposes recurrence suggestion lifecycle and advisory-only clashes without clobbering draft timing ",
+    "timestamp": 1778516043838
+  }
+]

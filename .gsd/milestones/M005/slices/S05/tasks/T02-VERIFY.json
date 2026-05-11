@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T02",
+  "unitId": "M005/S05/T02",
+  "timestamp": 1778515992637,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "pnpm --dir apps/mobile exec vitest run tests/mobile-predictive.unit.test.ts",
+      "exitCode": 0,
+      "durationMs": 1346,
+      "verdict": "pass"
+    },
+    {
+      "command": "pnpm --dir apps/mobile check",
+      "exitCode": 0,
+      "durationMs": 3128,
+      "verdict": "pass"
+    }
+  ],
+  "postExecutionChecks": [
+    {
+      "category": "pattern",
+      "target": "apps/mobile/tests/mobile-predictive.unit.test.ts",
+      "passed": true,
+      "message": "File apps/mobile/tests/mobile-predictive.unit.test.ts mixes async/await with .then() promise chaining — consider using consistent async style",
+      "blocking": false
+    }
+  ]
+}

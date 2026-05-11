@@ -1,0 +1,18 @@
+{
+  "id": "29640574-f8fa-4e7b-acdd-947a1b22f6e7",
+  "runtime": "python",
+  "purpose": "summarize seed rows for alpha shared predictive windows",
+  "script_chars": 305,
+  "started_at": "2026-05-11T13:58:54.897Z",
+  "finished_at": "2026-05-11T13:58:54.963Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 66,
+  "stdout_bytes": 91,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/29640574-f8fa-4e7b-acdd-947a1b22f6e7.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/29640574-f8fa-4e7b-acdd-947a1b22f6e7.stderr"
+}

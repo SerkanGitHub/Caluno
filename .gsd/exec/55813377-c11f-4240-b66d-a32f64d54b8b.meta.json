@@ -1,0 +1,18 @@
+{
+  "id": "55813377-c11f-4240-b66d-a32f64d54b8b",
+  "runtime": "python",
+  "purpose": "summarize mobile calendar files",
+  "script_chars": 271,
+  "started_at": "2026-05-11T13:57:20.967Z",
+  "finished_at": "2026-05-11T13:57:21.021Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 54,
+  "stdout_bytes": 628,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/55813377-c11f-4240-b66d-a32f64d54b8b.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/55813377-c11f-4240-b66d-a32f64d54b8b.stderr"
+}

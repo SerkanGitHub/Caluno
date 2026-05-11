@@ -1,0 +1,18 @@
+{
+  "id": "939572e9-d569-46be-9ce0-7684a34b5e78",
+  "runtime": "bash",
+  "purpose": "Re-run focused mobile predictive Playwright proof after DOM-triggered sheet close",
+  "script_chars": 116,
+  "started_at": "2026-05-11T14:34:38.120Z",
+  "finished_at": "2026-05-11T14:34:44.372Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 6252,
+  "stdout_bytes": 229,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/939572e9-d569-46be-9ce0-7684a34b5e78.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/939572e9-d569-46be-9ce0-7684a34b5e78.stderr"
+}

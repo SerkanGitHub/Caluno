@@ -1,0 +1,18 @@
+{
+  "id": "772ab26a-f233-4423-bb3a-d0ac2ca13887",
+  "runtime": "python",
+  "purpose": "scan mobile predictive slice files",
+  "script_chars": 392,
+  "started_at": "2026-05-11T13:57:13.667Z",
+  "finished_at": "2026-05-11T13:57:13.751Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 84,
+  "stdout_bytes": 491,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/772ab26a-f233-4423-bb3a-d0ac2ca13887.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/772ab26a-f233-4423-bb3a-d0ac2ca13887.stderr"
+}

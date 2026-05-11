@@ -1,0 +1,15 @@
+
+Running 10 tests using 1 worker
+
+  ✓   1 tests/e2e/find-time-handoff.spec.ts:28:1 › permitted member can enter from the real board, verify ranked results, hand a chosen slot into create, and reload without reopening (3.2s)
+  ✓   2 tests/e2e/find-time-handoff.spec.ts:197:1 › out-of-scope mobile find-time routes stay explicitly denied with zero result cards (1.2s)
+  ✓   3 tests/e2e/find-time-handoff.spec.ts:216:1 › offline route entry stays fail-closed as offline-unavailable with zero result cards (1.5s)
+  ✓   4 tests/e2e/find-time-handoff.spec.ts:241:1 › malformed arrival-prefill params stay attributable, do not auto-open create, and are gone after reload (1.3s)
+  ✓   5 tests/e2e/mobile-assembly.spec.ts:69:1 › phase 1 — sign in and open the permitted calendar with trusted-online diagnostics (1.2s)
+  ✓   6 tests/e2e/mobile-assembly.spec.ts:95:1 › phase 2 — calendar survives offline and drains queued mutations on reconnect (1.1s)
+  ✓   7 tests/e2e/mobile-assembly.spec.ts:124:1 › phase 3 — find time handoff flows into create arrival and the shift lands on the board (2.0s)
+  ✓   8 tests/e2e/mobile-assembly.spec.ts:239:1 › phase 4 — notification delivery reaches the enabled calendar and a safe tap lands in the permitted context (2.4s)
+  ✓   9 tests/e2e/mobile-assembly.spec.ts:349:1 › phase 5 — offline find-time stays fail-closed and out-of-scope tap is rejected (1.8s)
+  ✓  10 tests/e2e/mobile-predictive.spec.ts:19:1 › mobile create sheet exposes recurrence suggestion lifecycle and advisory-only clashes without clobbering draft timing (2.2s)
+
+  10 passed (20.8s)

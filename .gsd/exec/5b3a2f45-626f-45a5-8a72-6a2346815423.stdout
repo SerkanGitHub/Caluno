@@ -1,0 +1,131 @@
+
+> mobile@0.0.1 check /Users/serkanyeniay/dev/Caluno/apps/mobile
+> svelte-kit sync && svelte-check --tsconfig ./tsconfig.json
+
+Loading svelte-check in workspace: /Users/serkanyeniay/dev/Caluno/apps/mobile
+Getting Svelte diagnostics...
+
+svelte-check found 0 errors and 0 warnings
+
+Running 10 tests using 1 worker
+
+  ✓   1 tests/e2e/find-time-handoff.spec.ts:28:1 › permitted member can enter from the real board, verify ranked results, hand a chosen slot into create, and reload without reopening (3.0s)
+  ✓   2 tests/e2e/find-time-handoff.spec.ts:197:1 › out-of-scope mobile find-time routes stay explicitly denied with zero result cards (1.2s)
+  ✓   3 tests/e2e/find-time-handoff.spec.ts:216:1 › offline route entry stays fail-closed as offline-unavailable with zero result cards (1.5s)
+  ✓   4 tests/e2e/find-time-handoff.spec.ts:241:1 › malformed arrival-prefill params stay attributable, do not auto-open create, and are gone after reload (1.2s)
+  ✓   5 tests/e2e/mobile-assembly.spec.ts:69:1 › phase 1 — sign in and open the permitted calendar with trusted-online diagnostics (1.2s)
+  ✓   6 tests/e2e/mobile-assembly.spec.ts:95:1 › phase 2 — calendar survives offline and drains queued mutations on reconnect (1.1s)
+  ✓   7 tests/e2e/mobile-assembly.spec.ts:124:1 › phase 3 — find time handoff flows into create arrival and the shift lands on the board (2.0s)
+  ✓   8 tests/e2e/mobile-assembly.spec.ts:239:1 › phase 4 — notification delivery reaches the enabled calendar and a safe tap lands in the permitted context (2.5s)
+  ✓   9 tests/e2e/mobile-assembly.spec.ts:349:1 › phase 5 — offline find-time stays fail-closed and out-of-scope tap is rejected (1.9s)
+  ✘  10 tests/e2e/mobile-predictive.spec.ts:19:1 › mobile create sheet exposes recurrence suggestion lifecycle and advisory-only clashes without clobbering draft timing (11.5s)
+
+
+  1) tests/e2e/mobile-predictive.spec.ts:19:1 › mobile create sheet exposes recurrence suggestion lifecycle and advisory-only clashes without clobbering draft timing 
+
+    TimeoutError: locator.click: Timeout 10000ms exceeded.
+    Call log:
+    [2m  - waiting for getByTestId('recurrence-suggestion-dismiss')[22m
+    [2m    - locator resolved to <button type="button" data-testid="recurrence-suggestion-dismiss" class="button button-secondary recurrence-suggestion__dismiss s-ioECgMUghHO9">Dismiss suggestion</button>[22m
+    [2m  - attempting click action[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - <p class="panel-copy s-8y8AeCUBxk9c">…</p> from <section data-network="online" data-pending-count="0" data-sync-phase="idle" data-queue-state="ready" data-retryable-count="0" data-board-source="server-sync" data-route-mode="trusted-online" class="sync-strip s-8y8AeCUBxk9c" data-testid="calendar-sync-strip" data-last-retryable-reason="none" data-snapshot-origin="server-sync">…</section> subtree intercepts pointer events[22m
+    [2m  - retrying click action[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - <a class="s-CAwEeGCu2Drb active" href="/calendars/aaaaaaaa-aaaa-1111-1111-111111111111">Alpha shared</a> from <nav aria-label="Primary mobile navigation" class="mobile-tab-bar framed-panel s-CAwEeGCu2Drb">…</nav> subtree intercepts pointer events[22m
+    [2m  - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <p class="panel-copy s-8y8AeCUBxk9c">…</p> from <section data-network="online" data-pending-count="0" data-sync-phase="idle" data-queue-state="ready" data-retryable-count="0" data-board-source="server-sync" data-route-mode="trusted-online" class="sync-strip s-8y8AeCUBxk9c" data-testid="calendar-sync-strip" data-last-retryable-reason="none" data-snapshot-origin="server-sync">…</section> subtree intercepts pointer events[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    4 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <p class="panel-copy s-8y8AeCUBxk9c">…</p> from <section data-network="online" data-pending-count="0" data-sync-phase="idle" data-queue-state="ready" data-retryable-count="0" data-board-source="server-sync" data-route-mode="trusted-online" class="sync-strip s-8y8AeCUBxk9c" data-testid="calendar-sync-strip" data-last-retryable-reason="none" data-snapshot-origin="server-sync">…</section> subtree intercepts pointer events[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 500ms[22m
+    [2m      - waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <a class="s-CAwEeGCu2Drb active" href="/calendars/aaaaaaaa-aaaa-1111-1111-111111111111">Alpha shared</a> from <nav aria-label="Primary mobile navigation" class="mobile-tab-bar framed-panel s-CAwEeGCu2Drb">…</nav> subtree intercepts pointer events[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 500ms[22m
+    [2m      - waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <p class="panel-copy s-8y8AeCUBxk9c">…</p> from <section data-network="online" data-pending-count="0" data-sync-phase="idle" data-queue-state="ready" data-retryable-count="0" data-board-source="server-sync" data-route-mode="trusted-online" class="sync-strip s-8y8AeCUBxk9c" data-testid="calendar-sync-strip" data-last-retryable-reason="none" data-snapshot-origin="server-sync">…</section> subtree intercepts pointer events[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 500ms[22m
+    [2m      - waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <p class="panel-copy s-8y8AeCUBxk9c">…</p> from <section data-network="online" data-pending-count="0" data-sync-phase="idle" data-queue-state="ready" data-retryable-count="0" data-board-source="server-sync" data-route-mode="trusted-online" class="sync-strip s-8y8AeCUBxk9c" data-testid="calendar-sync-strip" data-last-retryable-reason="none" data-snapshot-origin="server-sync">…</section> subtree intercepts pointer events[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 500ms[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - <p class="panel-copy s-8y8AeCUBxk9c">…</p> from <section data-network="online" data-pending-count="0" data-sync-phase="idle" data-queue-state="ready" data-retryable-count="0" data-board-source="server-sync" data-route-mode="trusted-online" class="sync-strip s-8y8AeCUBxk9c" data-testid="calendar-sync-strip" data-last-retryable-reason="none" data-snapshot-origin="server-sync">…</section> subtree intercepts pointer events[22m
+    [2m  - retrying click action[22m
+    [2m    - waiting 500ms[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - <a class="s-CAwEeGCu2Drb active" href="/calendars/aaaaaaaa-aaaa-1111-1111-111111111111">Alpha shared</a> from <nav aria-label="Primary mobile navigation" class="mobile-tab-bar framed-panel s-CAwEeGCu2Drb">…</nav> subtree intercepts pointer events[22m
+    [2m  - retrying click action[22m
+    [2m    - waiting 500ms[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - <p class="panel-copy s-8y8AeCUBxk9c">…</p> from <section data-network="online" data-pending-count="0" data-sync-phase="idle" data-queue-state="ready" data-retryable-count="0" data-board-source="server-sync" data-route-mode="trusted-online" class="sync-strip s-8y8AeCUBxk9c" data-testid="calendar-sync-strip" data-last-retryable-reason="none" data-snapshot-origin="server-sync">…</section> subtree intercepts pointer events[22m
+    [2m  - retrying click action[22m
+    [2m    - waiting 500ms[22m
+
+
+      59 |   await expect(page.getByTestId('recurrence-suggestion')).toHaveAttribute('data-exemplar-shift-id', recurrenceExemplarShiftId);
+      60 |
+    > 61 |   await page.getByTestId('recurrence-suggestion-dismiss').click();
+         |                                                           ^
+      62 |
+      63 |   const dismissedSnapshot = await readCreateShiftRecurrenceSnapshot(page);
+      64 |   expect(dismissedSnapshot.suggestionVisible).toBe(false);
+        at /Users/serkanyeniay/dev/Caluno/apps/mobile/tests/e2e/mobile-predictive.spec.ts:61:59
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/mobile-predictive-mobile-c-a001f-out-clobbering-draft-timing/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/mobile-predictive.spec.ts:19:1 › mobile create sheet exposes recurrence suggestion lifecycle and advisory-only clashes without clobbering draft timing 
+  9 passed (30.0s)

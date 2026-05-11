@@ -1,0 +1,18 @@
+{
+  "id": "dfe5614b-5aed-4df9-a85c-ee39fef01bd4",
+  "runtime": "bash",
+  "purpose": "S05 verify mobile check",
+  "script_chars": 65,
+  "started_at": "2026-05-11T16:07:56.436Z",
+  "finished_at": "2026-05-11T16:08:00.475Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 4039,
+  "stdout_bytes": 279,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/dfe5614b-5aed-4df9-a85c-ee39fef01bd4.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/dfe5614b-5aed-4df9-a85c-ee39fef01bd4.stderr"
+}

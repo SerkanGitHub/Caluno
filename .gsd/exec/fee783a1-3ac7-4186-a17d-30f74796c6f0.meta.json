@@ -1,0 +1,18 @@
+{
+  "id": "fee783a1-3ac7-4186-a17d-30f74796c6f0",
+  "runtime": "bash",
+  "purpose": "Run apps/mobile type and Svelte checks for T03",
+  "script_chars": 65,
+  "started_at": "2026-05-11T16:06:40.900Z",
+  "finished_at": "2026-05-11T16:06:45.224Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 4324,
+  "stdout_bytes": 279,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/fee783a1-3ac7-4186-a17d-30f74796c6f0.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/fee783a1-3ac7-4186-a17d-30f74796c6f0.stderr"
+}

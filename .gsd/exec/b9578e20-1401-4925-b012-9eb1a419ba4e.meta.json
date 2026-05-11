@@ -1,0 +1,18 @@
+{
+  "id": "b9578e20-1401-4925-b012-9eb1a419ba4e",
+  "runtime": "bash",
+  "purpose": "T02 mobile check",
+  "script_chars": 281,
+  "started_at": "2026-05-11T14:54:17.349Z",
+  "finished_at": "2026-05-11T14:54:20.979Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 3630,
+  "stdout_bytes": 308,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/b9578e20-1401-4925-b012-9eb1a419ba4e.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/b9578e20-1401-4925-b012-9eb1a419ba4e.stderr"
+}

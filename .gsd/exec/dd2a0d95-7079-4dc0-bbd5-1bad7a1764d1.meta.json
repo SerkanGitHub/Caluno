@@ -1,0 +1,18 @@
+{
+  "id": "dd2a0d95-7079-4dc0-bbd5-1bad7a1764d1",
+  "runtime": "bash",
+  "purpose": "S04 verify calendar shifts e2e",
+  "script_chars": 111,
+  "started_at": "2026-05-11T13:51:21.255Z",
+  "finished_at": "2026-05-11T13:51:47.751Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 26496,
+  "stdout_bytes": 1017,
+  "stderr_bytes": 11563,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/dd2a0d95-7079-4dc0-bbd5-1bad7a1764d1.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/dd2a0d95-7079-4dc0-bbd5-1bad7a1764d1.stderr"
+}

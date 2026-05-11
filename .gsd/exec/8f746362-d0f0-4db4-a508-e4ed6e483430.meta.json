@@ -1,0 +1,18 @@
+{
+  "id": "8f746362-d0f0-4db4-a508-e4ed6e483430",
+  "runtime": "bash",
+  "purpose": "Verify mobile predictive helper unit tests",
+  "script_chars": 120,
+  "started_at": "2026-05-11T16:13:44.191Z",
+  "finished_at": "2026-05-11T16:13:44.528Z",
+  "exit_code": 254,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 337,
+  "stdout_bytes": 83,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/8f746362-d0f0-4db4-a508-e4ed6e483430.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/8f746362-d0f0-4db4-a508-e4ed6e483430.stderr"
+}

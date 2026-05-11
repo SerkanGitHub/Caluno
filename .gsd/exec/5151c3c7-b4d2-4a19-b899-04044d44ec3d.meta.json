@@ -1,0 +1,18 @@
+{
+  "id": "5151c3c7-b4d2-4a19-b899-04044d44ec3d",
+  "runtime": "bash",
+  "purpose": "S05 verify mobile playwright smoke bundle",
+  "script_chars": 231,
+  "started_at": "2026-05-11T16:08:08.733Z",
+  "finished_at": "2026-05-11T16:09:00.281Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 51548,
+  "stdout_bytes": 1633,
+  "stderr_bytes": 816,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/5151c3c7-b4d2-4a19-b899-04044d44ec3d.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/5151c3c7-b4d2-4a19-b899-04044d44ec3d.stderr"
+}

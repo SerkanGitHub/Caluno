@@ -1,0 +1,5 @@
+apps/mobile/tests/e2e/auth-scope.spec.ts
+apps/mobile/tests/e2e/calendar-notifications.spec.ts
+apps/mobile/tests/e2e/calendar-offline.spec.ts
+apps/mobile/tests/e2e/find-time-handoff.spec.ts
+apps/mobile/tests/e2e/mobile-assembly.spec.ts
