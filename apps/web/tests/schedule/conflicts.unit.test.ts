@@ -1,5 +1,33 @@
 import { describe, expect, it } from 'vitest';
-import { deriveVisibleWeekConflicts } from '@repo/caluno-core/schedule/conflicts';
+import { deriveVisibleWeekConflicts, previewShiftConflicts } from '@repo/caluno-core/schedule/conflicts';
+import type { CalendarShift, NormalizedScheduleShiftDraft } from '@repo/caluno-core/schedule/types';
+
+function buildDraft(overrides: Partial<NormalizedScheduleShiftDraft> = {}): NormalizedScheduleShiftDraft {
+  return {
+    calendarId: 'calendar-alpha',
+    title: 'Draft shift',
+    startAt: new Date('2026-04-16T10:00:00.000Z'),
+    endAt: new Date('2026-04-16T12:00:00.000Z'),
+    durationMs: 2 * 60 * 60 * 1000,
+    seriesId: null,
+    recurrence: null,
+    ...overrides
+  };
+}
+
+function buildShift(overrides: Partial<CalendarShift> & Pick<CalendarShift, 'id'>): CalendarShift {
+  return {
+    id: overrides.id,
+    calendarId: 'calendar-alpha',
+    seriesId: null,
+    title: 'Shift',
+    startAt: '2026-04-16T09:00:00.000Z',
+    endAt: '2026-04-16T10:00:00.000Z',
+    occurrenceIndex: null,
+    sourceKind: 'single',
+    ...overrides
+  };
+}
 
 describe('visible-week conflict derivation', () => {
   it('detects real overlaps while keeping touching boundaries clean', () => {
@@ -226,5 +254,96 @@ describe('visible-week conflict derivation', () => {
       'shift-invalid-start',
       'shift-inverted'
     ]);
+  });
+});
+
+describe('previewShiftConflicts', () => {
+  it('returns overlapping same-calendar shifts in shared deterministic sort order', () => {
+    const conflicts = previewShiftConflicts(buildDraft(), [
+      buildShift({
+        id: 'shift-late',
+        title: 'Late cover',
+        startAt: '2026-04-16T11:00:00.000Z',
+        endAt: '2026-04-16T13:00:00.000Z'
+      }),
+      buildShift({
+        id: 'shift-boundary-before',
+        title: 'Boundary before',
+        startAt: '2026-04-16T08:00:00.000Z',
+        endAt: '2026-04-16T10:00:00.000Z'
+      }),
+      buildShift({
+        id: 'shift-other-calendar',
+        calendarId: 'calendar-beta',
+        title: 'Other calendar overlap',
+        startAt: '2026-04-16T10:30:00.000Z',
+        endAt: '2026-04-16T11:30:00.000Z'
+      }),
+      buildShift({
+        id: 'shift-invalid',
+        title: 'Broken row',
+        startAt: 'not-a-date',
+        endAt: '2026-04-16T11:30:00.000Z'
+      }),
+      buildShift({
+        id: 'shift-early',
+        title: 'Early overlap',
+        startAt: '2026-04-16T09:30:00.000Z',
+        endAt: '2026-04-16T10:30:00.000Z'
+      }),
+      buildShift({
+        id: 'shift-boundary-after',
+        title: 'Boundary after',
+        startAt: '2026-04-16T12:00:00.000Z',
+        endAt: '2026-04-16T13:00:00.000Z'
+      }),
+      buildShift({
+        id: 'shift-inverted',
+        title: 'Inverted row',
+        startAt: '2026-04-16T12:30:00.000Z',
+        endAt: '2026-04-16T12:00:00.000Z'
+      })
+    ]);
+
+    expect(conflicts.map((shift) => shift.id)).toEqual(['shift-early', 'shift-late']);
+    expect(conflicts.map((shift) => shift.title)).toEqual(['Early overlap', 'Late cover']);
+  });
+
+  it('returns an empty preview when the schedule is clear after filtering invalid, cross-calendar, and touching rows', () => {
+    expect(
+      previewShiftConflicts(buildDraft(), [
+        buildShift({
+          id: 'shift-before',
+          title: 'Ends at draft start',
+          startAt: '2026-04-16T08:00:00.000Z',
+          endAt: '2026-04-16T10:00:00.000Z'
+        }),
+        buildShift({
+          id: 'shift-after',
+          title: 'Starts at draft end',
+          startAt: '2026-04-16T12:00:00.000Z',
+          endAt: '2026-04-16T14:00:00.000Z'
+        }),
+        buildShift({
+          id: 'shift-other-calendar',
+          calendarId: 'calendar-beta',
+          title: 'Other calendar overlap',
+          startAt: '2026-04-16T10:30:00.000Z',
+          endAt: '2026-04-16T11:30:00.000Z'
+        }),
+        buildShift({
+          id: 'shift-invalid',
+          title: 'Broken row',
+          startAt: 'not-a-date',
+          endAt: '2026-04-16T11:30:00.000Z'
+        }),
+        buildShift({
+          id: 'shift-inverted',
+          title: 'Inverted row',
+          startAt: '2026-04-16T12:30:00.000Z',
+          endAt: '2026-04-16T12:00:00.000Z'
+        })
+      ])
+    ).toEqual([]);
   });
 });

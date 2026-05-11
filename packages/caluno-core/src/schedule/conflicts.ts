@@ -1,4 +1,10 @@
-import type { CalendarScheduleView, CalendarShift, ScheduleActionState, VisibleWeek } from './types';
+import type {
+  CalendarScheduleView,
+  CalendarShift,
+  NormalizedScheduleShiftDraft,
+  ScheduleActionState,
+  VisibleWeek
+} from './types';
 
 export type VisibleWeekConflictShift = {
   id: string;
@@ -40,6 +46,11 @@ export type VisibleWeekConflictSummary = {
   invalidShiftIds: string[];
 };
 
+type ConflictTimeRange = {
+  startAt: string;
+  endAt: string;
+};
+
 export function deriveVisibleWeekConflicts(
   schedule: Pick<CalendarScheduleView, 'days'>
 ): VisibleWeekConflictSummary {
@@ -79,6 +90,30 @@ export function deriveVisibleWeekConflicts(
     shifts,
     invalidShiftIds: [...invalidShiftIds].sort()
   };
+}
+
+export function previewShiftConflicts(
+  draft: NormalizedScheduleShiftDraft,
+  existingShifts: CalendarShift[]
+): CalendarShift[] {
+  const draftRange = normalizeDraftRange(draft);
+
+  if (!draftRange) {
+    return [];
+  }
+
+  return sortCalendarShifts(existingShifts).filter((shift) => {
+    if (shift.calendarId !== draft.calendarId) {
+      return false;
+    }
+
+    const shiftRange = normalizeCalendarShiftRange(shift);
+    if (!shiftRange) {
+      return false;
+    }
+
+    return rangesOverlap(draftRange, shiftRange);
+  });
 }
 
 function deriveDayConflicts(
@@ -170,14 +205,13 @@ function deriveDayConflicts(
 }
 
 function normalizeShiftForConflict(dayKey: string, shift: CalendarShift): VisibleWeekConflictShift | null {
-  const start = new Date(shift.startAt);
-  const end = new Date(shift.endAt);
+  const range = normalizeCalendarShiftRange(shift);
 
-  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || end.getTime() <= start.getTime()) {
+  if (!range) {
     return null;
   }
 
-  if (shift.startAt.slice(0, 10) !== dayKey) {
+  if (range.startAt.slice(0, 10) !== dayKey) {
     return null;
   }
 
@@ -185,6 +219,32 @@ function normalizeShiftForConflict(dayKey: string, shift: CalendarShift): Visibl
     id: shift.id,
     title: shift.title,
     dayKey,
+    startAt: range.startAt,
+    endAt: range.endAt
+  };
+}
+
+function normalizeDraftRange(draft: NormalizedScheduleShiftDraft): ConflictTimeRange | null {
+  const startAt = draft.startAt.toISOString();
+  const endAt = draft.endAt.toISOString();
+
+  return endAt > startAt
+    ? {
+        startAt,
+        endAt
+      }
+    : null;
+}
+
+function normalizeCalendarShiftRange(shift: CalendarShift): ConflictTimeRange | null {
+  const start = new Date(shift.startAt);
+  const end = new Date(shift.endAt);
+
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || end.getTime() <= start.getTime()) {
+    return null;
+  }
+
+  return {
     startAt: shift.startAt,
     endAt: shift.endAt
   };
@@ -237,6 +297,57 @@ function sortConflictingShifts(shifts: VisibleWeekConflictShift[]): VisibleWeekC
   });
 }
 
-function rangesOverlap(left: VisibleWeekConflictShift, right: VisibleWeekConflictShift): boolean {
+function rangesOverlap(left: ConflictTimeRange, right: ConflictTimeRange): boolean {
   return left.startAt < right.endAt && right.startAt < left.endAt;
+}
+
+export function resolveVisibleWeekConflictState(
+  params: {
+    schedule: VisibleWeek | null;
+    actionState: ScheduleActionState | null;
+  }
+): {
+  tone: 'idle' | 'warning' | 'danger' | 'success';
+  title: string;
+  message: string;
+} {
+  const { schedule, actionState } = params;
+
+  if (actionState && actionState.status !== 'success') {
+    return {
+      tone: actionState.status === 'validation-error' ? 'warning' : 'danger',
+      title: 'Unable to update shifts',
+      message: actionState.message
+    };
+  }
+
+  if (!schedule) {
+    return {
+      tone: 'idle',
+      title: 'No schedule loaded',
+      message: 'Choose a visible week to inspect overlapping shifts.'
+    };
+  }
+
+  if (schedule.dayKeys.length === 0) {
+    return {
+      tone: 'idle',
+      title: 'No visible days',
+      message: 'Adjust the visible week to inspect overlapping shifts.'
+    };
+  }
+
+  if (actionState?.status === 'success') {
+    return {
+      tone: 'success',
+      title: 'Schedule updated',
+      message: actionState.message
+    };
+  }
+
+  return {
+    tone: 'idle',
+    title: 'No conflicts detected',
+    message: 'Visible shifts will surface overlap warnings here when they conflict.'
+  };
 }
