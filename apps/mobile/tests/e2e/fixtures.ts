@@ -130,6 +130,38 @@ export type CreateSheetArrivalSnapshot = {
   endValue: string;
 };
 
+export type CreateShiftRecurrenceSnapshot = {
+  open: boolean;
+  suggestionVisible: boolean;
+  suggestionCadence: string | null;
+  suggestionInterval: string | null;
+  suggestionWeekday: number | null;
+  suggestionMatchCount: number | null;
+  suggestionText: string | null;
+  acceptVisible: boolean;
+  dismissVisible: boolean;
+  selectedCadence: string | null;
+  intervalValue: string;
+  repeatCountValue: string;
+  repeatUntilValue: string;
+  fieldStateCadence: string | null;
+  fieldStateInterval: string | null;
+  fieldStateRepeatCount: string | null;
+  fieldStateRepeatUntil: string | null;
+  fieldSuggestionState: string | null;
+};
+
+export type ClashAdvisorySnapshot = {
+  visible: boolean;
+  overlapCount: number | null;
+  conflictingShiftIds: string[];
+  label: string | null;
+  detail: string | null;
+  warningTone: string | null;
+  items: string[];
+  text: string | null;
+};
+
 export const test = base.extend({
   page: async ({ page }, use) => {
     await page.addInitScript(() => {
@@ -1105,6 +1137,88 @@ export async function readCreateSheetArrivalSnapshot(page: Page): Promise<Create
     prefillEnd: await prefillSource.getAttribute('data-prefill-end'),
     startValue: await page.getByTestId('create-start-input').inputValue(),
     endValue: await page.getByTestId('create-end-input').inputValue()
+  };
+}
+
+export async function readCreateShiftRecurrenceSnapshot(page: Page): Promise<CreateShiftRecurrenceSnapshot> {
+  const editor = page.getByTestId('create-shift-editor');
+  await expect(editor).toBeVisible();
+
+  const suggestion = editor.getByTestId('recurrence-suggestion');
+  const fieldState = editor.getByTestId('recurrence-field-state');
+  const form = editor.locator('form');
+  const cadenceInput = form.locator('select[name="recurrenceCadence"]');
+  const suggestionVisible = (await suggestion.count()) > 0;
+
+  const parseNumber = (value: string | null) => {
+    if (!value) {
+      return null;
+    }
+
+    const parsed = Number.parseInt(value, 10);
+    return Number.isFinite(parsed) ? parsed : null;
+  };
+
+  return {
+    open: true,
+    suggestionVisible,
+    suggestionCadence: suggestionVisible ? await suggestion.getAttribute('data-cadence') : null,
+    suggestionInterval: suggestionVisible ? await suggestion.getAttribute('data-interval') : null,
+    suggestionWeekday: parseNumber(suggestionVisible ? await suggestion.getAttribute('data-weekday') : null),
+    suggestionMatchCount: parseNumber(suggestionVisible ? await suggestion.getAttribute('data-match-count') : null),
+    suggestionText: suggestionVisible ? (await suggestion.textContent())?.trim() ?? null : null,
+    acceptVisible: (await editor.getByTestId('recurrence-suggestion-accept').count()) > 0,
+    dismissVisible: (await editor.getByTestId('recurrence-suggestion-dismiss').count()) > 0,
+    selectedCadence: await cadenceInput.inputValue(),
+    intervalValue: await form.locator('input[name="recurrenceInterval"]').inputValue(),
+    repeatCountValue: await form.locator('input[name="repeatCount"]').inputValue(),
+    repeatUntilValue: await form.locator('input[name="repeatUntil"]').inputValue(),
+    fieldStateCadence: await fieldState.getAttribute('data-cadence'),
+    fieldStateInterval: await fieldState.getAttribute('data-interval'),
+    fieldStateRepeatCount: await fieldState.getAttribute('data-repeat-count'),
+    fieldStateRepeatUntil: await fieldState.getAttribute('data-repeat-until'),
+    fieldSuggestionState: await fieldState.getAttribute('data-suggestion-state')
+  };
+}
+
+export async function readCreateShiftClashAdvisory(page: Page): Promise<ClashAdvisorySnapshot> {
+  const editor = page.getByTestId('create-shift-editor');
+  await expect(editor).toBeVisible();
+
+  const advisory = editor.getByTestId('clash-advisory');
+  if ((await advisory.count()) === 0) {
+    return {
+      visible: false,
+      overlapCount: null,
+      conflictingShiftIds: [],
+      label: null,
+      detail: null,
+      warningTone: null,
+      items: [],
+      text: null
+    };
+  }
+
+  const overlapCountRaw = await advisory.getAttribute('data-overlap-count');
+  const overlapCount = overlapCountRaw ? Number.parseInt(overlapCountRaw, 10) : null;
+  const conflictingShiftIds = ((await advisory.getAttribute('data-conflicting-shift-ids')) ?? '')
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean);
+
+  return {
+    visible: await advisory.isVisible(),
+    overlapCount: Number.isFinite(overlapCount) ? overlapCount : null,
+    conflictingShiftIds,
+    label: ((await advisory.locator('strong').first().textContent()) ?? '').trim() || null,
+    detail: ((await advisory.locator('p').last().textContent()) ?? '').trim() || null,
+    warningTone: ((await advisory.locator('.pill').first().textContent()) ?? '').trim() || null,
+    items: await advisory.locator('li').evaluateAll((items) =>
+      items
+        .map((item) => item.textContent?.replace(/\s+/g, ' ').trim() ?? '')
+        .filter(Boolean)
+    ),
+    text: ((await advisory.textContent()) ?? '').replace(/\s+/g, ' ').trim() || null
   };
 }
 

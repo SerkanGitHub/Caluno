@@ -365,7 +365,7 @@ test('phase 5 — offline find-time stays fail-closed and out-of-scope tap is re
   await expect(page.getByTestId('find-time-browse-results')).toHaveCount(0);
 
   // Restore connectivity before testing tap rejection
-  await setSimulatedConnectivity(page, true);
+  await setSimulatedConnectivity(page, true, { waitForCalendarUi: false });
   await openCalendar(page, {
     calendarId,
     weekStart: warmWeekStart,
