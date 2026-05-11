@@ -4,6 +4,7 @@
   import type { CalendarControllerActionState } from '$lib/offline/calendar-controller';
   import { buildDefaultCreateTimes, toDateTimeLocalValue } from '$lib/schedule/board';
   import type { CreatePrefillPayload } from '$lib/schedule/create-prefill';
+  import { deriveShiftEditorClashes } from '$lib/schedule/shift-editor-advisory';
   import type { ShiftCardModel } from '$lib/schedule/board';
   import type { CalendarShift, ScheduleRecurrenceSuggestion } from '$lib/server/schedule';
 
@@ -51,6 +52,35 @@
       ? `${createPrefill.source}:${createPrefill.startAt}:${createPrefill.endAt}`
       : null
   );
+  const initialTitleValue = $derived.by(() => shift?.title ?? '');
+  const initialStartValue = $derived.by(() => {
+    if (mode === 'create' && createPrefill) {
+      return createPrefill.startAtLocal;
+    }
+
+    return toDateTimeLocalValue(shift?.startAt) || defaultTimes.startAt;
+  });
+  const initialEndValue = $derived.by(() => {
+    if (mode === 'create' && createPrefill) {
+      return createPrefill.endAtLocal;
+    }
+
+    return toDateTimeLocalValue(shift?.endAt) || defaultTimes.endAt;
+  });
+  const draftSeedKey = $derived.by(() =>
+    [
+      mode,
+      shift?.id ?? '',
+      shift?.title ?? '',
+      shift?.startAt ?? '',
+      shift?.endAt ?? '',
+      defaultDayKey ?? '',
+      createPrefillKey ?? '',
+      defaultTimes.startAt,
+      defaultTimes.endAt
+    ].join('|')
+  );
+  const advisoryCalendarId = $derived.by(() => existingShifts[0]?.calendarId ?? null);
   const currentSuggestionKey = $derived.by(() => buildSuggestionKey(recurrenceSuggestion));
   const suggestionWeekdayLabel = $derived.by(() =>
     recurrenceSuggestion ? weekdayLabels[recurrenceSuggestion.weekday] ?? 'weekly' : 'weekly'
@@ -62,6 +92,24 @@
 
     return `Recent shifts suggest a calm ${suggestionWeekdayLabel.toLowerCase()} ${recurrenceSuggestion.startTime}–${recurrenceSuggestion.endTime} rhythm.`;
   });
+  let draftTitle = $state('');
+  let draftStartAt = $state('');
+  let draftEndAt = $state('');
+  const advisoryConflicts = $derived.by(() =>
+    deriveShiftEditorClashes({
+      mode,
+      calendarId: advisoryCalendarId,
+      shiftId: shift?.id ?? null,
+      title: draftTitle,
+      fallbackTitle: shift?.title ?? '',
+      startAt: draftStartAt,
+      endAt: draftEndAt,
+      existingShifts
+    })
+  );
+  const advisoryOverlapLabel = $derived.by(() =>
+    advisoryConflicts.length === 1 ? '1 overlapping shift' : `${advisoryConflicts.length} overlapping shifts`
+  );
   const suggestionState = $derived.by(() => {
     if (!currentSuggestionKey) {
       return 'absent';
@@ -82,6 +130,7 @@
   );
   let open = $state(false);
   let lastAutoOpenedPrefillKey = $state<string | null>(null);
+  let lastHydratedDraftSeedKey = $state<string | null>(null);
   let recurrenceCadence = $state<RecurrenceCadence>('');
   let recurrenceInterval = $state('');
   let repeatCount = $state('');
@@ -89,14 +138,11 @@
   let acceptedSuggestionKey = $state<string | null>(null);
   let dismissedSuggestionKey = $state<string | null>(null);
   let previousOpen = $state(false);
+  let previousSubmitting = $state(false);
   let lastSuggestionKey = $state<string | null>(null);
-  let lastHandledSuccessToken = $state<string | null>(null);
   const isSubmitting = $derived(pendingActionKey === formId);
   const actionTarget = $derived(`?/${mode === 'create' ? 'createShift' : mode === 'edit' ? 'editShift' : 'moveShift'}&start=${visibleWeekStart}`);
   const scopedState = $derived(actionStates.find((state) => state.formId === formId) ?? null);
-  const scopedStateToken = $derived.by(() =>
-    scopedState ? `${scopedState.status}:${scopedState.reason}:${scopedState.message}` : null
-  );
   const tone = $derived.by(() => {
     if (!scopedState) {
       return 'tone-neutral';
@@ -141,27 +187,6 @@
 
     return 'Save new timing';
   });
-  const titleValue = $derived.by(() => {
-    if (mode === 'move') {
-      return shift?.title ?? '';
-    }
-
-    return shift?.title ?? '';
-  });
-  const startValue = $derived.by(() => {
-    if (mode === 'create' && createPrefill) {
-      return createPrefill.startAtLocal;
-    }
-
-    return toDateTimeLocalValue(shift?.startAt) || defaultTimes.startAt;
-  });
-  const endValue = $derived.by(() => {
-    if (mode === 'create' && createPrefill) {
-      return createPrefill.endAtLocal;
-    }
-
-    return toDateTimeLocalValue(shift?.endAt) || defaultTimes.endAt;
-  });
 
   function buildSuggestionKey(suggestion: ScheduleRecurrenceSuggestion | null): string | null {
     if (!suggestion) {
@@ -178,6 +203,12 @@
       suggestion.matchCount,
       suggestion.matchingShiftIds.join(',')
     ].join(':');
+  }
+
+  function hydrateDraftFields() {
+    draftTitle = initialTitleValue;
+    draftStartAt = initialStartValue;
+    draftEndAt = initialEndValue;
   }
 
   function resetCreateRecurrenceState(options: {
@@ -252,6 +283,48 @@
     repeatUntil = value;
   }
 
+  function formatAdvisoryWindow(conflict: CalendarShift): string {
+    const start = new Date(conflict.startAt);
+    const end = new Date(conflict.endAt);
+
+    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+      return `${conflict.startAt} → ${conflict.endAt}`;
+    }
+
+    const sameDay = conflict.startAt.slice(0, 10) === conflict.endAt.slice(0, 10);
+    if (sameDay) {
+      return `${formatUtcMonthDay(start)} · ${formatUtcTime(start)}–${formatUtcTime(end)} UTC`;
+    }
+
+    return `${formatUtcMonthDay(start)} ${formatUtcTime(start)} → ${formatUtcMonthDay(end)} ${formatUtcTime(end)} UTC`;
+  }
+
+  function formatUtcMonthDay(date: Date): string {
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      timeZone: 'UTC'
+    });
+  }
+
+  function formatUtcTime(date: Date): string {
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'UTC'
+    });
+  }
+
+  $effect(() => {
+    if (lastHydratedDraftSeedKey === draftSeedKey) {
+      return;
+    }
+
+    hydrateDraftFields();
+    lastHydratedDraftSeedKey = draftSeedKey;
+  });
+
   $effect(() => {
     if (!createPrefillKey) {
       lastAutoOpenedPrefillKey = null;
@@ -285,25 +358,31 @@
     const wasOpen = previousOpen;
     previousOpen = open;
 
-    if (mode !== 'create' || open || !wasOpen) {
+    if (open || !wasOpen) {
       return;
     }
 
-    resetCreateRecurrenceState({ preserveDismissal: true });
+    hydrateDraftFields();
+
+    if (mode === 'create') {
+      resetCreateRecurrenceState({ preserveDismissal: true });
+    }
   });
 
   $effect(() => {
-    if (mode !== 'create' || scopedState?.status !== 'success' || !scopedStateToken) {
+    const wasSubmitting = previousSubmitting;
+    previousSubmitting = isSubmitting;
+
+    if (!wasSubmitting || isSubmitting || scopedState?.status !== 'success') {
       return;
     }
 
-    if (lastHandledSuccessToken === scopedStateToken) {
-      return;
-    }
-
-    lastHandledSuccessToken = scopedStateToken;
     open = false;
-    resetCreateRecurrenceState({ clearSuggestionFeedback: true });
+    hydrateDraftFields();
+
+    if (mode === 'create') {
+      resetCreateRecurrenceState({ clearSuggestionFeedback: true });
+    }
   });
 </script>
 
@@ -348,7 +427,13 @@
         {#if mode !== 'move'}
           <label class="field">
             <span>Title</span>
-            <input class="input" name="title" value={titleValue} placeholder="Opening shift" required />
+            <input
+              class="input"
+              name="title"
+              bind:value={draftTitle}
+              placeholder="Opening shift"
+              required
+            />
           </label>
         {:else}
           <div class="code-strip shift-editor__locked-title">
@@ -361,14 +446,44 @@
         <div class="calendar-form-grid">
           <label class="field">
             <span>Start</span>
-            <input class="input" type="datetime-local" name="startAt" value={startValue} required />
+            <input class="input" type="datetime-local" name="startAt" bind:value={draftStartAt} required />
           </label>
 
           <label class="field">
             <span>End</span>
-            <input class="input" type="datetime-local" name="endAt" value={endValue} required />
+            <input class="input" type="datetime-local" name="endAt" bind:value={draftEndAt} required />
           </label>
         </div>
+
+        {#if advisoryConflicts.length > 0}
+          <article
+            class="inline-state tone-warning clash-advisory"
+            data-testid="clash-advisory"
+            data-overlap-count={advisoryConflicts.length}
+            data-conflicting-shift-ids={advisoryConflicts.map((conflict) => conflict.id).join(',')}
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            <div class="clash-advisory__header">
+              <div>
+                <p class="panel-kicker">Heads up</p>
+                <strong>{advisoryOverlapLabel}</strong>
+              </div>
+              <span class="pill pill-conflict">Warning only</span>
+            </div>
+            <p>
+              This draft overlaps another visible-week shift in the same calendar. You can still save it if the overlap is intentional.
+            </p>
+            <ul class="clash-advisory__list">
+              {#each advisoryConflicts as conflict (conflict.id)}
+                <li>
+                  <strong>{conflict.title}</strong>
+                  <span>{formatAdvisoryWindow(conflict)}</span>
+                </li>
+              {/each}
+            </ul>
+          </article>
+        {/if}
 
         {#if mode === 'create'}
           <div class="recurrence-fields">
@@ -422,7 +537,7 @@
                     class="button button-secondary"
                     type="button"
                     data-testid="recurrence-suggestion-accept"
-                    on:click={acceptSuggestion}
+                    onclick={acceptSuggestion}
                   >
                     Use weekly suggestion
                   </button>
@@ -430,7 +545,7 @@
                     class="button button-secondary recurrence-suggestion__dismiss"
                     type="button"
                     data-testid="recurrence-suggestion-dismiss"
-                    on:click={dismissSuggestion}
+                    onclick={dismissSuggestion}
                   >
                     Dismiss suggestion
                   </button>
@@ -448,7 +563,7 @@
                       name="recurrenceCadence"
                       value=""
                       checked={recurrenceCadence === ''}
-                      on:change={() => setRecurrenceCadence('')}
+                      onchange={() => setRecurrenceCadence('')}
                     />
                     <strong>One-off</strong>
                     <small>No repeats</small>
@@ -460,7 +575,7 @@
                       name="recurrenceCadence"
                       value="daily"
                       checked={recurrenceCadence === 'daily'}
-                      on:change={() => setRecurrenceCadence('daily')}
+                      onchange={() => setRecurrenceCadence('daily')}
                     />
                     <strong>Daily</strong>
                     <small>Every day</small>
@@ -472,7 +587,7 @@
                       name="recurrenceCadence"
                       value="weekly"
                       checked={recurrenceCadence === 'weekly'}
-                      on:change={() => setRecurrenceCadence('weekly')}
+                      onchange={() => setRecurrenceCadence('weekly')}
                     />
                     <strong>Weekly</strong>
                     <small>Weekly cadence</small>
@@ -484,7 +599,7 @@
                       name="recurrenceCadence"
                       value="monthly"
                       checked={recurrenceCadence === 'monthly'}
-                      on:change={() => setRecurrenceCadence('monthly')}
+                      onchange={() => setRecurrenceCadence('monthly')}
                     />
                     <strong>Monthly</strong>
                     <small>Monthly cadence</small>
@@ -501,7 +616,7 @@
                   step="1"
                   name="recurrenceInterval"
                   value={recurrenceInterval}
-                  on:input={(event) => updateTextField(event, 'recurrenceInterval')}
+                  oninput={(event) => updateTextField(event, 'recurrenceInterval')}
                 />
               </label>
 
@@ -514,7 +629,7 @@
                   step="1"
                   name="repeatCount"
                   value={repeatCount}
-                  on:input={(event) => updateTextField(event, 'repeatCount')}
+                  oninput={(event) => updateTextField(event, 'repeatCount')}
                 />
               </label>
 
@@ -525,7 +640,7 @@
                   type="datetime-local"
                   name="repeatUntil"
                   value={repeatUntil}
-                  on:input={(event) => updateTextField(event, 'repeatUntil')}
+                  oninput={(event) => updateTextField(event, 'repeatUntil')}
                 />
               </label>
             </div>

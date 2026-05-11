@@ -794,6 +794,39 @@ h3 {
   border-color: rgba(255, 255, 255, 0.12);
 }
 
+.clash-advisory,
+.clash-advisory__header,
+.clash-advisory__list,
+.clash-advisory__list li {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.clash-advisory {
+  background:
+    linear-gradient(135deg, rgba(243, 210, 122, 0.12), rgba(255, 255, 255, 0.03) 72%),
+    rgba(255, 255, 255, 0.03);
+}
+
+.clash-advisory__header {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+}
+
+.clash-advisory > p,
+.clash-advisory__list span {
+  color: var(--muted);
+}
+
+.clash-advisory__list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.clash-advisory__list li {
+  gap: 0.2rem;
+}
+
 .recurrence-fields__grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
