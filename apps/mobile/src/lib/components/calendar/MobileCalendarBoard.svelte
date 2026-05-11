@@ -1,7 +1,8 @@
 <script lang="ts">
   import type { CalendarWeekBoardModel } from '@repo/caluno-core/schedule/board';
   import type { CreatePrefillPayload } from '@repo/caluno-core/schedule/create-prefill';
-  import type { CalendarControllerActionState, CalendarScheduleView } from '@repo/caluno-core/schedule/types';
+  import type { DetectedRecurrencePattern } from '@repo/caluno-core/schedule/recurrence';
+  import type { CalendarControllerActionState, CalendarScheduleView, CalendarShift } from '@repo/caluno-core/schedule/types';
   import type { MobileCalendarControllerState, MobileOfflineRouteMode } from '$lib/offline/controller';
   import { buildMobileFindTimeEntrypointHref, MOBILE_FIND_TIME_DEFAULT_DURATION_MINUTES } from '$lib/schedule/create-prefill-arrival';
   import ShiftCard from './ShiftCard.svelte';
@@ -23,6 +24,8 @@
     retrying: boolean;
     remoteFailure: { status: CalendarScheduleView['status']; reason: string | null; message: string } | null;
     createPrefill?: CreatePrefillPayload | null;
+    recurrenceSuggestion?: DetectedRecurrencePattern | null;
+    existingShifts?: CalendarShift[];
     submitMutation: (params: ShiftEditorSubmitParams) => Promise<void>;
     refreshTrustedWeek: () => void | Promise<void>;
     retryDrain: () => void | Promise<void>;
@@ -43,6 +46,8 @@
     retrying,
     remoteFailure,
     createPrefill = null,
+    recurrenceSuggestion = null,
+    existingShifts = [],
     submitMutation,
     refreshTrustedWeek,
     retryDrain
@@ -95,6 +100,8 @@
         canSubmit={canMutate}
         triggerLabel={canMutate ? 'New shift' : 'Read-only continuity'}
         {createPrefill}
+        {recurrenceSuggestion}
+        {existingShifts}
         {submitMutation}
       />
 
@@ -215,6 +222,7 @@
                   {actionStates}
                   {pendingActionKey}
                   {canMutate}
+                  {existingShifts}
                   {submitMutation}
                 />
               {/each}

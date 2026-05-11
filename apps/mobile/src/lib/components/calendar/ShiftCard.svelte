@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ShiftCardModel } from '@repo/caluno-core/schedule/board';
-  import type { CalendarControllerActionState } from '@repo/caluno-core/schedule/types';
+  import type { CalendarControllerActionState, CalendarShift } from '@repo/caluno-core/schedule/types';
   import ShiftEditorSheet, { type ShiftEditorSubmitParams } from './ShiftEditorSheet.svelte';
 
   type Props = {
@@ -10,6 +10,7 @@
     actionStates?: CalendarControllerActionState[];
     pendingActionKey: string | null;
     canMutate: boolean;
+    existingShifts?: CalendarShift[];
     submitMutation: (params: ShiftEditorSubmitParams) => Promise<void>;
   };
 
@@ -20,6 +21,7 @@
     actionStates = [],
     pendingActionKey,
     canMutate,
+    existingShifts = [],
     submitMutation
   }: Props = $props();
 </script>
@@ -91,6 +93,7 @@
         {pendingActionKey}
         canSubmit={canMutate}
         triggerLabel="Edit"
+        {existingShifts}
         {submitMutation}
       />
       <ShiftEditorSheet
@@ -103,6 +106,7 @@
         {pendingActionKey}
         canSubmit={canMutate}
         triggerLabel="Move"
+        {existingShifts}
         {submitMutation}
       />
       <ShiftEditorSheet

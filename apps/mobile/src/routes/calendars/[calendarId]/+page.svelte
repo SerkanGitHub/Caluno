@@ -175,6 +175,7 @@
   });
   const trustedCalendars = $derived(appShell?.calendars ?? []);
   const permittedCalendarIds = $derived(trustedCalendars.map((calendar) => calendar.id));
+  const existingShifts = $derived.by(() => runtimeState?.schedule.days.flatMap((day) => day.shifts) ?? []);
   const canManageNotifications = $derived(
     Boolean(authState.phase === 'authenticated' && authState.user && permittedCalendarIds.length > 0)
   );
@@ -852,6 +853,8 @@
             {retrying}
             {remoteFailure}
             {createPrefill}
+            {recurrenceSuggestion}
+            {existingShifts}
             {submitMutation}
             refreshTrustedWeek={refreshTrustedWeek}
             retryDrain={retryDrain}

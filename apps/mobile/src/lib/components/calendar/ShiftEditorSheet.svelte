@@ -1,7 +1,18 @@
 <script lang="ts">
   import { buildDefaultCreateTimes, toDateTimeLocalValue, type ShiftCardModel } from '@repo/caluno-core/schedule/board';
   import type { CreatePrefillPayload } from '@repo/caluno-core/schedule/create-prefill';
-  import type { CalendarControllerActionState } from '@repo/caluno-core/schedule/types';
+  import type { DetectedRecurrencePattern } from '@repo/caluno-core/schedule/recurrence';
+  import type { CalendarControllerActionState, CalendarShift } from '@repo/caluno-core/schedule/types';
+  import {
+    acceptSuggestionDraft,
+    buildSuggestionKey,
+    deriveMobileClashAdvisory,
+    deriveSuggestionState,
+    dismissSuggestionDraft,
+    resetCreateRecurrenceDraft,
+    syncSuggestionLifecycle,
+    type MobileRecurrenceCadence
+  } from './shift-editor-predictive';
 
   export type ShiftEditorSubmitParams = {
     action: 'create' | 'edit' | 'move' | 'delete';
@@ -17,12 +28,16 @@
     shift?: ShiftCardModel | null;
     defaultDayKey?: string | null;
     createPrefill?: CreatePrefillPayload | null;
+    recurrenceSuggestion?: DetectedRecurrencePattern | null;
+    existingShifts?: CalendarShift[];
     actionStates?: CalendarControllerActionState[];
     pendingActionKey: string | null;
     canSubmit: boolean;
     triggerLabel?: string;
     submitMutation: (params: ShiftEditorSubmitParams) => Promise<void>;
   };
+
+  const weekdayLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   let {
     mode,
@@ -32,6 +47,8 @@
     shift = null,
     defaultDayKey = null,
     createPrefill = null,
+    recurrenceSuggestion = null,
+    existingShifts = [],
     actionStates = [],
     pendingActionKey,
     canSubmit,
@@ -46,10 +63,14 @@
   let draftTitle = $state('');
   let draftStartAt = $state('');
   let draftEndAt = $state('');
-  let recurrenceCadence = $state('');
+  let recurrenceCadence = $state<MobileRecurrenceCadence>('');
   let recurrenceInterval = $state('');
   let repeatCount = $state('');
   let repeatUntil = $state('');
+  let acceptedSuggestionKey = $state<string | null>(null);
+  let dismissedSuggestionKey = $state<string | null>(null);
+  let lastSuggestionKey = $state<string | null>(null);
+  let previousOpen = $state(false);
 
   const isSubmitting = $derived(pendingActionKey === formId);
   const scopedState = $derived(actionStates.find((state) => state.formId === formId) ?? null);
@@ -75,6 +96,41 @@
 
     return `${mode}:${shift?.id ?? 'unknown'}:${shift?.startAt ?? 'none'}:${shift?.endAt ?? 'none'}`;
   });
+  const currentSuggestionKey = $derived.by(() => buildSuggestionKey(recurrenceSuggestion));
+  const suggestionState = $derived.by(() =>
+    deriveSuggestionState({
+      currentSuggestionKey,
+      lifecycle: {
+        acceptedSuggestionKey,
+        dismissedSuggestionKey
+      }
+    })
+  );
+  const shouldShowSuggestion = $derived(
+    mode === 'create' && Boolean(recurrenceSuggestion) && suggestionState === 'idle'
+  );
+  const suggestionWeekdayLabel = $derived.by(() =>
+    recurrenceSuggestion ? weekdayLabels[recurrenceSuggestion.weekday] ?? 'Weekly' : 'Weekly'
+  );
+  const suggestionToneCopy = $derived.by(() => {
+    if (!recurrenceSuggestion) {
+      return null;
+    }
+
+    return `Recent shifts suggest a calm ${suggestionWeekdayLabel.toLowerCase()} ${recurrenceSuggestion.startTime}–${recurrenceSuggestion.endTime} rhythm.`;
+  });
+  const advisory = $derived.by(() =>
+    deriveMobileClashAdvisory({
+      mode,
+      calendarId,
+      shiftId: shift?.id ?? null,
+      title: draftTitle,
+      fallbackTitle: shift?.title ?? '',
+      startAt: draftStartAt,
+      endAt: draftEndAt,
+      existingShifts
+    })
+  );
   const buttonLabel = $derived.by(() => {
     if (triggerLabel) {
       return triggerLabel;
@@ -125,10 +181,15 @@
       draftTitle = '';
       draftStartAt = createPrefill?.startAtLocal ?? defaultTimes.startAt;
       draftEndAt = createPrefill?.endAtLocal ?? defaultTimes.endAt;
-      recurrenceCadence = '';
-      recurrenceInterval = '';
-      repeatCount = '';
-      repeatUntil = '';
+      const reset = resetCreateRecurrenceDraft({
+        dismissedSuggestionKey
+      });
+      recurrenceCadence = reset.recurrenceCadence;
+      recurrenceInterval = reset.recurrenceInterval;
+      repeatCount = reset.repeatCount;
+      repeatUntil = reset.repeatUntil;
+      acceptedSuggestionKey = reset.acceptedSuggestionKey;
+      dismissedSuggestionKey = reset.dismissedSuggestionKey;
       return;
     }
 
@@ -147,6 +208,43 @@
     }
 
     open = false;
+  }
+
+  function acceptSuggestion() {
+    const next = acceptSuggestionDraft({
+      suggestionKey: currentSuggestionKey
+    });
+
+    recurrenceCadence = next.recurrenceCadence;
+    recurrenceInterval = next.recurrenceInterval;
+    repeatCount = next.repeatCount;
+    repeatUntil = next.repeatUntil;
+    acceptedSuggestionKey = next.acceptedSuggestionKey;
+    dismissedSuggestionKey = next.dismissedSuggestionKey;
+  }
+
+  function dismissSuggestion() {
+    const next = dismissSuggestionDraft({
+      suggestionKey: currentSuggestionKey
+    });
+
+    recurrenceCadence = '';
+    recurrenceInterval = '';
+    repeatCount = '';
+    repeatUntil = '';
+    acceptedSuggestionKey = next.acceptedSuggestionKey;
+    dismissedSuggestionKey = next.dismissedSuggestionKey;
+  }
+
+  function setRecurrenceCadence(nextCadence: MobileRecurrenceCadence) {
+    recurrenceCadence = nextCadence;
+
+    if (nextCadence === '') {
+      recurrenceInterval = '';
+      repeatCount = '';
+      repeatUntil = '';
+      acceptedSuggestionKey = null;
+    }
   }
 
   async function handleSubmit(event: SubmitEvent) {
@@ -185,6 +283,39 @@
     });
   }
 
+  function formatAdvisoryWindow(conflict: CalendarShift): string {
+    const start = new Date(conflict.startAt);
+    const end = new Date(conflict.endAt);
+
+    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+      return `${conflict.startAt} → ${conflict.endAt}`;
+    }
+
+    const sameDay = conflict.startAt.slice(0, 10) === conflict.endAt.slice(0, 10);
+    if (sameDay) {
+      return `${formatUtcMonthDay(start)} · ${formatUtcTime(start)}–${formatUtcTime(end)} UTC`;
+    }
+
+    return `${formatUtcMonthDay(start)} ${formatUtcTime(start)} → ${formatUtcMonthDay(end)} ${formatUtcTime(end)} UTC`;
+  }
+
+  function formatUtcMonthDay(date: Date): string {
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      timeZone: 'UTC'
+    });
+  }
+
+  function formatUtcTime(date: Date): string {
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'UTC'
+    });
+  }
+
   $effect(() => {
     if (lastSeedKey === seedKey) {
       return;
@@ -204,6 +335,41 @@
   });
 
   $effect(() => {
+    const nextLifecycle = syncSuggestionLifecycle({
+      mode,
+      currentSuggestionKey,
+      lifecycle: {
+        acceptedSuggestionKey,
+        dismissedSuggestionKey,
+        lastSuggestionKey
+      }
+    });
+
+    if (
+      nextLifecycle.acceptedSuggestionKey === acceptedSuggestionKey &&
+      nextLifecycle.dismissedSuggestionKey === dismissedSuggestionKey &&
+      nextLifecycle.lastSuggestionKey === lastSuggestionKey
+    ) {
+      return;
+    }
+
+    acceptedSuggestionKey = nextLifecycle.acceptedSuggestionKey;
+    dismissedSuggestionKey = nextLifecycle.dismissedSuggestionKey;
+    lastSuggestionKey = nextLifecycle.lastSuggestionKey;
+  });
+
+  $effect(() => {
+    const wasOpen = previousOpen;
+    previousOpen = open;
+
+    if (open || !wasOpen) {
+      return;
+    }
+
+    reseedDraft();
+  });
+
+  $effect(() => {
     if (!scopedState || handledStateId === scopedState.id) {
       return;
     }
@@ -217,10 +383,19 @@
       scopedState.status === 'forbidden' ||
       scopedState.status === 'malformed-response'
     ) {
-      open = false;
       if (mode === 'create' && (scopedState.status === 'success' || scopedState.status === 'pending-local')) {
-        reseedDraft();
+        const reset = resetCreateRecurrenceDraft({
+          clearSuggestionFeedback: true
+        });
+        recurrenceCadence = reset.recurrenceCadence;
+        recurrenceInterval = reset.recurrenceInterval;
+        repeatCount = reset.repeatCount;
+        repeatUntil = reset.repeatUntil;
+        acceptedSuggestionKey = reset.acceptedSuggestionKey;
+        dismissedSuggestionKey = reset.dismissedSuggestionKey;
       }
+
+      open = false;
     }
   });
 </script>
@@ -309,6 +484,35 @@
             </label>
           </div>
 
+          {#if advisory.conflicts.length > 0}
+            <article
+              class="inline-state tone-warning clash-advisory"
+              data-testid="clash-advisory"
+              data-overlap-count={advisory.conflicts.length}
+              data-conflicting-shift-ids={advisory.conflicts.map((conflict) => conflict.id).join(',')}
+              data-current-shift-id={shift?.id ?? 'none'}
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              <div class="clash-advisory__header">
+                <div>
+                  <p class="panel-kicker">Heads up</p>
+                  <strong>{advisory.overlapLabel}</strong>
+                </div>
+                <span class="pill pill-warning">Warning only</span>
+              </div>
+              <p>This draft overlaps another visible-week shift in the same calendar. Save stays enabled if the overlap is intentional.</p>
+              <ul class="clash-advisory__list">
+                {#each advisory.conflicts as conflict (conflict.id)}
+                  <li>
+                    <strong>{conflict.title}</strong>
+                    <span>{formatAdvisoryWindow(conflict)}</span>
+                  </li>
+                {/each}
+              </ul>
+            </article>
+          {/if}
+
           {#if mode === 'create'}
             <div class="recurrence-block">
               <div class="recurrence-block__header">
@@ -319,10 +523,74 @@
                 <span class="pill">Count or until required</span>
               </div>
 
+              <article
+                class="inline-state recurrence-field-state"
+                data-testid="recurrence-field-state"
+                data-cadence={recurrenceCadence || 'one-off'}
+                data-interval={recurrenceInterval || 'none'}
+                data-repeat-count={repeatCount || 'none'}
+                data-repeat-until={repeatUntil || 'none'}
+                data-suggestion-state={suggestionState}
+                data-suggestion-match-count={recurrenceSuggestion?.matchCount ?? 0}
+                data-suggestion-exemplar-shift-id={recurrenceSuggestion?.exemplarShiftId ?? 'none'}
+              >
+                <strong>{recurrenceCadence ? `${recurrenceCadence} recurrence` : 'One-off shift'}</strong>
+                <p>
+                  {#if suggestionState === 'accepted'}
+                    Weekly cadence came from the suggestion, but the chosen draft timing stayed exactly as entered.
+                  {:else if suggestionState === 'dismissed'}
+                    The current suggestion is hidden for this page instance until fresh route data arrives.
+                  {:else if recurrenceCadence === 'weekly' && recurrenceInterval === '1'}
+                    Repeats every week. Repeat bounds stay blank until you choose one.
+                  {:else if recurrenceCadence}
+                    Repeat cadence stays editable until you add a count or end date.
+                  {:else}
+                    Leave this blank for a single shift, or choose a cadence below.
+                  {/if}
+                </p>
+              </article>
+
+              {#if shouldShowSuggestion && recurrenceSuggestion}
+                <article
+                  class="recurrence-suggestion"
+                  data-testid="recurrence-suggestion"
+                  data-cadence={recurrenceSuggestion.cadence}
+                  data-interval={recurrenceSuggestion.interval}
+                  data-weekday={recurrenceSuggestion.weekday}
+                  data-match-count={recurrenceSuggestion.matchCount}
+                  data-exemplar-shift-id={recurrenceSuggestion.exemplarShiftId}
+                >
+                  <div>
+                    <p class="panel-kicker">Calm suggestion</p>
+                    <strong>{suggestionWeekdayLabel} {recurrenceSuggestion.startTime}–{recurrenceSuggestion.endTime}</strong>
+                    <p>{suggestionToneCopy}</p>
+                  </div>
+
+                  <div class="recurrence-suggestion__actions">
+                    <button
+                      class="button button-secondary"
+                      type="button"
+                      data-testid="recurrence-suggestion-accept"
+                      onclick={acceptSuggestion}
+                    >
+                      Use weekly suggestion
+                    </button>
+                    <button
+                      class="button button-secondary recurrence-suggestion__dismiss"
+                      type="button"
+                      data-testid="recurrence-suggestion-dismiss"
+                      onclick={dismissSuggestion}
+                    >
+                      Dismiss suggestion
+                    </button>
+                  </div>
+                </article>
+              {/if}
+
               <div class="calendar-form-grid recurrence-block__grid">
                 <label class="field">
                   <span>Cadence</span>
-                  <select class="input" name="recurrenceCadence" bind:value={recurrenceCadence} data-testid={`${mode}-recurrence-cadence-input`}>
+                  <select class="input" name="recurrenceCadence" bind:value={recurrenceCadence} onchange={(event) => setRecurrenceCadence((event.currentTarget as HTMLSelectElement).value as MobileRecurrenceCadence)} data-testid={`${mode}-recurrence-cadence-input`}>
                     <option value="">One-off</option>
                     <option value="daily">Daily</option>
                     <option value="weekly">Weekly</option>
@@ -394,7 +662,9 @@
 
   .shift-editor-sheet__header,
   .shift-editor-sheet__footer,
-  .recurrence-block__header {
+  .recurrence-block__header,
+  .clash-advisory__header,
+  .recurrence-suggestion__actions {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -402,7 +672,8 @@
   }
 
   .shift-editor-sheet__header,
-  .recurrence-block__header {
+  .recurrence-block__header,
+  .clash-advisory__header {
     align-items: flex-start;
   }
 
@@ -412,7 +683,10 @@
   .facts-grid,
   .compact,
   .code-strip,
-  .inline-state {
+  .inline-state,
+  .clash-advisory__list,
+  .clash-advisory__list li,
+  .recurrence-suggestion {
     display: grid;
     gap: 0.75rem;
   }
@@ -424,7 +698,9 @@
   p,
   dt,
   dd,
-  span {
+  span,
+  ul,
+  li {
     margin: 0;
   }
 
@@ -450,7 +726,9 @@
   }
 
   .panel-copy,
-  dd {
+  dd,
+  .recurrence-suggestion p,
+  .clash-advisory__list span {
     color: var(--caluno-ink-muted);
     line-height: 1.55;
   }
@@ -541,10 +819,27 @@
     font-weight: 700;
   }
 
-  .inline-state {
+  .inline-state,
+  .recurrence-suggestion {
     padding: 0.82rem 0.9rem;
     border-radius: 1rem;
     border: 1px solid rgba(34, 31, 27, 0.08);
+  }
+
+  .recurrence-field-state {
+    background: rgba(255, 255, 255, 0.72);
+  }
+
+  .recurrence-suggestion {
+    background: rgba(255, 255, 255, 0.82);
+  }
+
+  .clash-advisory__list {
+    padding-left: 1rem;
+  }
+
+  .clash-advisory__list li {
+    gap: 0.2rem;
   }
 
   .code-strip,
@@ -579,11 +874,13 @@
     .calendar-form-grid,
     .recurrence-block__grid,
     .facts-grid.compact,
-    .shift-editor-sheet__footer {
+    .shift-editor-sheet__footer,
+    .recurrence-suggestion__actions {
       grid-template-columns: 1fr;
     }
 
-    .shift-editor-sheet__footer {
+    .shift-editor-sheet__footer,
+    .recurrence-suggestion__actions {
       display: grid;
     }
   }
