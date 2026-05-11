@@ -1055,11 +1055,17 @@ function reconcileSuccessfulMutation(
   switch (queueEntry.payload.kind) {
     case 'create': {
       const serverIds = serverState.affectedShiftIds;
-      if (serverIds.length !== queueEntry.payload.createdShifts.length || serverIds.some((id) => typeof id !== 'string')) {
+      if (
+        serverIds.length < queueEntry.payload.createdShifts.length ||
+        serverIds.some((id) => typeof id !== 'string')
+      ) {
         return null;
       }
 
-      const byLocalId = new Map(queueEntry.payload.createdShifts.map((shift, index) => [shift.id, serverIds[index] ?? shift.id]));
+      const visibleServerIds = serverIds.slice(0, queueEntry.payload.createdShifts.length);
+      const byLocalId = new Map(
+        queueEntry.payload.createdShifts.map((shift, index) => [shift.id, visibleServerIds[index] ?? shift.id])
+      );
       const nextShifts = currentShifts.map((shift) => {
         const serverId = byLocalId.get(shift.id);
         return serverId ? { ...shift, id: serverId, seriesId: serverState.seriesId ?? shift.seriesId } : shift;

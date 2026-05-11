@@ -141,6 +141,18 @@ function createCreateFormData(): FormData {
   return formData;
 }
 
+function createRecurringCreateFormData(): FormData {
+  const formData = new FormData();
+  formData.set('title', 'Offline recurring prep');
+  formData.set('startAt', '2026-04-21T09:00');
+  formData.set('endAt', '2026-04-21T11:00');
+  formData.set('recurrenceCadence', 'weekly');
+  formData.set('recurrenceInterval', '1');
+  formData.set('repeatCount', '2');
+  formData.set('repeatUntil', '');
+  return formData;
+}
+
 function createMoveFormData(): FormData {
   const formData = new FormData();
   formData.set('shiftId', 'shift-alpha');
@@ -431,6 +443,63 @@ describe('offline mutation queue and calendar controller', () => {
       reason: 'SCHEDULE_MOVE_TIMEOUT'
     });
     expect(state.shiftDiagnostics['shift-alpha']).toEqual([{ label: 'Retry needed', tone: 'danger' }]);
+  });
+
+  it('reconciles a recurring create when the trusted server returns extra off-screen occurrence ids', async () => {
+    const storage = createStorage();
+    const scope = createScope();
+    const repository = createMemoryScheduleRepository({ storage });
+    const queue = createOfflineMutationQueue({ repository });
+    const controller = createCalendarController({
+      scope,
+      initialSchedule: createInitialSchedule(),
+      routeMode: 'trusted-online',
+      repository,
+      queue,
+      isOnline: () => true
+    });
+
+    await controller.initialize();
+    const beginResult = await controller.beginMutation({
+      action: 'create',
+      formId: 'create:week',
+      formData: createRecurringCreateFormData()
+    });
+
+    expect(beginResult.submitOnline).toBe(true);
+    expect(beginResult.operationId).toBeTruthy();
+
+    await controller.finalizeMutation(
+      beginResult.operationId as string,
+      createReconnectSuccessOutcome({
+        action: 'create',
+        visibleWeekStart: scope.weekStart,
+        shiftId: 'server-shift-1',
+        fields: {
+          title: 'Offline recurring prep',
+          startAt: '2026-04-21T09:00',
+          endAt: '2026-04-21T11:00',
+          recurrenceCadence: 'weekly',
+          recurrenceInterval: '1',
+          repeatCount: '2',
+          repeatUntil: ''
+        },
+        affectedShiftIds: ['server-shift-1', 'server-shift-2']
+      })
+    );
+
+    const state = controller.getState();
+    expect(state.queueLength).toBe(0);
+    expect(state.retryableQueueLength).toBe(0);
+    expect(state.boardSource).toBe('server-sync');
+    expect(state.actionStates[0]).toMatchObject({
+      status: 'success',
+      reason: 'SHIFT_CREATED',
+      shiftId: 'server-shift-1'
+    });
+    expect(state.schedule.shiftIds).toContain('server-shift-1');
+    expect(state.schedule.shiftIds).not.toContain('server-shift-2');
+    expect(state.schedule.shiftIds.every((shiftId) => !shiftId.startsWith('local-'))).toBe(true);
   });
 
   it('replays queued local mutations onto a refreshed trusted week during initialize', async () => {
