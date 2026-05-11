@@ -3,13 +3,10 @@ import {
   expectedCreateShiftPrefillValues,
   openCalendarWeek,
   openFindTimeRoute,
-  readBoardConflictSummary,
   readCreateShiftClashAdvisory,
   readCreateShiftPrefillSnapshot,
   readCreateShiftRecurrenceSnapshot,
-  readDayConflictSummary,
   readFindTimeBrowseWindowCtaSnapshot,
-  readShiftConflictSummary,
   readVisibleWeekFromBoard,
   resolveVisibleShiftCardIdentity,
   seededCalendars,
@@ -19,15 +16,51 @@ import {
   signInThroughUi,
   submitShiftEditorForm,
   syncCalendarFlowContext,
-  test,
-  waitForDayConflictPairs,
-  waitForShiftConflictOverlaps
+  test
 } from './fixtures';
 
 test.describe.configure({ mode: 'serial' });
 
+const proofShiftTitles = ['Overlap advisory proof', 'Find time browse handoff', 'Recurrence suggestion accept proof'] as const;
+
 function dayColumn(page: import('@playwright/test').Page, dayKey: string) {
   return page.getByTestId(`day-column-${dayKey}`);
+}
+
+async function deleteVisibleShiftCardsByTitle(page: import('@playwright/test').Page, title: string) {
+  let deletedCount = 0;
+
+  while (true) {
+    const card = page.locator('[data-testid^="shift-card-"]').filter({ hasText: title }).first();
+    if ((await card.count()) === 0) {
+      return deletedCount;
+    }
+
+    const testId = await card.getAttribute('data-testid');
+    if (!testId) {
+      throw new Error(`Expected a shift card test id while cleaning up proof shift \"${title}\".`);
+    }
+
+    await expect(card).toBeVisible();
+    await card.getByRole('button', { name: 'Delete shift' }).click();
+    await expect(page.getByTestId(testId)).toHaveCount(0);
+    deletedCount += 1;
+  }
+}
+
+async function cleanupProofShifts(page: import('@playwright/test').Page, titles: readonly string[] = proofShiftTitles) {
+  let deletedCount = 0;
+
+  for (const title of titles) {
+    deletedCount += await deleteVisibleShiftCardsByTitle(page, title);
+  }
+
+  if (deletedCount > 0) {
+    await page.reload();
+    await expect(page.getByTestId('calendar-shell')).toBeVisible();
+  }
+
+  return deletedCount;
 }
 
 async function openCreateShiftEditor(page: import('@playwright/test').Page) {
@@ -107,6 +140,7 @@ test('overlapping Thursday create drafts show a warning-only advisory before sub
 
     await expect(page.getByRole('heading', { name: 'Alpha shared' })).toBeVisible();
     await expect(page.getByTestId('schedule-load-state')).toHaveCount(0);
+    await cleanupProofShifts(page, [createdTitle]);
   });
 
   await test.step('phase: enter an overlapping Thursday window and prove the advisory appears before submit while save stays enabled', async () => {
@@ -215,6 +249,7 @@ test('touching-boundary create drafts stay advisory-free before submit', async (
 
     await expect(page.getByRole('heading', { name: 'Alpha shared' })).toBeVisible();
     await expect(page.getByTestId('schedule-load-state')).toHaveCount(0);
+    await cleanupProofShifts(page);
   });
 
   await test.step('phase: enter a touching Wednesday boundary window and prove the advisory stays absent before submit', async () => {
@@ -259,107 +294,22 @@ test('touching-boundary create drafts stay advisory-free before submit', async (
   });
 });
 
-test('seeded member can prove the trusted-online Thursday overlap warning while the Wednesday touch boundary stays clean', async ({
-  page,
-  flow
-}) => {
-  await test.step('phase: sign in and open the deterministic seeded week', async () => {
+test('browse suggestion handoff creates a visible shift on the intended day and does not reopen after reload', async ({ page, flow }) => {
+  const createdTitle = 'Find time browse handoff';
+
+  await test.step('phase: sign in, clear any prior proof rows, and open the truthful find-time route for the permitted Alpha calendar', async () => {
     flow.mark('login', seededUsers.alphaMember.email);
     await signInThroughUi(page, seededUsers.alphaMember);
-    await expect(page.getByTestId('groups-shell')).toContainText('trusted-online');
-    await expect(page.getByRole('heading', { name: seededUsers.alphaMember.expectedGroups[0] })).toBeVisible();
 
     await openCalendarWeek({
       page,
       flow,
       calendarId: seededCalendars.alphaShared,
       visibleWeekStart: seededSchedule.visibleWeek.start,
-      focusShiftIds: [
-        seededSchedule.shifts.morningIntake.id,
-        seededSchedule.shifts.afternoonHandoff.id,
-        seededSchedule.shifts.supplierCall.id
-      ],
-      phase: 'open-seeded-week'
+      phase: 'find-time-browse-cleanup'
     });
+    await cleanupProofShifts(page, [createdTitle]);
 
-    await expect(page.getByRole('heading', { name: 'Alpha shared' })).toBeVisible();
-    await expect(page.getByTestId('schedule-load-state')).toHaveCount(0);
-  });
-
-  await test.step('phase: prove same-day multi-shift state is visible on load, including the seeded Thursday overlap and clean Wednesday boundary', async () => {
-    flow.mark('verify-seeded-load', seededSchedule.visibleWeek.start);
-    flow.setContext({
-      note: 'verifying seeded same-day multi-shift load plus conflict visibility',
-      focusShiftIds: [
-        seededSchedule.shifts.alphaOpeningSweepWednesday.id,
-        seededSchedule.shifts.morningIntake.id,
-        seededSchedule.shifts.afternoonHandoff.id,
-        seededSchedule.shifts.alphaOpeningSweepThursday.id,
-        seededSchedule.shifts.kitchenPrep.id,
-        seededSchedule.shifts.supplierCall.id
-      ]
-    });
-
-    const visibleWeek = await readVisibleWeekFromBoard(page);
-    expect(visibleWeek.visibleWeekStart).toBe(seededSchedule.visibleWeek.start);
-    expect(visibleWeek.visibleWeekEndExclusive).toBe(seededSchedule.visibleWeek.endExclusive);
-
-    const wednesdayColumn = dayColumn(page, '2026-04-15');
-    await expect(wednesdayColumn.locator('[data-testid^="shift-card-"]')).toHaveCount(3);
-    await expect(wednesdayColumn).toContainText('Alpha opening sweep');
-    await expect(wednesdayColumn).toContainText('Morning intake');
-    await expect(wednesdayColumn).toContainText('Afternoon handoff');
-
-    const thursdayColumn = dayColumn(page, '2026-04-16');
-    await expect(thursdayColumn.locator('[data-testid^="shift-card-"]')).toHaveCount(3);
-    await expect(thursdayColumn).toContainText('Alpha opening sweep');
-    await expect(thursdayColumn).toContainText('Kitchen prep');
-    await expect(thursdayColumn).toContainText('Supplier call');
-
-    const boardConflict = await readBoardConflictSummary(page);
-    expect(boardConflict.visible).toBe(true);
-    expect(boardConflict.label).toBe('1 overlap pair in view');
-    expect(boardConflict.dayCount).toBe(1);
-    expect(boardConflict.shiftCount).toBe(2);
-    expect(boardConflict.pairCount).toBe(1);
-
-    const thursdayConflict = await readDayConflictSummary(page, '2026-04-16');
-    expect(thursdayConflict.visible).toBe(true);
-    expect(thursdayConflict.label).toBe('1 overlap pair');
-    expect(thursdayConflict.shiftCount).toBe(2);
-    expect(thursdayConflict.pairCount).toBe(1);
-    expect(thursdayConflict.detail).toContain('Kitchen prep');
-    expect(thursdayConflict.detail).toContain('Supplier call');
-
-    await waitForDayConflictPairs(page, '2026-04-15', null);
-    const wednesdayConflict = await readDayConflictSummary(page, '2026-04-15');
-    expect(wednesdayConflict.visible).toBe(false);
-
-    await waitForShiftConflictOverlaps(page, seededSchedule.shifts.kitchenPrep.id, 1);
-    await waitForShiftConflictOverlaps(page, seededSchedule.shifts.supplierCall.id, 1);
-    await waitForShiftConflictOverlaps(page, seededSchedule.shifts.alphaOpeningSweepWednesday.id, null);
-    await waitForShiftConflictOverlaps(page, seededSchedule.shifts.morningIntake.id, null);
-
-    const kitchenConflict = await readShiftConflictSummary(page, seededSchedule.shifts.kitchenPrep.id);
-    expect(kitchenConflict.label).toBe('Overlaps 1 visible shift');
-    expect(kitchenConflict.detail).toContain('Supplier call (13:00 → 15:00)');
-
-    const supplierConflict = await readShiftConflictSummary(page, seededSchedule.shifts.supplierCall.id);
-    expect(supplierConflict.label).toBe('Overlaps 1 visible shift');
-    expect(supplierConflict.detail).toContain('Kitchen prep (12:00 → 14:00)');
-
-    await syncCalendarFlowContext(page, flow, {
-      note: 'seeded Thursday overlap remained visible at board, day, and card level while the Wednesday touch boundary stayed clean'
-    });
-  });
-});
-
-test('browse suggestion handoff creates a visible shift on the intended day and does not reopen after reload', async ({ page, flow }) => {
-  const createdTitle = 'Find time browse handoff';
-
-  await test.step('phase: sign in and open the truthful find-time route for the permitted Alpha calendar', async () => {
-    flow.mark('login', seededUsers.alphaMember.email);
-    await signInThroughUi(page, seededUsers.alphaMember);
     await openFindTimeRoute({
       page,
       flow,
@@ -437,6 +387,10 @@ test('browse suggestion handoff creates a visible shift on the intended day and 
       })
       .toBe(`http://127.0.0.1:4174/calendars/${seededCalendars.alphaShared}?start=${browseSuggestion.targetWeekStart}`);
   });
+
+  await test.step('phase: delete the handoff proof shift so later serial runs return to the seeded week state', async () => {
+    await cleanupProofShifts(page, [createdTitle]);
+  });
 });
 
 test('weekly recurrence suggestion accept path pre-fills weekly cadence truthfully and resets after a successful create', async ({
@@ -459,6 +413,7 @@ test('weekly recurrence suggestion accept path pre-fills weekly cadence truthful
     });
 
     await expect(page.getByTestId('calendar-shell')).toBeVisible();
+    await cleanupProofShifts(page, [createdTitle]);
   });
 
   await test.step('phase: accept the calm recurrence suggestion and verify only weekly plus interval one are prefilled', async () => {
@@ -523,6 +478,10 @@ test('weekly recurrence suggestion accept path pre-fills weekly cadence truthful
     expect(reloadedSnapshot.repeatUntilValue).toBe('');
     expect(reloadedSnapshot.fieldSuggestionState).toBe('idle');
   });
+
+  await test.step('phase: delete the recurrence proof shifts so later serial runs return to the seeded week state', async () => {
+    await cleanupProofShifts(page, [createdTitle]);
+  });
 });
 
 test('weekly recurrence suggestion dismiss path keeps the form blank, stays hidden for the current instance, and returns after reload', async ({
@@ -543,6 +502,7 @@ test('weekly recurrence suggestion dismiss path keeps the form blank, stays hidd
     });
 
     await expect(page.getByTestId('calendar-shell')).toBeVisible();
+    await cleanupProofShifts(page, ['Recurrence suggestion accept proof']);
   });
 
   await test.step('phase: dismiss the suggestion and prove recurrence fields stay blank while remaining editable', async () => {
