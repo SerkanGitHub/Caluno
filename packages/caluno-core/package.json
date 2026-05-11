@@ -19,6 +19,7 @@
     "./schedule/conflicts": "./src/schedule/conflicts.ts",
     "./schedule/create-prefill": "./src/schedule/create-prefill.ts",
     "./schedule/recurrence": "./src/schedule/recurrence.ts",
+    "./schedule/shift-editor-advisory": "./src/schedule/shift-editor-advisory.ts",
     "./schedule/types": "./src/schedule/types.ts"
   },
   "dependencies": {

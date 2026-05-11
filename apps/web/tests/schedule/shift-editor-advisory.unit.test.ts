@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { deriveShiftEditorClashes } from '../../src/lib/schedule/shift-editor-advisory';
-import type { CalendarShift } from '../../src/lib/server/schedule';
+import { deriveShiftEditorClashes } from '@repo/caluno-core/schedule/shift-editor-advisory';
+import type { CalendarShift } from '@repo/caluno-core/schedule/types';
 
 function buildShift(overrides: Partial<CalendarShift> = {}): CalendarShift {
   return {

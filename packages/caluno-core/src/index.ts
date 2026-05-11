@@ -12,3 +12,4 @@ export * from './schedule/board';
 export * from './schedule/conflicts';
 export * from './schedule/create-prefill';
 export * from './schedule/recurrence';
+export * from './schedule/shift-editor-advisory';
