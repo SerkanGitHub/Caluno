@@ -1,0 +1,18 @@
+{
+  "id": "349f795f-3afb-41b6-9a61-310d1a334655",
+  "runtime": "bash",
+  "purpose": "M005 requirement status spot-check",
+  "script_chars": 77,
+  "started_at": "2026-05-12T10:39:18.932Z",
+  "finished_at": "2026-05-12T10:39:18.967Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 35,
+  "stdout_bytes": 0,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/349f795f-3afb-41b6-9a61-310d1a334655.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/349f795f-3afb-41b6-9a61-310d1a334655.stderr"
+}
