@@ -1,0 +1,18 @@
+{
+  "id": "c6e54fd1-4120-4555-b561-fa663f134910",
+  "runtime": "bash",
+  "purpose": "Fresh M005 full web E2E regression verification after validation failure",
+  "script_chars": 139,
+  "started_at": "2026-05-12T08:39:55.741Z",
+  "finished_at": "2026-05-12T08:41:38.479Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 102738,
+  "stdout_bytes": 14274,
+  "stderr_bytes": 14547,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/c6e54fd1-4120-4555-b561-fa663f134910.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/c6e54fd1-4120-4555-b561-fa663f134910.stderr"
+}

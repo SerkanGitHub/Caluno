@@ -1,0 +1,18 @@
+{
+  "id": "9061d8c1-a061-443f-ad39-855c3d9c88a7",
+  "runtime": "bash",
+  "purpose": "Verify M005 code-change evidence from commit history on self-diff main",
+  "script_chars": 424,
+  "started_at": "2026-05-12T08:39:40.278Z",
+  "finished_at": "2026-05-12T08:39:40.394Z",
+  "exit_code": 141,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 116,
+  "stdout_bytes": 4239,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/9061d8c1-a061-443f-ad39-855c3d9c88a7.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/9061d8c1-a061-443f-ad39-855c3d9c88a7.stderr"
+}
