@@ -1,0 +1,18 @@
+{
+  "id": "8a988344-13c4-4af9-8f69-a7ac6ffea93f",
+  "runtime": "bash",
+  "purpose": "M005 code change verification against integration branch retry",
+  "script_chars": 1267,
+  "started_at": "2026-05-12T08:43:59.958Z",
+  "finished_at": "2026-05-12T08:44:00.182Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 224,
+  "stdout_bytes": 2452,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/8a988344-13c4-4af9-8f69-a7ac6ffea93f.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/8a988344-13c4-4af9-8f69-a7ac6ffea93f.stderr"
+}

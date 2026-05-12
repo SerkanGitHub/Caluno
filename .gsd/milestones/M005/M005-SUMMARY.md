@@ -4,60 +4,83 @@ title: "Predictive assistance and release hardening"
 status: verification-failed
 generated_at: 2026-05-12T00:00:00Z
 verification_passed: false
+key_decisions:
+  - Preserve the existing predictive-assistance scope evidence but block milestone completion until milestone-wide hardening regressions are cleared.
+  - Treat M005-VALIDATION.md (verdict: needs-attention) as authoritative for the current closeout state because no fresher passing validation exists.
+key_files:
+  - .gsd/milestones/M005/M005-VALIDATION.md
+  - .gsd/milestones/M005/M005-VERIFICATION-FAILURE.md
+  - .gsd/exec/c6e54fd1-4120-4555-b561-fa663f134910.stdout
+  - .gsd/exec/8a988344-13c4-4af9-8f69-a7ac6ffea93f.stdout
+lessons_learned:
+  - Milestone closeout must use milestone-wide regression evidence, not only slice-local passes.
+  - When HEAD self-diffs against main, milestone-scoped commit trailers can still prove real non-.gsd implementation changes.
 ---
 
 # M005: Predictive assistance and release hardening
 
-**Milestone closeout verification failed; M005 was not completed.**
+**Milestone closeout verification failed; M005 is not complete.**
 
-## What was verified
+## What Happened
 
-- `gsd_milestone_status` confirms the milestone is still `active` and all six slices (`S01`–`S06`) are `complete`.
-- Milestone code-change evidence exists even though `HEAD` equals `main`: milestone-scoped commit history contains non-`.gsd/` implementation/test changes across web, mobile, and shared-core files (for example `packages/caluno-core/src/schedule/recurrence.ts`, `packages/caluno-core/src/schedule/conflicts.ts`, `apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte`, and `apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte`).
-- Slice `SUMMARY.md` and `UAT.md` artifacts exist for all six slices under `.gsd/milestones/M005/slices/`.
+`gsd_milestone_status` confirms M005 is still `active` while all six slices (`S01`–`S06`) are `complete`, so this turn was a closeout-only verification pass rather than implementation work. Code-change verification passed through milestone-scoped commit evidence even though `HEAD`, `main`, and the merge-base are the same commit: `.gsd/exec/8a988344-13c4-4af9-8f69-a7ac6ffea93f.stdout` shows non-`.gsd/` web, mobile, and shared-core work landed during M005. Slice `SUMMARY.md` and `UAT.md` artifacts are present for every slice, but milestone completion is blocked because the existing validation artifact remains `needs-attention` and the fresh milestone-wide web regression proof still fails three E2E specs.
 
-## Verification failures
+## Verification Results
 
-### Fresh regression command
+### Code-change verification
+
+- ✅ `HEAD` equals `main`/merge-base, so the closeout used milestone-scoped commit evidence instead of a direct diff.
+- ✅ `.gsd/exec/8a988344-13c4-4af9-8f69-a7ac6ffea93f.stdout` records non-`.gsd/` milestone commits touching shared-core, web, and mobile implementation/test files.
+
+### Fresh regression verification
+
+Command evidence from `.gsd/exec/c6e54fd1-4120-4555-b561-fa663f134910.stdout`:
 
 ```bash
 npx --yes supabase db reset --local --yes
 pnpm --dir apps/web exec playwright test tests/e2e
 ```
 
-### Result
+- ❌ Exit code: `1`
+- ✅ Passed: `6`
+- ❌ Failed: `3`
+- ⚠️ Did not run after failure cutoff: `8`
 
-- Exit code: `1`
-- Passed: `6`
-- Failed: `3`
-- Did not run after failure cutoff: `8`
-- Evidence: `.gsd/exec/c6e54fd1-4120-4555-b561-fa663f134910.stdout`
+Failing specs:
+1. `tests/e2e/auth-groups-access.spec.ts:45:1` — expected `groups-shell` to show `onboarding-empty`, but the trusted-online shell rendered instead.
+2. `tests/e2e/calendar-shifts.spec.ts:339:1` — a touching-boundary draft incorrectly surfaced clash advisory overlap count `1` before submit.
+3. `tests/e2e/find-time.spec.ts:21:1` — expected `10 truthful windows`, but the real route rendered `8 truthful windows`.
 
-### Failing specs
+## Success Criteria Results
 
-1. `tests/e2e/auth-groups-access.spec.ts:45:1`
-   - **join onboarding surfaces invalid codes, admits a valid redemption, survives reload, and loses access after sign-out**
-   - Expected `data-testid="groups-shell"` to contain `onboarding-empty`, but the page rendered the trusted-online shell state instead.
-2. `tests/e2e/calendar-shifts.spec.ts:339:1`
-   - **touching-boundary create drafts stay advisory-free before submit**
-   - The create dialog still reported advisory overlap count `1` for a boundary-touching draft that should remain advisory-free.
-3. `tests/e2e/find-time.spec.ts:21:1`
-   - **permitted member sees ranked top picks before the lighter browse inventory on the real find-time route**
-   - Expected `10 truthful windows`, but the route rendered `8 truthful windows`.
+- ✅ **Predictive or anticipatory scheduling features are live and covered by unit and E2E tests.** Slice summaries and validation evidence show predictive helpers plus web/mobile recurrence and clash-advisory flows shipped with unit and targeted browser coverage.
+- ✅ **R011 (predictive scheduling assistance) is validated.** Slice evidence and `.gsd/REQUIREMENTS.md` already record R011 as validated.
+- ❌ **Launch hardening: reliability, onboarding, performance, accessibility, observability, and deployment readiness are addressed.** Fresh milestone-wide web E2E regression still fails, so launch hardening is not cleanly re-proven.
+- ✅ **UX is refined for calmness, polish, and fit/finish.** Slice summaries consistently describe calm, warning-only predictive UI with explicit diagnostics.
+- ❌ **All trust, privacy, and authorization constraints from prior milestones are maintained.** The failing auth/onboarding regression means broader trust/authorization proof is not currently clean.
+- ✅ **Explicit UI and diagnostics exist for predictive features and hardening outcomes.** Predictive chips, clash advisories, and route-state diagnostics are present in slice evidence.
 
-## Closeout decision
+## Definition of Done Results
 
-M005 cannot be marked complete because milestone-level success criteria and definition-of-done verification are not fully satisfied:
+- ✅ All six roadmap slices are marked complete in `gsd_milestone_status`.
+- ✅ Slice `SUMMARY.md` and `UAT.md` artifacts exist for `S01`–`S06`.
+- ❌ Integrated milestone verification is not green because the fresh full web E2E run failed three existing specs.
+- ❌ The current milestone validation artifact is still `needs-attention`, so there is no fresh passing milestone validation to authorize closeout.
+- ❌ The roadmap boundary map is still `Not provided.`
+- ⚠️ No slice `*-ASSESSMENT.md` artifacts are present under `.gsd/milestones/M005`.
 
-- Launch-hardening is not freshly re-proven milestone-wide while the full web E2E regression still fails.
-- Trust/authorization verification is not clean because the auth/onboarding regression failed.
-- The predictive clash-advisory flow is not clean because the touching-boundary advisory-free regression failed.
-- Find-time inventory/regression coverage is not clean because the ranked-window count regression failed.
-- The existing validation artifact remains `needs-attention`, and the roadmap boundary map is still `Not provided.` while no slice `*-ASSESSMENT.md` artifacts are present.
+## Requirement Outcomes
 
-## Next attempt
+- No requirement status changes were applied during this closeout turn.
+- Existing evidence still supports `R011` as implemented and validated for the predictive-assistance scope, but milestone completion remains blocked by broader hardening and regression failures.
 
-1. Fix the three failing web E2E regressions.
+## Deviations
+
+Closeout could not proceed to milestone completion because milestone-wide verification uncovered unresolved regressions outside the narrow predictive slice-local proofs.
+
+## Follow-ups
+
+1. Fix the three failing web E2E regressions in auth/onboarding, touching-boundary clash advisory behavior, and find-time ranked inventory.
 2. Re-run the full web regression command until it passes cleanly.
-3. Refresh validation evidence after the regressions are fixed.
-4. Retry milestone completion only after success criteria and definition-of-done checks pass without exceptions.
+3. Refresh milestone validation so `M005-VALIDATION.md` becomes a fresh pass instead of `needs-attention`.
+4. Retry `gsd_complete_milestone` only after success criteria and definition-of-done checks are fully green.

@@ -4,6 +4,7 @@ milestone: M005
 title: Predictive assistance and release hardening
 generated: 2026-05-12T00:00:00Z
 status: failed
+verification_passed: false
 ---
 
 # M005 Verification Failure Summary
@@ -11,13 +12,13 @@ status: failed
 ## Outcome
 Milestone M005 is **not ready for completion**.
 
-## What passed
-- `gsd_milestone_status` shows all six slices (`S01`–`S06`) are marked `complete`.
-- Milestone-scoped commit evidence still shows non-`.gsd/` implementation files changed in shared-core, web, and mobile code.
-- Slice summary and UAT artifacts exist for all six slices under `.gsd/milestones/M005/slices/`.
+## Verified inputs
+- `gsd_milestone_status` shows milestone `M005` is still `active` and all six slices (`S01`–`S06`) are `complete`.
+- Slice `SUMMARY.md` and `UAT.md` artifacts exist for every slice under `.gsd/milestones/M005/slices/`.
+- `.gsd/exec/8a988344-13c4-4af9-8f69-a7ac6ffea93f.stdout` proves milestone-scoped non-`.gsd/` implementation/test changes even though `HEAD` self-diffs against `main`.
+- `.gsd/milestones/M005/M005-VALIDATION.md` still reports verdict `needs-attention`.
 
 ## Blocking verification failures
-Fresh milestone-closeout regression evidence failed:
 
 ### Fresh command run
 ```bash
@@ -44,10 +45,12 @@ pnpm --dir apps/web exec playwright test tests/e2e
 - Launch-hardening is not re-proven milestone-wide with a clean fresh regression run.
 - Trust/authorization surfaces are not cleanly re-verified because an auth/onboarding E2E failed.
 - Predictive clash-advisory proof is not cleanly re-verified because the boundary-touching advisory-free spec failed.
-- The validation artifact remains `needs-attention`, the roadmap boundary map is still missing, and no slice `*-ASSESSMENT.md` artifacts are present.
+- The current validation artifact remains `needs-attention`.
+- The roadmap boundary map is still missing (`Not provided.`).
+- No slice `*-ASSESSMENT.md` artifacts are present under `.gsd/milestones/M005`.
 
 ## Next attempt should
 1. Fix the three failing web E2E regressions above.
 2. Re-run the full web regression command until it passes cleanly.
 3. Refresh validation evidence once the regression set passes.
-4. Only then retry milestone completion.
+4. Retry milestone completion only after success criteria and definition-of-done checks pass without exceptions.
