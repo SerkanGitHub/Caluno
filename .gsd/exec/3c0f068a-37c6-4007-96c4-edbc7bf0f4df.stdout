@@ -1,0 +1,20 @@
+integration_branch=main
+merge_base=2ccf835ac60e1b87bd1da0b6f97239bffe381677
+head=2ccf835ac60e1b87bd1da0b6f97239bffe381677
+non_gsd_diff_count=0
+self_or_no_impl_diff=true
+milestone_trailer_commits:
+7d1839e934988762ab2aef839e9dbb6978d2b927 chore: auto-commit after complete-milestone
+57c45c51722e96f4ef1cc5bba7cc86f8fe7f8cfc chore: auto-commit after complete-milestone
+b444252f1e58823498f4231bab61cfbd5fd13d00 chore: auto-commit after complete-milestone
+912bab4b245c81923acaf27a040724e5b6c21e9f chore: auto-commit after complete-milestone
+ba22479f079616a772fe3e4c30592ef01b063e7d chore: auto-commit after complete-milestone
+621805bf028fd02c9c836e99776812a20e0ebcd3 chore: auto-commit after complete-milestone
+184dddff32b2adb875885a0a187bd53b1613ac8e chore: auto-commit after complete-milestone
+751be9d530641716e86c6add976eae7af5d72009 chore: auto-commit after complete-milestone
+c1efcac439106170285607acbd05d2eb47c75597 feat: Marked R011 validated from fresh S06 predictive/browser/build evi…
+6c8abf18aa1bce0a296ce182d8a17730092c3677 feat: Re-ran the mobile predictive smoke from a fresh local Supabase re…
+953da6aab33180e5bf9b4d157f4023657879a16d feat: Confirmed the mobile shift sheet already threads visible-week shi…
+281776e9793a320cbebe4b6e1e689150a407943e test: Stabilized the web shift-editor Playwright spec so advisory overl…
+0dc19a6208d76c682fcb0d8f13ab1c4961a25b00 test: Threaded recurrence suggestion data into the web create dialog, a…
+d4a0e29e815272ed1a42d72d8552739934d7b5bf feat: Verified that the existing M005 planning artifacts already fully…

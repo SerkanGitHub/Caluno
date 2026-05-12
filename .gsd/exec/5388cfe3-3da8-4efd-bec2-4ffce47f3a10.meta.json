@@ -1,0 +1,18 @@
+{
+  "id": "5388cfe3-3da8-4efd-bec2-4ffce47f3a10",
+  "runtime": "bash",
+  "purpose": "M005 trailer commit non-gsd file evidence",
+  "script_chars": 383,
+  "started_at": "2026-05-12T10:54:30.594Z",
+  "finished_at": "2026-05-12T10:54:30.822Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 228,
+  "stdout_bytes": 6122,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/5388cfe3-3da8-4efd-bec2-4ffce47f3a10.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/5388cfe3-3da8-4efd-bec2-4ffce47f3a10.stderr"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "30125dd5-edea-4425-99bc-05a41215f90e",
+  "runtime": "bash",
+  "purpose": "M005 artifact presence and gaps verification",
+  "script_chars": 606,
+  "started_at": "2026-05-12T10:55:03.168Z",
+  "finished_at": "2026-05-12T10:55:03.218Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 50,
+  "stdout_bytes": 625,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/30125dd5-edea-4425-99bc-05a41215f90e.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/30125dd5-edea-4425-99bc-05a41215f90e.stderr"
+}

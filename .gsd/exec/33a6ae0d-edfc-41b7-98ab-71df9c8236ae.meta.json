@@ -1,0 +1,18 @@
+{
+  "id": "33a6ae0d-edfc-41b7-98ab-71df9c8236ae",
+  "runtime": "bash",
+  "purpose": "M005 validation freshness versus milestone artifacts",
+  "script_chars": 361,
+  "started_at": "2026-05-12T10:54:43.788Z",
+  "finished_at": "2026-05-12T10:54:43.840Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 52,
+  "stdout_bytes": 582,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/33a6ae0d-edfc-41b7-98ab-71df9c8236ae.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/33a6ae0d-edfc-41b7-98ab-71df9c8236ae.stderr"
+}

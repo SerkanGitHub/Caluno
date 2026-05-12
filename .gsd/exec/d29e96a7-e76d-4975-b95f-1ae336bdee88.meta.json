@@ -1,0 +1,18 @@
+{
+  "id": "d29e96a7-e76d-4975-b95f-1ae336bdee88",
+  "runtime": "bash",
+  "purpose": "M005 roadmap boundary map line check",
+  "script_chars": 96,
+  "started_at": "2026-05-12T10:55:08.181Z",
+  "finished_at": "2026-05-12T10:55:08.216Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 35,
+  "stdout_bytes": 36,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/d29e96a7-e76d-4975-b95f-1ae336bdee88.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/d29e96a7-e76d-4975-b95f-1ae336bdee88.stderr"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "b2989f9c-87cb-43cf-a41b-c40dde1bd422",
+  "runtime": "bash",
+  "purpose": "Locate R011 in requirements",
+  "script_chars": 84,
+  "started_at": "2026-05-12T10:55:13.074Z",
+  "finished_at": "2026-05-12T10:55:13.099Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 25,
+  "stdout_bytes": 5217,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/b2989f9c-87cb-43cf-a41b-c40dde1bd422.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/b2989f9c-87cb-43cf-a41b-c40dde1bd422.stderr"
+}
