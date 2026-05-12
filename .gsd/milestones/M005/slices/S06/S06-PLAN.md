@@ -103,7 +103,7 @@ S06 closes the milestone by proving the real predictive surfaces on web and mobi
   - Files: `apps/mobile/tests/e2e/mobile-predictive.spec.ts`, `apps/mobile/tests/e2e/mobile-assembly.spec.ts`, `apps/mobile/src/routes/calendars/[calendarId]/+page.svelte`, `apps/mobile/src/routes/calendars/[calendarId]/find-time/+page.svelte`, `package.json`, `turbo.json`
   - Verify: npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/mobile-predictive.spec.ts tests/e2e/mobile-assembly.spec.ts && pnpm build
 
-- [ ] **T04: Validate R011 from fresh S06 evidence** `est:15m`
+- [x] **T04: Validate R011 from fresh S06 evidence** `est:15m`
   ---
   estimated_steps: 4
   estimated_files: 1
