@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-05-11T16:50:18Z | Files: 500 | Described: 0/500
-<!-- gsd:codebase-meta {"generatedAt":"2026-05-11T16:50:18Z","fingerprint":"6ecb65e64516628eebfc0365f2b2c19d51476c88","fileCount":500,"truncated":true} -->
+Generated: 2026-05-11T17:12:40Z | Files: 500 | Described: 0/500
+<!-- gsd:codebase-meta {"generatedAt":"2026-05-11T17:12:40Z","fingerprint":"db7f930a5aa13bc9a47e8365b48bc1e75ce02ae6","fileCount":500,"truncated":true} -->
 Note: Truncated to first 500 files. Run with higher --max-files to include all.
 
 ### (root)/
@@ -84,7 +84,7 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/assets/
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/0.F8d5DQbR.css`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/2.CvqVE8tP.css`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/3.BBom593b.css`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/3.2cctJfKW.css`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/4.D9t02-tO.css`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/5.BgqUIahB.css`
 - `apps/mobile/.svelte-kit/output/client/_app/immutable/assets/6.D7V9Fcow.css`
@@ -95,17 +95,17 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - *(22 files: 22 .js)*
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/entry/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.Crrsefz9.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.DHAP3SHc.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.wS_FjZUf.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.DTkxUAav.js`
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.DBLsLoiC.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.CAqjGLLW.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.2zICW7tC.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.B19kwawS.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.SNszQ2yf.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.BmKBCQ37.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/6.nsStIG07.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.D5vP8po1.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.ezbJ9OmE.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.Dxmml6k-.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.B3DC9xk6.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.Bzov4rK1.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.Dpy6tlF-.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/6.CUKCdAsl.js`
 
 ### apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/
 - `apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/env.js`
@@ -361,27 +361,11 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/web/.svelte-kit/adapter-node/.vite/manifest.json`
 
 ### apps/web/.svelte-kit/adapter-node/_app/immutable/assets/
-- `apps/web/.svelte-kit/adapter-node/_app/immutable/assets/_layout.B7uVVkJ2.css`
+- `apps/web/.svelte-kit/adapter-node/_app/immutable/assets/_layout.DC0RInou.css`
+- `apps/web/.svelte-kit/adapter-node/_app/immutable/assets/_page.wV_2nAVL.css`
 
 ### apps/web/.svelte-kit/adapter-node/chunks/
-- `apps/web/.svelte-kit/adapter-node/chunks/app-shell.js`
-- `apps/web/.svelte-kit/adapter-node/chunks/attributes.js`
-- `apps/web/.svelte-kit/adapter-node/chunks/auth-flow.js`
-- `apps/web/.svelte-kit/adapter-node/chunks/contract.js`
-- `apps/web/.svelte-kit/adapter-node/chunks/environment.js`
-- `apps/web/.svelte-kit/adapter-node/chunks/exports.js`
-- `apps/web/.svelte-kit/adapter-node/chunks/false.js`
-- `apps/web/.svelte-kit/adapter-node/chunks/index.js`
-- `apps/web/.svelte-kit/adapter-node/chunks/internal.js`
-- `apps/web/.svelte-kit/adapter-node/chunks/recurrence.js`
-- `apps/web/.svelte-kit/adapter-node/chunks/render-context.js`
-- `apps/web/.svelte-kit/adapter-node/chunks/renderer.js`
-- `apps/web/.svelte-kit/adapter-node/chunks/root.js`
-- `apps/web/.svelte-kit/adapter-node/chunks/runtime.js`
-- `apps/web/.svelte-kit/adapter-node/chunks/shared-server.js`
-- `apps/web/.svelte-kit/adapter-node/chunks/shared.js`
-- `apps/web/.svelte-kit/adapter-node/chunks/state.svelte.js`
-- `apps/web/.svelte-kit/adapter-node/chunks/utils.js`
+- *(21 files: 21 .js)*
 
 ### apps/web/.svelte-kit/adapter-node/entries/
 - `apps/web/.svelte-kit/adapter-node/entries/hooks.server.js`
@@ -410,6 +394,11 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/web/.svelte-kit/adapter-node/entries/pages/(app)/calendars/_calendarId_/_page.svelte.js`
 - `apps/web/.svelte-kit/adapter-node/entries/pages/(app)/calendars/_calendarId_/_page.ts.js`
 
+### apps/web/.svelte-kit/adapter-node/entries/pages/(app)/calendars/_calendarId_/find-time/
+- `apps/web/.svelte-kit/adapter-node/entries/pages/(app)/calendars/_calendarId_/find-time/_page.server.ts.js`
+- `apps/web/.svelte-kit/adapter-node/entries/pages/(app)/calendars/_calendarId_/find-time/_page.svelte.js`
+- `apps/web/.svelte-kit/adapter-node/entries/pages/(app)/calendars/_calendarId_/find-time/_page.ts.js`
+
 ### apps/web/.svelte-kit/adapter-node/entries/pages/(app)/groups/
 - `apps/web/.svelte-kit/adapter-node/entries/pages/(app)/groups/_page.server.ts.js`
 - `apps/web/.svelte-kit/adapter-node/entries/pages/(app)/groups/_page.svelte.js`
@@ -426,6 +415,7 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/web/.svelte-kit/adapter-node/nodes/4.js`
 - `apps/web/.svelte-kit/adapter-node/nodes/5.js`
 - `apps/web/.svelte-kit/adapter-node/nodes/6.js`
+- `apps/web/.svelte-kit/adapter-node/nodes/7.js`
 
 ### apps/web/.svelte-kit/generated/
 - `apps/web/.svelte-kit/generated/root.js`
@@ -447,6 +437,7 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/web/.svelte-kit/generated/client-optimized/nodes/4.js`
 - `apps/web/.svelte-kit/generated/client-optimized/nodes/5.js`
 - `apps/web/.svelte-kit/generated/client-optimized/nodes/6.js`
+- `apps/web/.svelte-kit/generated/client-optimized/nodes/7.js`
 
 ### apps/web/.svelte-kit/generated/client/nodes/
 - `apps/web/.svelte-kit/generated/client/nodes/0.js`
@@ -471,37 +462,40 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/web/.svelte-kit/output/client/_app/version.json`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/assets/
-- `apps/web/.svelte-kit/output/client/_app/immutable/assets/0.B7uVVkJ2.css`
+- `apps/web/.svelte-kit/output/client/_app/immutable/assets/0.DC0RInou.css`
+- `apps/web/.svelte-kit/output/client/_app/immutable/assets/5.wV_2nAVL.css`
 - `apps/web/.svelte-kit/output/client/_app/immutable/assets/sqlite3.DGXXSD5r.wasm`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/chunks/
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BFVfXAuL.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Bpvak2mh.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/C_476Q2x.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/C0IRkBfy.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/CEVaURT-.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/CZ5TP99Q.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/CzBrKa3R.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/D5EpjGQt.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DOMc5UJB.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Bgn2yaYW.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BIyNKtvS.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BNQEOYEk.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BT5sq5Lg.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BWcPjAJn.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/bY-7bDrD.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/C-ffgH8v.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Cg5Gs5n7.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/CinHc9Pg.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Cnou3hnx.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/CwNT8IMb.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/D58iBqSA.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DsnmJJEf.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DYBES7nT.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DYK4CpHh.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/vOItGLpa.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Z3FZk6iU.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/XccW2AWw.js`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/entry/
-- `apps/web/.svelte-kit/output/client/_app/immutable/entry/app.CzDoDn9w.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/entry/start.BTFRMBBV.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/entry/app.B8M7aJ8x.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/entry/start.BW5lAAR0.js`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/nodes/
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/0.DKts0e-T.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/1.CWi7vlJ0.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/2.B2WI7eqM.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/3.D0-6ptpY.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/4.CPsmWsw8.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/5.B1OrzvUL.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/6.Cjd7Twn1.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/0.wwDtjeDr.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/1.g4VeS-vR.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/2.D_bfnQIZ.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/3.CT-hjByW.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/4.LoRQXaQA.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/5.8DDdL3Jz.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/6.BKXhBF4H.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/7.BuQgnRyP.js`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/workers/
 - `apps/web/.svelte-kit/output/client/_app/immutable/workers/sqlite.worker-CI6M-LP8.js`
@@ -522,27 +516,11 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/web/.svelte-kit/output/server/.vite/manifest.json`
 
 ### apps/web/.svelte-kit/output/server/_app/immutable/assets/
-- `apps/web/.svelte-kit/output/server/_app/immutable/assets/_layout.B7uVVkJ2.css`
+- `apps/web/.svelte-kit/output/server/_app/immutable/assets/_layout.DC0RInou.css`
+- `apps/web/.svelte-kit/output/server/_app/immutable/assets/_page.wV_2nAVL.css`
 
 ### apps/web/.svelte-kit/output/server/chunks/
-- `apps/web/.svelte-kit/output/server/chunks/app-shell.js`
-- `apps/web/.svelte-kit/output/server/chunks/attributes.js`
-- `apps/web/.svelte-kit/output/server/chunks/auth-flow.js`
-- `apps/web/.svelte-kit/output/server/chunks/contract.js`
-- `apps/web/.svelte-kit/output/server/chunks/environment.js`
-- `apps/web/.svelte-kit/output/server/chunks/exports.js`
-- `apps/web/.svelte-kit/output/server/chunks/false.js`
-- `apps/web/.svelte-kit/output/server/chunks/index.js`
-- `apps/web/.svelte-kit/output/server/chunks/internal.js`
-- `apps/web/.svelte-kit/output/server/chunks/recurrence.js`
-- `apps/web/.svelte-kit/output/server/chunks/render-context.js`
-- `apps/web/.svelte-kit/output/server/chunks/renderer.js`
-- `apps/web/.svelte-kit/output/server/chunks/root.js`
-- `apps/web/.svelte-kit/output/server/chunks/runtime.js`
-- `apps/web/.svelte-kit/output/server/chunks/shared-server.js`
-- `apps/web/.svelte-kit/output/server/chunks/shared.js`
-- `apps/web/.svelte-kit/output/server/chunks/state.svelte.js`
-- `apps/web/.svelte-kit/output/server/chunks/utils.js`
+- *(21 files: 21 .js)*
 
 ### apps/web/.svelte-kit/output/server/entries/
 - `apps/web/.svelte-kit/output/server/entries/hooks.server.js`
@@ -571,6 +549,11 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/web/.svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/_page.svelte.js`
 - `apps/web/.svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/_page.ts.js`
 
+### apps/web/.svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/find-time/
+- `apps/web/.svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/find-time/_page.server.ts.js`
+- `apps/web/.svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/find-time/_page.svelte.js`
+- `apps/web/.svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/find-time/_page.ts.js`
+
 ### apps/web/.svelte-kit/output/server/entries/pages/(app)/groups/
 - `apps/web/.svelte-kit/output/server/entries/pages/(app)/groups/_page.server.ts.js`
 - `apps/web/.svelte-kit/output/server/entries/pages/(app)/groups/_page.svelte.js`
@@ -587,6 +570,7 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/web/.svelte-kit/output/server/nodes/4.js`
 - `apps/web/.svelte-kit/output/server/nodes/5.js`
 - `apps/web/.svelte-kit/output/server/nodes/6.js`
+- `apps/web/.svelte-kit/output/server/nodes/7.js`
 
 ### apps/web/.svelte-kit/types/
 - `apps/web/.svelte-kit/types/route_meta_data.json`
@@ -746,37 +730,3 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/web/tests/schedule/server-actions.unit.test.ts`
 - `apps/web/tests/schedule/shift-editor-advisory.unit.test.ts`
 - `apps/web/tests/schedule/sync-engine.unit.test.ts`
-
-### packages/caluno-core/
-- `packages/caluno-core/package.json`
-
-### packages/caluno-core/src/
-- `packages/caluno-core/src/access.ts`
-- `packages/caluno-core/src/app-shell.ts`
-- `packages/caluno-core/src/index.ts`
-- `packages/caluno-core/src/route-contract.ts`
-- `packages/caluno-core/src/supabase.ts`
-
-### packages/caluno-core/src/find-time/
-- `packages/caluno-core/src/find-time/matcher.ts`
-- `packages/caluno-core/src/find-time/ranking.ts`
-
-### packages/caluno-core/src/offline/
-- `packages/caluno-core/src/offline/app-shell-cache.ts`
-- `packages/caluno-core/src/offline/mutation-queue.ts`
-- `packages/caluno-core/src/offline/sync-engine.ts`
-- `packages/caluno-core/src/offline/types.ts`
-
-### packages/caluno-core/src/schedule/
-- `packages/caluno-core/src/schedule/board.ts`
-- `packages/caluno-core/src/schedule/conflicts.ts`
-- `packages/caluno-core/src/schedule/create-prefill.ts`
-- `packages/caluno-core/src/schedule/recurrence.ts`
-- `packages/caluno-core/src/schedule/shift-editor-advisory.ts`
-- `packages/caluno-core/src/schedule/types.ts`
-
-### packages/db/
-- `packages/db/package.json`
-
-### packages/db/src/
-- `packages/db/src/client.ts`

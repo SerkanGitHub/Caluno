@@ -1,0 +1,18 @@
+{
+  "id": "b3a12f2f-72c0-4c80-b4a3-4e1e579574c1",
+  "runtime": "bash",
+  "purpose": "fresh reset + targeted predictive web playwright verification for S06 T02",
+  "script_chars": 342,
+  "started_at": "2026-05-11T17:12:58.894Z",
+  "finished_at": "2026-05-11T17:13:25.368Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 26474,
+  "stdout_bytes": 0,
+  "stderr_bytes": 766,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/b3a12f2f-72c0-4c80-b4a3-4e1e579574c1.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/b3a12f2f-72c0-4c80-b4a3-4e1e579574c1.stderr"
+}

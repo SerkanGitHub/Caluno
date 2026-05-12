@@ -1,0 +1,18 @@
+{
+  "id": "86b24d7a-2fce-4f7d-aeac-04fc11b926c2",
+  "runtime": "bash",
+  "purpose": "collect supabase db reset debug trace for repeatable 502",
+  "script_chars": 101,
+  "started_at": "2026-05-11T17:14:12.097Z",
+  "finished_at": "2026-05-11T17:14:37.694Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 25597,
+  "stdout_bytes": 0,
+  "stderr_bytes": 210462,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/86b24d7a-2fce-4f7d-aeac-04fc11b926c2.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/86b24d7a-2fce-4f7d-aeac-04fc11b926c2.stderr"
+}

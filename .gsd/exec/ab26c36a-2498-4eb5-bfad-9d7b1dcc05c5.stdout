@@ -1,0 +1,6 @@
+{
+  "id": "R011",
+  "status": "validated",
+  "validation": "Validated in M005/S06 by passing `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-sync.spec.ts tests/e2e/calendar-shifts.spec.ts`, `npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/mobile-predictive.spec.ts tests/e2e/mobile-assembly.spec.ts`, and `pnpm build`, which together proved the clean-reset web continuity/realtime proof on typed route-state diagnostics, a scoped predictive create-editor axe scan with zero new WCAG 2.1 AA violations, unchanged mobile predictive/assembly smoke on fresh seeded data, and successful launch-readiness builds for both apps.",
+  "notes": "M005/S06 closes R011 only for the shipped predictive scheduling assistance surfaces—recurrence suggestions and clash advisories grounded in real schedule data. The validation evidence is scoped to launch-hardening proof and does not widen predictive scope beyond those shipped surfaces."
+}

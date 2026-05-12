@@ -1,0 +1,18 @@
+{
+  "id": "ba1a66e3-c547-46a9-848d-97a75d033971",
+  "runtime": "bash",
+  "purpose": "inspect local supabase status after reset 502 without invalid flag",
+  "script_chars": 77,
+  "started_at": "2026-05-11T17:13:33.466Z",
+  "finished_at": "2026-05-11T17:13:33.793Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 327,
+  "stdout_bytes": 3946,
+  "stderr_bytes": 368,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/ba1a66e3-c547-46a9-848d-97a75d033971.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/ba1a66e3-c547-46a9-848d-97a75d033971.stderr"
+}

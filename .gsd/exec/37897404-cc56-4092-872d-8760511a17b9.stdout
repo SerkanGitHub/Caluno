@@ -1,0 +1,233 @@
+COMMAND=pnpm build
+
+> caluno@ build /Users/serkanyeniay/dev/Caluno
+> turbo run build
+
+
+   • Packages in scope: @repo/caluno-core, @repo/db, @repo/eslint-config, @repo/typescript-config, @repo/ui, mobile, web
+   • Running build in 7 packages
+   • Remote caching disabled
+
+web:build: cache miss, executing faa2c00523df66c5
+mobile:build: cache miss, executing 3703b8f6f1f32d1d
+web:build: 
+web:build: > web@0.0.1 build /Users/serkanyeniay/dev/Caluno/apps/web
+web:build: > vite build
+web:build: 
+mobile:build: 
+mobile:build: > mobile@0.0.1 build /Users/serkanyeniay/dev/Caluno/apps/mobile
+mobile:build: > vite build
+mobile:build: 
+mobile:build: vite v7.3.2 building ssr environment for production...
+web:build: vite v7.3.2 building ssr environment for production...
+mobile:build: transforming...
+web:build: transforming...
+mobile:build: ✓ 219 modules transformed.
+web:build: ✓ 216 modules transformed.
+mobile:build: rendering chunks...
+web:build: rendering chunks...
+mobile:build: vite v7.3.2 building client environment for production...
+mobile:build: transforming...
+web:build: vite v7.3.2 building client environment for production...
+web:build: transforming...
+mobile:build: ✓ 321 modules transformed.
+mobile:build: rendering chunks...
+mobile:build: computing gzip size...
+mobile:build: .svelte-kit/output/client/_app/version.json                             0.03 kB │ gzip:  0.05 kB
+mobile:build: .svelte-kit/output/client/.vite/manifest.json                          10.88 kB │ gzip:  1.50 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/assets/2.CvqVE8tP.css          1.77 kB │ gzip:  0.67 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/assets/0.F8d5DQbR.css          1.95 kB │ gzip:  0.87 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/assets/6.D7V9Fcow.css          2.57 kB │ gzip:  0.87 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/assets/network.RtvhMW7e.css    2.95 kB │ gzip:  0.96 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/assets/runtime.Cle6QH-8.css    3.06 kB │ gzip:  1.05 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/assets/5.BgqUIahB.css          3.14 kB │ gzip:  0.96 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/assets/4.D9t02-tO.css          4.16 kB │ gzip:  1.17 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/assets/3.2cctJfKW.css         14.32 kB │ gzip:  2.59 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/entry/start.CdUqSfEz.js        0.08 kB │ gzip:  0.09 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/DIOnLjF-.js             0.31 kB │ gzip:  0.18 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/CRyB-ECt.js             0.40 kB │ gzip:  0.30 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/nodes/1.Dk5KnKiX.js            0.41 kB │ gzip:  0.27 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/ss6mw8pm.js             0.60 kB │ gzip:  0.38 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/DGgxoOJE.js             0.80 kB │ gzip:  0.45 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/hEQzCHA0.js             0.83 kB │ gzip:  0.51 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/CQzsS4ST.js             0.84 kB │ gzip:  0.39 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/ZMV1yJoX.js             1.15 kB │ gzip:  0.55 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/PPVm8Dsz.js             1.23 kB │ gzip:  0.72 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/BolUem1_.js             1.23 kB │ gzip:  0.70 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/DLvnSxBc.js             1.24 kB │ gzip:  0.58 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/nodes/0.Bee2VGvh.js            1.36 kB │ gzip:  0.75 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/BdGWbA3M.js             1.49 kB │ gzip:  0.67 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/DaA7Ooa8.js             2.09 kB │ gzip:  1.13 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/nodes/2.96VQ3civ.js            2.78 kB │ gzip:  1.26 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/P_iUwMq6.js             3.44 kB │ gzip:  1.11 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/entry/app.CQbXogar.js          6.05 kB │ gzip:  2.60 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/CXXtBI0J.js             6.58 kB │ gzip:  2.98 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/nodes/6.CVf3TTdd.js            7.73 kB │ gzip:  2.82 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/A6cbcEcB.js            10.46 kB │ gzip:  3.62 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/BwBoA2p-.js            10.72 kB │ gzip:  4.41 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/nodes/5.Cz7DSVcT.js           13.25 kB │ gzip:  4.60 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/Cdb3Jq3d.js            13.25 kB │ gzip:  3.57 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/CnLv0cUZ.js            16.41 kB │ gzip:  4.61 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/ChEMe8CD.js            24.54 kB │ gzip:  9.64 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/C3jaeQPD.js            28.08 kB │ gzip: 11.01 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/CBM4mgl0.js            35.56 kB │ gzip:  9.44 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/nodes/4.BWdQ84S_.js           50.75 kB │ gzip: 13.28 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/nodes/3.V23U9zQT.js          166.85 kB │ gzip: 44.50 kB
+mobile:build: .svelte-kit/output/client/_app/immutable/chunks/DtJzszPE.js           238.04 kB │ gzip: 64.89 kB
+mobile:build: ✓ built in 1.54s
+mobile:build: .svelte-kit/output/server/.vite/manifest.json                                               8.33 kB
+mobile:build: .svelte-kit/output/server/_app/immutable/assets/_page.CoXGxDD0.css                          1.73 kB
+mobile:build: .svelte-kit/output/server/_app/immutable/assets/_layout.YzRAIQiD.css                        1.84 kB
+mobile:build: .svelte-kit/output/server/_app/immutable/assets/_page.CvEJSY6_.css                          2.53 kB
+mobile:build: .svelte-kit/output/server/_app/immutable/assets/_page.-fczuQlw.css                          2.53 kB
+mobile:build: .svelte-kit/output/server/_app/immutable/assets/MobileShell.C33lfloN.css                    2.91 kB
+mobile:build: .svelte-kit/output/server/_app/immutable/assets/CalendarNotificationToggle.Cle6QH-8.css     3.06 kB
+mobile:build: .svelte-kit/output/server/_app/immutable/assets/_page.BgqUIahB.css                          3.14 kB
+mobile:build: .svelte-kit/output/server/_app/immutable/assets/_page.D9t02-tO.css                          4.16 kB
+mobile:build: .svelte-kit/output/server/chunks/false.js                                                   0.05 kB
+mobile:build: .svelte-kit/output/server/chunks/index-server.js                                            0.16 kB
+mobile:build: .svelte-kit/output/server/entries/fallbacks/error.svelte.js                                 0.33 kB
+mobile:build: .svelte-kit/output/server/internal.js                                                       0.35 kB
+mobile:build: .svelte-kit/output/server/chunks/state.svelte.js                                            0.44 kB
+mobile:build: .svelte-kit/output/server/chunks/environment.js                                             0.62 kB
+mobile:build: .svelte-kit/output/server/entries/pages/_layout.ts.js                                       0.64 kB
+mobile:build: .svelte-kit/output/server/chunks/router.js                                                  0.89 kB
+mobile:build: .svelte-kit/output/server/chunks/index2.js                                                  0.96 kB
+mobile:build: .svelte-kit/output/server/entries/pages/_layout.svelte.js                                   0.98 kB
+mobile:build: .svelte-kit/output/server/chunks/app-shell.js                                               1.15 kB
+mobile:build: .svelte-kit/output/server/chunks/utils.js                                                   1.15 kB
+mobile:build: .svelte-kit/output/server/chunks/index.js                                                   1.72 kB
+mobile:build: .svelte-kit/output/server/entries/pages/_page.svelte.js                                     3.11 kB
+mobile:build: .svelte-kit/output/server/chunks/internal.js                                                3.23 kB
+mobile:build: .svelte-kit/output/server/chunks/exports.js                                                 5.59 kB
+mobile:build: .svelte-kit/output/server/chunks/MobileShell.js                                             6.03 kB
+mobile:build: .svelte-kit/output/server/chunks/load-app-shell.js                                          6.11 kB
+mobile:build: .svelte-kit/output/server/entries/pages/signin/_page.svelte.js                              8.67 kB
+mobile:build: .svelte-kit/output/server/entries/pages/calendars/_calendarId_/_page.svelte.js             14.24 kB
+mobile:build: .svelte-kit/output/server/chunks/render-context.js                                         17.98 kB
+mobile:build: .svelte-kit/output/server/chunks/repository.js                                             21.04 kB
+mobile:build: .svelte-kit/output/server/chunks/mobile-session.js                                         21.46 kB
+mobile:build: .svelte-kit/output/server/remote-entry.js                                                  24.19 kB
+mobile:build: .svelte-kit/output/server/entries/pages/groups/_page.svelte.js                             25.38 kB
+mobile:build: .svelte-kit/output/server/entries/pages/calendars/_calendarId_/find-time/_page.svelte.js   36.74 kB
+mobile:build: .svelte-kit/output/server/chunks/shared.js                                                 48.67 kB
+mobile:build: .svelte-kit/output/server/chunks/utils2.js                                                 58.94 kB
+mobile:build: .svelte-kit/output/server/chunks/root.js                                                   63.35 kB
+mobile:build: .svelte-kit/output/server/index.js                                                        136.87 kB
+mobile:build: ✓ built in 3.12s
+mobile:build: 
+mobile:build: Run npm run preview to preview your production build locally.
+mobile:build: 
+mobile:build: > Using @sveltejs/adapter-static
+mobile:build:   Wrote site to "build"
+mobile:build:   ✔ done
+web:build: ✓ 288 modules transformed.
+web:build: rendering chunks...
+web:build: [plugin vite:reporter] 
+web:build: (!) /Users/serkanyeniay/dev/Caluno/apps/web/src/lib/offline/sync-engine.ts is dynamically imported by /Users/serkanyeniay/dev/Caluno/apps/web/src/routes/(app)/calendars/[calendarId]/+page.ts but also statically imported by /Users/serkanyeniay/dev/Caluno/apps/web/src/lib/offline/calendar-controller.ts, /Users/serkanyeniay/dev/Caluno/apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte, dynamic import will not move module into another chunk.
+web:build: 
+web:build: [plugin vite:reporter] 
+web:build: (!) /Users/serkanyeniay/dev/Caluno/apps/web/src/lib/offline/mutation-queue.ts is dynamically imported by /Users/serkanyeniay/dev/Caluno/apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte, /Users/serkanyeniay/dev/Caluno/apps/web/src/routes/(app)/calendars/[calendarId]/+page.ts but also statically imported by /Users/serkanyeniay/dev/Caluno/apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte, dynamic import will not move module into another chunk.
+web:build: 
+web:build: computing gzip size...
+web:build: .svelte-kit/output/client/_app/version.json                                              0.03 kB │ gzip:   0.05 kB
+web:build: .svelte-kit/output/client/.vite/manifest.json                                            7.53 kB │ gzip:   1.15 kB
+web:build: .svelte-kit/output/client/_app/immutable/workers/sqlite3-opfs-async-proxy-BRz_lFSG.js    9.51 kB
+web:build: .svelte-kit/output/client/_app/immutable/workers/sqlite3-worker1-PxFADYt0.js           212.33 kB
+web:build: .svelte-kit/output/client/_app/immutable/workers/sqlite.worker-CI6M-LP8.js             214.41 kB
+web:build: .svelte-kit/output/client/_app/immutable/assets/sqlite3.DGXXSD5r.wasm                  859.73 kB │ gzip: 397.95 kB
+web:build: .svelte-kit/output/client/_app/immutable/workers/assets/sqlite3-DGXXSD5r.wasm          859.73 kB │ gzip: 397.95 kB
+web:build: .svelte-kit/output/client/_app/immutable/assets/5.wV_2nAVL.css                           5.13 kB │ gzip:   1.16 kB
+web:build: .svelte-kit/output/client/_app/immutable/assets/0.DC0RInou.css                          13.15 kB │ gzip:   3.37 kB
+web:build: .svelte-kit/output/client/_app/immutable/chunks/DsnmJJEf.js                              0.07 kB │ gzip:   0.08 kB
+web:build: .svelte-kit/output/client/_app/immutable/entry/start.CPPdbkT6.js                         0.08 kB │ gzip:   0.09 kB
+web:build: .svelte-kit/output/client/_app/immutable/chunks/BNQEOYEk.js                              0.19 kB │ gzip:   0.17 kB
+web:build: .svelte-kit/output/client/_app/immutable/chunks/BWcPjAJn.js                              0.40 kB │ gzip:   0.29 kB
+web:build: .svelte-kit/output/client/_app/immutable/chunks/D58iBqSA.js                              0.49 kB │ gzip:   0.35 kB
+web:build: .svelte-kit/output/client/_app/immutable/nodes/1.Coo6Frr-.js                             0.51 kB │ gzip:   0.33 kB
+web:build: .svelte-kit/output/client/_app/immutable/chunks/Bgn2yaYW.js                              0.66 kB │ gzip:   0.42 kB
+web:build: .svelte-kit/output/client/_app/immutable/chunks/Cg5Gs5n7.js                              1.16 kB │ gzip:   0.58 kB
+web:build: .svelte-kit/output/client/_app/immutable/chunks/XccW2AWw.js                              1.18 kB │ gzip:   0.65 kB
+web:build: .svelte-kit/output/client/_app/immutable/chunks/C-ffgH8v.js                              1.49 kB │ gzip:   0.67 kB
+web:build: .svelte-kit/output/client/_app/immutable/nodes/0.wwDtjeDr.js                             1.93 kB │ gzip:   0.90 kB
+web:build: .svelte-kit/output/client/_app/immutable/chunks/CinHc9Pg.js                              2.10 kB │ gzip:   1.18 kB
+web:build: .svelte-kit/output/client/_app/immutable/nodes/3.CT-hjByW.js                             2.76 kB │ gzip:   1.36 kB
+web:build: .svelte-kit/output/client/_app/immutable/nodes/7.BuQgnRyP.js                             3.02 kB │ gzip:   1.46 kB
+web:build: .svelte-kit/output/client/_app/immutable/chunks/Cnou3hnx.js                              4.24 kB │ gzip:   1.99 kB
+web:build: .svelte-kit/output/client/_app/immutable/nodes/2.DzvA2Wrb.js                             4.33 kB │ gzip:   1.73 kB
+web:build: .svelte-kit/output/client/_app/immutable/chunks/bY-7bDrD.js                              6.11 kB │ gzip:   2.79 kB
+web:build: .svelte-kit/output/client/_app/immutable/entry/app.CJVoYMb1.js                           6.42 kB │ gzip:   2.61 kB
+web:build: .svelte-kit/output/client/_app/immutable/nodes/6.BKXhBF4H.js                             9.57 kB │ gzip:   3.45 kB
+web:build: .svelte-kit/output/client/_app/immutable/chunks/BIyNKtvS.js                             24.99 kB │ gzip:   9.82 kB
+web:build: .svelte-kit/output/client/_app/immutable/nodes/5.8DDdL3Jz.js                            29.68 kB │ gzip:   8.33 kB
+web:build: .svelte-kit/output/client/_app/immutable/chunks/DieX4KCr.js                             34.83 kB │ gzip:  13.42 kB
+web:build: .svelte-kit/output/client/_app/immutable/nodes/4.BL79TQad.js                           104.13 kB │ gzip:  30.22 kB
+web:build: .svelte-kit/output/client/_app/immutable/chunks/DYK4CpHh.js                            228.17 kB │ gzip:  68.77 kB
+web:build: .svelte-kit/output/client/_app/immutable/chunks/BMxbJENG.js                            263.19 kB │ gzip:  72.58 kB
+web:build: ✓ built in 2.35s
+web:build: vite v7.3.2 building client environment for production...
+web:build: transforming...
+web:build: ✓ 2 modules transformed.
+web:build: rendering chunks...
+web:build: computing gzip size...
+web:build: .svelte-kit/output/client/service-worker.mjs  2.76 kB │ gzip: 1.13 kB
+web:build: ✓ built in 7ms
+web:build: .svelte-kit/output/server/.vite/manifest.json                                                       11.23 kB
+web:build: .svelte-kit/output/server/_app/immutable/assets/_page.wV_2nAVL.css                                   5.13 kB
+web:build: .svelte-kit/output/server/_app/immutable/assets/_layout.DC0RInou.css                                13.15 kB
+web:build: .svelte-kit/output/server/chunks/false.js                                                            0.05 kB
+web:build: .svelte-kit/output/server/entries/pages/_layout.server.ts.js                                         0.13 kB
+web:build: .svelte-kit/output/server/entries/fallbacks/layout.svelte.js                                         0.16 kB
+web:build: .svelte-kit/output/server/chunks/shared-server.js                                                    0.21 kB
+web:build: .svelte-kit/output/server/chunks/runtime.js                                                          0.33 kB
+web:build: .svelte-kit/output/server/internal.js                                                                0.41 kB
+web:build: .svelte-kit/output/server/chunks/state.svelte.js                                                     0.44 kB
+web:build: .svelte-kit/output/server/entries/endpoints/(auth)/logout/_server.ts.js                              0.49 kB
+web:build: .svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/_page.ts.js                     0.59 kB
+web:build: .svelte-kit/output/server/chunks/environment.js                                                      0.62 kB
+web:build: .svelte-kit/output/server/entries/pages/_layout.svelte.js                                            0.77 kB
+web:build: .svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/find-time/_page.ts.js           0.97 kB
+web:build: .svelte-kit/output/server/chunks/access.js                                                           1.02 kB
+web:build: .svelte-kit/output/server/chunks/utils.js                                                            1.15 kB
+web:build: .svelte-kit/output/server/entries/fallbacks/error.svelte.js                                          1.16 kB
+web:build: .svelte-kit/output/server/entries/endpoints/(auth)/callback/_server.ts.js                            1.26 kB
+web:build: .svelte-kit/output/server/chunks/index.js                                                            1.44 kB
+web:build: .svelte-kit/output/server/entries/hooks.server.js                                                    2.25 kB
+web:build: .svelte-kit/output/server/entries/pages/(app)/_layout.ts.js                                          2.71 kB
+web:build: .svelte-kit/output/server/entries/pages/(app)/_layout.server.ts.js                                   3.00 kB
+web:build: .svelte-kit/output/server/chunks/route-contract.js                                                   3.09 kB
+web:build: .svelte-kit/output/server/entries/pages/_page.svelte.js                                              3.13 kB
+web:build: .svelte-kit/output/server/entries/pages/(auth)/signin/_page.svelte.js                                3.16 kB
+web:build: .svelte-kit/output/server/chunks/internal.js                                                         3.22 kB
+web:build: .svelte-kit/output/server/entries/pages/(auth)/signin/_page.server.ts.js                             3.32 kB
+web:build: .svelte-kit/output/server/chunks/app-shell.js                                                        3.68 kB
+web:build: .svelte-kit/output/server/chunks/auth-flow.js                                                        4.10 kB
+web:build: .svelte-kit/output/server/chunks/create-prefill.js                                                   4.11 kB
+web:build: .svelte-kit/output/server/chunks/exports.js                                                          5.59 kB
+web:build: .svelte-kit/output/server/entries/pages/(app)/groups/_page.server.ts.js                              6.06 kB
+web:build: .svelte-kit/output/server/chunks/attributes.js                                                       6.43 kB
+web:build: .svelte-kit/output/server/chunks/recurrence.js                                                       8.57 kB
+web:build: .svelte-kit/output/server/entries/pages/(app)/groups/_page.svelte.js                                11.31 kB
+web:build: .svelte-kit/output/server/chunks/board.js                                                           15.58 kB
+web:build: .svelte-kit/output/server/chunks/render-context.js                                                  17.98 kB
+web:build: .svelte-kit/output/server/remote-entry.js                                                           24.19 kB
+web:build: .svelte-kit/output/server/chunks/renderer.js                                                        31.25 kB
+web:build: .svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/find-time/_page.svelte.js      35.53 kB
+web:build: .svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/find-time/_page.server.ts.js   40.09 kB
+web:build: .svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/_page.svelte.js                44.25 kB
+web:build: .svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/_page.server.ts.js             44.63 kB
+web:build: .svelte-kit/output/server/chunks/shared.js                                                          48.67 kB
+web:build: .svelte-kit/output/server/chunks/root.js                                                            84.77 kB
+web:build: .svelte-kit/output/server/index.js                                                                 136.91 kB
+web:build: ✓ built in 3.94s
+web:build: 
+web:build: Run npm run preview to preview your production build locally.
+web:build: 
+web:build: > Using @sveltejs/adapter-node
+web:build:   ✔ done
+
+ Tasks:    2 successful, 2 total
+Cached:    0 cached, 2 total
+  Time:    7.404s 
+
+VERIFICATION_OK duration_ms=7825 command='pnpm build'

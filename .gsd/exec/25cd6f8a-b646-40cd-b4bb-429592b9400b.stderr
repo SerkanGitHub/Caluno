@@ -1,0 +1,13 @@
+[gsd:manifest] ERROR: updateRequirementInDb failed {"fn":"updateRequirementInDb","error":"gsd-db: No database open"}
+file:///opt/homebrew/lib/node_modules/gsd-pi/dist/resources/extensions/gsd/gsd-db.js:803
+        throw new GSDError(GSD_STALE_STATE, "gsd-db: No database open");
+              ^
+
+GSDError: gsd-db: No database open
+    at Module.upsertRequirement (file:///opt/homebrew/lib/node_modules/gsd-pi/dist/resources/extensions/gsd/gsd-db.js:803:15)
+    at updateRequirementInDb (file:///opt/homebrew/lib/node_modules/gsd-pi/dist/resources/extensions/gsd/db-writer.js:574:12)
+    at async file:///Users/serkanyeniay/dev/Caluno/[eval1]:7:16 {
+  code: 'GSD_STALE_STATE'
+}
+
+Node.js v25.8.1

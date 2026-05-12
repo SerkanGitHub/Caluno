@@ -1,0 +1,103 @@
+COMMAND=npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-sync.spec.ts tests/e2e/calendar-shifts.spec.ts
+
+Running 11 tests using 1 worker
+
+  ✓   1 tests/e2e/calendar-offline.spec.ts:63:1 › preview proof surface exposes isolation headers and a live service worker before offline continuity begins (516ms)
+  ✓   2 tests/e2e/calendar-offline.spec.ts:88:1 › previously synced calendar weeks reopen offline, keep local writes across reload, deny unsynced ids fail closed, and drain cleanly after reconnect (7.6s)
+  ✘   3 tests/e2e/calendar-shifts.spec.ts:199:1 › overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully (25.4s)
+  -   4 tests/e2e/calendar-shifts.spec.ts:339:1 › touching-boundary create drafts stay advisory-free before submit
+  -   5 tests/e2e/calendar-shifts.spec.ts:404:1 › browse suggestion handoff creates a visible shift on the intended day and does not reopen after reload
+  -   6 tests/e2e/calendar-shifts.spec.ts:503:1 › predictive create editor stays free of new WCAG 2.1 AA violations in the seeded recurrence suggestion flow
+  -   7 tests/e2e/calendar-shifts.spec.ts:541:1 › weekly recurrence suggestion accept path pre-fills weekly cadence truthfully and resets after a successful create
+  -   8 tests/e2e/calendar-shifts.spec.ts:632:1 › weekly recurrence suggestion dismiss path keeps the form blank, stays hidden for the current instance, and returns after reload
+  -   9 tests/e2e/calendar-shifts.spec.ts:739:1 › seeded member still gets the explicit denied surface for an unauthorized calendar route
+  ✘  10 tests/e2e/calendar-sync.spec.ts:111:1 › online collaborators see shared shift changes propagate live within the same trusted calendar week (6.9s)
+  -  11 tests/e2e/calendar-sync.spec.ts:327:1 › realtime refreshes stay scoped when a collaborator is viewing a different visible week
+
+
+  1) tests/e2e/calendar-shifts.spec.ts:199:1 › overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully › phase: delete the proof shift so later serial scenarios return to the seeded week state 
+
+    Error: expected proof shift "Overlap advisory proof" (a8f68006-0c2c-44af-ac10-71c7dbec1805) to disappear after cleanup
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m0[39m
+    Received: [31m1[39m
+
+    Call Log:
+    - Timeout 20000ms exceeded while waiting on the predicate
+
+      47 |     await expect(cardIdentity.locator).toBeVisible();
+      48 |     await cardIdentity.locator.getByRole('button', { name: 'Delete shift' }).click();
+    > 49 |     await expect
+         |     ^
+      50 |       .poll(async () => page.getByTestId(cardIdentity.testId).count(), {
+      51 |         timeout: 20_000,
+      52 |         message: `expected proof shift \"${title}\" (${cardIdentity.shiftId}) to disappear after cleanup`
+        at deleteVisibleShiftCardsByTitle (/Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:49:5)
+        at cleanupProofShifts (/Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:63:21)
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:311:5
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:306:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/error-context.md
+
+    attachment #5: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/e2e/calendar-sync.spec.ts:111:1 › online collaborators see shared shift changes propagate live within the same trusted calendar week › phase: prove the collaborator page receives a realtime signal and refreshes the trusted week live with the new overlap warning 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m1[39m
+    Received: [31m2[39m
+
+      296 |       const collaboratorBoardConflict = await readBoardConflictSummary(collaborator.page);
+      297 |       expect(collaboratorBoardConflict.label).toBe(overlapPairsLabel(baselineBoardPairCount + 2));
+    > 298 |       expect(collaboratorBoardConflict.dayCount).toBe(1);
+          |                                                  ^
+      299 |       expect(collaboratorBoardConflict.shiftCount).toBe(3);
+      300 |
+      301 |       const collaboratorDayConflict = await readDayConflictSummary(collaborator.page, sharedOverlapScenario.dayKey);
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-sync.spec.ts:298:50
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-sync.spec.ts:250:5
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/calendar-sync-online-colla-d89ab--same-trusted-calendar-week/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #4: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/calendar-sync-online-colla-d89ab--same-trusted-calendar-week/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #5: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/calendar-sync-online-colla-d89ab--same-trusted-calendar-week/test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/calendar-sync-online-colla-d89ab--same-trusted-calendar-week/error-context.md
+
+    attachment #7: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/calendar-sync-online-colla-d89ab--same-trusted-calendar-week/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/calendar-sync-online-colla-d89ab--same-trusted-calendar-week/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests/e2e/calendar-shifts.spec.ts:199:1 › overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully 
+    tests/e2e/calendar-sync.spec.ts:111:1 › online collaborators see shared shift changes propagate live within the same trusted calendar week 
+  7 did not run
+  2 passed (50.5s)

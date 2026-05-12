@@ -43,7 +43,7 @@
 - [x] **T01: Type the web route-state proof surface and unstick stale E2E assertions** `est:1h`
 - [x] **T02: Add focused axe coverage for the web predictive create editor** `est:45m`
 - [x] **T03: Re-run clean-reset mobile predictive smoke and workspace builds without widening scope** `est:45m`
-- [ ] **T04: Validate R011 from fresh S06 evidence** `est:15m`
+- [x] **T04: Validate R011 from fresh S06 evidence** `est:15m`
 - ## Files Likely Touched
 - `apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte`
 - `apps/web/tests/e2e/calendar-offline.spec.ts`
@@ -92,7 +92,7 @@ S06 closes the milestone by proving the real predictive surfaces on web and mobi
   - Files: `apps/web/package.json`, `pnpm-lock.yaml`, `apps/web/tests/e2e/calendar-shifts.spec.ts`
   - Verify: npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts
 
-- [ ] **T03: Re-run clean-reset mobile predictive smoke and workspace builds without widening scope** `est:45m`
+- [x] **T03: Re-run clean-reset mobile predictive smoke and workspace builds without widening scope** `est:45m`
   ---
   estimated_steps: 5
   estimated_files: 6

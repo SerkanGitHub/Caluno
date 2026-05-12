@@ -1,0 +1,66 @@
+
+Running 11 tests using 1 worker
+
+  ✓   1 tests/e2e/calendar-offline.spec.ts:63:1 › preview proof surface exposes isolation headers and a live service worker before offline continuity begins (532ms)
+  ✓   2 tests/e2e/calendar-offline.spec.ts:88:1 › previously synced calendar weeks reopen offline, keep local writes across reload, deny unsynced ids fail closed, and drain cleanly after reconnect (5.9s)
+  ✘   3 tests/e2e/calendar-shifts.spec.ts:192:1 › overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully (16.8s)
+  -   4 tests/e2e/calendar-shifts.spec.ts:332:1 › touching-boundary create drafts stay advisory-free before submit
+  -   5 tests/e2e/calendar-shifts.spec.ts:397:1 › browse suggestion handoff creates a visible shift on the intended day and does not reopen after reload
+  -   6 tests/e2e/calendar-shifts.spec.ts:496:1 › predictive create editor stays free of new WCAG 2.1 AA violations in the seeded recurrence suggestion flow
+  -   7 tests/e2e/calendar-shifts.spec.ts:534:1 › weekly recurrence suggestion accept path pre-fills weekly cadence truthfully and resets after a successful create
+  -   8 tests/e2e/calendar-shifts.spec.ts:625:1 › weekly recurrence suggestion dismiss path keeps the form blank, stays hidden for the current instance, and returns after reload
+  -   9 tests/e2e/calendar-shifts.spec.ts:732:1 › seeded member still gets the explicit denied surface for an unauthorized calendar route
+  ✓  10 tests/e2e/calendar-sync.spec.ts:111:1 › online collaborators see shared shift changes propagate live within the same trusted calendar week (6.2s)
+  ✓  11 tests/e2e/calendar-sync.spec.ts:327:1 › realtime refreshes stay scoped when a collaborator is viewing a different visible week (4.7s)
+
+
+  1) tests/e2e/calendar-shifts.spec.ts:192:1 › overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully › phase: delete the proof shift so later serial scenarios return to the seeded week state 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoHaveCount[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator:  getByTestId('shift-card-85fd4877-72b2-4989-abfb-2c370bef6539')
+    Expected: [32m0[39m
+    Received: [31m1[39m
+    Timeout:  10000ms
+
+    Call log:
+    [2m  - Expect "toHaveCount" with timeout 10000ms[22m
+    [2m  - waiting for getByTestId('shift-card-85fd4877-72b2-4989-abfb-2c370bef6539')[22m
+    [2m    14 × locator resolved to 1 element[22m
+    [2m       - unexpected value "1"[22m
+
+
+      45 |     await expect(card).toBeVisible();
+      46 |     await card.getByRole('button', { name: 'Delete shift' }).click();
+    > 47 |     await expect(page.getByTestId(testId)).toHaveCount(0);
+         |                                            ^
+      48 |     deletedCount += 1;
+      49 |   }
+      50 | }
+        at deleteVisibleShiftCardsByTitle (/Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:47:44)
+        at cleanupProofShifts (/Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:56:21)
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:304:5
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:299:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/error-context.md
+
+    attachment #5: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/calendar-shifts-overlappin-8ee0a-and-still-save-successfully/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/calendar-shifts.spec.ts:192:1 › overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully 
+  6 did not run
+  4 passed (44.1s)

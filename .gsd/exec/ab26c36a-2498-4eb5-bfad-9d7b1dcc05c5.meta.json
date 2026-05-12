@@ -1,0 +1,18 @@
+{
+  "id": "ab26c36a-2498-4eb5-bfad-9d7b1dcc05c5",
+  "runtime": "node",
+  "purpose": "Update R011 via GSD DB writer using fresh S06 evidence",
+  "script_chars": 1888,
+  "started_at": "2026-05-11T16:54:27.635Z",
+  "finished_at": "2026-05-11T16:54:27.762Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 127,
+  "stdout_bytes": 1071,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/ab26c36a-2498-4eb5-bfad-9d7b1dcc05c5.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/ab26c36a-2498-4eb5-bfad-9d7b1dcc05c5.stderr"
+}

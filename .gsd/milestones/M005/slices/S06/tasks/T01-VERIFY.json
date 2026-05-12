@@ -2,23 +2,21 @@
   "schemaVersion": 1,
   "taskId": "T01",
   "unitId": "M005/S06/T01",
-  "timestamp": 1778517219813,
-  "passed": false,
+  "timestamp": 1778519506018,
+  "passed": true,
   "discoverySource": "task-plan",
   "checks": [
     {
       "command": "npx --yes supabase db reset --local --yes",
       "exitCode": 0,
-      "durationMs": 26587,
+      "durationMs": 25625,
       "verdict": "pass"
     },
     {
       "command": "pnpm --dir apps/web exec playwright test tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-sync.spec.ts",
-      "exitCode": 1,
-      "durationMs": 29858,
-      "verdict": "fail"
+      "exitCode": 0,
+      "durationMs": 28380,
+      "verdict": "pass"
     }
-  ],
-  "retryAttempt": 1,
-  "maxRetries": 2
+  ]
 }

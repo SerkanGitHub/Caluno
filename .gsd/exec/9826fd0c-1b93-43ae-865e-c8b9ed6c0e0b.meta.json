@@ -1,0 +1,18 @@
+{
+  "id": "9826fd0c-1b93-43ae-865e-c8b9ed6c0e0b",
+  "runtime": "bash",
+  "purpose": "retry fresh reset + targeted predictive web playwright verification after confirming local supabase healthy",
+  "script_chars": 342,
+  "started_at": "2026-05-11T17:13:40.092Z",
+  "finished_at": "2026-05-11T17:14:05.571Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 25479,
+  "stdout_bytes": 0,
+  "stderr_bytes": 766,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/9826fd0c-1b93-43ae-865e-c8b9ed6c0e0b.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/9826fd0c-1b93-43ae-865e-c8b9ed6c0e0b.stderr"
+}

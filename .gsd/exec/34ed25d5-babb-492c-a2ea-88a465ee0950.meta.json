@@ -1,0 +1,18 @@
+{
+  "id": "34ed25d5-babb-492c-a2ea-88a465ee0950",
+  "runtime": "bash",
+  "purpose": "cold restart local supabase then rerun exact S06 T02 verification",
+  "script_chars": 403,
+  "started_at": "2026-05-11T17:14:47.547Z",
+  "finished_at": "2026-05-11T17:16:33.806Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 106259,
+  "stdout_bytes": 5342,
+  "stderr_bytes": 15074,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/34ed25d5-babb-492c-a2ea-88a465ee0950.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/34ed25d5-babb-492c-a2ea-88a465ee0950.stderr"
+}

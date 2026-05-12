@@ -1,0 +1,31 @@
+### R011 — Caluno provides predictive scheduling assistance that helps users anticipate better coordination options from their real schedule data.
+- Class: differentiator
+- Status: validated
+- Description: Caluno provides predictive scheduling assistance that helps users anticipate better coordination options from their real schedule data.
+- Why it matters: Predictive help is part of the long-term vision, but it depends on trustworthy schedule data and matching foundations.
+- Source: user
+- Primary owning slice: M005/S01
+- Supporting slices: none
+- Validation: Validated in M005/S06 by passing `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-sync.spec.ts tests/e2e/calendar-shifts.spec.ts`, `npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/mobile-predictive.spec.ts tests/e2e/mobile-assembly.spec.ts`, and `pnpm build`, which together proved the clean-reset web continuity/realtime proof on typed route-state diagnostics, a scoped predictive create-editor axe scan with zero new WCAG 2.1 AA violations, unchanged mobile predictive/assembly smoke on fresh seeded data, and successful launch-readiness builds for both apps.
+- Notes: M005/S06 closes R011 only for the shipped predictive scheduling assistance surfaces—recurrence suggestions and clash advisories grounded in real schedule data. The validation evidence is scoped to launch-hardening proof and does not widen predictive scope beyond those shipped surfaces.
+
+### R012 — Authentication, row-level policies, and sharing rules prevent cross-group data leakage and limit each user to calendars they are permitted to access.
+
+--TRACE--
+22:- Status: validated
+33:- Status: validated
+44:- Status: validated
+55:- Status: validated
+66:- Status: validated
+77:- Status: validated
+88:- Status: validated
+99:- Status: validated
+110:- Status: validated
+119:### R011 — Caluno provides predictive scheduling assistance that helps users anticipate better coordination options from their real schedule data.
+121:- Status: validated
+127:- Validation: Validated in M005/S06 by passing `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-sync.spec.ts tests/e2e/calendar-shifts.spec.ts`, `npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/mobile-predictive.spec.ts tests/e2e/mobile-assembly.spec.ts`, and `pnpm build`, which together proved the clean-reset web continuity/realtime proof on typed route-state diagnostics, a scoped predictive create-editor axe scan with zero new WCAG 2.1 AA violations, unchanged mobile predictive/assembly smoke on fresh seeded data, and successful launch-readiness builds for both apps.
+128:- Notes: M005/S06 closes R011 only for the shipped predictive scheduling assistance surfaces—recurrence suggestions and clash advisories grounded in real schedule data. The validation evidence is scoped to launch-hardening proof and does not widen predictive scope beyond those shipped surfaces.
+132:- Status: validated
+143:- Status: validated
+154:- Status: validated
+262:| R011 | differentiator | validated | M005/S01 | none | Validated in M005/S06 by passing `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-sync.spec.ts tests/e2e/calendar-shifts.spec.ts`, `npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/mobile-predictive.spec.ts tests/e2e/mobile-assembly.spec.ts`, and `pnpm build`, which together proved the clean-reset web continuity/realtime proof on typed route-state diagnostics, a scoped predictive create-editor axe scan with zero new WCAG 2.1 AA violations, unchanged mobile predictive/assembly smoke on fresh seeded data, and successful launch-readiness builds for both apps. |

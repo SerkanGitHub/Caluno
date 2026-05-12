@@ -1,0 +1,60 @@
+COMMAND=npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-sync.spec.ts tests/e2e/calendar-shifts.spec.ts
+
+Running 11 tests using 1 worker
+
+  ✓   1 tests/e2e/calendar-offline.spec.ts:63:1 › preview proof surface exposes isolation headers and a live service worker before offline continuity begins (427ms)
+  ✓   2 tests/e2e/calendar-offline.spec.ts:88:1 › previously synced calendar weeks reopen offline, keep local writes across reload, deny unsynced ids fail closed, and drain cleanly after reconnect (7.6s)
+  ✓   3 tests/e2e/calendar-shifts.spec.ts:199:1 › overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully (7.7s)
+  ✘   4 tests/e2e/calendar-shifts.spec.ts:339:1 › touching-boundary create drafts stay advisory-free before submit (15.3s)
+  -   5 tests/e2e/calendar-shifts.spec.ts:404:1 › browse suggestion handoff creates a visible shift on the intended day and does not reopen after reload
+  -   6 tests/e2e/calendar-shifts.spec.ts:503:1 › predictive create editor stays free of new WCAG 2.1 AA violations in the seeded recurrence suggestion flow
+  -   7 tests/e2e/calendar-shifts.spec.ts:541:1 › weekly recurrence suggestion accept path pre-fills weekly cadence truthfully and resets after a successful create
+  -   8 tests/e2e/calendar-shifts.spec.ts:632:1 › weekly recurrence suggestion dismiss path keeps the form blank, stays hidden for the current instance, and returns after reload
+  -   9 tests/e2e/calendar-shifts.spec.ts:739:1 › seeded member still gets the explicit denied surface for an unauthorized calendar route
+  ✓  10 tests/e2e/calendar-sync.spec.ts:111:1 › online collaborators see shared shift changes propagate live within the same trusted calendar week (6.4s)
+  ✓  11 tests/e2e/calendar-sync.spec.ts:327:1 › realtime refreshes stay scoped when a collaborator is viewing a different visible week (4.8s)
+
+
+  1) tests/e2e/calendar-shifts.spec.ts:339:1 › touching-boundary create drafts stay advisory-free before submit 
+
+    Error: expected the create dialog to stay advisory-free for the Wednesday touch boundary draft
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoBeNull[2m()[22m
+
+    Received: [31m1[39m
+
+    Call Log:
+    - Timeout 10000ms exceeded while waiting on the predicate
+
+      379 |     await expect(form.locator('input[name="endAt"]')).toHaveValue(clearEndLocal);
+      380 |
+    > 381 |     await expect
+          |     ^
+      382 |       .poll(async () => (await readCreateShiftClashAdvisory(page)).overlapCount, {
+      383 |         message: 'expected the create dialog to stay advisory-free for the Wednesday touch boundary draft'
+      384 |       })
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:381:5
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:362:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-touching-b-4889b-advisory-free-before-submit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-touching-b-4889b-advisory-free-before-submit/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/calendar-shifts-touching-b-4889b-advisory-free-before-submit/error-context.md
+
+    attachment #5: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-touching-b-4889b-advisory-free-before-submit/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/calendar-shifts-touching-b-4889b-advisory-free-before-submit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/calendar-shifts.spec.ts:339:1 › touching-boundary create drafts stay advisory-free before submit 
+  5 did not run
+  5 passed (50.9s)

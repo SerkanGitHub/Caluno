@@ -1,0 +1,18 @@
+{
+  "id": "eb22e1cb-cbe6-4c59-814f-dc4863b8a38c",
+  "runtime": "bash",
+  "purpose": "S06 closeout web verification fresh reset sequential rerun",
+  "script_chars": 447,
+  "started_at": "2026-05-11T17:06:59.769Z",
+  "finished_at": "2026-05-11T17:08:16.864Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 77095,
+  "stdout_bytes": 9780,
+  "stderr_bytes": 9022,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/eb22e1cb-cbe6-4c59-814f-dc4863b8a38c.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/eb22e1cb-cbe6-4c59-814f-dc4863b8a38c.stderr"
+}

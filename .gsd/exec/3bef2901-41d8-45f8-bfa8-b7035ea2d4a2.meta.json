@@ -1,0 +1,18 @@
+{
+  "id": "3bef2901-41d8-45f8-bfa8-b7035ea2d4a2",
+  "runtime": "bash",
+  "purpose": "Verify rendered R011 requirement block after DB-backed update",
+  "script_chars": 296,
+  "started_at": "2026-05-11T16:54:33.574Z",
+  "finished_at": "2026-05-11T16:54:33.615Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 41,
+  "stdout_bytes": 3996,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/3bef2901-41d8-45f8-bfa8-b7035ea2d4a2.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/3bef2901-41d8-45f8-bfa8-b7035ea2d4a2.stderr"
+}

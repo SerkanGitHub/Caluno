@@ -1,0 +1,7 @@
+{
+  "opened": true,
+  "id": "R011",
+  "status": "validated",
+  "validation": "Validated in M005/S06 by passing `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/calendar-offline.spec.ts tests/e2e/calendar-sync.spec.ts`, `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts`, `npx --yes supabase db reset --local --yes && pnpm --dir apps/mobile exec playwright test tests/e2e/mobile-predictive.spec.ts tests/e2e/mobile-assembly.spec.ts`, and `pnpm build`, proving typed web route-state continuity/realtime diagnostics, zero-new-violation accessibility coverage on the predictive create editor, clean-reset mobile predictive smoke, and workspace build readiness for the recurrence-suggestion and clash-advisory surfaces.",
+  "notes": "Predictive assistance remains scoped to recurrence suggestions and clash advisories grounded in real schedule data; S06 launch-hardening proof stabilized the web diagnostic seam, added focused accessibility coverage, preserved the mobile predictive proof surface, and did not widen scope to unrelated requirements."
+}

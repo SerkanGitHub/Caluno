@@ -1,0 +1,18 @@
+{
+  "id": "cf920433-f1a6-493e-9e09-5cffb21e613f",
+  "runtime": "bash",
+  "purpose": "M005 S06 T01 verification: supabase reset plus web calendar offline/sync playwright specs",
+  "script_chars": 399,
+  "started_at": "2026-05-11T17:10:06.385Z",
+  "finished_at": "2026-05-11T17:10:59.975Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 53590,
+  "stdout_bytes": 762,
+  "stderr_bytes": 9022,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/cf920433-f1a6-493e-9e09-5cffb21e613f.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/cf920433-f1a6-493e-9e09-5cffb21e613f.stderr"
+}

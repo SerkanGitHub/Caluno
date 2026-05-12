@@ -1,0 +1,18 @@
+{
+  "id": "745096a3-a8f7-4c61-8176-924a21fb6c7b",
+  "runtime": "bash",
+  "purpose": "T02 rerun after exact-heading cleanup fix",
+  "script_chars": 156,
+  "started_at": "2026-05-11T17:00:08.731Z",
+  "finished_at": "2026-05-11T17:01:13.346Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 64615,
+  "stdout_bytes": 1184,
+  "stderr_bytes": 13498,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/745096a3-a8f7-4c61-8176-924a21fb6c7b.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/745096a3-a8f7-4c61-8176-924a21fb6c7b.stderr"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "beb56c9d-0bc0-49f5-ae4e-f6fbe32b4fe6",
+  "runtime": "bash",
+  "purpose": "S06 closeout mobile verification fresh reset",
+  "script_chars": 419,
+  "started_at": "2026-05-11T17:05:27.687Z",
+  "finished_at": "2026-05-11T17:05:28.307Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 620,
+  "stdout_bytes": 167,
+  "stderr_bytes": 213,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/beb56c9d-0bc0-49f5-ae4e-f6fbe32b4fe6.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/beb56c9d-0bc0-49f5-ae4e-f6fbe32b4fe6.stderr"
+}

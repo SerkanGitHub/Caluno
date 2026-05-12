@@ -1,0 +1,18 @@
+{
+  "id": "6eb34a23-07d6-48d8-8383-e712de886004",
+  "runtime": "bash",
+  "purpose": "exact S06 T02 verification command after recovering local supabase stack",
+  "script_chars": 342,
+  "started_at": "2026-05-11T17:17:15.620Z",
+  "finished_at": "2026-05-11T17:18:20.988Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 65368,
+  "stdout_bytes": 1202,
+  "stderr_bytes": 13498,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/6eb34a23-07d6-48d8-8383-e712de886004.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/6eb34a23-07d6-48d8-8383-e712de886004.stderr"
+}
