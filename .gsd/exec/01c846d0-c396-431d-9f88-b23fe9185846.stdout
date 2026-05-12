@@ -1,0 +1,5 @@
+integration_branch=origin/main
+head=57c45c51722e96f4ef1cc5bba7cc86f8fe7f8cfc
+merge_base=c0fed57685ef5cf8b386f1b1901be3068aadc71c
+non_gsd_diff_count=271
+sample_files=apps/mobile/.svelte-kit/ambient.d.ts,apps/mobile/.svelte-kit/generated/client-optimized/app.js,apps/mobile/.svelte-kit/generated/client-optimized/nodes/4.js,apps/mobile/.svelte-kit/generated/client-optimized/nodes/5.js,apps/mobile/.svelte-kit/generated/client-optimized/nodes/6.js,apps/mobile/.svelte-kit/generated/server/internal.js,apps/mobile/.svelte-kit/output/client/.vite/manifest.json,apps/mobile/.svelte-kit/output/client/_app/immutable/assets/3.2cctJfKW.css,apps/mobile/.svelte-kit/output/client/_app/immutable/assets/3.BjVniz8g.css,apps/mobile/.svelte-kit/output/client/_app/immutable/assets/4.D9t02-tO.css

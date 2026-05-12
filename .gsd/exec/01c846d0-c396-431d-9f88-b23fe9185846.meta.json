@@ -1,0 +1,18 @@
+{
+  "id": "01c846d0-c396-431d-9f88-b23fe9185846",
+  "runtime": "bash",
+  "purpose": "Verify M005 code changes against integration branch or milestone-scoped commit history",
+  "script_chars": 1269,
+  "started_at": "2026-05-12T10:49:01.483Z",
+  "finished_at": "2026-05-12T10:49:01.661Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 178,
+  "stdout_bytes": 782,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/01c846d0-c396-431d-9f88-b23fe9185846.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/01c846d0-c396-431d-9f88-b23fe9185846.stderr"
+}
