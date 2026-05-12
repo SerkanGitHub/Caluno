@@ -1,96 +1,64 @@
 ---
-phase: verification
+phase: complete-milestone
 milestone: M005
-title: Predictive assistance and release hardening
-generated: 2026-05-12T11:00:00Z
+generated: 2026-05-12T00:00:00Z
 status: failed
 verification_passed: false
 ---
 
 # M005 Verification Failure Summary
 
-## Outcome
+Milestone closeout stopped at the verification gate. `gsd_complete_milestone` was **not** called.
 
-Milestone M005 is **not ready for completion**.
+## What passed
 
-## Verified inputs
+- **Duplicate-closeout guard:** `gsd_milestone_status(M005)` returned `status: active`; all 6 slices are `complete`.
+- **Code-change verification:** `HEAD` equals `main`, so this was treated as a self-diff retry. Milestone-scoped commit evidence exists and touches non-`.gsd/` files (70 matching commits found from `GSD-Unit: M005` / `GSD-Task:` history, including web/mobile/core implementation and test changes).
+- **Requirement state check:** `.gsd/REQUIREMENTS.md` already renders `R011` as `validated` with S06 evidence.
 
-- `gsd_milestone_status` shows milestone `M005` is still `active` and all six slices (`S01`–`S06`) are `complete`.
-- Code-change verification passed via milestone-scoped commit evidence from `.gsd/exec/7b0afe35-557a-4479-a3b7-065445e20f0e.stdout`, even though `HEAD` currently self-diffs against `main`.
-- `.gsd/milestones/M005/M005-VALIDATION.md` still reports `verdict: needs-attention`, so there is no authoritative passing validation artifact for closeout.
-- Slice closeout artifacts remain present for all slices via the milestone directory scan.
+## Verification failures
 
-## Fresh verification evidence gathered on this attempt
+Fresh milestone-closeout regression failed on the required integrated web E2E surface:
 
-### Command
+- Command: `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e`
+- Result: **exit 1**
+- Evidence artifact: `.gsd/exec/825d1a1a-2d78-4a33-a331-08329bdeceee.stdout`
 
-```bash
-npx --yes supabase db reset --local --yes
-pnpm --dir apps/web exec playwright test tests/e2e/auth-groups-access.spec.ts tests/e2e/calendar-shifts.spec.ts tests/e2e/find-time.spec.ts
-```
+### Failing specs
 
-### Evidence
+1. `apps/web/tests/e2e/auth-groups-access.spec.ts:45`
+   - Failure: onboarding assertion is stale.
+   - Expected: `groups-shell` contained `onboarding-empty`.
+   - Actual: `groups-shell` now reports shell mode (`trusted-online`), while onboarding emptiness is surfaced separately via `data-testid="onboarding-empty-state"`.
 
-- Stdout: `.gsd/exec/a4591056-6fd0-413c-aa39-e3cf58fb0b66.stdout`
-- Stderr: `.gsd/exec/a4591056-6fd0-413c-aa39-e3cf58fb0b66.stderr`
-- Exit code: `1`
-- Result: `8 passed`, `2 failed`, `3 did not run`
+2. `apps/web/tests/e2e/calendar-shifts.spec.ts:339`
+   - Failure: touching-boundary create draft incorrectly saw an advisory during the full-suite run.
+   - Actual conflicting visible shift: `Morning intake offline revised` (`Apr 15 · 09:45–11:45 UTC`).
+   - Interpretation: earlier serial suite state leaked into this scenario, so the boundary test no longer ran against the pristine seeded window it assumes.
 
-## Blocking verification failures
+3. `apps/web/tests/e2e/find-time.spec.ts:21`
+   - Failure: find-time inventory assertion is stale under the current suite state.
+   - Expected: `10 truthful windows`.
+   - Actual: `8 truthful windows`.
+   - This blocks fresh proof for launch hardening and trust/authorization continuity across the integrated web surface.
 
-1. **Authorization/onboarding regression remains open**
-   - Spec: `tests/e2e/auth-groups-access.spec.ts:45:1`
-   - Failure: after signing in as the seeded no-membership user, `getByTestId('groups-shell')` rendered trusted-online shell copy instead of the expected `onboarding-empty` state.
-   - Why it blocks completion: the milestone success criterion **“All trust, privacy, and authorization constraints from prior milestones are maintained”** is not freshly re-proven while this auth/onboarding regression is still failing.
+## Why milestone completion is blocked
 
-2. **Find-time integrated regression remains open**
-   - Spec: `tests/e2e/find-time.spec.ts:21:1`
-   - Failure: `getByTestId('find-time-summary')` rendered `11 truthful windows` instead of the expected `10 truthful windows` for the seeded permitted-member route.
-   - Why it blocks completion: the milestone success criterion **“Launch hardening: reliability, onboarding, performance, accessibility, observability, and deployment readiness are addressed”** is not cleanly re-proven while this integrated real-route web flow still fails after a fresh local reset.
+The inlined validation already flagged milestone-wide hardening/trust proof as incomplete unless the fresh full web regression is green. That regression is still red, so these success criteria remain unmet:
 
-## Verification summary by required gate
+- **Launch hardening: reliability, onboarding, performance, accessibility, observability, and deployment readiness are addressed**
+- **All trust, privacy, and authorization constraints from prior milestones are maintained**
 
-### Step 4 — Code changes exist
+Definition of done is also blocked because milestone-level integrations are not freshly green on the full web regression surface.
 
-**Pass.** Milestone-scoped commit evidence proves non-`.gsd/` implementation and test changes landed for M005.
+## Important execution constraint
 
-Representative touched files from `.gsd/exec/7b0afe35-557a-4479-a3b7-065445e20f0e.stdout`:
-- `packages/caluno-core/src/schedule/recurrence.ts`
-- `packages/caluno-core/src/schedule/conflicts.ts`
-- `apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte`
-- `apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte`
-- `apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte`
+This unit is running under the `complete-milestone` tools policy, which mechanically blocks edits outside `.gsd/`. Attempting to patch `apps/web/**` test or product code in this turn is forbidden. The failing specs must be fixed in an execution/task unit, then milestone closeout can be retried.
 
-### Step 5 — Success criteria
+## Recommended next action
 
-**Fail.**
+Open an execution unit to repair the three failing web E2E cases, then rerun:
 
-- ✅ Predictive assistance is live and covered by unit/E2E evidence from S02–S06.
-- ✅ `R011` is already validated by the existing S06 requirement update and supporting evidence.
-- ❌ Launch hardening is not freshly green milestone-wide because the targeted post-reset web regression still fails in `auth-groups-access` and `find-time`.
-- ✅ UX calmness/polish evidence remains supported by S03–S05 summaries.
-- ❌ Trust/privacy/authorization constraints are not freshly re-proven because `auth-groups-access.spec.ts` still fails.
-- ✅ Predictive UI/diagnostic seams remain evidenced by S03–S06.
+`npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e`
 
-### Step 6 — Definition of done
-
-**Fail.**
-
-- ✅ All roadmap slices are marked complete.
-- ✅ Slice summaries/UAT artifacts exist.
-- ✅ Cross-slice predictive integration remains evidenced by the slice summaries and existing validation notes.
-- ❌ Integrated milestone-closeout verification is not fully green because the fresh targeted regression run still fails.
-- ❌ The milestone validation artifact remains `needs-attention`, so there is no passing closeout validation to rely on.
-
-## Notes on newly improved evidence
-
-- `tests/e2e/calendar-shifts.spec.ts:339:1` now passes in the fresh targeted run, so the earlier touching-boundary advisory regression is no longer part of the blocking set.
-- The remaining blockers are narrowed to auth/onboarding and find-time inventory behavior.
-
-## Next attempt should
-
-1. Fix the remaining `auth-groups-access` onboarding-state regression.
-2. Fix the remaining `find-time` truthful-window inventory regression or update the seeded expectation only if the product behavior intentionally changed and the broader contract still holds.
-3. Re-run the affected web E2E coverage from a fresh local reset until both failing specs pass.
-4. Refresh milestone validation once the full milestone-closeout evidence is green.
-5. Re-attempt milestone completion only after the success-criteria and definition-of-done gates are fully green.
+Only after that passes should M005 closeout be retried.

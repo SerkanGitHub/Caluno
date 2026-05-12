@@ -1,0 +1,18 @@
+{
+  "id": "ad73a15f-f454-4e0b-bb08-86ee2061fdbb",
+  "runtime": "bash",
+  "purpose": "Verify M005 code changes against integration branch and fallback commit evidence",
+  "script_chars": 1060,
+  "started_at": "2026-05-12T10:57:01.758Z",
+  "finished_at": "2026-05-12T10:57:01.970Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 212,
+  "stdout_bytes": 2359,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/ad73a15f-f454-4e0b-bb08-86ee2061fdbb.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/ad73a15f-f454-4e0b-bb08-86ee2061fdbb.stderr"
+}

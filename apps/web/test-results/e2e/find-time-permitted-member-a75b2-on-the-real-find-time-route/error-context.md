@@ -16,14 +16,14 @@ Error: expect(locator).toContainText(expected) failed
 
 Locator: getByTestId('find-time-summary')
 Expected substring: "10 truthful windows"
-Received string:    "Window inventory 11 truthful windows Top picks stay high-density, while browse cards remain lighter-weight for scanning the rest of the truthful inventory."
+Received string:    "Window inventory 8 truthful windows Top picks stay high-density, while browse cards remain lighter-weight for scanning the rest of the truthful inventory."
 Timeout: 10000ms
 
 Call log:
   - Expect "toContainText" with timeout 10000ms
   - waiting for getByTestId('find-time-summary')
     14 × locator resolved to <article data-testid="find-time-summary" class="status-card tone-neutral">…</article>
-       - unexpected value "Window inventory 11 truthful windows Top picks stay high-density, while browse cards remain lighter-weight for scanning the rest of the truthful inventory."
+       - unexpected value "Window inventory 8 truthful windows Top picks stay high-density, while browse cards remain lighter-weight for scanning the rest of the truthful inventory."
 
 ```
 
@@ -43,17 +43,17 @@ Call log:
       - article [ref=e14]:
         - generic [ref=e15]: Find-time route
         - strong [ref=e16]: Truthful results
-        - paragraph [ref=e17]: Found 11 truthful windows, including 3 top picks.
+        - paragraph [ref=e17]: Found 8 truthful windows, including 3 top picks.
       - article [ref=e18]:
         - generic [ref=e19]: Search diagnostics
         - strong [ref=e20]: ready
-        - paragraph [ref=e21]: Found 11 truthful windows, including 3 top picks.
+        - paragraph [ref=e21]: Found 8 truthful windows, including 3 top picks.
         - code [ref=e22]: none
       - article [ref=e23]:
         - generic [ref=e24]: Trusted scope
         - strong [ref=e25]: 2026-04-15 → 2026-05-15
         - paragraph [ref=e26]: 60 minute search over 3 named members.
-        - code [ref=e27]: 11 windows
+        - code [ref=e27]: 8 windows
     - navigation [ref=e28]:
       - link "Back to calendar board" [ref=e29] [cursor=pointer]:
         - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111
@@ -101,7 +101,7 @@ Call log:
     - generic [ref=e64]:
       - article [ref=e65]:
         - generic [ref=e66]: Window inventory
-        - strong [ref=e67]: 11 truthful windows
+        - strong [ref=e67]: 8 truthful windows
         - paragraph [ref=e68]: Top picks stay high-density, while browse cards remain lighter-weight for scanning the rest of the truthful inventory.
       - article [ref=e69]:
         - generic [ref=e70]: Roster names
@@ -121,8 +121,8 @@ Call log:
               - generic [ref=e84]:
                 - generic [ref=e85]:
                   - paragraph [ref=e86]: Top pick 1
-                  - generic [ref=e87]: 3 shared • 35160 slack min • 0 edge pressure
-                - heading "Mon, Apr 20, 2026 · 13:00–14:00 UTC" [level=4] [ref=e88]
+                  - generic [ref=e87]: 3 shared • 39180 slack min • 0 edge pressure
+                - heading "Fri, Apr 17, 2026 · 18:00–19:00 UTC" [level=4] [ref=e88]
                 - paragraph [ref=e89]: All 3 named members stay free across this slot and the nearby edges remain unconstrained.
               - generic [ref=e90]:
                 - generic [ref=e91]: 3 free
@@ -130,13 +130,13 @@ Call log:
             - generic [ref=e93]:
               - generic [ref=e94]:
                 - generic [ref=e95]: Exact slot
-                - strong [ref=e96]: Mon, Apr 20, 2026 13:00 → Mon, Apr 20, 2026 14:00 UTC
+                - strong [ref=e96]: Fri, Apr 17, 2026 18:00 → Fri, Apr 17, 2026 19:00 UTC
               - generic [ref=e97]:
                 - generic [ref=e98]: Continuous span
-                - strong [ref=e99]: Mon, Apr 20, 2026 13:00 → Fri, May 15, 2026 00:00 UTC
+                - strong [ref=e99]: Fri, Apr 17, 2026 18:00 → Fri, May 15, 2026 00:00 UTC
               - generic [ref=e100]:
                 - generic [ref=e101]: Span slack
-                - strong [ref=e102]: 35160 minutes
+                - strong [ref=e102]: 39180 minutes
             - generic [ref=e103]:
               - generic [ref=e104]:
                 - paragraph [ref=e105]: Who is free
@@ -155,14 +155,14 @@ Call log:
                 - paragraph [ref=e118]: Why nearby later times fail
                 - paragraph [ref=e119]: No trusted busy interval pushes into the trailing edge for this shortlist slot.
             - link "Create from this slot" [ref=e121] [cursor=pointer]:
-              - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111?create=1&start=2026-04-20&prefillStartAt=2026-04-20T13%3A00%3A00.000Z&prefillEndAt=2026-04-20T14%3A00%3A00.000Z&source=find-time
+              - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111?create=1&start=2026-04-13&prefillStartAt=2026-04-17T18%3A00%3A00.000Z&prefillEndAt=2026-04-17T19%3A00%3A00.000Z&source=find-time
           - article [ref=e122]:
             - generic [ref=e123]:
               - generic [ref=e124]:
                 - generic [ref=e125]:
                   - paragraph [ref=e126]: Top pick 2
-                  - generic [ref=e127]: 3 shared • 5340 slack min • 0 edge pressure
-                - heading "Thu, Apr 16, 2026 · 15:00–16:00 UTC" [level=4] [ref=e128]
+                  - generic [ref=e127]: 3 shared • 1470 slack min • 0 edge pressure
+                - heading "Thu, Apr 16, 2026 · 14:30–15:30 UTC" [level=4] [ref=e128]
                 - paragraph [ref=e129]: All 3 named members stay free across this slot and the nearby edges remain unconstrained.
               - generic [ref=e130]:
                 - generic [ref=e131]: 3 free
@@ -170,13 +170,13 @@ Call log:
             - generic [ref=e133]:
               - generic [ref=e134]:
                 - generic [ref=e135]: Exact slot
-                - strong [ref=e136]: Thu, Apr 16, 2026 15:00 → Thu, Apr 16, 2026 16:00 UTC
+                - strong [ref=e136]: Thu, Apr 16, 2026 14:30 → Thu, Apr 16, 2026 15:30 UTC
               - generic [ref=e137]:
                 - generic [ref=e138]: Continuous span
-                - strong [ref=e139]: Thu, Apr 16, 2026 15:00 → Mon, Apr 20, 2026 09:00 UTC
+                - strong [ref=e139]: Thu, Apr 16, 2026 14:30 → Fri, Apr 17, 2026 16:00 UTC
               - generic [ref=e140]:
                 - generic [ref=e141]: Span slack
-                - strong [ref=e142]: 5340 minutes
+                - strong [ref=e142]: 1470 minutes
             - generic [ref=e143]:
               - generic [ref=e144]:
                 - paragraph [ref=e145]: Who is free
@@ -195,14 +195,14 @@ Call log:
                 - paragraph [ref=e158]: Why nearby later times fail
                 - paragraph [ref=e159]: No trusted busy interval pushes into the trailing edge for this shortlist slot.
             - link "Create from this slot" [ref=e161] [cursor=pointer]:
-              - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111?create=1&start=2026-04-13&prefillStartAt=2026-04-16T15%3A00%3A00.000Z&prefillEndAt=2026-04-16T16%3A00%3A00.000Z&source=find-time
+              - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111?create=1&start=2026-04-13&prefillStartAt=2026-04-16T14%3A30%3A00.000Z&prefillEndAt=2026-04-16T15%3A30%3A00.000Z&source=find-time
           - article [ref=e162]:
             - generic [ref=e163]:
               - generic [ref=e164]:
                 - generic [ref=e165]:
                   - paragraph [ref=e166]: Top pick 3
-                  - generic [ref=e167]: 3 shared • 990 slack min • 0 edge pressure
-                - heading "Wed, Apr 15, 2026 · 15:00–16:00 UTC" [level=4] [ref=e168]
+                  - generic [ref=e167]: 3 shared • 1185 slack min • 0 edge pressure
+                - heading "Wed, Apr 15, 2026 · 11:45–12:45 UTC" [level=4] [ref=e168]
                 - paragraph [ref=e169]: All 3 named members stay free across this slot and the nearby edges remain unconstrained.
               - generic [ref=e170]:
                 - generic [ref=e171]: 3 free
@@ -210,13 +210,13 @@ Call log:
             - generic [ref=e173]:
               - generic [ref=e174]:
                 - generic [ref=e175]: Exact slot
-                - strong [ref=e176]: Wed, Apr 15, 2026 15:00 → Wed, Apr 15, 2026 16:00 UTC
+                - strong [ref=e176]: Wed, Apr 15, 2026 11:45 → Wed, Apr 15, 2026 12:45 UTC
               - generic [ref=e177]:
                 - generic [ref=e178]: Continuous span
-                - strong [ref=e179]: Wed, Apr 15, 2026 15:00 → Thu, Apr 16, 2026 08:30 UTC
+                - strong [ref=e179]: Wed, Apr 15, 2026 11:45 → Thu, Apr 16, 2026 08:30 UTC
               - generic [ref=e180]:
                 - generic [ref=e181]: Span slack
-                - strong [ref=e182]: 990 minutes
+                - strong [ref=e182]: 1185 minutes
             - generic [ref=e183]:
               - generic [ref=e184]:
                 - paragraph [ref=e185]: Who is free
@@ -235,14 +235,14 @@ Call log:
                 - paragraph [ref=e198]: Why nearby later times fail
                 - paragraph [ref=e199]: No trusted busy interval pushes into the trailing edge for this shortlist slot.
             - link "Create from this slot" [ref=e201] [cursor=pointer]:
-              - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111?create=1&start=2026-04-13&prefillStartAt=2026-04-15T15%3A00%3A00.000Z&prefillEndAt=2026-04-15T16%3A00%3A00.000Z&source=find-time
+              - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111?create=1&start=2026-04-13&prefillStartAt=2026-04-15T11%3A45%3A00.000Z&prefillEndAt=2026-04-15T12%3A45%3A00.000Z&source=find-time
       - generic [ref=e202]:
         - generic [ref=e203]:
           - generic [ref=e204]:
             - paragraph [ref=e205]: Browse all ranked windows
             - heading "Lighter follow-on inventory." [level=3] [ref=e206]
             - paragraph [ref=e207]: Browse cards stay truthful but compact so the shortlist can carry the heavier explanation load.
-          - generic [ref=e208]: 8 remaining
+          - generic [ref=e208]: 5 remaining
         - generic [ref=e209]:
           - article [ref=e210]:
             - generic [ref=e211]:
@@ -296,161 +296,89 @@ Call log:
             - generic [ref=e259]:
               - generic [ref=e260]:
                 - paragraph [ref=e261]: Browse 3
-                - heading "Wed, Apr 15, 2026 · 11:00–12:00 UTC" [level=4] [ref=e262]
-              - generic [ref=e263]: 3 free / 0 blocked
-            - paragraph [ref=e264]: Shared slot with no blocked roster members during the exact window.
+                - heading "Wed, Apr 15, 2026 · 09:45–10:45 UTC" [level=4] [ref=e262]
+              - generic [ref=e263]: 2 free / 1 blocked
+            - paragraph [ref=e264]: 2 free • 1 blocked nearby.
             - generic [ref=e265]:
               - generic [ref=e266]:
                 - generic [ref=e267]: Exact slot
-                - strong [ref=e268]: Wed, Apr 15, 2026 11:00 → Wed, Apr 15, 2026 12:00 UTC
+                - strong [ref=e268]: Wed, Apr 15, 2026 09:45 → Wed, Apr 15, 2026 10:45 UTC
               - generic [ref=e269]:
                 - generic [ref=e270]: Span
                 - strong [ref=e271]: 120 minutes
             - generic [ref=e272]:
               - generic [ref=e273]:
                 - paragraph [ref=e274]: Free
-                - paragraph [ref=e275]: Alice Owner · Bob Member · Dana Multi-Group
+                - paragraph [ref=e275]: Bob Member · Dana Multi-Group
               - generic [ref=e276]:
                 - paragraph [ref=e277]: Nearby edges
-                - paragraph [ref=e278]: "Before: No leading constraint summary."
-                - paragraph [ref=e279]: "After: No trailing constraint summary."
+                - paragraph [ref=e278]: "Before: Morning intake offline revised (Alice Owner)"
+                - paragraph [ref=e279]: "After: Morning intake offline revised (Alice Owner)"
             - link "Create from this slot" [ref=e281] [cursor=pointer]:
-              - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111?create=1&start=2026-04-13&prefillStartAt=2026-04-15T11%3A00%3A00.000Z&prefillEndAt=2026-04-15T12%3A00%3A00.000Z&source=find-time
+              - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111?create=1&start=2026-04-13&prefillStartAt=2026-04-15T09%3A45%3A00.000Z&prefillEndAt=2026-04-15T10%3A45%3A00.000Z&source=find-time
           - article [ref=e282]:
             - generic [ref=e283]:
               - generic [ref=e284]:
                 - paragraph [ref=e285]: Browse 4
-                - heading "Mon, Apr 20, 2026 · 09:00–10:00 UTC" [level=4] [ref=e286]
+                - heading "Thu, Apr 16, 2026 · 12:00–13:00 UTC" [level=4] [ref=e286]
               - generic [ref=e287]: 2 free / 1 blocked
             - paragraph [ref=e288]: 2 free • 1 blocked nearby.
             - generic [ref=e289]:
               - generic [ref=e290]:
                 - generic [ref=e291]: Exact slot
-                - strong [ref=e292]: Mon, Apr 20, 2026 09:00 → Mon, Apr 20, 2026 10:00 UTC
+                - strong [ref=e292]: Thu, Apr 16, 2026 12:00 → Thu, Apr 16, 2026 13:00 UTC
               - generic [ref=e293]:
                 - generic [ref=e294]: Span
-                - strong [ref=e295]: 240 minutes
+                - strong [ref=e295]: 90 minutes
             - generic [ref=e296]:
               - generic [ref=e297]:
                 - paragraph [ref=e298]: Free
-                - paragraph [ref=e299]: Alice Owner · Dana Multi-Group
+                - paragraph [ref=e299]: Alice Owner · Bob Member
               - generic [ref=e300]:
                 - paragraph [ref=e301]: Nearby edges
-                - paragraph [ref=e302]: "Before: Recurrence suggestion accept proof (Bob Member)"
-                - paragraph [ref=e303]: "After: Recurrence suggestion accept proof (Bob Member)"
+                - paragraph [ref=e302]: "Before: Kitchen prep (Dana Multi-Group)"
+                - paragraph [ref=e303]: "After: Kitchen prep (Dana Multi-Group)"
             - link "Create from this slot" [ref=e305] [cursor=pointer]:
-              - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111?create=1&start=2026-04-20&prefillStartAt=2026-04-20T09%3A00%3A00.000Z&prefillEndAt=2026-04-20T10%3A00%3A00.000Z&source=find-time
+              - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111?create=1&start=2026-04-13&prefillStartAt=2026-04-16T12%3A00%3A00.000Z&prefillEndAt=2026-04-16T13%3A00%3A00.000Z&source=find-time
           - article [ref=e306]:
             - generic [ref=e307]:
               - generic [ref=e308]:
                 - paragraph [ref=e309]: Browse 5
-                - heading "Wed, Apr 15, 2026 · 08:30–09:30 UTC" [level=4] [ref=e310]
-              - generic [ref=e311]: 2 free / 1 blocked
-            - paragraph [ref=e312]: 2 free • 1 blocked nearby.
+                - heading "Fri, Apr 17, 2026 · 16:00–17:00 UTC" [level=4] [ref=e310]
+              - generic [ref=e311]: 1 free / 2 blocked
+            - paragraph [ref=e312]: 1 free • 2 blocked nearby.
             - generic [ref=e313]:
               - generic [ref=e314]:
                 - generic [ref=e315]: Exact slot
-                - strong [ref=e316]: Wed, Apr 15, 2026 08:30 → Wed, Apr 15, 2026 09:30 UTC
+                - strong [ref=e316]: Fri, Apr 17, 2026 16:00 → Fri, Apr 17, 2026 17:00 UTC
               - generic [ref=e317]:
                 - generic [ref=e318]: Span
-                - strong [ref=e319]: 150 minutes
+                - strong [ref=e319]: 120 minutes
             - generic [ref=e320]:
               - generic [ref=e321]:
                 - paragraph [ref=e322]: Free
-                - paragraph [ref=e323]: Bob Member · Dana Multi-Group
+                - paragraph [ref=e323]: Alice Owner
               - generic [ref=e324]:
                 - paragraph [ref=e325]: Nearby edges
-                - paragraph [ref=e326]: "Before: Alpha opening sweep (Alice Owner)"
-                - paragraph [ref=e327]: "After: Morning intake (Alice Owner)"
+                - paragraph [ref=e326]: "Before: Supplier call (Bob Member) · Supplier call (Dana Multi-Group)"
+                - paragraph [ref=e327]: "After: Supplier call (Bob Member) · Supplier call (Dana Multi-Group)"
             - link "Create from this slot" [ref=e329] [cursor=pointer]:
-              - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111?create=1&start=2026-04-13&prefillStartAt=2026-04-15T08%3A30%3A00.000Z&prefillEndAt=2026-04-15T09%3A30%3A00.000Z&source=find-time
-          - article [ref=e330]:
-            - generic [ref=e331]:
-              - generic [ref=e332]:
-                - paragraph [ref=e333]: Browse 6
-                - heading "Wed, Apr 15, 2026 · 13:00–14:00 UTC" [level=4] [ref=e334]
-              - generic [ref=e335]: 2 free / 1 blocked
-            - paragraph [ref=e336]: 2 free • 1 blocked nearby.
-            - generic [ref=e337]:
-              - generic [ref=e338]:
-                - generic [ref=e339]: Exact slot
-                - strong [ref=e340]: Wed, Apr 15, 2026 13:00 → Wed, Apr 15, 2026 14:00 UTC
-              - generic [ref=e341]:
-                - generic [ref=e342]: Span
-                - strong [ref=e343]: 120 minutes
-            - generic [ref=e344]:
-              - generic [ref=e345]:
-                - paragraph [ref=e346]: Free
-                - paragraph [ref=e347]: Alice Owner · Dana Multi-Group
-              - generic [ref=e348]:
-                - paragraph [ref=e349]: Nearby edges
-                - paragraph [ref=e350]: "Before: Afternoon handoff (Bob Member)"
-                - paragraph [ref=e351]: "After: Afternoon handoff (Bob Member)"
-            - link "Create from this slot" [ref=e353] [cursor=pointer]:
-              - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111?create=1&start=2026-04-13&prefillStartAt=2026-04-15T13%3A00%3A00.000Z&prefillEndAt=2026-04-15T14%3A00%3A00.000Z&source=find-time
-          - article [ref=e354]:
-            - generic [ref=e355]:
-              - generic [ref=e356]:
-                - paragraph [ref=e357]: Browse 7
-                - heading "Thu, Apr 16, 2026 · 12:00–13:00 UTC" [level=4] [ref=e358]
-              - generic [ref=e359]: 2 free / 1 blocked
-            - paragraph [ref=e360]: 2 free • 1 blocked nearby.
-            - generic [ref=e361]:
-              - generic [ref=e362]:
-                - generic [ref=e363]: Exact slot
-                - strong [ref=e364]: Thu, Apr 16, 2026 12:00 → Thu, Apr 16, 2026 13:00 UTC
-              - generic [ref=e365]:
-                - generic [ref=e366]: Span
-                - strong [ref=e367]: 60 minutes
-            - generic [ref=e368]:
-              - generic [ref=e369]:
-                - paragraph [ref=e370]: Free
-                - paragraph [ref=e371]: Alice Owner · Bob Member
-              - generic [ref=e372]:
-                - paragraph [ref=e373]: Nearby edges
-                - paragraph [ref=e374]: "Before: Kitchen prep (Dana Multi-Group)"
-                - paragraph [ref=e375]: "After: Kitchen prep (Dana Multi-Group)"
-            - link "Create from this slot" [ref=e377] [cursor=pointer]:
-              - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111?create=1&start=2026-04-13&prefillStartAt=2026-04-16T12%3A00%3A00.000Z&prefillEndAt=2026-04-16T13%3A00%3A00.000Z&source=find-time
-          - article [ref=e378]:
-            - generic [ref=e379]:
-              - generic [ref=e380]:
-                - paragraph [ref=e381]: Browse 8
-                - heading "Thu, Apr 16, 2026 · 13:00–14:00 UTC" [level=4] [ref=e382]
-              - generic [ref=e383]: 1 free / 2 blocked
-            - paragraph [ref=e384]: 1 free • 2 blocked nearby.
-            - generic [ref=e385]:
-              - generic [ref=e386]:
-                - generic [ref=e387]: Exact slot
-                - strong [ref=e388]: Thu, Apr 16, 2026 13:00 → Thu, Apr 16, 2026 14:00 UTC
-              - generic [ref=e389]:
-                - generic [ref=e390]: Span
-                - strong [ref=e391]: 120 minutes
-            - generic [ref=e392]:
-              - generic [ref=e393]:
-                - paragraph [ref=e394]: Free
-                - paragraph [ref=e395]: Alice Owner
-              - generic [ref=e396]:
-                - paragraph [ref=e397]: Nearby edges
-                - paragraph [ref=e398]: "Before: Supplier call (Bob Member) · Supplier call (Dana Multi-Group)"
-                - paragraph [ref=e399]: "After: Supplier call (Bob Member) · Supplier call (Dana Multi-Group)"
-            - link "Create from this slot" [ref=e401] [cursor=pointer]:
-              - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111?create=1&start=2026-04-13&prefillStartAt=2026-04-16T13%3A00%3A00.000Z&prefillEndAt=2026-04-16T14%3A00%3A00.000Z&source=find-time
-    - generic [ref=e402]:
-      - generic [ref=e403]:
-        - generic [ref=e404]:
-          - paragraph [ref=e405]: Visible calendar inventory
-          - heading "Jump only within the calendars your session can already prove." [level=3] [ref=e406]
-        - generic [ref=e407]: 2 visible
-      - generic [ref=e408]:
-        - link "Alpha shared Default calendar • find-time" [ref=e409] [cursor=pointer]:
+              - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111?create=1&start=2026-04-13&prefillStartAt=2026-04-17T16%3A00%3A00.000Z&prefillEndAt=2026-04-17T17%3A00%3A00.000Z&source=find-time
+    - generic [ref=e330]:
+      - generic [ref=e331]:
+        - generic [ref=e332]:
+          - paragraph [ref=e333]: Visible calendar inventory
+          - heading "Jump only within the calendars your session can already prove." [level=3] [ref=e334]
+        - generic [ref=e335]: 2 visible
+      - generic [ref=e336]:
+        - link "Alpha shared Default calendar • find-time" [ref=e337] [cursor=pointer]:
           - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111/find-time?duration=60&start=2026-04-15
-          - strong [ref=e410]: Alpha shared
-          - generic [ref=e411]: Default calendar • find-time
-        - link "Alpha backlog Secondary calendar • find-time" [ref=e412] [cursor=pointer]:
+          - strong [ref=e338]: Alpha shared
+          - generic [ref=e339]: Default calendar • find-time
+        - link "Alpha backlog Secondary calendar • find-time" [ref=e340] [cursor=pointer]:
           - /url: /calendars/aaaaaaaa-aaaa-1111-1111-222222222222/find-time?duration=60&start=2026-04-15
-          - strong [ref=e413]: Alpha backlog
-          - generic [ref=e414]: Secondary calendar • find-time
+          - strong [ref=e341]: Alpha backlog
+          - generic [ref=e342]: Secondary calendar • find-time
 ```
 
 # Test source

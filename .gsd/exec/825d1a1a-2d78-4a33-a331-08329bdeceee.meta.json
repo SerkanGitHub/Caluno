@@ -1,0 +1,18 @@
+{
+  "id": "825d1a1a-2d78-4a33-a331-08329bdeceee",
+  "runtime": "bash",
+  "purpose": "Fresh full web E2E regression for M005 milestone closeout",
+  "script_chars": 110,
+  "started_at": "2026-05-12T10:57:46.491Z",
+  "finished_at": "2026-05-12T10:59:29.282Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 102791,
+  "stdout_bytes": 14170,
+  "stderr_bytes": 16109,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/825d1a1a-2d78-4a33-a331-08329bdeceee.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/825d1a1a-2d78-4a33-a331-08329bdeceee.stderr"
+}
