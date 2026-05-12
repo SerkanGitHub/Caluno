@@ -1,0 +1,84 @@
+integration_branch=main
+merge_base=d1fb6266e71b88605ccc49ba95501c125daebb19
+head=d1fb6266e71b88605ccc49ba95501c125daebb19
+self_diff_retry=true
+b444252f1e58823498f4231bab61cfbd5fd13d00 chore: auto-commit after complete-milestone
+GSD-Unit: M005
+
+---
+184dddff32b2adb875885a0a187bd53b1613ac8e chore: auto-commit after complete-milestone
+GSD-Unit: M005
+
+---
+751be9d530641716e86c6add976eae7af5d72009 chore: auto-commit after complete-milestone
+GSD-Unit: M005
+
+---
+c1efcac439106170285607acbd05d2eb47c75597 feat: Marked R011 validated from fresh S06 predictive/browser/build evi…
+- .gsd/REQUIREMENTS.md
+- .gsd/gsd.db
+
+GSD context:
+- Milestone: M005 - Predictive assistance and release hardening
+- Slice: S06
+- Task: T04 - Marked R011 validated from fresh S06 predictive/browser/build evidence through the installed GSD DB writer and confirmed the regenerated requirement proof note.
+
+GSD-Task: S06/T04
+
+---
+0f31c09e9f667ba71eb8d37dbd74eae408752093 fix: Confirmed the scoped predictive-editor axe proof, fixed a text-col…
+- apps/web/tests/e2e/calendar-shifts.spec.ts
+
+GSD context:
+- Milestone: M005 - Predictive assistance and release hardening
+- Slice: S06
+- Task: T02 - Confirmed the scoped predictive-editor axe proof, fixed a text-collision cleanup flake in the same Playwright seam, and re-passed the fresh web predictive verification.
+
+GSD-Task: S06/T02
+
+---
+6c8abf18aa1bce0a296ce182d8a17730092c3677 feat: Re-ran the mobile predictive smoke from a fresh local Supabase re…
+- (none)
+
+GSD context:
+- Milestone: M005 - Predictive assistance and release hardening
+- Slice: S06
+- Task: T03 - Re-ran the mobile predictive smoke from a fresh local Supabase reset and proved the workspace build still passes without widening scope.
+
+GSD-Task: S06/T03
+
+---
+29906dc8a564c172f2bd7042d282558a8aa7b453 test: Added scoped axe coverage for the predictive web create editor an…
+- apps/web/package.json
+- pnpm-lock.yaml
+- apps/web/tests/e2e/calendar-shifts.spec.ts
+- apps/web/playwright.config.ts
+
+GSD context:
+- Milestone: M005 - Predictive assistance and release hardening
+- Slice: S06
+- Task: T02 - Added scoped axe coverage for the predictive web create editor and stabilized web Playwright on a preview-backed service-worker runtime.
+
+GSD-Task: S06/T02
+
+---
+d5882d751a2a2edaadf2bccd60c024e8433a65b3 feat: Typed the web calendar route-state proof surface and migrated the…
+- apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte
+- apps/web/tests/e2e/calendar-offline.spec.ts
+- apps/web/tests/e2e/calendar-sync.spec.ts
+- apps/web/tests/e2e/fixtures.ts
+
+GSD context:
+- Milestone: M005 - Predictive assistance and release hardening
+- Slice: S06
+- Task: T01 - Typed the web calendar route-state proof surface and migrated the targeted web E2E seams from route prose checks to attribute-based assertions.
+
+GSD-Task: S06/T01
+
+---
+953da6aab33180e5bf9b4d157f4023657879a16d feat: Confirmed the mobile shift sheet already threads visible-week shi…
+- (none)
+
+GSD context:
+- Milestone: M005 - Predictive assistance and release hardening
+- Slice: S05

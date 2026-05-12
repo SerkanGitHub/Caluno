@@ -1,0 +1,18 @@
+{
+  "id": "a4591056-6fd0-413c-aa39-e3cf58fb0b66",
+  "runtime": "bash",
+  "purpose": "M005 targeted post-validation web regression check",
+  "script_chars": 199,
+  "started_at": "2026-05-12T10:46:11.502Z",
+  "finished_at": "2026-05-12T10:47:42.156Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 90654,
+  "stdout_bytes": 10380,
+  "stderr_bytes": 16109,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/a4591056-6fd0-413c-aa39-e3cf58fb0b66.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/a4591056-6fd0-413c-aa39-e3cf58fb0b66.stderr"
+}

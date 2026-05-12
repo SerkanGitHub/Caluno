@@ -1,0 +1,18 @@
+{
+  "id": "5a4b1be6-e0c1-4a83-abc2-2529f6c33488",
+  "runtime": "bash",
+  "purpose": "Remove invalid M005 summary artifact after verification failure",
+  "script_chars": 156,
+  "started_at": "2026-05-12T10:47:53.075Z",
+  "finished_at": "2026-05-12T10:47:53.097Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 22,
+  "stdout_bytes": 29,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/5a4b1be6-e0c1-4a83-abc2-2529f6c33488.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/5a4b1be6-e0c1-4a83-abc2-2529f6c33488.stderr"
+}
