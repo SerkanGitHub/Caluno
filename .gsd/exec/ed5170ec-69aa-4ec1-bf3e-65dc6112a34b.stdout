@@ -1,0 +1,33 @@
+
+Running 26 tests using 1 worker
+
+  ✓   1 tests/e2e/auth-scope.spec.ts:13:1 › seeded member can sign in, open the permitted Alpha calendar, and see explicit denied states for invalid or out-of-scope ids (2.6s)
+  ✓   2 tests/e2e/auth-scope.spec.ts:44:1 › reload keeps a valid trusted session working and sign-out closes protected routes again (1.4s)
+  ✓   3 tests/e2e/auth-scope.spec.ts:68:1 › malformed persisted session data fails closed and routes back to sign-in with an invalid-session reason (1.3s)
+  ✓   4 tests/e2e/calendar-notifications.spec.ts:55:1 › renders exactly one notification toggle per permitted calendar and persists enabled state across reload (2.4s)
+  ✓   5 tests/e2e/calendar-notifications.spec.ts:129:1 › keeps denied permissions explicit instead of collapsing the enabled toggle to off (2.3s)
+  ✓   6 tests/e2e/calendar-notifications.spec.ts:196:1 › surfaces provider-unconfigured remote state explicitly when shared-change delivery is unavailable (2.3s)
+  ✓   7 tests/e2e/calendar-notifications.spec.ts:258:1 › rejects unsafe notification targets and lands valid taps inside trusted calendar scope (1.4s)
+  ✓   8 tests/e2e/calendar-notifications.spec.ts:282:1 › enabled calendar receives dispatched shared-change and disabled calendar stays quiet (1.7s)
+  ✓   9 tests/e2e/calendar-notifications.spec.ts:351:1 › per-calendar pending reminder inventory is non-empty for enabled calendar and empty for disabled calendar (1.8s)
+  ✓  10 tests/e2e/calendar-notifications.spec.ts:394:1 › reload does not duplicate local reminder inventory for enabled calendar (2.5s)
+  ✓  11 tests/e2e/calendar-notifications.spec.ts:452:1 › dispatch inbox captures correct payload shape and does not record dispatch for disabled calendar (1.7s)
+  ✓  12 tests/e2e/calendar-notifications.spec.ts:541:1 › unsafe dispatch target paths are rejected and do not land on arbitrary routes (1.2s)
+  ✓  13 tests/e2e/calendar-notifications.spec.ts:563:1 › valid local notification tap lands in the correct protected calendar scope (1.2s)
+  ✓  14 tests/e2e/calendar-offline.spec.ts:25:1 › trusted warm-up reopens offline, keeps multiple queued edits across reload, and drains them after reconnect (2.0s)
+  ✓  15 tests/e2e/calendar-offline.spec.ts:101:1 › offline continuity fails closed for unsynced calendars and corrupt cached shell snapshots (1.9s)
+  ✓  16 tests/e2e/calendar-offline.spec.ts:125:1 › invalid week params and malformed queued payloads stay attributable through explicit diagnostics (1.3s)
+  ✓  17 tests/e2e/find-time-handoff.spec.ts:28:1 › permitted member can enter from the real board, verify ranked results, hand a chosen slot into create, and reload without reopening (2.2s)
+  ✓  18 tests/e2e/find-time-handoff.spec.ts:197:1 › out-of-scope mobile find-time routes stay explicitly denied with zero result cards (1.2s)
+  ✓  19 tests/e2e/find-time-handoff.spec.ts:216:1 › offline route entry stays fail-closed as offline-unavailable with zero result cards (1.6s)
+  ✓  20 tests/e2e/find-time-handoff.spec.ts:241:1 › malformed arrival-prefill params stay attributable, do not auto-open create, and are gone after reload (1.2s)
+  ✓  21 tests/e2e/mobile-assembly.spec.ts:69:1 › phase 1 — sign in and open the permitted calendar with trusted-online diagnostics (1.3s)
+  ✓  22 tests/e2e/mobile-assembly.spec.ts:95:1 › phase 2 — calendar survives offline and drains queued mutations on reconnect (1.2s)
+  ✓  23 tests/e2e/mobile-assembly.spec.ts:124:1 › phase 3 — find time handoff flows into create arrival and the shift lands on the board (2.0s)
+  ✓  24 tests/e2e/mobile-assembly.spec.ts:239:1 › phase 4 — notification delivery reaches the enabled calendar and a safe tap lands in the permitted context (2.5s)
+  ✓  25 tests/e2e/mobile-assembly.spec.ts:349:1 › phase 5 — offline find-time stays fail-closed and out-of-scope tap is rejected (1.9s)
+  ✓  26 tests/e2e/mobile-predictive.spec.ts:19:1 › mobile create sheet exposes recurrence suggestion lifecycle and advisory-only clashes without clobbering draft timing (2.4s)
+
+  26 passed (50.4s)
+
+MOBILE_E2E_DONE

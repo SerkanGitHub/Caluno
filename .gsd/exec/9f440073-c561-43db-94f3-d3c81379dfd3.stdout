@@ -1,0 +1,155 @@
+
+Running 17 tests using 1 worker
+
+  ✓   1 tests/e2e/auth-groups-access.spec.ts:14:1 › seeded member can open a permitted calendar and gets an explicit denial for an unauthorized calendar (1.8s)
+  ✘   2 tests/e2e/auth-groups-access.spec.ts:45:1 › join onboarding surfaces invalid codes, admits a valid redemption, survives reload, and loses access after sign-out (11.4s)
+  ✓   3 tests/e2e/calendar-offline.spec.ts:63:1 › preview proof surface exposes isolation headers and a live service worker before offline continuity begins (437ms)
+  ✓   4 tests/e2e/calendar-offline.spec.ts:88:1 › previously synced calendar weeks reopen offline, keep local writes across reload, deny unsynced ids fail closed, and drain cleanly after reconnect (7.5s)
+  ✓   5 tests/e2e/calendar-shifts.spec.ts:199:1 › overlapping Thursday create drafts show a warning-only advisory before submit and still save successfully (7.8s)
+  ✘   6 tests/e2e/calendar-shifts.spec.ts:339:1 › touching-boundary create drafts stay advisory-free before submit (15.4s)
+  -   7 tests/e2e/calendar-shifts.spec.ts:404:1 › browse suggestion handoff creates a visible shift on the intended day and does not reopen after reload
+  -   8 tests/e2e/calendar-shifts.spec.ts:503:1 › predictive create editor stays free of new WCAG 2.1 AA violations in the seeded recurrence suggestion flow
+  -   9 tests/e2e/calendar-shifts.spec.ts:541:1 › weekly recurrence suggestion accept path pre-fills weekly cadence truthfully and resets after a successful create
+  -  10 tests/e2e/calendar-shifts.spec.ts:632:1 › weekly recurrence suggestion dismiss path keeps the form blank, stays hidden for the current instance, and returns after reload
+  -  11 tests/e2e/calendar-shifts.spec.ts:739:1 › seeded member still gets the explicit denied surface for an unauthorized calendar route
+  ✓  12 tests/e2e/calendar-sync.spec.ts:111:1 › online collaborators see shared shift changes propagate live within the same trusted calendar week (6.4s)
+  ✓  13 tests/e2e/calendar-sync.spec.ts:327:1 › realtime refreshes stay scoped when a collaborator is viewing a different visible week (4.7s)
+  ✘  14 tests/e2e/find-time.spec.ts:21:1 › permitted member sees ranked top picks before the lighter browse inventory on the real find-time route (12.1s)
+  -  15 tests/e2e/find-time.spec.ts:139:1 › suggestion handoff lands on the chosen slot week, opens the prefilled create dialog, and strips one-shot URL state on arrival
+  -  16 tests/e2e/find-time.spec.ts:205:1 › unauthorized member gets an explicit denial on another group's find-time route
+  -  17 tests/e2e/find-time.spec.ts:230:1 › offline entry from the calendar board fails closed on the find-time route
+
+
+  1) tests/e2e/auth-groups-access.spec.ts:45:1 › join onboarding surfaces invalid codes, admits a valid redemption, survives reload, and loses access after sign-out › phase: sign in as the seeded user with no memberships 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: getByTestId('groups-shell')
+    Expected substring: [32m"onboarding-empty"[39m
+    Received string:    [31m"Shell state trusted-online Protected navigation and calendar scope came from the trusted server load. "[39m
+    Timeout: 10000ms
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 10000ms[22m
+    [2m  - waiting for getByTestId('groups-shell')[22m
+    [2m    14 × locator resolved to <article data-testid="groups-shell" class="status-card tone-neutral">…</article>[22m
+    [2m       - unexpected value "Shell state trusted-online Protected navigation and calendar scope came from the trusted server load. "[22m
+
+
+      50 |     flow.mark('login', seededUsers.noMembership.email);
+      51 |     await signInThroughUi(page, seededUsers.noMembership);
+    > 52 |     await expect(page.getByTestId('groups-shell')).toContainText('onboarding-empty');
+         |                                                    ^
+      53 |     await expect(page.getByTestId('onboarding-empty-state')).toBeVisible();
+      54 |   });
+      55 |
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/auth-groups-access.spec.ts:52:52
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/auth-groups-access.spec.ts:49:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/auth-groups-access-join-on-156de-loses-access-after-sign-out/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/auth-groups-access-join-on-156de-loses-access-after-sign-out/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/auth-groups-access-join-on-156de-loses-access-after-sign-out/error-context.md
+
+    attachment #5: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/auth-groups-access-join-on-156de-loses-access-after-sign-out/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/auth-groups-access-join-on-156de-loses-access-after-sign-out/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/e2e/calendar-shifts.spec.ts:339:1 › touching-boundary create drafts stay advisory-free before submit › phase: enter a touching Wednesday boundary window and prove the advisory stays absent before submit 
+
+    Error: expected the create dialog to stay advisory-free for the Wednesday touch boundary draft
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoBeNull[2m()[22m
+
+    Received: [31m1[39m
+
+    Call Log:
+    - Timeout 10000ms exceeded while waiting on the predicate
+
+      379 |     await expect(form.locator('input[name="endAt"]')).toHaveValue(clearEndLocal);
+      380 |
+    > 381 |     await expect
+          |     ^
+      382 |       .poll(async () => (await readCreateShiftClashAdvisory(page)).overlapCount, {
+      383 |         message: 'expected the create dialog to stay advisory-free for the Wednesday touch boundary draft'
+      384 |       })
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:381:5
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/calendar-shifts.spec.ts:362:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-touching-b-4889b-advisory-free-before-submit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-touching-b-4889b-advisory-free-before-submit/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/calendar-shifts-touching-b-4889b-advisory-free-before-submit/error-context.md
+
+    attachment #5: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/calendar-shifts-touching-b-4889b-advisory-free-before-submit/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/calendar-shifts-touching-b-4889b-advisory-free-before-submit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests/e2e/find-time.spec.ts:21:1 › permitted member sees ranked top picks before the lighter browse inventory on the real find-time route › phase: search the seeded day range and verify shortlist order plus explanation density 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: getByTestId('find-time-summary')
+    Expected substring: [32m"10 truthful windows"[39m
+    Received string:    [31m"Window inventory 8 truthful windows Top picks stay high-density, while browse cards remain lighter-weight for scanning the rest of the truthful inventory."[39m
+    Timeout: 10000ms
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 10000ms[22m
+    [2m  - waiting for getByTestId('find-time-summary')[22m
+    [2m    14 × locator resolved to <article data-testid="find-time-summary" class="status-card tone-neutral">…</article>[22m
+    [2m       - unexpected value "Window inventory 8 truthful windows Top picks stay high-density, while browse cards remain lighter-weight for scanning the rest of the truthful inventory."[22m
+
+
+      60 |     await expect(page.getByTestId('find-time-route-state')).toHaveAttribute('data-status', 'ready');
+      61 |     await expect(page.getByTestId('find-time-search-state')).toHaveAttribute('data-status', 'ready');
+    > 62 |     await expect(page.getByTestId('find-time-summary')).toContainText(`${seededFindTime.alphaWindowCount} truthful windows`);
+         |                                                         ^
+      63 |     await expect(page.getByTestId('find-time-results')).toHaveAttribute('data-window-count', String(seededFindTime.alphaWindowCount));
+      64 |     await expect(page.getByTestId('find-time-results')).toHaveAttribute('data-top-pick-count', String(seededFindTime.topPickCount));
+      65 |     await expect(page.getByTestId('find-time-results')).toHaveAttribute('data-browse-count', String(seededFindTime.browseCount));
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/find-time.spec.ts:62:57
+        at /Users/serkanyeniay/dev/Caluno/apps/web/tests/e2e/find-time.spec.ts:47:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e/find-time-permitted-member-a75b2-on-the-real-find-time-route/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/e2e/find-time-permitted-member-a75b2-on-the-real-find-time-route/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e/find-time-permitted-member-a75b2-on-the-real-find-time-route/error-context.md
+
+    attachment #5: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e/find-time-permitted-member-a75b2-on-the-real-find-time-route/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/e2e/find-time-permitted-member-a75b2-on-the-real-find-time-route/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    tests/e2e/auth-groups-access.spec.ts:45:1 › join onboarding surfaces invalid codes, admits a valid redemption, survives reload, and loses access after sign-out 
+    tests/e2e/calendar-shifts.spec.ts:339:1 › touching-boundary create drafts stay advisory-free before submit 
+    tests/e2e/find-time.spec.ts:21:1 › permitted member sees ranked top picks before the lighter browse inventory on the real find-time route 
+  8 did not run
+  6 passed (1.3m)

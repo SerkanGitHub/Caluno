@@ -1,0 +1,18 @@
+{
+  "id": "9ebc991e-8b07-4bce-a4b1-dd1ce87352d2",
+  "runtime": "bash",
+  "purpose": "Verify clean-reset web predictive accessibility proof for S06 after Supabase reset contention clears",
+  "script_chars": 361,
+  "started_at": "2026-05-12T08:19:04.324Z",
+  "finished_at": "2026-05-12T08:20:10.639Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 66315,
+  "stdout_bytes": 1184,
+  "stderr_bytes": 13498,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/9ebc991e-8b07-4bce-a4b1-dd1ce87352d2.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/9ebc991e-8b07-4bce-a4b1-dd1ce87352d2.stderr"
+}

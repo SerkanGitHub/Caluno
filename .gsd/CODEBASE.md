@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-05-11T17:12:40Z | Files: 500 | Described: 0/500
-<!-- gsd:codebase-meta {"generatedAt":"2026-05-11T17:12:40Z","fingerprint":"db7f930a5aa13bc9a47e8365b48bc1e75ce02ae6","fileCount":500,"truncated":true} -->
+Generated: 2026-05-12T08:21:28Z | Files: 500 | Described: 0/500
+<!-- gsd:codebase-meta {"generatedAt":"2026-05-12T08:21:28Z","fingerprint":"aba1fe023a68a4df0e7c5d0ea8fe9581731245c3","fileCount":500,"truncated":true} -->
 Note: Truncated to first 500 files. Run with higher --max-files to include all.
 
 ### (root)/
@@ -95,17 +95,17 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - *(22 files: 22 .js)*
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/entry/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.wS_FjZUf.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.DTkxUAav.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.CQbXogar.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.CdUqSfEz.js`
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.D5vP8po1.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.ezbJ9OmE.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.Dxmml6k-.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.B3DC9xk6.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.Bzov4rK1.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.Dpy6tlF-.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/6.CUKCdAsl.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.Bee2VGvh.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.Dk5KnKiX.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.96VQ3civ.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.V23U9zQT.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.BWdQ84S_.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.Cz7DSVcT.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/6.CVf3TTdd.js`
 
 ### apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/
 - `apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/env.js`
@@ -467,32 +467,32 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/web/.svelte-kit/output/client/_app/immutable/assets/sqlite3.DGXXSD5r.wasm`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/chunks/
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BcHGQQwv.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Bgn2yaYW.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BIyNKtvS.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BlIAoSI7.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BNQEOYEk.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BT5sq5Lg.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BWcPjAJn.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/bY-7bDrD.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/C-ffgH8v.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Cg5Gs5n7.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/CinHc9Pg.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Cnou3hnx.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/CwNT8IMb.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/D58iBqSA.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DsnmJJEf.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DYK4CpHh.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/XccW2AWw.js`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/entry/
-- `apps/web/.svelte-kit/output/client/_app/immutable/entry/app.B8M7aJ8x.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/entry/start.BW5lAAR0.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/entry/app.BAMcjhBl.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/entry/start.Xjw4KZ9s.js`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/nodes/
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/0.wwDtjeDr.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/1.g4VeS-vR.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/2.D_bfnQIZ.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/1.hc1H9-5k.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/2.EgK0tvae.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/3.CT-hjByW.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/4.LoRQXaQA.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/4.NJJ-9ek7.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/5.8DDdL3Jz.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/6.BKXhBF4H.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/7.BuQgnRyP.js`

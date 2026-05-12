@@ -1,0 +1,18 @@
+{
+  "id": "39c45efd-9ad7-4e3e-b8bc-0ad5b0989691",
+  "runtime": "bash",
+  "purpose": "full web e2e regression for M005 validation",
+  "script_chars": 195,
+  "started_at": "2026-05-12T08:30:26.836Z",
+  "finished_at": "2026-05-12T08:30:27.404Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 568,
+  "stdout_bytes": 0,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/39c45efd-9ad7-4e3e-b8bc-0ad5b0989691.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/39c45efd-9ad7-4e3e-b8bc-0ad5b0989691.stderr"
+}

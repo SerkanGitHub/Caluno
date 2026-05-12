@@ -1,0 +1,18 @@
+{
+  "id": "32787cd9-811f-4e72-b039-a0bb70e32641",
+  "runtime": "bash",
+  "purpose": "full web e2e regression for M005 validation retry serial",
+  "script_chars": 171,
+  "started_at": "2026-05-12T08:32:01.743Z",
+  "finished_at": "2026-05-12T08:33:47.414Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 105671,
+  "stdout_bytes": 14300,
+  "stderr_bytes": 15363,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/32787cd9-811f-4e72-b039-a0bb70e32641.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/32787cd9-811f-4e72-b039-a0bb70e32641.stderr"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "49b6da83-1300-41d8-b961-e40f707e9d5b",
+  "runtime": "bash",
+  "purpose": "Verify clean-reset web offline/realtime proof for S06",
+  "script_chars": 167,
+  "started_at": "2026-05-12T08:17:56.747Z",
+  "finished_at": "2026-05-12T08:18:49.437Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 52690,
+  "stdout_bytes": 730,
+  "stderr_bytes": 9022,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/49b6da83-1300-41d8-b961-e40f707e9d5b.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/49b6da83-1300-41d8-b961-e40f707e9d5b.stderr"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "f53e3981-aba9-4e43-9ae4-8ea7e903f692",
+  "runtime": "bash",
+  "purpose": "S06 closeout verification: fresh reset web offline sync and predictive create accessibility specs",
+  "script_chars": 463,
+  "started_at": "2026-05-12T08:07:05.580Z",
+  "finished_at": "2026-05-12T08:08:23.299Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 77719,
+  "stdout_bytes": 5311,
+  "stderr_bytes": 13125,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/f53e3981-aba9-4e43-9ae4-8ea7e903f692.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/f53e3981-aba9-4e43-9ae4-8ea7e903f692.stderr"
+}

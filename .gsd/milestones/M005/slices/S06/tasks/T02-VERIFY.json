@@ -2,20 +2,20 @@
   "schemaVersion": 1,
   "taskId": "T02",
   "unitId": "M005/S06/T02",
-  "timestamp": 1778519941744,
+  "timestamp": 1778573580255,
   "passed": true,
   "discoverySource": "task-plan",
   "checks": [
     {
       "command": "npx --yes supabase db reset --local --yes",
       "exitCode": 0,
-      "durationMs": 25678,
+      "durationMs": 25695,
       "verdict": "pass"
     },
     {
       "command": "pnpm --dir apps/web exec playwright test tests/e2e/calendar-shifts.spec.ts",
       "exitCode": 0,
-      "durationMs": 40162,
+      "durationMs": 38243,
       "verdict": "pass"
     }
   ]

@@ -1,0 +1,18 @@
+{
+  "id": "2cfedd64-069b-41fc-b4c6-24018c78a340",
+  "runtime": "bash",
+  "purpose": "Verify clean-reset mobile predictive proof and workspace build for S06",
+  "script_chars": 184,
+  "started_at": "2026-05-12T08:17:56.749Z",
+  "finished_at": "2026-05-12T08:17:57.334Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 585,
+  "stdout_bytes": 0,
+  "stderr_bytes": 213,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/2cfedd64-069b-41fc-b4c6-24018c78a340.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/2cfedd64-069b-41fc-b4c6-24018c78a340.stderr"
+}

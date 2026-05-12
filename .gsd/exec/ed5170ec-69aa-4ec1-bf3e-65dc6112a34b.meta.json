@@ -1,0 +1,18 @@
+{
+  "id": "ed5170ec-69aa-4ec1-bf3e-65dc6112a34b",
+  "runtime": "bash",
+  "purpose": "full mobile e2e regression for M005 validation",
+  "script_chars": 207,
+  "started_at": "2026-05-12T08:30:26.838Z",
+  "finished_at": "2026-05-12T08:31:44.235Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 77397,
+  "stdout_bytes": 4175,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/ed5170ec-69aa-4ec1-bf3e-65dc6112a34b.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/ed5170ec-69aa-4ec1-bf3e-65dc6112a34b.stderr"
+}

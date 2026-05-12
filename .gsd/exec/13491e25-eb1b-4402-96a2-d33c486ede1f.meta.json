@@ -1,0 +1,18 @@
+{
+  "id": "13491e25-eb1b-4402-96a2-d33c486ede1f",
+  "runtime": "bash",
+  "purpose": "Verify clean-reset web predictive accessibility proof for S06",
+  "script_chars": 134,
+  "started_at": "2026-05-12T08:17:56.748Z",
+  "finished_at": "2026-05-12T08:17:57.333Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 585,
+  "stdout_bytes": 0,
+  "stderr_bytes": 213,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/13491e25-eb1b-4402-96a2-d33c486ede1f.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/13491e25-eb1b-4402-96a2-d33c486ede1f.stderr"
+}

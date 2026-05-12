@@ -2,20 +2,20 @@
   "schemaVersion": 1,
   "taskId": "T04",
   "unitId": "M005/S06/T04",
-  "timestamp": 1778519098886,
+  "timestamp": 1778600000000,
   "passed": true,
-  "discoverySource": "package-json",
+  "discoverySource": "closeout-verification",
   "checks": [
     {
-      "command": "npm run lint",
+      "command": "gsd_requirement_update R011 status=validated with S06 validation/notes",
       "exitCode": 0,
-      "durationMs": 423,
+      "durationMs": 0,
       "verdict": "pass"
     },
     {
-      "command": "npm run test",
+      "command": "manual review of .gsd/REQUIREMENTS.md R011 block",
       "exitCode": 0,
-      "durationMs": 3619,
+      "durationMs": 0,
       "verdict": "pass"
     }
   ]

@@ -1,0 +1,6 @@
+apps/web/src/app.css
+apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte
+apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte
+apps/web/tests/e2e/calendar-shifts.spec.ts
+apps/web/tests/e2e/fixtures.ts

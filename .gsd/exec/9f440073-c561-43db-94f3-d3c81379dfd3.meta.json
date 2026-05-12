@@ -1,0 +1,18 @@
+{
+  "id": "9f440073-c561-43db-94f3-d3c81379dfd3",
+  "runtime": "bash",
+  "purpose": "M005 fresh web E2E regression for milestone hardening verification",
+  "script_chars": 110,
+  "started_at": "2026-05-12T08:36:08.630Z",
+  "finished_at": "2026-05-12T08:37:53.113Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 104483,
+  "stdout_bytes": 14274,
+  "stderr_bytes": 15736,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/9f440073-c561-43db-94f3-d3c81379dfd3.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/9f440073-c561-43db-94f3-d3c81379dfd3.stderr"
+}

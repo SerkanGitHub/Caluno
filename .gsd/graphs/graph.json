@@ -9,8 +9,8 @@
       "sourceFile": "STATE.md"
     },
     {
-      "id": "concept:phase:planning",
-      "label": "Phase: planning",
+      "id": "concept:phase:validating-milestone",
+      "label": "Phase: validating-milestone",
       "type": "concept",
       "confidence": "EXTRACTED",
       "sourceFile": "STATE.md"
@@ -595,6 +595,37 @@
     {
       "id": "task:M005:S05:T04",
       "label": "T04: Add mobile predictive Playwright helpers and prove accept/dismiss plus clash smoke flows",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "slice:M005:S06",
+      "label": "S06: Hardening, accessibility, and deployment readiness",
+      "type": "slice",
+      "confidence": "EXTRACTED",
+      "sourceFile": "milestones/M005/slices/S06/S06-PLAN.md"
+    },
+    {
+      "id": "task:M005:S06:T01",
+      "label": "T01: Type the web route-state proof surface and unstick stale E2E assertions",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M005:S06:T02",
+      "label": "T02: Add focused axe coverage for the web predictive create editor",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M005:S06:T03",
+      "label": "T03: Re-run clean-reset mobile predictive smoke and workspace builds without widening scope",
+      "type": "task",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "id": "task:M005:S06:T04",
+      "label": "T04: Validate R011 from fresh S06 evidence",
       "type": "task",
       "confidence": "EXTRACTED"
     },
@@ -1631,6 +1662,60 @@
       "confidence": "EXTRACTED"
     },
     {
+      "from": "milestone:M005",
+      "to": "slice:M005:S06",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M005:S06",
+      "to": "task:M005:S06:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M005:S06",
+      "to": "task:M005:S06:T02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M005:S06",
+      "to": "task:M005:S06:T03",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M005:S06",
+      "to": "task:M005:S06:T04",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M005:S06",
+      "to": "task:M005:S06:T01",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M005:S06",
+      "to": "task:M005:S06:T02",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M005:S06",
+      "to": "task:M005:S06:T03",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "from": "slice:M005:S06",
+      "to": "task:M005:S06:T04",
+      "type": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
       "from": "milestone:M003",
       "to": "decision:M003:1",
       "type": "relates_to",
@@ -2003,5 +2088,5 @@
       "confidence": "EXTRACTED"
     }
   ],
-  "builtAt": "2026-05-11T16:19:37.317Z"
+  "builtAt": "2026-05-12T08:24:57.276Z"
 }

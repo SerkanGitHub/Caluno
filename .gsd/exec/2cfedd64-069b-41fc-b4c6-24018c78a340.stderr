@@ -1,0 +1,3 @@
+Resetting local database...
+failed to remove container: Error response from daemon: removal of container supabase_db_caluno is already in progress
+Try rerunning the command with --debug to troubleshoot the error.

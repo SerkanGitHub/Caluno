@@ -1,0 +1,18 @@
+{
+  "id": "afb18322-8530-43ab-90da-557f25fb4d1a",
+  "runtime": "python",
+  "purpose": "Assert rendered R011 block is validated and cites S06 proof",
+  "script_chars": 967,
+  "started_at": "2026-05-12T08:17:05.754Z",
+  "finished_at": "2026-05-12T08:17:05.825Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 71,
+  "stdout_bytes": 57,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/afb18322-8530-43ab-90da-557f25fb4d1a.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/afb18322-8530-43ab-90da-557f25fb4d1a.stderr"
+}

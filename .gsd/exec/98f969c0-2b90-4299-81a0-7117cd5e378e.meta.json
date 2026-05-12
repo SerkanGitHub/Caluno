@@ -1,0 +1,18 @@
+{
+  "id": "98f969c0-2b90-4299-81a0-7117cd5e378e",
+  "runtime": "bash",
+  "purpose": "M005 artifact presence verification",
+  "script_chars": 136,
+  "started_at": "2026-05-12T08:38:05.897Z",
+  "finished_at": "2026-05-12T08:38:05.924Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 27,
+  "stdout_bytes": 540,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/98f969c0-2b90-4299-81a0-7117cd5e378e.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/98f969c0-2b90-4299-81a0-7117cd5e378e.stderr"
+}
