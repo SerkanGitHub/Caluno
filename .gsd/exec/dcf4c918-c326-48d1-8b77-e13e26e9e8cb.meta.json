@@ -1,0 +1,18 @@
+{
+  "id": "dcf4c918-c326-48d1-8b77-e13e26e9e8cb",
+  "runtime": "bash",
+  "purpose": "M005 targeted regression on prior failing web E2E specs",
+  "script_chars": 165,
+  "started_at": "2026-05-12T10:41:34.819Z",
+  "finished_at": "2026-05-12T10:42:36.397Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 61578,
+  "stdout_bytes": 9234,
+  "stderr_bytes": 4173,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/dcf4c918-c326-48d1-8b77-e13e26e9e8cb.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/dcf4c918-c326-48d1-8b77-e13e26e9e8cb.stderr"
+}

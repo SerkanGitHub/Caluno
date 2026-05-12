@@ -1,0 +1,18 @@
+{
+  "id": "24b0548f-bbb3-4059-b2c7-2f5c7d4517b1",
+  "runtime": "node",
+  "purpose": "current ISO timestamp for verification failure artifact",
+  "script_chars": 37,
+  "started_at": "2026-05-12T10:42:51.897Z",
+  "finished_at": "2026-05-12T10:42:51.999Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 102,
+  "stdout_bytes": 25,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/24b0548f-bbb3-4059-b2c7-2f5c7d4517b1.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/24b0548f-bbb3-4059-b2c7-2f5c7d4517b1.stderr"
+}

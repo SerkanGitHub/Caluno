@@ -1,0 +1,18 @@
+{
+  "id": "623b7df3-beb6-4cc1-8e80-032e0ce1ae19",
+  "runtime": "bash",
+  "purpose": "M005 self-diff commit evidence for non-.gsd changes",
+  "script_chars": 270,
+  "started_at": "2026-05-12T10:41:06.965Z",
+  "finished_at": "2026-05-12T10:41:07.020Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 55,
+  "stdout_bytes": 2315,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/623b7df3-beb6-4cc1-8e80-032e0ce1ae19.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/623b7df3-beb6-4cc1-8e80-032e0ce1ae19.stderr"
+}
