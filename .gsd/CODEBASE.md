@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-05-12T08:21:28Z | Files: 500 | Described: 0/500
-<!-- gsd:codebase-meta {"generatedAt":"2026-05-12T08:21:28Z","fingerprint":"aba1fe023a68a4df0e7c5d0ea8fe9581731245c3","fileCount":500,"truncated":true} -->
+Generated: 2026-05-13T07:25:56Z | Files: 500 | Described: 0/500
+<!-- gsd:codebase-meta {"generatedAt":"2026-05-13T07:25:56Z","fingerprint":"5c48516fe6b36fb761f204171a21111d74d3e07e","fileCount":500,"truncated":true} -->
 Note: Truncated to first 500 files. Run with higher --max-files to include all.
 
 ### (root)/
@@ -15,9 +15,6 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `.prettierrc`
 - `AGENTS.md`
 - `CLAUDE.md`
-- `docker-compose.yml`
-- `gsd-memory-logger.js`
-- `package.json`
 - `README.md`
 
 ### .artifacts/browser/2026-04-14T21-47-36-677Z-t03-browser-proof/
@@ -95,17 +92,17 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - *(22 files: 22 .js)*
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/entry/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.CQbXogar.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.CdUqSfEz.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/app.xXK3x-uG.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/entry/start.w5CUPoFa.js`
 
 ### apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.Bee2VGvh.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.Dk5KnKiX.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.96VQ3civ.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.V23U9zQT.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.BWdQ84S_.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.Cz7DSVcT.js`
-- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/6.CVf3TTdd.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/0.Bq9oVSaR.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/1.BIchlYps.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/2.CI2GsHZH.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/3.PJJYKk9X.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/4.CuAvRTFc.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/5.mdDB00Y3.js`
+- `apps/mobile/.svelte-kit/output/client/_app/immutable/nodes/6.CdzqvtJ3.js`
 
 ### apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/
 - `apps/mobile/.svelte-kit/output/prerendered/dependencies/_app/env.js`
@@ -342,8 +339,6 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/web/playwright.config.ts`
 - `apps/web/playwright.offline.config.ts`
 - `apps/web/svelte.config.js`
-- `apps/web/tsconfig.json`
-- `apps/web/vite.config.ts`
 
 ### apps/web/.svelte-kit/
 - `apps/web/.svelte-kit/ambient.d.ts`
@@ -467,11 +462,10 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/web/.svelte-kit/output/client/_app/immutable/assets/sqlite3.DGXXSD5r.wasm`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/chunks/
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BcHGQQwv.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Bgn2yaYW.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BIyNKtvS.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BlIAoSI7.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BNQEOYEk.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BVDj2TQX.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BWcPjAJn.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/bY-7bDrD.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/C-ffgH8v.js`
@@ -481,18 +475,19 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/D58iBqSA.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DsnmJJEf.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DYK4CpHh.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/qPliVElR.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/XccW2AWw.js`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/entry/
-- `apps/web/.svelte-kit/output/client/_app/immutable/entry/app.BAMcjhBl.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/entry/start.Xjw4KZ9s.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/entry/app.B459StKA.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/entry/start.BNCE8Q8n.js`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/nodes/
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/0.wwDtjeDr.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/1.hc1H9-5k.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/2.EgK0tvae.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/1.RlATbF1x.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/2.D97ulYRX.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/3.CT-hjByW.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/4.NJJ-9ek7.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/4.BbdBROH2.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/5.8DDdL3Jz.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/6.BKXhBF4H.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/7.BuQgnRyP.js`
@@ -698,6 +693,21 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 ### apps/web/test-results/e2e-offline/
 - `apps/web/test-results/e2e-offline/.last-run.json`
 
+### apps/web/test-results/e2e/auth-groups-access-join-on-156de-loses-access-after-sign-out/
+- `apps/web/test-results/e2e/auth-groups-access-join-on-156de-loses-access-after-sign-out/error-context.md`
+- `apps/web/test-results/e2e/auth-groups-access-join-on-156de-loses-access-after-sign-out/trace.zip`
+- `apps/web/test-results/e2e/auth-groups-access-join-on-156de-loses-access-after-sign-out/video.webm`
+
+### apps/web/test-results/e2e/calendar-shifts-touching-b-4889b-advisory-free-before-submit/
+- `apps/web/test-results/e2e/calendar-shifts-touching-b-4889b-advisory-free-before-submit/error-context.md`
+- `apps/web/test-results/e2e/calendar-shifts-touching-b-4889b-advisory-free-before-submit/trace.zip`
+- `apps/web/test-results/e2e/calendar-shifts-touching-b-4889b-advisory-free-before-submit/video.webm`
+
+### apps/web/test-results/e2e/find-time-permitted-member-a75b2-on-the-real-find-time-route/
+- `apps/web/test-results/e2e/find-time-permitted-member-a75b2-on-the-real-find-time-route/error-context.md`
+- `apps/web/test-results/e2e/find-time-permitted-member-a75b2-on-the-real-find-time-route/trace.zip`
+- `apps/web/test-results/e2e/find-time-permitted-member-a75b2-on-the-real-find-time-route/video.webm`
+
 ### apps/web/tests/access/
 - `apps/web/tests/access/policy-contract.unit.test.ts`
 
@@ -726,7 +736,3 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/web/tests/schedule/create-prefill.unit.test.ts`
 - `apps/web/tests/schedule/offline-queue.unit.test.ts`
 - `apps/web/tests/schedule/offline-store.unit.test.ts`
-- `apps/web/tests/schedule/recurrence.unit.test.ts`
-- `apps/web/tests/schedule/server-actions.unit.test.ts`
-- `apps/web/tests/schedule/shift-editor-advisory.unit.test.ts`
-- `apps/web/tests/schedule/sync-engine.unit.test.ts`
