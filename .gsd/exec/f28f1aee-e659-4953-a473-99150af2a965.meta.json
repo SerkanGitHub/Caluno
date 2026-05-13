@@ -1,0 +1,18 @@
+{
+  "id": "f28f1aee-e659-4953-a473-99150af2a965",
+  "runtime": "bash",
+  "purpose": "M005 code change verification against integration branch",
+  "script_chars": 725,
+  "started_at": "2026-05-13T07:42:58.147Z",
+  "finished_at": "2026-05-13T07:42:58.326Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 179,
+  "stdout_bytes": 4642,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/f28f1aee-e659-4953-a473-99150af2a965.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/f28f1aee-e659-4953-a473-99150af2a965.stderr"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "956f4664-1139-4d5a-927d-d68a2b0247e0",
+  "runtime": "bash",
+  "purpose": "M005 full web E2E closeout regression",
+  "script_chars": 110,
+  "started_at": "2026-05-13T07:43:17.675Z",
+  "finished_at": "2026-05-13T07:45:07.269Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 109594,
+  "stdout_bytes": 14170,
+  "stderr_bytes": 14617,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/956f4664-1139-4d5a-927d-d68a2b0247e0.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/956f4664-1139-4d5a-927d-d68a2b0247e0.stderr"
+}

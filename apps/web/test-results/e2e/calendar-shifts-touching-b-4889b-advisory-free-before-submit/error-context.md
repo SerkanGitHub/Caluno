@@ -44,7 +44,7 @@ Call Log:
         - generic [ref=e20]: Sync diagnostics
         - strong [ref=e21]: idle
         - paragraph [ref=e22]: Reconnect is idle. Trusted route actions already confirmed all drained work or nothing was pending.
-        - code [ref=e23]: 2026-05-12T10:58:50.654Z
+        - code [ref=e23]: 2026-05-13T07:44:29.572Z
       - article [ref=e24]:
         - generic [ref=e25]: Realtime diagnostics
         - strong [ref=e26]: ready
@@ -194,7 +194,7 @@ Call Log:
         - strong [ref=e163]: Sync idle
         - paragraph [ref=e164]:
           - text: "Last reconnect attempt:"
-          - code [ref=e165]: 2026-05-12T10:58:50.654Z
+          - code [ref=e165]: 2026-05-13T07:44:29.572Z
       - article [ref=e166]:
         - generic [ref=e167]: Board realtime diagnostics
         - strong [ref=e168]: ready
@@ -375,7 +375,7 @@ Call Log:
                   - strong [ref=e337]: 1h block
                 - generic [ref=e338]:
                   - text: Shift id
-                  - code [ref=e339]: 62839538-b6b8-48d8-94fe-ddd369118143
+                  - code [ref=e339]: ae104fb4-d3a7-4517-9422-baa84d86fa68
               - generic [ref=e340]:
                 - group [ref=e341]:
                   - generic "Edit details" [ref=e342] [cursor=pointer]
