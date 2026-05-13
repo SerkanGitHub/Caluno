@@ -3,6 +3,7 @@ id: M005
 title: "Predictive assistance and release hardening"
 status: verification-failed
 verification_passed: false
+verified_at: 2026-05-13T00:00:00Z
 ---
 
 # M005: Predictive assistance and release hardening
@@ -11,77 +12,94 @@ verification_passed: false
 
 ## Verification Summary
 
-- **Duplicate completion guard:** `gsd_milestone_status` reports milestone `M005` is `active`, not complete. All six slices (`S01`–`S06`) are `complete`.
-- **Code changes exist:** `HEAD` equals `main`, so this is a self-diff retry. Trailer-bearing milestone/task commits do touch non-`.gsd/` files, so implementation evidence exists. Representative commits verified in git history:
-  - `d5882d7` (`GSD-Task: S06/T01`) — typed web route-state proof surfaces in `apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte` and related E2E fixtures/specs.
-  - `29906dc` (`GSD-Task: S06/T02`) — scoped axe coverage for the predictive web create editor in `apps/web/tests/e2e/calendar-shifts.spec.ts`, plus Playwright/package changes.
-  - `0f31c09` (`GSD-Task: S06/T02`) — follow-up fix in `apps/web/tests/e2e/calendar-shifts.spec.ts` for scoped predictive accessibility proof.
-  - `a405ff0` (`GSD-Task: S05/T04`) — mobile predictive Playwright coverage in `apps/mobile/tests/e2e/mobile-predictive.spec.ts` and `apps/mobile/tests/e2e/mobile-assembly.spec.ts`.
-  - `f5872d5` (`GSD-Task: S05/T01`) — mobile recurrence suggestion UI wiring in `apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte` and related mobile sources/tests.
-  - `877a164` (`GSD-Task: S04/T02`) — advisory-only web clash state in `apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte` and unit coverage.
-  - `f4394dc` (`GSD-Task: S04/T01`) — route-derived visible-week conflicts threaded into web calendar surfaces.
-- **Success criteria verification result:** failed overall.
-- **Definition-of-done verification result:** failed overall.
+- **Duplicate completion guard:** `gsd_milestone_status` reports milestone `M005` is still `active`; all six slices (`S01`–`S06`) are `complete`.
+- **Code changes exist:** `HEAD` equals `main`, so this closeout used self-diff commit evidence. Verified milestone/task commits touched non-`.gsd/` implementation files, including:
+  - `4c3b6e0` — `packages/caluno-core/src/schedule/recurrence.ts`
+  - `b82fd04` — `packages/caluno-core/src/schedule/conflicts.ts`
+  - `017be51` — `apps/web/src/lib/server/schedule.ts`, `apps/web/src/routes/(app)/calendars/[calendarId]/+page.server.ts`
+  - `f12ede4` — `apps/web/src/lib/offline/calendar-controller.ts`, `apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte`
+  - `f4394dc` — `apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte`, `ShiftDayColumn.svelte`, `ShiftCard.svelte`
+  - `877a164` — `apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte`, `apps/web/src/lib/schedule/shift-editor-advisory.ts`
+  - `854ca0a` — `packages/caluno-core/src/schedule/shift-editor-advisory.ts`
+  - `f5872d5` — `apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte`, `apps/mobile/src/lib/components/calendar/shift-editor-predictive.ts`
+  - `d5882d7` — typed web route-state diagnostics in `apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte`
+- **Fresh regression evidence:** Ran `npx --yes supabase db reset --local --yes && pnpm --dir apps/web exec playwright test tests/e2e/auth-groups-access.spec.ts tests/e2e/calendar-shifts.spec.ts tests/e2e/find-time.spec.ts`.
+  - Supabase reset: **PASS**
+  - Playwright targeted regression: **FAIL** (`8 passed`, `2 failed`, `3 did not run`)
 
 ## Success Criteria Results
 
 - ✅ **Predictive or anticipatory scheduling features are live and covered by unit and E2E tests.**
-  - Supported by the validation artifact and slice summaries: `S02` delivered deterministic shared recurrence/conflict helpers, `S03` and `S04` proved web recurrence/advisory flows, `S05` proved mobile predictive parity, and `S06` reran predictive/browser/build proof.
+  - Slice evidence remains consistent: `S02` shipped deterministic shared recurrence/conflict helpers, `S03` and `S04` proved the web predictive flows, `S05` proved mobile parity, and `S06` added scoped web accessibility proof plus build/browser reruns.
 - ✅ **R011 (predictive scheduling assistance) is validated.**
-  - `.gsd/REQUIREMENTS.md` renders `R011` as `validated`, and the requirements register records M005/S06 validation evidence.
+  - `.gsd/REQUIREMENTS.md` still renders `R011` as `validated` with S06 evidence for predictive web/mobile/browser/build proof.
 - ❌ **Launch hardening: reliability, onboarding, performance, accessibility, observability, and deployment readiness are addressed.**
-  - `.gsd/milestones/M005/M005-VALIDATION.md` remains `verdict: needs-attention` and explicitly records a failed fresh full-regression web E2E run with three failing existing specs: `tests/e2e/auth-groups-access.spec.ts`, an advisory-free touching-boundary flow in `tests/e2e/calendar-shifts.spec.ts`, and ranked-window inventory flow coverage in `tests/e2e/find-time.spec.ts`.
+  - Fresh web regression is still not green. Two existing E2E specs fail after a clean local reset:
+    1. `tests/e2e/auth-groups-access.spec.ts:45` — no-membership sign-in no longer shows `onboarding-empty`; the page renders `groups-shell` in `trusted-online` state instead.
+    2. `tests/e2e/find-time.spec.ts:21` — the real find-time route now reports `11 truthful windows` while the seeded expectation still asserts `10 truthful windows`.
 - ✅ **UX is refined for calmness, polish, and fit/finish.**
-  - The validation artifact and slice summaries consistently describe calm, warning-only predictive surfaces with explicit accept/dismiss controls and advisory messaging across web and mobile.
+  - Web and mobile predictive surfaces remain warning-only, explicit, and well-instrumented per the slice summaries and the still-passing predictive web/mobile browser specs.
 - ❌ **All trust, privacy, and authorization constraints from prior milestones are maintained.**
-  - The same validation artifact flags unresolved failure in `tests/e2e/auth-groups-access.spec.ts`, so milestone-closeout evidence does not yet re-prove the broader trust/authorization surface.
+  - The fresh failing `auth-groups-access` regression means milestone-closeout evidence does not currently re-prove the broader onboarding/authz surface.
 - ✅ **Explicit UI and diagnostics exist for predictive features and hardening outcomes.**
-  - Validation cites stable hooks and diagnostics including `recurrence-suggestion`, `recurrence-suggestion-accept`, `recurrence-suggestion-dismiss`, `clash-advisory`, and typed `calendar-route-state[data-route-mode][data-route-reason]` proof surfaces.
+  - Stable proof surfaces remain present, including recurrence suggestion hooks, clash advisory hooks, and typed `calendar-route-state` diagnostics.
 
 ## Definition of Done Results
 
 ### Verified
 - All roadmap slices are checked complete in `.gsd/milestones/M005/M005-ROADMAP.md` and confirmed complete by `gsd_milestone_status`.
-- Slice `SUMMARY` and `UAT` artifacts exist for all six slices (`S01`–`S06`).
-- Cross-slice recurrence-suggestion and clash-advisory integration is documented in `.gsd/milestones/M005/M005-VALIDATION.md` and is internally consistent with the slice summaries.
-- Requirement `R011` has supporting evidence for its current `validated` status.
+- Slice `SUMMARY` and `UAT` artifacts exist for all six slices.
+- Fresh targeted web verification re-proved the predictive editor/browser work inside `tests/e2e/calendar-shifts.spec.ts`, including the previously failing touching-boundary advisory-free scenario.
+- Requirement `R011` still has matching validation evidence in `.gsd/REQUIREMENTS.md`.
 
 ### Blocking gaps
-- `.gsd/milestones/M005/M005-VALIDATION.md` still reports `verdict: needs-attention`.
-- `.gsd/milestones/M005/M005-ROADMAP.md` still ends with `## Boundary Map` → `Not provided.`
-- No slice-level `*-ASSESSMENT.md` artifacts were found under `.gsd/milestones/M005/`.
-- Fresh milestone-wide web regression evidence is not clean because the validation artifact records three failing existing E2E specs.
+- Fresh regression is not clean: `auth-groups-access.spec.ts` and `find-time.spec.ts` still fail after a clean local reset.
+- Because those broader web regressions remain red, milestone-wide integration and hardening are not yet re-proven.
+- `.gsd/milestones/M005/M005-VALIDATION.md` still remains `verdict: needs-attention`.
+- `.gsd/milestones/M005/M005-ROADMAP.md` still lists `## Boundary Map` as `Not provided.` (documentation gap carried forward from validation).
 
 ## Decision Re-evaluation
 
 | Decision | Shipped outcome | Revisit? | Notes |
 |---|---|---:|---|
-| D063 | Honored | No | Predictive assistance shipped as recurrence suggestions plus clash advisories without widening scope into deferred predictive ideas. |
-| D064 | Honored | No | Web recurrence suggestions stayed bounded to same-calendar trailing history and remained truthful optional prefill, not an implicit default. |
-| D065 | Honored | No | Web clash detection stayed advisory-only and reused shared overlap semantics rather than blocking writes. |
-| D066 | Honored | No | Mobile predictive parity reused the same bounded/shared contracts instead of introducing platform-specific scheduling logic. |
-| D067 | Partially honored | Yes | Typed diagnostics and scoped accessibility proof shipped, but milestone-wide hardening proof is still blocked by the unresolved full-regression web failures and incomplete boundary-map/assessment documentation. |
+| D063 | Honored | No | M005 stayed scoped to recurrence suggestions plus clash advisories instead of expanding into deferred predictive ideas. |
+| D064 | Honored | No | Web recurrence suggestions still use bounded same-calendar history and optional truth-preserving prefill. |
+| D065 | Honored | No | Web clash detection remains advisory-only and keeps submit enabled. |
+| D066 | Honored | No | Mobile predictive parity still reuses the shared bounded/helper contracts rather than introducing divergent mobile-only logic. |
+| D067 | Partially honored | Yes | Typed route-state diagnostics and scoped axe proof shipped, but milestone-closeout hardening remains blocked until the fresh auth/onboarding and find-time regressions are resolved and validation is refreshed. |
 
 ## Requirement Outcomes
 
-- **R011:** current `validated` status remains supported by existing evidence in `.gsd/REQUIREMENTS.md` and the S06 closeout proof.
+- **R011:** current `validated` status remains supported by the existing S06 evidence in `.gsd/REQUIREMENTS.md`.
 - **No requirement updates were performed in this turn** because verification did not pass and the failure path forbids milestone-closeout state mutation.
+
+## Fresh Failure Details
+
+1. **Auth/onboarding regression**
+   - Spec: `tests/e2e/auth-groups-access.spec.ts:45`
+   - Failure: expected `getByTestId('groups-shell')` to contain `onboarding-empty` after signing in as the seeded no-membership user.
+   - Actual: `groups-shell` rendered `Shell state trusted-online ...` instead.
+2. **Find-time inventory regression**
+   - Spec: `tests/e2e/find-time.spec.ts:21`
+   - Failure: expected `getByTestId('find-time-summary')` to contain `10 truthful windows`.
+   - Actual: summary rendered `11 truthful windows`.
+3. **Previously failing boundary advisory case is now green**
+   - `tests/e2e/calendar-shifts.spec.ts:339` passed on the fresh rerun, so that earlier blocker is no longer preventing closeout.
 
 ## What Must Be Fixed Before Completion
 
-1. Resolve the fresh failing full-regression web E2E specs cited by `.gsd/milestones/M005/M005-VALIDATION.md`:
+1. Resolve the remaining fresh web regressions:
    - `tests/e2e/auth-groups-access.spec.ts`
-   - the advisory-free touching-boundary flow in `tests/e2e/calendar-shifts.spec.ts`
-   - the ranked-window inventory flow in `tests/e2e/find-time.spec.ts`
-2. Refresh milestone validation so it passes against current milestone artifacts and fresh evidence.
-3. Add the missing authoritative roadmap boundary map, or explicitly realign the milestone documentation/validation contract so boundary ownership is no longer a gap.
-4. Add the missing slice `*-ASSESSMENT.md` artifacts, or update the validation expectations so the artifact contract is internally consistent.
+   - `tests/e2e/find-time.spec.ts`
+2. Re-run the clean-reset web regression after those fixes and capture fresh passing evidence.
+3. Refresh `.gsd/milestones/M005/M005-VALIDATION.md` so it reflects current artifacts and a passing closeout verdict.
+4. Either add the missing roadmap boundary map or explicitly narrow the validation expectation so milestone documentation is internally consistent.
 
 ## Closeout Guardrails Applied
 
 - `gsd_complete_milestone` was **not** called.
 - `.gsd/PROJECT.md` was **not** refreshed to reflect completion.
 - `.gsd/REQUIREMENTS.md` was **not** mutated in this turn.
-- No learnings were extracted or persisted, because the milestone did not pass verification and closeout stopped on the failure path.
+- Learnings were **not** extracted or persisted because the milestone did not pass verification and closeout stopped on the failure path.
 
 Milestone M005 verification FAILED — not complete.

@@ -1,0 +1,18 @@
+{
+  "id": "2231b114-3aaa-46c6-bfeb-4e88e4f011aa",
+  "runtime": "bash",
+  "purpose": "M005 fresh targeted web regression verification for prior failing specs",
+  "script_chars": 482,
+  "started_at": "2026-05-13T09:09:05.729Z",
+  "finished_at": "2026-05-13T09:10:37.939Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 92210,
+  "stdout_bytes": 10472,
+  "stderr_bytes": 16482,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/2231b114-3aaa-46c6-bfeb-4e88e4f011aa.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/2231b114-3aaa-46c6-bfeb-4e88e4f011aa.stderr"
+}

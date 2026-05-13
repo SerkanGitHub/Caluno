@@ -1,0 +1,18 @@
+{
+  "id": "86bc09bd-b911-414c-b731-2bfb38aefb0b",
+  "runtime": "bash",
+  "purpose": "M005 code-change verification against integration branch or milestone-scoped commits",
+  "script_chars": 1163,
+  "started_at": "2026-05-13T09:08:08.121Z",
+  "finished_at": "2026-05-13T09:08:08.358Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 237,
+  "stdout_bytes": 4934,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/86bc09bd-b911-414c-b731-2bfb38aefb0b.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/86bc09bd-b911-414c-b731-2bfb38aefb0b.stderr"
+}
