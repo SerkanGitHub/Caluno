@@ -41,6 +41,9 @@ references/
 # ── GSD baseline (auto-generated) ──
 .gsd/activity/
 
+# GSD exec output files containing secrets
+.gsd/exec/*.stdout
+
 # ── GSD baseline (auto-generated) ──
 .gsd-id
 .bg-shell/
