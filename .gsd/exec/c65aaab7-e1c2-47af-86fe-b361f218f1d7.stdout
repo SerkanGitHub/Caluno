@@ -1,0 +1,60 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: auth-groups-access.spec.ts >> join onboarding surfaces invalid codes, admits a valid redemption, survives reload, and loses access after sign-out
+- Location: tests/e2e/auth-groups-access.spec.ts:45:1
+
+# Error details
+
+```
+Error: expect(locator).toContainText(expected) failed
+
+Locator: getByTestId('groups-shell')
+Expected substring: "onboarding-empty"
+Received string:    "Shell state trusted-online Protected navigation and calendar scope came from the trusted server load. "
+Timeout: 10000ms
+
+Call log:
+  - Expect "toContainText" with timeout 10000ms
+  - waiting for getByTestId('groups-shell')
+    14 × locator resolved to <article data-testid="groups-shell" class="status-card tone-neutral">…</article>
+       - unexpected value "Shell state trusted-online Protected navigation and calendar scope came from the trusted server load. "
+
+```
+
+# Page snapshot
+
+```yaml
+- main [ref=e4]:
+  - complementary [ref=e5]:
+    - paragraph [ref=e6]: Protected shell
+    - heading "Erin Outsider" [level=1] [ref=e7]
+    - paragraph [ref=e8]: Group membership, join codes, and calendar scope were resolved on the server before this shell rendered.
+    - generic [ref=e9]:
+      - article [ref=e10]:
+        - generic [ref=e11]: Shell state
+        - strong [ref=e12]: trusted-online
+        - paragraph [ref=e13]: Protected navigation and calendar scope came from the trusted server load.
+      - article [ref=e14]:
+        - generic [ref=e15]: Onboarding state
+        - strong [ref=e16]: onboarding-empty
+        - paragraph [ref=e17]: This user does not belong to any groups yet, so the app stays on the onboarding shell.
+    - navigation [ref=e18]:
+      - link "Sign out" [ref=e19] [cursor=pointer]:
+        - /url: /logout
+  - generic [ref=e20]:
+    - generic [ref=e21]:
+      - paragraph [ref=e22]: Membership console
+      - heading "Build or join the calendars your session can actually prove." [level=2] [ref=e23]
+      - paragraph [ref=e24]: Create a new group when you are starting fresh, or redeem a join code when another member has already established the workspace boundary.
+    - generic [ref=e25]:
+      - generic [ref=e26]: No memberships loaded
+      - paragraph [ref=e27]: This account has not joined any groups yet. Create one or redeem a join code to open the protected app shell.
+    - generic [ref=e28]:
+      - article [ref=e29]:
+        - generic [ref=e30]:

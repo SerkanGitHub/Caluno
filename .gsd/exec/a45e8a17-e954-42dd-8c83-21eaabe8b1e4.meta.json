@@ -1,0 +1,18 @@
+{
+  "id": "a45e8a17-e954-42dd-8c83-21eaabe8b1e4",
+  "runtime": "bash",
+  "purpose": "Read error context for failing tests",
+  "script_chars": 189,
+  "started_at": "2026-05-13T12:06:46.857Z",
+  "finished_at": "2026-05-13T12:06:46.875Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 18,
+  "stdout_bytes": 3615,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/a45e8a17-e954-42dd-8c83-21eaabe8b1e4.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/a45e8a17-e954-42dd-8c83-21eaabe8b1e4.stderr"
+}

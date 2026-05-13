@@ -1,0 +1,18 @@
+{
+  "id": "74c19683-7fe7-4661-bb0d-feca66314bba",
+  "runtime": "bash",
+  "purpose": "Check what the failing test areas look like and if they are infrastructure-sensitive",
+  "script_chars": 273,
+  "started_at": "2026-05-13T12:06:26.390Z",
+  "finished_at": "2026-05-13T12:06:26.411Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 21,
+  "stdout_bytes": 3619,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/74c19683-7fe7-4661-bb0d-feca66314bba.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/74c19683-7fe7-4661-bb0d-feca66314bba.stderr"
+}

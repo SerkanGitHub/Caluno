@@ -1,0 +1,18 @@
+{
+  "id": "febb2b23-8838-40ed-b777-9e2432bd2705",
+  "runtime": "bash",
+  "purpose": "Read the failing test files to understand what they test",
+  "script_chars": 255,
+  "started_at": "2026-05-13T12:06:01.971Z",
+  "finished_at": "2026-05-13T12:06:01.996Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 25,
+  "stdout_bytes": 1520,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/febb2b23-8838-40ed-b777-9e2432bd2705.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/febb2b23-8838-40ed-b777-9e2432bd2705.stderr"
+}

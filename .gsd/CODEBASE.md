@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-05-13T07:25:56Z | Files: 500 | Described: 0/500
-<!-- gsd:codebase-meta {"generatedAt":"2026-05-13T07:25:56Z","fingerprint":"5c48516fe6b36fb761f204171a21111d74d3e07e","fileCount":500,"truncated":true} -->
+Generated: 2026-05-13T11:47:54Z | Files: 500 | Described: 0/500
+<!-- gsd:codebase-meta {"generatedAt":"2026-05-13T11:47:54Z","fingerprint":"e95d0904cfaaf2f3bbdb7c363322dc3fa0c3af15","fileCount":500,"truncated":true} -->
 Note: Truncated to first 500 files. Run with higher --max-files to include all.
 
 ### (root)/
@@ -465,29 +465,29 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Bgn2yaYW.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BIyNKtvS.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BNQEOYEk.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BVDj2TQX.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BtuRdi1Z.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/BWcPjAJn.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/bY-7bDrD.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/C-ffgH8v.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Cg5Gs5n7.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/CinHc9Pg.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Cnou3hnx.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/Co6YAk7x.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/D58iBqSA.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DsnmJJEf.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/DYK4CpHh.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/chunks/qPliVElR.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/chunks/XccW2AWw.js`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/entry/
-- `apps/web/.svelte-kit/output/client/_app/immutable/entry/app.B459StKA.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/entry/start.BNCE8Q8n.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/entry/app.Dsam9IUJ.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/entry/start.C-hZGGVF.js`
 
 ### apps/web/.svelte-kit/output/client/_app/immutable/nodes/
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/0.wwDtjeDr.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/1.RlATbF1x.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/2.D97ulYRX.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/1.-Ez00-gc.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/2.Cc4h6EDF.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/3.CT-hjByW.js`
-- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/4.BbdBROH2.js`
+- `apps/web/.svelte-kit/output/client/_app/immutable/nodes/4.CSpvXwbl.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/5.8DDdL3Jz.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/6.BKXhBF4H.js`
 - `apps/web/.svelte-kit/output/client/_app/immutable/nodes/7.BuQgnRyP.js`
@@ -698,11 +698,6 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/web/test-results/e2e/auth-groups-access-join-on-156de-loses-access-after-sign-out/trace.zip`
 - `apps/web/test-results/e2e/auth-groups-access-join-on-156de-loses-access-after-sign-out/video.webm`
 
-### apps/web/test-results/e2e/calendar-shifts-touching-b-4889b-advisory-free-before-submit/
-- `apps/web/test-results/e2e/calendar-shifts-touching-b-4889b-advisory-free-before-submit/error-context.md`
-- `apps/web/test-results/e2e/calendar-shifts-touching-b-4889b-advisory-free-before-submit/trace.zip`
-- `apps/web/test-results/e2e/calendar-shifts-touching-b-4889b-advisory-free-before-submit/video.webm`
-
 ### apps/web/test-results/e2e/find-time-permitted-member-a75b2-on-the-real-find-time-route/
 - `apps/web/test-results/e2e/find-time-permitted-member-a75b2-on-the-real-find-time-route/error-context.md`
 - `apps/web/test-results/e2e/find-time-permitted-member-a75b2-on-the-real-find-time-route/trace.zip`
@@ -736,3 +731,6 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `apps/web/tests/schedule/create-prefill.unit.test.ts`
 - `apps/web/tests/schedule/offline-queue.unit.test.ts`
 - `apps/web/tests/schedule/offline-store.unit.test.ts`
+- `apps/web/tests/schedule/recurrence.unit.test.ts`
+- `apps/web/tests/schedule/server-actions.unit.test.ts`
+- `apps/web/tests/schedule/shift-editor-advisory.unit.test.ts`

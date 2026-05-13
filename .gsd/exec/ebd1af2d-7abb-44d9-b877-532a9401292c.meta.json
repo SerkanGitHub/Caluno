@@ -1,0 +1,18 @@
+{
+  "id": "ebd1af2d-7abb-44d9-b877-532a9401292c",
+  "runtime": "bash",
+  "purpose": "Find E2E test files and check previous exec results",
+  "script_chars": 299,
+  "started_at": "2026-05-13T12:05:52.864Z",
+  "finished_at": "2026-05-13T12:05:53.674Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 810,
+  "stdout_bytes": 1865,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/ebd1af2d-7abb-44d9-b877-532a9401292c.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/ebd1af2d-7abb-44d9-b877-532a9401292c.stderr"
+}

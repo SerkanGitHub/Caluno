@@ -1,0 +1,22 @@
+=== S04 key decisions and patterns ===
+key_decisions:
+  - Derive the visible-week advisory source once at the protected route boundary and thread it through all dialog entrypoints so overlap previews stay within already-authorized calendar/week data.
+  - Keep clash detection advisory-only in the web editor: warn before submit, exclude the current shift during edit/move, and explicitly reset local advisory state on close or success to avoid stale warnings.
+patterns_established:
+  - Route-derived, scope-preserving week context can be reused by downstream editor surfaces instead of introducing new fetch paths for client-side guidance.
+  - Draft-driven UI advisories work best as pure helpers wrapped around shared domain contracts so unit tests can prove malformed-input suppression, boundary behavior, and self-exclusion without component harness overhead.
+observability_surfaces:
+  - `data-testid="clash-advisory"` provides an explicit pre-submit inspection surface for browser automation and future regression diagnosis.
+drill_down_paths:
+
+=== S05 key decisions and patterns ===
+key_decisions:
+  - Shared clash-advisory derivation now lives in `@repo/caluno-core` so web and mobile reuse identical overlap and self-exclusion behavior.
+  - Mobile recurrence suggestions stay bounded to the active `calendarId` and trailing 30-day window ending at `visibleWeek.endAt`, with timeout/query/malformed paths failing closed to `null`.
+  - Mobile predictive UI uses explicit route diagnostics plus stable sheet test hooks instead of inferring state from chip presence alone.
+patterns_established:
+  - Use route-owned predictive loader state with explicit diagnostics (`calendar-route-state`) so mobile UI can distinguish ready, empty, dismissed, and fail-closed states.
+  - Centralize shift-editor advisory rules in `@repo/caluno-core` and keep app-local wrappers thin to preserve stable import surfaces while sharing logic.
+  - Expose stable `data-testid` hooks for predictive suggestion and clash-advisory states so Playwright can prove behavior without brittle selector coupling.
+observability_surfaces:
+  - `data-testid="calendar-route-state"` now exposes recurrence-suggestion load state on the mobile calendar route.

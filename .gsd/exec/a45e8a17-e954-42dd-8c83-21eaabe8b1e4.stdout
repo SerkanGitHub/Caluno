@@ -1,0 +1,81 @@
+=== find-time error-context ===
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: find-time.spec.ts >> permitted member sees ranked top picks before the lighter browse inventory on the real find-time route
+- Location: tests/e2e/find-time.spec.ts:21:1
+
+# Error details
+
+```
+Error: expect(locator).toContainText(expected) failed
+
+Locator: getByTestId('find-time-summary')
+Expected substring: "10 truthful windows"
+Received string:    "Window inventory 11 truthful windows Top picks stay high-density, while browse cards remain lighter-weight for scanning the rest of the truthful inventory."
+Timeout: 10000ms
+
+Call log:
+  - Expect "toContainText" with timeout 10000ms
+  - waiting for getByTestId('find-time-summary')
+    14 × locator resolved to <article data-testid="find-time-summary" class="status-card tone-neutral">…</article>
+       - unexpected value "Window inventory 11 truthful windows Top picks stay high-density, while browse cards remain lighter-weight for scanning the rest of the truthful inventory."
+
+```
+
+# Page snapshot
+
+```yaml
+- main [ref=e4]:
+  - complementary [ref=e5]:
+    - paragraph [ref=e6]: Truthful availability search
+    - heading "Bob Member" [level=1] [ref=e7]
+    - paragraph [ref=e8]: Search windows come from the trusted roster and member-attributed busy intervals already authorized for this calendar.
+    - generic [ref=e9]:
+      - article [ref=e10]:
+        - generic [ref=e11]: Protected shell
+        - strong [ref=e12]: trusted-online
+        - paragraph [ref=e13]: Protected navigation and calendar scope came from the trusted server load.
+      - article [ref=e14]:
+        - generic [ref=e15]: Find-time route
+        - strong [ref=e16]: Truthful results
+        - paragraph [ref=e17]: Found 11 truthful windows, including 3 top picks.
+      - article [ref=e18]:
+        - generic [ref=e19]: Search diagnostics
+        - strong [ref=e20]: ready
+        - paragraph [ref=e21]: Found 11 truthful windows, including 3 top picks.
+        - code [ref=e22]: none
+      - article [ref=e23]:
+        - generic [ref=e24]: Trusted scope
+        - strong [ref=e25]: 2026-04-15 → 2026-05-15
+        - paragraph [ref=e26]: 60 minute search over 3 named members.
+        - code [ref=e27]: 11 windows
+    - navigation [ref=e28]:
+      - link "Back to calendar board" [ref=e29] [cursor=pointer]:
+        - /url: /calendars/aaaaaaaa-aaaa-1111-1111-111111111111
+      - link "Open groups" [ref=e30] [cursor=pointer]:
+        - /url: /groups
+      - link "Sign out" [ref=e31] [cursor=pointer]:
+        - /url: /logout
+  - generic [ref=e32]:
+    - generic [ref=e33]:
+      - generic [ref=e34]:
+        - paragraph [ref=e35]: Alpha Team
+        - heading "Alpha shared" [level=2] [ref=e36]
+        - paragraph [ref=e37]: Review ranked top picks before the lighter browse list. Every explanation below is shaped by the protected server contract for the next 30 days only.
+      - generic [ref=e38]:
+        - generic [ref=e39]: Default calendar
+        - generic [ref=e40]: member access
+        - generic [ref=e41]: ready
+        - generic [ref=e42]: 3 named members
+    - generic [ref=e43]:
+      - generic [ref=e44]:
+        - paragraph [ref=e45]: Search the protected 30-day horizon
+        - heading "Move the window, keep the scope." [level=3] [ref=e46]
+        - paragraph [ref=e47]: Duration and start anchor stay explicit. Invalid values, empty results, and query failures never collapse into the same UI state.
+      - generic [ref=e48]:

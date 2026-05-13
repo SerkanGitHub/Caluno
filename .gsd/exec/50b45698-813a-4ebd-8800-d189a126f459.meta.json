@@ -1,0 +1,18 @@
+{
+  "id": "50b45698-813a-4ebd-8800-d189a126f459",
+  "runtime": "bash",
+  "purpose": "Check if auth-groups and find-time failures are pre-existing or M005-introduced",
+  "script_chars": 803,
+  "started_at": "2026-05-13T12:06:40.380Z",
+  "finished_at": "2026-05-13T12:06:40.485Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 105,
+  "stdout_bytes": 1462,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/50b45698-813a-4ebd-8800-d189a126f459.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/50b45698-813a-4ebd-8800-d189a126f459.stderr"
+}

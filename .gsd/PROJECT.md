@@ -10,9 +10,7 @@ Turn chaotic schedules into shared clarity automatically.
 
 ## Current State
 
-M001 and M002 are complete and validated on the web proof surface.
-
-M003 is complete. All five slices (S01–S05) are done. The mobile app is a real authenticated calendar client with offline continuity, compact Find time handoff, per-device notification controls, and cross-surface notification delivery correctness.
+M001 through M005 are complete and validated. The product now includes predictive scheduling assistance (smart recurrence suggestions and non-blocking clash advisories) on both web and mobile, built on top of the complete cross-platform coordination loop from M001–M004.
 
 What works today:
 - trusted sign-in, group onboarding, permitted calendar access, and fail-closed denied routes on web
@@ -40,14 +38,19 @@ What works today:
 - trusted-offline route-mode tracking when connectivity drops within a trusted calendar session
 - mobile Playwright proof for sign-in, permitted scope, denied scope, offline continuity, reconnect drain, Find time handoff, notification toggle persistence, degraded notification states, safe notification routing, and cross-surface notification delivery
 - successful Capacitor iOS packaging/sync for the assembled mobile scheduling + notification surface
+- **smart recurrence suggestions** on web and mobile: `detectRecurrencePattern` in `@repo/caluno-core` detects same-weekday same-hour patterns from ≥3 shifts in 30 days and surfaces a dismissable suggestion chip in the shift create dialog/sheet
+- **non-blocking clash advisories** on web and mobile: `previewShiftConflicts` in `@repo/caluno-core` previews overlapping same-calendar shifts before save; the advisory is warning-only and does not block the save action
+- web recurrence suggestion chip wired into `ShiftEditorDialog` with accept/dismiss/reload behavior and stable `data-testid` hooks; bounded loader scoped to authorized calendar id and 30-day trailing window
+- web clash advisory rendered in `ShiftEditorDialog` using typed `data-testid="clash-advisory"` live region before the save confirm
+- mobile recurrence suggestion chip and clash advisory wired into `ShiftEditorSheet` using the same shared helper contracts and `data-testid` vocabulary as web
+- scoped WCAG 2.1 AA accessibility proof on the predictive create-editor subtree (zero new violations via `@axe-core/playwright`)
+- typed `calendar-route-state[data-route-mode][data-route-reason]` diagnostics on web for stable Playwright route-state proofs
+- R011 (predictive scheduling assistance) validated against shipped recurrence suggestion and clash advisory surfaces
 
-What is not yet complete:
-- Two E2E test-code assertions need updating (calendar-offline.spec.ts route-mode expectation and mobile-assembly.spec.ts top-pick ordering sensitivity) — production behavior is correct, test assertions are stale
+Known limitations remaining after M005:
+- Full web E2E regression suite has pre-existing test-expectation drift in `auth-groups-access.spec.ts` (shell diagnostic layout) and `find-time.spec.ts` (seeded window count mismatch) — these are not caused by M005 and need baseline stabilization
+- No slice-level `*-ASSESSMENT.md` artifacts were produced across M005 slices — a process gap to address in future milestones
 - Real provider-backed remote delivery (APNs/FCM) on a provisioned device — deferred to live integration testing
-- Predictive assistance remains deferred to M004
-
-What is planned next:
-- M004 builds predictive assistance and release hardening on top of the now-complete cross-platform coordination loop
 
 ## Architecture / Key Patterns
 
@@ -57,18 +60,15 @@ What is planned next:
 - Supabase is the backend authority for auth, database, RLS, and realtime
 - Thin SvelteKit server composition sits on top of Supabase for trusted schedule and find-time operations
 - Scheduling is local-first, with the server canonical after reconnect
-- Web offline continuity already exists behind repository/controller seams, with browser-local snapshots, queued mutations, reconnect replay, and realtime refresh orchestration
+- Web offline continuity exists behind repository/controller seams, with browser-local snapshots, queued mutations, reconnect replay, and realtime refresh orchestration
 - Find time remains a trusted authority-backed capability with explicit fail-closed offline behavior rather than cached guessed answers
-- Shared pure mobile/web auth, scope, matcher, ranking, and timing-only create-prefill helpers now live in `@repo/caluno-core`, while Svelte/runtime integration stays app-local
-- Mobile Find time is split into a pure transport helper plus a pure view-state shaper so trusted authority, offline denial, and compact UI state stay testable separately
-- Mobile Find time handoff reuses the existing `ShiftEditorSheet` instead of introducing a second create surface; arrival query params are cleaned immediately after first render
-- M003 reuses shared product logic and backend contracts where possible, but mobile gets mobile-specific UI flows instead of a thin port of web screens
-- The mobile shell treats cached Supabase session data as untrusted until `getSession()` plus `getUser()` revalidate it client-side
-- Mobile protected routes resolve access only from one shaped trusted inventory snapshot and surface denied reason, failure phase, and attempted id explicitly in the UI
-- Notification state on mobile is rooted in a stable installation UUID, persists desired intent separately from runtime health, and exposes degraded reasons instead of hiding them behind a boolean toggle
-- Notification-open routing always normalizes target paths and checks trusted calendar scope before navigation
-- Best-effort dispatch pattern: void-after-canonical-write keeps schedule helpers synchronous; dispatch errors/timeouts never reach callers
-- trusted-offline is a distinct MobileOfflineRouteMode (alongside trusted-online and cached-offline) representing connectivity loss within an active trusted calendar session
+- Shared pure mobile/web auth, scope, matcher, ranking, timing-only create-prefill, and now predictive (recurrence + advisory) helpers live in `@repo/caluno-core`; Svelte/runtime integration stays app-local
+- Predictive helpers are deterministic: evidence windows anchor to the latest valid shift in provided data, not `Date.now()`; malformed/inverted/duplicate rows are filtered fail-closed before thresholds apply
+- Advisory conflict previews are warning-only: `previewShiftConflicts` returns overlapping shifts but imposes no blocking write policy — users stay in control
+- Predictive UI surfaces use calm, dismissable hint patterns with stable `data-testid` hooks (`recurrence-suggestion`, `clash-advisory`) and ARIA live regions for accessibility
+- Mobile predictive behavior is split cleanly: route owns recurrence-suggestion diagnostics; `ShiftEditorSheet` plus `shift-editor-predictive.ts` own accept/dismiss lifecycle and clash-advisory rendering
+- Typed route diagnostics (`data-route-mode`, `data-route-reason`) decouple Playwright proof assertions from prose copy
+- Accessibility hardening is done scoped to feature subtrees, not whole-app scans
 
 ## Capability Contract
 
@@ -78,5 +78,6 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 
 - [x] M001: Shared scheduling substrate — Trusted shared calendars, offline continuity, sync, realtime refresh, and baseline conflict visibility on web.
 - [x] M002: Shared free-time matching — Truthful ranked availability search, explanations, and suggestion-to-create handoff on the shared substrate.
-- [x] M003: Cross-platform continuity and reminders — Mobile auth, offline continuity, Find time, notification controls, and cross-surface notification delivery correctness are all complete.
-- [ ] M004: Predictive assistance and release hardening — Predictive coordination help and product hardening after cross-platform continuity is real.
+- [x] M003: Cross-platform continuity and reminders — Mobile auth, offline continuity, Find time, notification controls, and cross-surface notification delivery correctness.
+- [x] M004: Find-time and mobile handoff hardening — Find-time suggestion CTAs, ranked Top picks explanations, and mobile/web handoff determinism.
+- [x] M005: Predictive assistance and release hardening — Smart recurrence suggestions and non-blocking clash advisories on web and mobile, accessibility proof, typed route diagnostics, and R011 validated.

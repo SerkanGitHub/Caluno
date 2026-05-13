@@ -1,0 +1,18 @@
+{
+  "id": "c65aaab7-e1c2-47af-86fe-b361f218f1d7",
+  "runtime": "bash",
+  "purpose": "Read auth-groups error context",
+  "script_chars": 150,
+  "started_at": "2026-05-13T12:06:55.834Z",
+  "finished_at": "2026-05-13T12:06:55.875Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 41,
+  "stdout_bytes": 2568,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/c65aaab7-e1c2-47af-86fe-b361f218f1d7.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/c65aaab7-e1c2-47af-86fe-b361f218f1d7.stderr"
+}

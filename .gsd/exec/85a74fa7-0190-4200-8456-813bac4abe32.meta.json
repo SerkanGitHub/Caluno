@@ -1,0 +1,18 @@
+{
+  "id": "85a74fa7-0190-4200-8456-813bac4abe32",
+  "runtime": "bash",
+  "purpose": "Check last test run results and S06 SUMMARY for context on failing tests",
+  "script_chars": 359,
+  "started_at": "2026-05-13T12:06:07.448Z",
+  "finished_at": "2026-05-13T12:06:07.497Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 49,
+  "stdout_bytes": 5811,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/85a74fa7-0190-4200-8456-813bac4abe32.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/85a74fa7-0190-4200-8456-813bac4abe32.stderr"
+}

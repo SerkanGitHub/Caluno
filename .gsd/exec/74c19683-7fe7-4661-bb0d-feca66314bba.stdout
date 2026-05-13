@@ -1,0 +1,93 @@
+=== auth-groups-access.spec.ts test names and line 45 context ===
+import {
+  expect,
+  seededCalendars,
+  seededJoinCodes,
+  seededUsers,
+  signInThroughUi,
+  signOutThroughUi,
+  test,
+  expectProtectedRouteToRedirectToSignIn
+} from './fixtures';
+
+test.describe.configure({ mode: 'serial' });
+
+test('seeded member can open a permitted calendar and gets an explicit denial for an unauthorized calendar', async ({
+  page,
+  flow
+}) => {
+  await test.step('phase: sign in as the seeded Alpha member', async () => {
+    flow.mark('login', seededUsers.alphaMember.email);
+    await signInThroughUi(page, seededUsers.alphaMember);
+    await expect(page.getByTestId('groups-shell')).toContainText('trusted-online');
+    await expect(page.getByRole('heading', { name: seededUsers.alphaMember.expectedGroups[0] })).toBeVisible();
+  });
+
+  await test.step('phase: open the permitted Alpha shared calendar', async () => {
+    flow.mark('permitted-calendar', seededCalendars.alphaShared);
+    await page.getByRole('link', { name: 'Alpha shared Default calendar' }).click();
+    await expect(page).toHaveURL(new RegExp(`/calendars/${seededCalendars.alphaShared}`));
+    await expect(page.getByTestId('calendar-shell')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Alpha shared' })).toBeVisible();
+  });
+
+  await test.step('phase: verify the existing Beta calendar is denied outside membership scope', async () => {
+    flow.mark('access-denied', seededCalendars.betaShared);
+    await page.goto(`/calendars/${seededCalendars.betaShared}`);
+
+    const deniedState = page.getByTestId('access-denied-state');
+    await expect(deniedState).toBeVisible();
+    await expect(deniedState).toContainText('calendar-missing');
+    await expect(deniedState).toContainText('calendar-lookup');
+    await expect(deniedState).toContainText(seededCalendars.betaShared);
+  });
+});
+
+test('join onboarding surfaces invalid codes, admits a valid redemption, survives reload, and loses access after sign-out', async ({
+  page,
+  flow
+}) => {
+  await test.step('phase: sign in as the seeded user with no memberships', async () => {
+    flow.mark('login', seededUsers.noMembership.email);
+    await signInThroughUi(page, seededUsers.noMembership);
+    await expect(page.getByTestId('groups-shell')).toContainText('onboarding-empty');
+    await expect(page.getByTestId('onboarding-empty-state')).toBeVisible();
+  });
+
+  await test.step('phase: submit an invalid join code and expose the typed join failure state', async () => {
+    flow.mark('join-invalid', seededJoinCodes.invalid);
+    await page.getByLabel('Join code').fill(seededJoinCodes.invalid);
+    await page.getByRole('button', { name: 'Redeem join code' }).click();
+
+
+=== find-time.spec.ts line 15-30 ===
+import {
+  expect,
+  expectedCreateShiftPrefillValues,
+  openCalendarWeek,
+  openFindTimeRoute,
+  readCreateShiftPrefillSnapshot,
+  readFindTimeBrowseWindowCtaSnapshot,
+  readFindTimeBrowseWindowSnapshot,
+  readFindTimeTopPickCtaSnapshot,
+  readFindTimeTopPickSnapshot,
+  readVisibleWeekFromBoard,
+  seededCalendars,
+  seededFindTime,
+  seededUsers,
+  signInThroughUi,
+  test
+} from './fixtures';
+
+test.describe.configure({ mode: 'serial' });
+
+test('permitted member sees ranked top picks before the lighter browse inventory on the real find-time route', async ({
+  page,
+  flow
+}) => {
+  await test.step('phase: sign in as the seeded Alpha member and open the permitted calendar board', async () => {
+    flow.mark('login', seededUsers.alphaMember.email);
+    await signInThroughUi(page, seededUsers.alphaMember);
+    await openCalendarWeek({
+      page,
+      flow,

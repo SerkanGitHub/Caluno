@@ -1,0 +1,37 @@
+=== Find E2E test files ===
+./apps/web/tests/e2e/calendar-sync.spec.ts
+./apps/web/tests/e2e/calendar-offline.spec.ts
+./apps/web/tests/e2e/calendar-shifts.spec.ts
+./apps/web/tests/e2e/find-time.spec.ts
+./apps/web/tests/e2e/auth-groups-access.spec.ts
+./apps/mobile/tests/e2e/calendar-notifications.spec.ts
+./apps/mobile/tests/e2e/auth-scope.spec.ts
+./apps/mobile/tests/e2e/find-time-handoff.spec.ts
+./apps/mobile/tests/e2e/calendar-offline.spec.ts
+./apps/mobile/tests/e2e/mobile-predictive.spec.ts
+./apps/mobile/tests/e2e/mobile-assembly.spec.ts
+
+=== Find auth-groups-access ===
+./apps/web/tests/e2e/auth-groups-access.spec.ts
+./apps/web/test-results/e2e/auth-groups-access-join-on-156de-loses-access-after-sign-out
+./apps/web/test-results/e2e/auth-groups-access-seeded--aac40-or-an-unauthorized-calendar
+
+=== Find find-time ===
+./packages/caluno-core/src/find-time
+./apps/web/tests/find-time
+./apps/web/tests/e2e/find-time.spec.ts
+./apps/web/tests/routes/find-time-routes.unit.test.ts
+./apps/web/.svelte-kit/adapter-node/entries/pages/(app)/calendars/_calendarId_/find-time
+./apps/web/.svelte-kit/types/src/routes/(app)/calendars/[calendarId]/find-time
+./apps/web/.svelte-kit/output/server/entries/pages/(app)/calendars/_calendarId_/find-time
+./apps/web/test-results/e2e/find-time-permitted-member-a75b2-on-the-real-find-time-route
+./apps/web/src/lib/server/find-time.ts
+./apps/web/src/lib/find-time
+./apps/web/src/routes/(app)/calendars/[calendarId]/find-time
+./apps/mobile/tests/mobile-find-time.unit.test.ts
+./apps/mobile/tests/find-time-contract.unit.test.ts
+./apps/mobile/tests/e2e/find-time-handoff.spec.ts
+./apps/mobile/.svelte-kit/types/src/routes/calendars/[calendarId]/find-time
+./apps/mobile/.svelte-kit/output/server/entries/pages/calendars/_calendarId_/find-time
+./apps/mobile/src/lib/find-time
+./apps/mobile/src/routes/calendars/[calendarId]/find-time
