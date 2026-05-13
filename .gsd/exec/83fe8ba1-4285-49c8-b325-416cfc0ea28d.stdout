@@ -1,0 +1,133 @@
+commit=c1efcac
+c1efcac439106170285607acbd05d2eb47c75597
+feat: Marked R011 validated from fresh S06 predictive/browser/build evi…
+- .gsd/REQUIREMENTS.md
+- .gsd/gsd.db
+
+GSD context:
+files:
+.gsd/CODEBASE.md
+.gsd/REQUIREMENTS.md
+.gsd/exec/25cd6f8a-b646-40cd-b4bb-429592b9400b.meta.json
+.gsd/exec/25cd6f8a-b646-40cd-b4bb-429592b9400b.stderr
+.gsd/exec/25cd6f8a-b646-40cd-b4bb-429592b9400b.stdout
+.gsd/exec/34ed25d5-babb-492c-a2ea-88a465ee0950.meta.json
+.gsd/exec/34ed25d5-babb-492c-a2ea-88a465ee0950.stderr
+.gsd/exec/34ed25d5-babb-492c-a2ea-88a465ee0950.stdout
+.gsd/exec/353dd2c8-4855-42cd-a1a8-44ff51a7e54f.meta.json
+.gsd/exec/353dd2c8-4855-42cd-a1a8-44ff51a7e54f.stderr
+---
+commit=0f31c09
+0f31c09e9f667ba71eb8d37dbd74eae408752093
+fix: Confirmed the scoped predictive-editor axe proof, fixed a text-col…
+- apps/web/tests/e2e/calendar-shifts.spec.ts
+
+GSD context:
+- Milestone: M005 - Predictive assistance and release hardening
+files:
+apps/web/tests/e2e/calendar-shifts.spec.ts
+---
+commit=6c8abf1
+6c8abf18aa1bce0a296ce182d8a17730092c3677
+feat: Re-ran the mobile predictive smoke from a fresh local Supabase re…
+- (none)
+
+GSD context:
+- Milestone: M005 - Predictive assistance and release hardening
+files:
+.gsd/CODEBASE.md
+.gsd/DECISIONS.md
+.gsd/exec/012ae51e-3f83-4a2d-a124-3322603728c7.meta.json
+.gsd/exec/012ae51e-3f83-4a2d-a124-3322603728c7.stderr
+.gsd/exec/012ae51e-3f83-4a2d-a124-3322603728c7.stdout
+.gsd/exec/16e048f5-bff3-48db-a017-90843052c6ea.meta.json
+.gsd/exec/16e048f5-bff3-48db-a017-90843052c6ea.stderr
+.gsd/exec/16e048f5-bff3-48db-a017-90843052c6ea.stdout
+.gsd/exec/235c30b0-ffa7-49c2-8136-952dec38c6df.meta.json
+.gsd/exec/235c30b0-ffa7-49c2-8136-952dec38c6df.stderr
+---
+commit=d5882d7
+d5882d751a2a2edaadf2bccd60c024e8433a65b3
+feat: Typed the web calendar route-state proof surface and migrated the…
+- apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte
+- apps/web/tests/e2e/calendar-offline.spec.ts
+- apps/web/tests/e2e/calendar-sync.spec.ts
+- apps/web/tests/e2e/fixtures.ts
+files:
+apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte
+apps/web/tests/e2e/calendar-offline.spec.ts
+apps/web/tests/e2e/calendar-sync.spec.ts
+apps/web/tests/e2e/fixtures.ts
+---
+commit=f5872d5
+f5872d5a6c665c899f87b6ae9e6930e460ab1ce5
+feat: Wired mobile shift sheets to show truthful recurrence suggestions…
+- apps/mobile/src/routes/calendars/[calendarId]/+page.svelte
+- apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte
+- apps/mobile/src/lib/components/calendar/ShiftCard.svelte
+- apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte
+files:
+apps/mobile/src/lib/components/calendar/MobileCalendarBoard.svelte
+apps/mobile/src/lib/components/calendar/ShiftCard.svelte
+apps/mobile/src/lib/components/calendar/ShiftEditorSheet.svelte
+apps/mobile/src/lib/components/calendar/shift-editor-predictive.ts
+apps/mobile/src/routes/calendars/[calendarId]/+page.svelte
+apps/mobile/tests/e2e/mobile-predictive.spec.ts
+apps/mobile/tests/mobile-shift-editor-predictive.unit.test.ts
+---
+commit=0174445
+0174445a03e7a179ecc6e41988526a10cf0be6f0
+feat: Added bounded mobile recurrence-suggestion loading plus explicit…
+- apps/mobile/src/lib/offline/transport.ts
+- apps/mobile/src/routes/calendars/[calendarId]/+page.svelte
+- apps/mobile/tests/mobile-predictive.unit.test.ts
+- apps/mobile/tests/mobile-sync-runtime.unit.test.ts
+files:
+apps/mobile/src/lib/offline/transport.ts
+apps/mobile/src/routes/calendars/[calendarId]/+page.svelte
+apps/mobile/tests/e2e/mobile-assembly.spec.ts
+apps/mobile/tests/mobile-notification-contract.unit.test.ts
+apps/mobile/tests/mobile-notification-runtime.unit.test.ts
+apps/mobile/tests/mobile-predictive.unit.test.ts
+apps/mobile/tests/mobile-sync-runtime.unit.test.ts
+---
+commit=dcd1792
+dcd1792a74864411ed237298d31022aafbd6ec87
+feat: Added Playwright create-flow proof for advisory-only overlap warn…
+- apps/web/tests/e2e/fixtures.ts
+- apps/web/tests/e2e/calendar-shifts.spec.ts
+
+GSD context:
+files:
+apps/web/tests/e2e/calendar-shifts.spec.ts
+apps/web/tests/e2e/fixtures.ts
+---
+commit=877a164
+877a16411a7681bb1441d9940bf7f8aafe51b626
+test: Added live warning-only clash advisory state to the shared web sh…
+- apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte
+- apps/web/src/app.css
+- apps/web/src/lib/schedule/shift-editor-advisory.ts
+- apps/web/tests/schedule/shift-editor-advisory.unit.test.ts
+files:
+apps/web/src/app.css
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte
+apps/web/src/lib/schedule/shift-editor-advisory.ts
+apps/web/tests/schedule/shift-editor-advisory.unit.test.ts
+---
+commit=f4394dc
+f4394dcf349e8d53d87cac685fda18a1a348fdef
+feat: Threaded one route-derived visible-week `existingShifts` list int…
+- apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte
+- apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte
+- apps/web/src/lib/components/calendar/ShiftDayColumn.svelte
+- apps/web/src/lib/components/calendar/ShiftCard.svelte
+files:
+apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte
+apps/web/src/lib/components/calendar/ShiftCard.svelte
+apps/web/src/lib/components/calendar/ShiftDayColumn.svelte
+apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte
+apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte
+apps/web/tests/routes/protected-routes.unit.test.ts
+apps/web/tests/schedule/conflicts.unit.test.ts
+---

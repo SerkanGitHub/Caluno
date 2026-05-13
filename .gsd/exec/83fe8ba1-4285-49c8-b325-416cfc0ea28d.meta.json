@@ -1,0 +1,18 @@
+{
+  "id": "83fe8ba1-4285-49c8-b325-416cfc0ea28d",
+  "runtime": "bash",
+  "purpose": "inspect cited M005 commit evidence from prior summary",
+  "script_chars": 390,
+  "started_at": "2026-05-13T07:29:31.361Z",
+  "finished_at": "2026-05-13T07:29:31.730Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 369,
+  "stdout_bytes": 5355,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/83fe8ba1-4285-49c8-b325-416cfc0ea28d.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/83fe8ba1-4285-49c8-b325-416cfc0ea28d.stderr"
+}

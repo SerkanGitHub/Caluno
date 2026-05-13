@@ -1,0 +1,18 @@
+{
+  "id": "4c17ddfc-bfaa-4ba4-b8ec-beb1424ba317",
+  "runtime": "bash",
+  "purpose": "Locate M005 trailer commits directly",
+  "script_chars": 482,
+  "started_at": "2026-05-13T07:30:06.155Z",
+  "finished_at": "2026-05-13T07:30:06.241Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 86,
+  "stdout_bytes": 1337,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/4c17ddfc-bfaa-4ba4-b8ec-beb1424ba317.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/4c17ddfc-bfaa-4ba4-b8ec-beb1424ba317.stderr"
+}

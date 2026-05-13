@@ -1,0 +1,129 @@
+commit=92ad26e6949aa0cdd472e2ef586e1b5ccb06cd25 subject=chore: auto-commit after complete-milestone
+trailers=GSD-Unit: M005
+file=apps/web/.svelte-kit/adapter-node/chunks/internal.js
+file=apps/web/.svelte-kit/adapter-node/manifest-full.js
+file=apps/web/.svelte-kit/adapter-node/manifest.js
+file=apps/web/.svelte-kit/adapter-node/nodes/1.js
+file=apps/web/.svelte-kit/adapter-node/nodes/2.js
+file=apps/web/.svelte-kit/adapter-node/nodes/4.js
+file=apps/web/.svelte-kit/generated/server/internal.js
+file=apps/web/.svelte-kit/output/client/.vite/manifest.json
+file=apps/web/.svelte-kit/output/client/_app/immutable/chunks/B4i0ErFP.js
+file=apps/web/.svelte-kit/output/client/_app/immutable/chunks/BBdyOcuz.js
+---
+commit=57c45c51722e96f4ef1cc5bba7cc86f8fe7f8cfc subject=chore: auto-commit after complete-milestone
+trailers=GSD-Unit: M005
+file=apps/web/.svelte-kit/adapter-node/chunks/internal.js
+file=apps/web/.svelte-kit/adapter-node/manifest-full.js
+file=apps/web/.svelte-kit/adapter-node/manifest.js
+file=apps/web/.svelte-kit/adapter-node/nodes/1.js
+file=apps/web/.svelte-kit/adapter-node/nodes/2.js
+file=apps/web/.svelte-kit/adapter-node/nodes/4.js
+file=apps/web/.svelte-kit/generated/server/internal.js
+file=apps/web/.svelte-kit/output/client/.vite/manifest.json
+file=apps/web/.svelte-kit/output/client/_app/immutable/chunks/B4i0ErFP.js
+file=apps/web/.svelte-kit/output/client/_app/immutable/chunks/BBdyOcuz.js
+---
+commit=b444252f1e58823498f4231bab61cfbd5fd13d00 subject=chore: auto-commit after complete-milestone
+trailers=GSD-Unit: M005
+file=apps/web/.svelte-kit/adapter-node/chunks/internal.js
+file=apps/web/.svelte-kit/adapter-node/manifest-full.js
+file=apps/web/.svelte-kit/adapter-node/manifest.js
+file=apps/web/.svelte-kit/adapter-node/nodes/1.js
+file=apps/web/.svelte-kit/adapter-node/nodes/2.js
+file=apps/web/.svelte-kit/adapter-node/nodes/4.js
+file=apps/web/.svelte-kit/generated/server/internal.js
+file=apps/web/.svelte-kit/output/client/.vite/manifest.json
+file=apps/web/.svelte-kit/output/client/_app/immutable/chunks/D0CJOdhh.js
+file=apps/web/.svelte-kit/output/client/_app/immutable/chunks/F-F5dxOO.js
+---
+commit=184dddff32b2adb875885a0a187bd53b1613ac8e subject=chore: auto-commit after complete-milestone
+trailers=GSD-Unit: M005
+file=apps/web/.svelte-kit/adapter-node/chunks/internal.js
+file=apps/web/.svelte-kit/adapter-node/manifest-full.js
+file=apps/web/.svelte-kit/adapter-node/manifest.js
+file=apps/web/.svelte-kit/adapter-node/nodes/1.js
+file=apps/web/.svelte-kit/adapter-node/nodes/2.js
+file=apps/web/.svelte-kit/adapter-node/nodes/4.js
+file=apps/web/.svelte-kit/generated/server/internal.js
+file=apps/web/.svelte-kit/output/client/.vite/manifest.json
+file=apps/web/.svelte-kit/output/client/_app/immutable/chunks/BC9ixmom.js
+file=apps/web/.svelte-kit/output/client/_app/immutable/chunks/F-F5dxOO.js
+---
+commit=751be9d530641716e86c6add976eae7af5d72009 subject=chore: auto-commit after complete-milestone
+trailers=GSD-Unit: M005
+file=apps/mobile/.svelte-kit/generated/server/internal.js
+file=apps/mobile/.svelte-kit/output/client/.vite/manifest.json
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BwBoA2p-.js
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/C2wngiQE.js
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/C3jaeQPD.js
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CBM4mgl0.js
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CBZ3GrJJ.js
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CQzsS4ST.js
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CRtSfmrt.js
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/Cdb3Jq3d.js
+---
+commit=c1efcac439106170285607acbd05d2eb47c75597 subject=feat: Marked R011 validated from fresh S06 predictive/browser/build evi…
+trailers=GSD-Task: S06/T04
+file=apps/mobile/.svelte-kit/ambient.d.ts
+file=apps/mobile/.svelte-kit/generated/server/internal.js
+file=apps/mobile/.svelte-kit/output/client/.vite/manifest.json
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/B8U8lUsc.js
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BZasoIi_.js
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BwBoA2p-.js
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/C3jaeQPD.js
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CBM4mgl0.js
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CDPenH6r.js
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/CQzsS4ST.js
+---
+commit=0f31c09e9f667ba71eb8d37dbd74eae408752093 subject=fix: Confirmed the scoped predictive-editor axe proof, fixed a text-col…
+trailers=GSD-Task: S06/T02
+file=apps/web/tests/e2e/calendar-shifts.spec.ts
+---
+commit=6c8abf18aa1bce0a296ce182d8a17730092c3677 subject=feat: Re-ran the mobile predictive smoke from a fresh local Supabase re…
+trailers=GSD-Task: S06/T03
+file=apps/mobile/.svelte-kit/ambient.d.ts
+file=apps/mobile/.svelte-kit/generated/server/internal.js
+file=apps/mobile/.svelte-kit/output/client/.vite/manifest.json
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/assets/3.2cctJfKW.css
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/assets/3.BBom593b.css
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/A6cbcEcB.js
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/ACXHViyu.js
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/B8U8lUsc.js
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BCoXsV2g.js
+file=apps/mobile/.svelte-kit/output/client/_app/immutable/chunks/BGycqLZO.js
+---
+commit=29906dc8a564c172f2bd7042d282558a8aa7b453 subject=test: Added scoped axe coverage for the predictive web create editor an…
+trailers=GSD-Task: S06/T02
+file=apps/web/package.json
+file=apps/web/playwright.config.ts
+file=apps/web/tests/e2e/calendar-shifts.spec.ts
+file=pnpm-lock.yaml
+---
+commit=d5882d751a2a2edaadf2bccd60c024e8433a65b3 subject=feat: Typed the web calendar route-state proof surface and migrated the…
+trailers=GSD-Task: S06/T01
+file=apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte
+file=apps/web/tests/e2e/calendar-offline.spec.ts
+file=apps/web/tests/e2e/calendar-sync.spec.ts
+file=apps/web/tests/e2e/fixtures.ts
+---
+commit=953da6aab33180e5bf9b4d157f4023657879a16d subject=feat: Confirmed the mobile shift sheet already threads visible-week shi…
+trailers=GSD-Task: S05/T03
+file=apps/mobile/.svelte-kit/ambient.d.ts
+file=apps/mobile/.svelte-kit/generated/server/internal.js
+file=apps/mobile/test-results/e2e/.last-run.json
+file=apps/mobile/test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/error-context.md
+file=apps/mobile/test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/test-failed-1.png
+file=apps/mobile/test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/trace.zip
+file=apps/mobile/test-results/e2e/find-time-handoff-permitte-ca7b0-nd-reload-without-reopening/video.webm
+file="apps/mobile/test-results/e2e/mobile-assembly-phase-4-\342\200\224--264e1-ds-in-the-permitted-context/error-context.md"
+file="apps/mobile/test-results/e2e/mobile-assembly-phase-4-\342\200\224--264e1-ds-in-the-permitted-context/test-failed-1.png"
+file="apps/mobile/test-results/e2e/mobile-assembly-phase-4-\342\200\224--264e1-ds-in-the-permitted-context/trace.zip"
+---
+commit=a405ff0a7893a64fdf78c611a54a191055334bf3 subject=test: Added mobile predictive Playwright snapshot helpers plus a dedica…
+trailers=GSD-Task: S05/T04
+file=apps/mobile/tests/e2e/fixtures.ts
+file=apps/mobile/tests/e2e/mobile-assembly.spec.ts
+file=apps/mobile/tests/e2e/mobile-predictive.spec.ts
+---
+found=12

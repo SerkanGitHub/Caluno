@@ -1,0 +1,18 @@
+{
+  "id": "fe2a86d7-e596-445e-bdc6-beccea7c0f0a",
+  "runtime": "bash",
+  "purpose": "Verify non-.gsd files in trailer commit for M005",
+  "script_chars": 318,
+  "started_at": "2026-05-13T07:30:14.087Z",
+  "finished_at": "2026-05-13T07:30:14.143Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 56,
+  "stdout_bytes": 127,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/fe2a86d7-e596-445e-bdc6-beccea7c0f0a.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/fe2a86d7-e596-445e-bdc6-beccea7c0f0a.stderr"
+}

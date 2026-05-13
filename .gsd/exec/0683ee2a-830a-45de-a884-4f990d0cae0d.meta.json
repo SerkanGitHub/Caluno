@@ -1,0 +1,18 @@
+{
+  "id": "0683ee2a-830a-45de-a884-4f990d0cae0d",
+  "runtime": "bash",
+  "purpose": "M005 self-diff commit evidence",
+  "script_chars": 830,
+  "started_at": "2026-05-13T07:29:07.689Z",
+  "finished_at": "2026-05-13T07:29:07.885Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 196,
+  "stdout_bytes": 20,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/0683ee2a-830a-45de-a884-4f990d0cae0d.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/0683ee2a-830a-45de-a884-4f990d0cae0d.stderr"
+}
