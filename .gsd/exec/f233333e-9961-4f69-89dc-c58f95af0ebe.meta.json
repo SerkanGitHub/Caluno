@@ -1,0 +1,18 @@
+{
+  "id": "f233333e-9961-4f69-89dc-c58f95af0ebe",
+  "runtime": "bash",
+  "purpose": "check rendered R011 requirement status in REQUIREMENTS.md",
+  "script_chars": 114,
+  "started_at": "2026-05-13T07:49:17.108Z",
+  "finished_at": "2026-05-13T07:49:17.148Z",
+  "exit_code": 1,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 40,
+  "stdout_bytes": 0,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/f233333e-9961-4f69-89dc-c58f95af0ebe.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/f233333e-9961-4f69-89dc-c58f95af0ebe.stderr"
+}

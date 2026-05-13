@@ -1,0 +1,18 @@
+{
+  "id": "4e49ad89-4c40-49e0-9c9d-c1abe1e87b83",
+  "runtime": "bash",
+  "purpose": "detect integration branch and code diff evidence for M005",
+  "script_chars": 809,
+  "started_at": "2026-05-13T07:46:36.994Z",
+  "finished_at": "2026-05-13T07:46:37.082Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 88,
+  "stdout_bytes": 148,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/4e49ad89-4c40-49e0-9c9d-c1abe1e87b83.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/4e49ad89-4c40-49e0-9c9d-c1abe1e87b83.stderr"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "b0d7bce9-86fc-4571-9693-2b84a5275ca1",
+  "runtime": "bash",
+  "purpose": "verify M005 slice UAT artifacts exist",
+  "script_chars": 86,
+  "started_at": "2026-05-13T07:49:30.962Z",
+  "finished_at": "2026-05-13T07:49:30.983Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 21,
+  "stdout_bytes": 258,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/b0d7bce9-86fc-4571-9693-2b84a5275ca1.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/b0d7bce9-86fc-4571-9693-2b84a5275ca1.stderr"
+}

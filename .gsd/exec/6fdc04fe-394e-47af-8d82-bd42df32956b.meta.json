@@ -1,0 +1,18 @@
+{
+  "id": "6fdc04fe-394e-47af-8d82-bd42df32956b",
+  "runtime": "bash",
+  "purpose": "locate R011 in REQUIREMENTS.md",
+  "script_chars": 60,
+  "started_at": "2026-05-13T07:49:20.409Z",
+  "finished_at": "2026-05-13T07:49:20.432Z",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "duration_ms": 23,
+  "stdout_bytes": 1033,
+  "stderr_bytes": 0,
+  "stdout_truncated": false,
+  "stderr_truncated": false,
+  "stdout_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/6fdc04fe-394e-47af-8d82-bd42df32956b.stdout",
+  "stderr_path": "/Users/serkanyeniay/dev/Caluno/.gsd/exec/6fdc04fe-394e-47af-8d82-bd42df32956b.stderr"
+}

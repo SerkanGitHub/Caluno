@@ -1,0 +1,12 @@
+281776e9793a320cbebe4b6e1e689150a407943e | test: Stabilized the web shift-editor Playwright spec so advisory overl…
+  apps/web/tests/e2e/calendar-shifts.spec.ts
+
+0dc19a6208d76c682fcb0d8f13ab1c4961a25b00 | test: Threaded recurrence suggestion data into the web create dialog, a…
+  apps/web/src/app.css
+  apps/web/src/lib/components/calendar/CalendarWeekBoard.svelte
+  apps/web/src/lib/components/calendar/ShiftEditorDialog.svelte
+  apps/web/src/routes/(app)/calendars/[calendarId]/+page.svelte
+  apps/web/tests/e2e/calendar-shifts.spec.ts
+  apps/web/tests/e2e/fixtures.ts
+
+TOTAL_COMMITS_WITH_SOURCE_TOUCHES 2
