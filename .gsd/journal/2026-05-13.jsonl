@@ -1,0 +1,3 @@
+{"ts":"2026-05-13T12:10:59.147Z","flowId":"868d2285-0461-42d5-b213-015c0c5fd91e","seq":0,"eventType":"worktree-merge-start","data":{"milestoneId":"M005","mode":"none"}}
+{"ts":"2026-05-13T12:10:59.242Z","flowId":"9a510e8d-11b4-456b-96bf-52b75f0c35c7","seq":0,"eventType":"auto-exit","data":{"reason":"other","milestoneId":"M005","milestoneMerged":true,"isolationMode":"none","worktreeActive":false,"exitedAt":"2026-05-13T12:10:59.242Z"}}
+{"ts":"2026-05-13T12:11:00.057Z","flowId":"auto-orchestrator-1778673935502","seq":3,"eventType":"terminal","data":{"source":"auto-orchestrator","name":"stop","reason":"Post-merge stash restore failed for milestone M005"}}
